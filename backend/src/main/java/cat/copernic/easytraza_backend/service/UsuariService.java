@@ -1,6 +1,8 @@
 package cat.copernic.easytraza_backend.service;
 
+import cat.copernic.easytraza_backend.dto.UsuariDto;
 import cat.copernic.easytraza_backend.model.Usuari;
+import cat.copernic.easytraza_backend.model.enums.Rol;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,5 +47,44 @@ public class UsuariService {
 
     public void deleteById(Long id) {
         usuariRepository.deleteById(id);
+    }
+
+    public String validarUsuari(UsuariDto usuariDto, Long idActual) {
+        Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmail(usuariDto.getEmail());
+
+        if (usuariAmbMateixEmail.isPresent()) {
+            if (idActual == null || !usuariAmbMateixEmail.get().getId().equals(idActual)) {
+                return "Ja existeix un usuari amb aquest correu electrònic";
+            }
+        }
+
+        if (usuariDto.getRol() == Rol.ADMIN
+                && (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank())) {
+            return "Els usuaris ADMIN han de tenir contrasenya";
+        }
+
+        return null;
+    }
+
+    public Usuari convertirDtoAEntity(UsuariDto usuariDto) {
+        Usuari usuari = new Usuari();
+        usuari.setId(usuariDto.getId());
+        usuari.setNom(usuariDto.getNom());
+        usuari.setCognoms(usuariDto.getCognoms());
+        usuari.setRol(usuariDto.getRol());
+        usuari.setEmail(usuariDto.getEmail());
+        usuari.setContrasenya(usuariDto.getContrasenya());
+        return usuari;
+    }
+
+    public UsuariDto convertirEntityADto(Usuari usuari) {
+        UsuariDto usuariDto = new UsuariDto();
+        usuariDto.setId(usuari.getId());
+        usuariDto.setNom(usuari.getNom());
+        usuariDto.setCognoms(usuari.getCognoms());
+        usuariDto.setRol(usuari.getRol());
+        usuariDto.setEmail(usuari.getEmail());
+        usuariDto.setContrasenya(usuari.getContrasenya());
+        return usuariDto;
     }
 }
