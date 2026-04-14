@@ -135,6 +135,11 @@ label {
     color: #8B5E3C;
 }
 
+.required {
+    color: #B3261E;
+    font-weight: bold;
+}
+
 input,
 select,
 textarea {
