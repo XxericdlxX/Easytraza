@@ -15,7 +15,7 @@
 
             <div class="header-actions">
                 <p>Gestió dels usuaris del sistema</p>
-                <a href="#" class="btn btn-primary">Afegir usuari</a>
+                <a th:href="@{/web/usuaris/crear}" class="btn btn-primary">Afegir usuari</a>
             </div>
 
             <div class="table-wrapper" th:if="${!#lists.isEmpty(usuaris)}">
