@@ -3,6 +3,8 @@ package cat.copernic.easytraza_backend.dto;
 import cat.copernic.easytraza_backend.model.enums.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UsuariDto {
@@ -10,18 +12,25 @@ public class UsuariDto {
     private Long id;
 
     @NotBlank(message = "El nom és obligatori")
+    @Size(max = 50, message = "El nom no pot tenir més de 50 caràcters")
     private String nom;
 
     @NotBlank(message = "Els cognoms són obligatoris")
+    @Size(max = 100, message = "Els cognoms no poden tenir més de 100 caràcters")
     private String cognoms;
 
+    @NotNull(message = "El rol és obligatori")
     private Rol rol;
 
     @NotBlank(message = "El correu electrònic és obligatori")
-    @Email(message = "El correu electrònic no té un format vàlid")
+    @Email(message = "El correu electrònic ha de tenir un format vàlid")
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "El correu electrònic ha de tenir un format tipus usuari@domini.com"
+    )
     private String email;
 
-    @Size(max = 100, message = "La contrasenya no pot superar els 100 caràcters")
+    @Size(max = 100, message = "La contrasenya no pot tenir més de 100 caràcters")
     private String contrasenya;
 
     public UsuariDto() {
