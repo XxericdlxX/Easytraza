@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Llistar usuaris</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo-title">
+                <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                <h1>Llistat d'usuaris</h1>
+            </div>
+
+            <div class="header-actions">
+                <p>Gestió dels usuaris del sistema</p>
+                <a th:href="@{/web/usuaris/crear}" class="btn btn-primary">Afegir usuari</a>
+            </div>
+
+            <div class="table-wrapper" th:if="${!#lists.isEmpty(usuaris)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Cognoms</th>
+                            <th>Rol</th>
+                            <th>Email</th>
+                            <th>Accions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuari : ${usuaris}">
+                            <td th:text="${usuari.id}"></td>
+                            <td th:text="${usuari.nom}"></td>
+                            <td th:text="${usuari.cognoms}"></td>
+                            <td>
+                                <span class="badge" th:text="${usuari.rol}"></span>
+                            </td>
+                            <td th:text="${usuari.email}"></td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}" class="btn btn-secondary">Editar</a>
+                                    <a href="#" class="btn btn-danger">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-message" th:if="${#lists.isEmpty(usuaris)}">
+                No hi ha usuaris registrats.
+            </div>
+        </div>
+    </body>
+</html>
