@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{usuaris.llistat}">Listado de usuarios</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{usuaris.llistat}">Listado de usuarios</h1>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/web/usuaris(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/usuaris(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <p th:text="#{usuaris.gestio}">Gestión de los usuarios del sistema</p>
+                <a th:href="@{/web/usuaris/crear}" class="btn btn-primary" th:text="#{usuaris.afegir}">Añadir usuario</a>
+            </div>
+
+            <div class="table-wrapper" th:if="${!#lists.isEmpty(usuaris)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th th:text="#{usuaris.id}">ID</th>
+                            <th th:text="#{usuaris.nom}">Nombre</th>
+                            <th th:text="#{usuaris.cognoms}">Apellidos</th>
+                            <th th:text="#{usuaris.rol}">Rol</th>
+                            <th th:text="#{usuaris.email}">Correo electrónico</th>
+                            <th th:text="#{usuaris.accions}">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuari : ${usuaris}">
+                            <td th:text="${usuari.id}"></td>
+                            <td th:text="${usuari.nom}"></td>
+                            <td th:text="${usuari.cognoms}"></td>
+                            <td><span class="badge" th:text="#{|rol.${usuari.rol}|}"></span></td>
+                            <td th:text="${usuari.email}"></td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}" class="btn btn-secondary" th:text="#{usuaris.editar}">Editar</a>
+                                    <a th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}"
+                                       class="btn btn-danger"
+                                       onclick="return confirm('Segur que vols eliminar aquest usuari?');"
+                                       th:text="#{usuaris.eliminar}">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-message" th:if="${#lists.isEmpty(usuaris)}" th:text="#{usuaris.buit}">
+                No hay usuarios registrados.
+            </div>
+        </div>
+    </body>
+</html>
