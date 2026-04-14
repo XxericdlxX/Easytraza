@@ -51,4 +51,10 @@ public class UsuariWebController {
         usuariService.update(id, usuari);
         return "redirect:/web/usuaris";
     }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarUsuari(@PathVariable Long id) {
+        usuariService.deleteById(id);
+        return "redirect:/web/usuaris";
+    }
 }
