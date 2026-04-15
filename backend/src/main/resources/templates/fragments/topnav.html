@@ -16,9 +16,9 @@
             </div>
 
             <div class="topnav-right">
-                <a th:href="@{${#httpServletRequest.requestURI}(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
-                <a th:href="@{${#httpServletRequest.requestURI}(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                <a th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                <a th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
             </div>
         </nav>
     </body>
-</html> 
+</html>
