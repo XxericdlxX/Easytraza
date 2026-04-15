@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <nav class="topnav" th:fragment="topnav">
+            <div class="topnav-left">
+                <a th:href="@{/}" class="brand">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <span th:text="#{app.title}">EasyTraza</span>
+                </a>
+            </div>
+
+            <div class="topnav-center">
+                <a th:href="@{/web/usuaris}" th:text="#{nav.usuaris}">Usuarios</a>
+                <a th:href="@{/web/materies-primeres}" th:text="#{nav.materies}">Materias primas</a>
+                <a th:href="@{/web/proveidors}" th:text="#{nav.proveidors}">Proveedores</a>
+            </div>
+
+            <div class="topnav-right">
+                <a th:href="@{${#httpServletRequest.requestURI}(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                <a th:href="@{${#httpServletRequest.requestURI}(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+            </div>
+        </nav>
+    </body>
+</html>
