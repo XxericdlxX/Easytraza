@@ -22,6 +22,7 @@ public class MateriaPrimaWebController {
     @GetMapping
     public String llistarMateriesPrimeres(Model model) {
         model.addAttribute("materiesPrimeres", materiaPrimaService.findAll());
+        model.addAttribute("currentPath", "/web/materies-primeres");
         return "materiesprimeres/llistar-materies-primeres";
     }
 

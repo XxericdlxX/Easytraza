@@ -22,6 +22,7 @@ public class ProveidorWebController {
     @GetMapping
     public String llistarProveidors(Model model) {
         model.addAttribute("proveidors", proveidorService.findAll());
+        model.addAttribute("currentPath", "/web/proveidors");
         return "proveidors/llistar-proveidors";
     }
 
