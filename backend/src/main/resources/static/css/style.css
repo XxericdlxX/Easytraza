@@ -409,3 +409,42 @@ textarea:focus {
         width: 220px;
     }
 }
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.list-title-block {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.list-page-logo {
+    height: 48px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.list-title-block h1 {
+    margin: 0 0 6px 0;
+}
+
+.list-title-block p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .list-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .list-title-block {
+        align-items: flex-start;
+    }
+}
