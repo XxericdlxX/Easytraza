@@ -16,9 +16,12 @@
             </div>
 
             <div class="topnav-right">
-                <a th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
-                <a th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                <a th:if="${currentPath != null}" th:href="@{${currentPath}(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                <a th:if="${currentPath != null}" th:href="@{${currentPath}(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+
+                <a th:if="${currentPath == null}" th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                <a th:if="${currentPath == null}" th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
             </div>
         </nav>
     </body>
-</html>
+</html> 
