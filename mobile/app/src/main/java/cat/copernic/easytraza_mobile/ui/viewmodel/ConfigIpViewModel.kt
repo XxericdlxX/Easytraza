@@ -43,13 +43,13 @@ class ConfigIpViewModel(
                 val api = RetrofitClient.create(baseUrl)
                 val response = api.checkConnection()
 
-                _status.value = if (response.isSuccessful) {
-                    "Conexión correcta con el backend"
+                _status.value = if (response.isSuccessful && response.body() != null) {
+                    response.body()!!.message
                 } else {
-                    "El backend responde pero con error: ${response.code()}"
+                    "El backend respon però amb error: ${response.code()}"
                 }
             } catch (e: Exception) {
-                _status.value = "Error de conexión: ${e.message}"
+                _status.value = "Error de connexió: ${e.message}"
             }
         }
     }
