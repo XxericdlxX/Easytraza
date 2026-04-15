@@ -12,13 +12,15 @@
 
         <div class="page-with-nav">
             <div class="container">
-                <div class="logo-title">
-                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
-                    <h1 th:text="#{proveidors.llistat}">Listado de proveedores</h1>
-                </div>
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{proveidors.llistat}">Listado de proveedores</h1>
+                            <p th:text="#{proveidors.gestio}">Gestión de los proveedores del sistema</p>
+                        </div>
+                    </div>
 
-                <div class="header-actions">
-                    <p th:text="#{proveidors.gestio}">Gestión de los proveedores del sistema</p>
                     <a th:href="@{/web/proveidors/crear}" class="btn btn-primary" th:text="#{proveidors.afegir}">Añadir proveedor</a>
                 </div>
 
@@ -42,10 +44,7 @@
                                 <td>
                                     <div class="actions">
                                         <a th:href="@{/web/proveidors/editar/{cif}(cif=${proveidor.cif})}" class="btn btn-secondary" th:text="#{proveidors.editar}">Editar</a>
-                                        <a th:href="@{/web/proveidors/eliminar/{cif}(cif=${proveidor.cif})}"
-                                           class="btn btn-danger"
-                                           onclick="return confirm('Segur que vols eliminar aquest proveïdor?');"
-                                           th:text="#{proveidors.eliminar}">Eliminar</a>
+                                        <a th:href="@{/web/proveidors/eliminar/{cif}(cif=${proveidor.cif})}" class="btn btn-danger" onclick="return confirm('Segur que vols eliminar aquest proveïdor?');" th:text="#{proveidors.eliminar}">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>

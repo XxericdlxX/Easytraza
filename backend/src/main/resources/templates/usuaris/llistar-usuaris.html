@@ -12,13 +12,15 @@
 
         <div class="page-with-nav">
             <div class="container">
-                <div class="logo-title">
-                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
-                    <h1 th:text="#{usuaris.llistat}">Listado de usuarios</h1>
-                </div>
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{usuaris.llistat}">Listado de usuarios</h1>
+                            <p th:text="#{usuaris.gestio}">Gestión de los usuarios del sistema</p>
+                        </div>
+                    </div>
 
-                <div class="header-actions">
-                    <p th:text="#{usuaris.gestio}">Gestión de los usuarios del sistema</p>
                     <a th:href="@{/web/usuaris/crear}" class="btn btn-primary" th:text="#{usuaris.afegir}">Añadir usuario</a>
                 </div>
 
@@ -44,10 +46,7 @@
                                 <td>
                                     <div class="actions">
                                         <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}" class="btn btn-secondary" th:text="#{usuaris.editar}">Editar</a>
-                                        <a th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}"
-                                           class="btn btn-danger"
-                                           onclick="return confirm('Segur que vols eliminar aquest usuari?');"
-                                           th:text="#{usuaris.eliminar}">Eliminar</a>
+                                        <a th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}" class="btn btn-danger" onclick="return confirm('Segur que vols eliminar aquest usuari?');" th:text="#{usuaris.eliminar}">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>

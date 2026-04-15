@@ -12,13 +12,15 @@
 
         <div class="page-with-nav">
             <div class="container">
-                <div class="logo-title">
-                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
-                    <h1 th:text="#{materies.llistat}">Listado de materias primas</h1>
-                </div>
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{materies.llistat}">Listado de materias primas</h1>
+                            <p th:text="#{materies.gestio}">Gestión de las materias primas del sistema</p>
+                        </div>
+                    </div>
 
-                <div class="header-actions">
-                    <p th:text="#{materies.gestio}">Gestión de las materias primas del sistema</p>
                     <a th:href="@{/web/materies-primeres/crear}" class="btn btn-primary" th:text="#{materies.afegir}">Añadir materia prima</a>
                 </div>
 
@@ -40,10 +42,7 @@
                                 <td>
                                     <div class="actions">
                                         <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id})}" class="btn btn-secondary" th:text="#{materies.editar}">Editar</a>
-                                        <a th:href="@{/web/materies-primeres/eliminar/{id}(id=${materiaPrima.id})}"
-                                           class="btn btn-danger"
-                                           onclick="return confirm('Segur que vols eliminar aquesta matèria primera?');"
-                                           th:text="#{materies.eliminar}">Eliminar</a>
+                                        <a th:href="@{/web/materies-primeres/eliminar/{id}(id=${materiaPrima.id})}" class="btn btn-danger" onclick="return confirm('Segur que vols eliminar aquesta matèria primera?');" th:text="#{materies.eliminar}">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>
