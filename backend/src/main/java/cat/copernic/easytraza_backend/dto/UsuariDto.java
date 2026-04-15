@@ -11,26 +11,26 @@ public class UsuariDto {
 
     private Long id;
 
-    @NotBlank(message = "El nom és obligatori")
-    @Size(max = 50, message = "El nom no pot tenir més de 50 caràcters")
+    @NotBlank(message = "{usuaris.nom.obligatori}")
+    @Size(max = 50, message = "{usuaris.nom.max}")
     private String nom;
 
-    @NotBlank(message = "Els cognoms són obligatoris")
-    @Size(max = 100, message = "Els cognoms no poden tenir més de 100 caràcters")
+    @NotBlank(message = "{usuaris.cognoms.obligatoris}")
+    @Size(max = 100, message = "{usuaris.cognoms.max}")
     private String cognoms;
 
-    @NotNull(message = "El rol és obligatori")
+    @NotNull(message = "{usuaris.rol.obligatori}")
     private Rol rol;
 
-    @NotBlank(message = "El correu electrònic és obligatori")
-    @Email(message = "El correu electrònic ha de tenir un format vàlid")
+    @NotBlank(message = "{usuaris.email.obligatori}")
+    @Email(message = "{usuaris.email.invalid}")
     @Pattern(
             regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
-            message = "El correu electrònic ha de tenir un format tipus usuari@domini.com"
+            message = "{usuaris.email.pattern}"
     )
     private String email;
 
-    @Size(max = 100, message = "La contrasenya no pot tenir més de 100 caràcters")
+    @Size(max = 100, message = "{usuaris.contrasenya.max}")
     private String contrasenya;
 
     public UsuariDto() {
