@@ -22,6 +22,7 @@ public class UsuariWebController {
     @GetMapping
     public String llistarUsuaris(Model model) {
         model.addAttribute("usuaris", usuariService.findAll());
+        model.addAttribute("currentPath", "/web/usuaris");
         return "usuaris/llistar-usuaris";
     }
 

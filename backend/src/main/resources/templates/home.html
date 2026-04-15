@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{home.title}">EasyTraza</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body class="home-body">
+
+        <div class="home-language">
+            <a th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+            <a th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+        </div>
+
+        <section class="home-hero">
+            <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="home-logo">
+            <h1 th:text="#{app.title}">EasyTraza</h1>
+            <p th:text="#{home.subtitle}">Gestión y trazabilidad del sistema</p>
+        </section>
+
+        <section class="home-modules">
+            <a th:href="@{/web/usuaris}" class="home-card users-card">
+                <div class="home-card-image">👤</div>
+                <div class="home-card-title" th:text="#{nav.usuaris}">Usuarios</div>
+            </a>
+
+            <a th:href="@{/web/materies-primeres}" class="home-card materials-card">
+                <div class="home-card-image">🌾</div>
+                <div class="home-card-title" th:text="#{nav.materies}">Materias primas</div>
+            </a>
+
+            <a th:href="@{/web/proveidors}" class="home-card providers-card">
+                <div class="home-card-image">🏭</div>
+                <div class="home-card-title" th:text="#{nav.proveidors}">Proveedores</div>
+            </a>
+        </section>
+
+    </body>
+</html>
