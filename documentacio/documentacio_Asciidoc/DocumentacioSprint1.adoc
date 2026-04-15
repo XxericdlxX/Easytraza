@@ -1,0 +1,71 @@
+= SPRINT - 1
+:toc:
+:toc-title: Índex de continguts
+:imagesdir: ../images
+
+== 1. Planificació Inicial
+
+=== 1.1. Planificació (Inicial)
+==== Board inicial — Eric Delgado López
+image::Sprint1/BoardInicial/BoardInicialSprint1.1.png[Board inicial 1]
+image::Sprint1/BoardInicial/BoardInicialSprint1.2.png[Board inicial 2]
+image::Sprint1/BoardInicial/BoardInicialSprint1.3.png[Board inicial 3]
+image::Sprint1/BoardInicial/BoardInicialSprint1.4.png[Board inicial 4]
+image::Sprint1/BoardInicial/BoardInicialSprint1.5.png[Board inicial 5]
+
+== 2. Daily Stand Ups
+
+=== DIA 1 -
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 2 -
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 3 -
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 4 -
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 5 -
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+== 3. Planificació Final
+
+=== 3.1. Planificació (Final de Sprint)
+==== Board final — Eric Delgado López
+image::Sprint1/BoardFinal/BoardFinalSprint1.1.png[Board final 1]
+image::Sprint1/BoardFinal/BoardFinalSprint1.2.png[Board final 2]
+image::Sprint1/BoardFinal/BoardFinalSprint1.3.png[Board final 3]
+image::Sprint1/BoardFinal/BoardFinalSprint1.4.png[Board final 4]
+image::Sprint1/BoardFinal/BoardFinalSprint1.5.png[Board final 5]
+
+== 4. Retrospective Meeting
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius |
+| Aspectes a millorar |
+| Accions concretes per al següent sprint |
+|===
