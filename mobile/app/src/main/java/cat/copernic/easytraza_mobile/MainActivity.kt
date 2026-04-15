@@ -3,45 +3,80 @@ package cat.copernic.easytraza_mobile
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
 import cat.copernic.easytraza_mobile.ui.theme.Projecte4_EasyTraza_EricTheme
+import cat.copernic.easytraza_mobile.ui.viewmodel.ConfigIpViewModel
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val repository = IpPreferencesRepository(applicationContext)
+        val viewModel = ConfigIpViewModel(repository)
+
         setContent {
             Projecte4_EasyTraza_EricTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val ip by viewModel.ip.collectAsState()
+                    val status by viewModel.status.collectAsState()
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "Configuración del servidor",
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+
+                        OutlinedTextField(
+                            value = ip,
+                            onValueChange = { viewModel.onIpChange(it) },
+                            label = { Text("IP del servidor") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Button(
+                            onClick = { viewModel.saveIp() },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Guardar IP")
+                        }
+
+                        Button(
+                            onClick = { viewModel.testConnection() },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Probar conexión")
+                        }
+
+                        Text(
+                            text = status,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Projecte4_EasyTraza_EricTheme {
-        Greeting("Android")
     }
 }
