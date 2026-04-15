@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{proveidors.llistat}">Listado de proveedores</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{proveidors.llistat}">Listado de proveedores</h1>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/web/proveidors(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/proveidors(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <p th:text="#{proveidors.gestio}">Gestión de los proveedores del sistema</p>
+                <a th:href="@{/web/proveidors/crear}" class="btn btn-primary" th:text="#{proveidors.afegir}">Añadir proveedor</a>
+            </div>
+
+            <div class="table-wrapper" th:if="${!#lists.isEmpty(proveidors)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th th:text="#{proveidors.id}">CIF/NIF/NIE</th>
+                            <th th:text="#{proveidors.nom}">Nombre</th>
+                            <th th:text="#{proveidors.adreca}">Dirección</th>
+                            <th th:text="#{proveidors.descripcio}">Descripción</th>
+                            <th th:text="#{proveidors.accions}">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="proveidor : ${proveidors}">
+                            <td th:text="${proveidor.cif}"></td>
+                            <td th:text="${proveidor.nom}"></td>
+                            <td th:text="${proveidor.adreca}"></td>
+                            <td th:text="${proveidor.descripcio}"></td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/web/proveidors/editar/{cif}(cif=${proveidor.cif})}" class="btn btn-secondary" th:text="#{proveidors.editar}">Editar</a>
+                                    <a th:href="@{/web/proveidors/eliminar/{cif}(cif=${proveidor.cif})}"
+                                       class="btn btn-danger"
+                                       onclick="return confirm('Segur que vols eliminar aquest proveïdor?');"
+                                       th:text="#{proveidors.eliminar}">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-message" th:if="${#lists.isEmpty(proveidors)}" th:text="#{proveidors.buit}">
+                No hay proveedores registrados.
+            </div>
+        </div>
+    </body>
+</html>
