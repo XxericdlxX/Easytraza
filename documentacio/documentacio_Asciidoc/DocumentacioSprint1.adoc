@@ -47,7 +47,7 @@ image::Sprint1/BoardInicial/BoardInicialSprint1.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Vaig acabar tots els RF que demanen per aquest sprint1 a part vaig fer un topnav i un home, vaig fer els merge Request al develop  i vaig començar la documentació de l'sprint 1| Acabaré la documentació de l'sprint 1  | - | 4h
+| Eric Delgado López | Vaig acabar tots els RF que demanen per aquest sprint1 a part vaig fer un topnav i un home, vaig fer els merge Request al develop  i vaig començar la documentació de l'sprint 1| Acabaré la documentació de l'sprint 1  | - | 2'30h
 |===
 
 == 3. Planificació Final
