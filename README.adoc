@@ -1,0 +1,108 @@
+= EasyTraza
+Eric Delgado López
+:toc:
+:toc-title: Índex
+:sectnums:
+
+image::backend/src/main/resources/static/img/logo-easytraza.png[EasyTraza, width=250]
+
+== Descripció del projecte
+
+EasyTraza és una aplicació client-servidor orientada a la gestió de traçabilitat dins d’un entorn de producció alimentària.
+
+El projecte està format per:
+
+* un *backend* desenvolupat amb *Spring Boot*
+* un *client web* desenvolupat amb *HTML, CSS i Thymeleaf*
+* un *client mobile* desenvolupat amb *Kotlin i Jetpack Compose*
+
+== Funcionalitats implementades
+
+=== Sprint 1
+
+* RF03: CRUD d'usuaris
+* RF04: CRUD de matèries primeres
+* RF08: CRUD de proveïdors
+* RF15: Configuració persistent de la IP i connexió entre mobile i backend
+
+== Tecnologies utilitzades
+
+=== Backend
+* Java
+* Spring Boot
+* Maven
+* JPA / Hibernate
+
+=== Frontend web
+* HTML
+* CSS
+* Thymeleaf
+
+=== Frontend mobile
+* Kotlin
+* Jetpack Compose
+* Retrofit
+* DataStore
+* ViewModel
+
+=== Altres eines
+* Git
+* GitLab
+* AsciiDoc
+* Figma
+
+== Estructura del repositori
+
+[source]
+----
+Projecte4_Eric_EasyTraza/
+├── backend/
+├── mobile/
+├── documentacio/
+└── README.adoc
+----
+
+== Documentació
+
+La documentació del projecte es troba dins de la carpeta:
+
+[source]
+----
+documentacio/
+----
+
+Inclou:
+
+* seguiment dels sprints
+* captures del board
+* documentació en AsciiDoc
+
+== Vídeo del projecte
+
+Afegir aquí l’enllaç del vídeo demo quan estigui disponible.
+
+[source]
+----
+PENDENT
+----
+
+
+== Autor
+
+[cols="1,3", options="header"]
+|===
+|Camp
+|Valor
+
+|Nom
+|Eric Delgado López
+
+|Projecte
+|EasyTraza
+
+|Curs
+|2DAM
+
+|Any acadèmic
+|2025-2026
+|===
