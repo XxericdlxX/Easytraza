@@ -39,17 +39,17 @@ class ConfigIpViewModel(
     fun testConnection() {
         viewModelScope.launch {
             try {
-                val baseUrl = "http://${_ip.value}:8080/"
+                val baseUrl = "https://${_ip.value}:8443/"
                 val api = RetrofitClient.create(baseUrl)
                 val response = api.checkConnection()
 
                 _status.value = if (response.isSuccessful && response.body() != null) {
                     response.body()!!.message
                 } else {
-                    "El backend respon però amb error: ${response.code()}"
+                    "El backend responde pero con error: ${response.code()}"
                 }
             } catch (e: Exception) {
-                _status.value = "Error de connexió: ${e.message}"
+                _status.value = "Error de conexión: ${e.message}"
             }
         }
     }
