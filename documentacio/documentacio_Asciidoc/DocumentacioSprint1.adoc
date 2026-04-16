@@ -65,7 +65,7 @@ image::Sprint1/BoardFinal/BoardFinalSprint1.5.png[Board final 5]
 [cols="1,4", options="header"]
 |===
 | Apartat | Contingut
-| Aspectes positius |
-| Aspectes a millorar |
-| Accions concretes per al següent sprint |
+| Aspectes positius | Com que és un projecte individual, em vaig poder organitzar millor i treballar al meu propi ritme. No vaig haver d’estar pendent de si altres companys havien acabat la seva part, i això em va permetre avançar de manera més constant.
+| Aspectes a millorar | Hauria pogut anar més ràpid a l’hora de fer les tasques i gestionar millor el temps, ja que vaig haver de dedicar bastantes hores a casa per completar el treball.
+| Accions concretes per al següent sprint | Vaig veure que, per al següent sprint, hauria de planificar millor les tasques des del principi, establir un horari de treball més organitzat i dividir la feina en parts més petites per avançar de manera més eficient. També vaig considerar que havia d’aprofitar millor el temps de classe per reduir la quantitat de feina feta a casa.
 |===
