@@ -59,6 +59,7 @@ image::Sprint1/BoardFinal/BoardFinalSprint1.2.png[Board final 2]
 image::Sprint1/BoardFinal/BoardFinalSprint1.3.png[Board final 3]
 image::Sprint1/BoardFinal/BoardFinalSprint1.4.png[Board final 4]
 image::Sprint1/BoardFinal/BoardFinalSprint1.5.png[Board final 5]
+image::Sprint1/BoardFinal/BoardFinalSprint1.6.png[Board final 6]
 
 == 4. Personal Retrospective
 
