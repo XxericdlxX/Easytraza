@@ -57,13 +57,6 @@
                                            class="btn btn-danger"
                                            th:attr="onclick=|return confirm('${#messages.msg('usuaris.confirmar.eliminar')}');|"
                                            th:text="#{usuaris.eliminar}">Eliminar</a>
-
-                                        <button th:if="${@usuariService.isProtectedUser(usuari)}"
-                                                type="button"
-                                                class="btn btn-danger"
-                                                disabled
-                                                th:title="#{usuaris.superadmin.noeliminable}"
-                                                th:text="#{usuaris.eliminar}">Eliminar</button>
                                     </div>
                                 </td>
                             </tr>
