@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
 import cat.copernic.easytraza_mobile.ui.theme.Projecte4_EasyTraza_EricTheme
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val repository = IpPreferencesRepository(applicationContext)
-        val viewModel = ConfigIpViewModel(repository)
+        val viewModel = ConfigIpViewModel(application, repository)
 
         setContent {
             Projecte4_EasyTraza_EricTheme {
@@ -45,34 +46,51 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = "Configuración del servidor",
+                            text = stringResource(R.string.config_ip_title),
                             style = MaterialTheme.typography.headlineSmall
+                        )
+
+                        Text(
+                            text = stringResource(R.string.config_ip_description),
+                            style = MaterialTheme.typography.bodyMedium
                         )
 
                         OutlinedTextField(
                             value = ip,
                             onValueChange = { viewModel.onIpChange(it) },
-                            label = { Text("IP del servidor") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = { Text(stringResource(R.string.config_ip_label)) },
+                            placeholder = { Text(stringResource(R.string.config_ip_placeholder)) },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
                         )
 
                         Button(
                             onClick = { viewModel.saveIp() },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Guardar IP")
+                            Text(stringResource(R.string.config_ip_save_button))
                         }
 
                         Button(
                             onClick = { viewModel.testConnection() },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Probar conexión")
+                            Text(stringResource(R.string.config_ip_test_button))
                         }
 
                         Text(
-                            text = status,
+                            text = stringResource(R.string.config_ip_status_label, status),
                             style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        Text(
+                            text = stringResource(R.string.config_ip_help_emulator),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+
+                        Text(
+                            text = stringResource(R.string.config_ip_help_device),
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
                 }
