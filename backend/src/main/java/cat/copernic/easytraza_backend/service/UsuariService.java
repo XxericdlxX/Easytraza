@@ -36,8 +36,14 @@ public class UsuariService {
             usuari.setNom(usuariActualitzat.getNom());
             usuari.setCognoms(usuariActualitzat.getCognoms());
             usuari.setRol(usuariActualitzat.getRol());
-            usuari.setEmail(usuariActualitzat.getEmail());
-            usuari.setContrasenya(usuariActualitzat.getContrasenya());
+
+            // L'email és la clau funcional i no s'ha de modificar
+            usuari.setEmail(usuari.getEmail());
+
+            // Si a edició es deixa la contrasenya buida, es manté l'actual
+            if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
+                usuari.setContrasenya(usuariActualitzat.getContrasenya());
+            }
 
             return usuariRepository.save(usuari);
         } else {
@@ -54,13 +60,31 @@ public class UsuariService {
 
         if (usuariAmbMateixEmail.isPresent()) {
             if (idActual == null || !usuariAmbMateixEmail.get().getId().equals(idActual)) {
-                return "Ja existeix un usuari amb aquest correu electrònic";
+                return "usuaris.error.email.duplicat";
             }
         }
 
-        if (usuariDto.getRol() == Rol.ADMIN
-                && (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank())) {
-            return "Els usuaris ADMIN han de tenir contrasenya";
+        if (idActual == null && (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank())) {
+            return "usuaris.contrasenya.obligatoria";
+        }
+
+        if (usuariDto.getRol() == Rol.ADMIN) {
+            if (idActual == null) {
+                if (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank()) {
+                    return "usuaris.admin.contrasenya.obligatoria";
+                }
+            } else {
+                Optional<Usuari> usuariExistent = usuariRepository.findById(idActual);
+                if (usuariExistent.isPresent()) {
+                    String contrasenyaActual = usuariExistent.get().getContrasenya();
+                    boolean novaContrasenyaBuida = usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank();
+                    boolean contrasenyaActualBuida = contrasenyaActual == null || contrasenyaActual.isBlank();
+
+                    if (novaContrasenyaBuida && contrasenyaActualBuida) {
+                        return "usuaris.admin.contrasenya.obligatoria";
+                    }
+                }
+            }
         }
 
         return null;
@@ -84,7 +108,7 @@ public class UsuariService {
         usuariDto.setCognoms(usuari.getCognoms());
         usuariDto.setRol(usuari.getRol());
         usuariDto.setEmail(usuari.getEmail());
-        usuariDto.setContrasenya(usuari.getContrasenya());
+        usuariDto.setContrasenya("");
         return usuariDto;
     }
 }
