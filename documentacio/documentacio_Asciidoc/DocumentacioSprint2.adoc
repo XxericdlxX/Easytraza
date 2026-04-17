@@ -1,0 +1,75 @@
+= SPRINT - 2
+:toc:
+:toc-title: Índex de continguts
+:imagesdir: ../images
+
+== 1. Planificació Inicial
+
+=== 1.1. Planificació (Inicial)
+==== Board inicial — Eric Delgado López
+Aquests issues estan en Teacher Review perquè no el vaig poder corregir però estava fet
+
+image::Sprint2/BoardInicial/BoardInicialSprint2.1.png[Board inicial 1]
+
+image::Sprint2/BoardInicial/BoardInicialSprint2.2.png[Board inicial 2]
+image::Sprint2/BoardInicial/BoardInicialSprint2.3.png[Board inicial 3]
+image::Sprint2/BoardInicial/BoardInicialSprint2.4.png[Board inicial 4]
+image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
+
+== 2. Daily Stand Ups
+
+=== DIA 1 Divendres - 17/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  | 
+|===
+
+=== DIA 2 Dilluns - 20/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  | 
+|===
+
+=== DIA 3 Dimarts - 21/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  | 
+|===
+
+=== DIA 4 Dimecres - 22/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  | 
+|===
+
+=== DIA 5 Dijous - 23/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  | 
+|===
+
+
+== 3. Planificació Final
+
+=== 3.1. Planificació (Final de Sprint)
+==== Board final — Eric Delgado López
+image::Sprint2/BoardFinal/BoardFinalSprint2.1.png[Board final 1]
+image::Sprint2/BoardFinal/BoardFinalSprint2.2.png[Board final 2]
+image::Sprint2/BoardFinal/BoardFinalSprint2.3.png[Board final 3]
+image::Sprint2/BoardFinal/BoardFinalSprint2.4.png[Board final 4]
+image::Sprint2/BoardFinal/BoardFinalSprint2.5.png[Board final 5]
+
+== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius | 
+| Aspectes a millorar | 
+| Accions concretes per al següent sprint | 
+|===
