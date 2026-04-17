@@ -24,6 +24,9 @@
                     <a th:href="@{/web/usuaris/crear}" class="btn btn-primary" th:text="#{usuaris.afegir}">Añadir usuario</a>
                 </div>
 
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
                 <div class="table-wrapper" th:if="${!#lists.isEmpty(usuaris)}">
                     <table>
                         <thead>
@@ -46,7 +49,10 @@
                                 <td>
                                     <div class="actions">
                                         <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}" class="btn btn-secondary" th:text="#{usuaris.editar}">Editar</a>
-                                        <a th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}" class="btn btn-danger" onclick="return confirm('Segur que vols eliminar aquest usuari?');" th:text="#{usuaris.eliminar}">Eliminar</a>
+                                        <a th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}"
+                                           class="btn btn-danger"
+                                           th:attr="onclick=|return confirm('${#messages.msg('usuaris.confirmar.eliminar')}');|"
+                                           th:text="#{usuaris.eliminar}">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>
