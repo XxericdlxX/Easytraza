@@ -22,7 +22,7 @@ image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López |Vaig acabar la documentació de l’sprint 1 i afegir https al mobile i a la web  | Corregiré l'sprint 1 i organitzaré el sprint i començaré a fer codi per l'Sprint2 | - | 6h
 |===
 
 === DIA 2 Dilluns - 20/04/2026
