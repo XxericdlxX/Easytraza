@@ -13,6 +13,8 @@ import java.util.Optional;
 @Service
 public class UsuariService {
 
+    private static final String SUPERADMIN_EMAIL = "superadmin@easytraza.local";
+
     @Autowired
     private UsuariRepository usuariRepository;
 
@@ -51,8 +53,25 @@ public class UsuariService {
         }
     }
 
-    public void deleteById(Long id) {
+    public boolean deleteById(Long id) {
+        Optional<Usuari> usuari = usuariRepository.findById(id);
+
+        if (usuari.isPresent() && isProtectedUser(usuari.get())) {
+            return false;
+        }
+
         usuariRepository.deleteById(id);
+        return true;
+    }
+
+    public boolean isProtectedUser(Usuari usuari) {
+        return usuari != null && SUPERADMIN_EMAIL.equalsIgnoreCase(usuari.getEmail());
+    }
+
+    public boolean isProtectedUserById(Long id) {
+        return usuariRepository.findById(id)
+                .map(this::isProtectedUser)
+                .orElse(false);
     }
 
     public String validarUsuari(UsuariDto usuariDto, Long idActual) {

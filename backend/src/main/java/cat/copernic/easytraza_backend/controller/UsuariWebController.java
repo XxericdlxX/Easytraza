@@ -114,7 +114,24 @@ public class UsuariWebController {
     @GetMapping("/eliminar/{id}")
     public String eliminarUsuari(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
         try {
-            usuariService.deleteById(id);
+            if (usuariService.isProtectedUserById(id)) {
+                redirectAttributes.addFlashAttribute(
+                        "missatgeError",
+                        messageSource.getMessage("usuaris.error.eliminar.superadmin", null, locale)
+                );
+                return "redirect:/web/usuaris";
+            }
+
+            boolean eliminat = usuariService.deleteById(id);
+
+            if (!eliminat) {
+                redirectAttributes.addFlashAttribute(
+                        "missatgeError",
+                        messageSource.getMessage("usuaris.error.eliminar.superadmin", null, locale)
+                );
+                return "redirect:/web/usuaris";
+            }
+
             redirectAttributes.addFlashAttribute(
                     "missatgeExit",
                     messageSource.getMessage("usuaris.flash.eliminat", null, locale)
