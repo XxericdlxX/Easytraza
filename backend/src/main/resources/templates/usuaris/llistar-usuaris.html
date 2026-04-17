@@ -20,11 +20,8 @@
                             <p th:text="#{usuaris.gestio}">Gestión de los usuarios del sistema</p>
                         </div>
                     </div>
-
                     <a th:href="@{/web/usuaris/crear}" class="btn btn-primary" th:text="#{usuaris.afegir}">Añadir usuario</a>
                 </div>
-
-                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
                 <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
 
                 <div class="table-wrapper" th:if="${!#lists.isEmpty(usuaris)}">
