@@ -48,11 +48,22 @@
                                 <td th:text="${usuari.email}"></td>
                                 <td>
                                     <div class="actions">
-                                        <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}" class="btn btn-secondary" th:text="#{usuaris.editar}">Editar</a>
-                                        <a th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}"
+                                        <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{usuaris.editar}">Editar</a>
+
+                                        <a th:if="${!@usuariService.isProtectedUser(usuari)}"
+                                           th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}"
                                            class="btn btn-danger"
                                            th:attr="onclick=|return confirm('${#messages.msg('usuaris.confirmar.eliminar')}');|"
                                            th:text="#{usuaris.eliminar}">Eliminar</a>
+
+                                        <button th:if="${@usuariService.isProtectedUser(usuari)}"
+                                                type="button"
+                                                class="btn btn-danger"
+                                                disabled
+                                                th:title="#{usuaris.superadmin.noeliminable}"
+                                                th:text="#{usuaris.eliminar}">Eliminar</button>
                                     </div>
                                 </td>
                             </tr>
