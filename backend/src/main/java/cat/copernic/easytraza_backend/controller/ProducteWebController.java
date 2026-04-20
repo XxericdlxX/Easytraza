@@ -6,10 +6,12 @@ import cat.copernic.easytraza_backend.service.ProducteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -42,6 +44,7 @@ public class ProducteWebController {
     public String guardarProducte(@Valid @ModelAttribute("producte") ProducteDto producteDto,
             BindingResult result,
             Model model,
+            RedirectAttributes redirectAttributes,
             Locale locale) {
 
         if (result.hasErrors()) {
@@ -57,17 +60,29 @@ public class ProducteWebController {
         Producte producte = producteService.convertirDtoAEntity(producteDto);
         producteService.save(producte);
 
+        redirectAttributes.addFlashAttribute(
+                "missatgeExit",
+                messageSource.getMessage("productes.flash.creat", null, locale)
+        );
+
         return "redirect:/web/productes";
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormulariEditarProducte(@PathVariable Long id, Model model) {
+    public String mostrarFormulariEditarProducte(@PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
         Optional<Producte> producte = producteService.findById(id);
 
         if (producte.isPresent()) {
             model.addAttribute("producte", producteService.convertirEntityADto(producte.get()));
             return "productes/editar-productes";
         } else {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("productes.flash.no.trobat", null, locale)
+            );
             return "redirect:/web/productes";
         }
     }
@@ -77,6 +92,7 @@ public class ProducteWebController {
             @Valid @ModelAttribute("producte") ProducteDto producteDto,
             BindingResult result,
             Model model,
+            RedirectAttributes redirectAttributes,
             Locale locale) {
 
         if (result.hasErrors()) {
@@ -92,12 +108,36 @@ public class ProducteWebController {
         Producte producte = producteService.convertirDtoAEntity(producteDto);
         producteService.update(id, producte);
 
+        redirectAttributes.addFlashAttribute(
+                "missatgeExit",
+                messageSource.getMessage("productes.flash.actualitzat", null, locale)
+        );
+
         return "redirect:/web/productes";
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminarProducte(@PathVariable Long id) {
-        producteService.deleteById(id);
+    public String eliminarProducte(@PathVariable Long id,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+        try {
+            producteService.deleteById(id);
+            redirectAttributes.addFlashAttribute(
+                    "missatgeExit",
+                    messageSource.getMessage("productes.flash.eliminat", null, locale)
+            );
+        } catch (DataIntegrityViolationException ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("productes.error.eliminar.relacions", null, locale)
+            );
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("productes.error.eliminar.generic", null, locale)
+            );
+        }
+
         return "redirect:/web/productes";
     }
 }
