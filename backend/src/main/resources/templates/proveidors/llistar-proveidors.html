@@ -8,7 +8,7 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body>
-        <div th:replace="~{fragments/topnav :: topnav}"></div>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
 
         <div class="page-with-nav">
             <div class="container">
@@ -34,9 +34,9 @@
                                 <th th:text="#{proveidors.nom}">Nombre</th>
                                 <th th:text="#{proveidors.adreca}">Dirección</th>
                                 <th th:text="#{proveidors.notes}">Notas/observaciones</th>
-                                <th th:text="#{proveidors.telefon}">Teléfono</th>
-                                <th th:text="#{proveidors.email}">Correo electrónico</th>
-                                <th th:text="#{proveidors.accions}">Acciones</th>
+                                <th class="nowrap-col" th:text="#{proveidors.telefon}">Teléfono</th>
+                                <th class="nowrap-col" th:text="#{proveidors.email}">Correo electrónico</th>
+                                <th class="nowrap-col actions-col" th:text="#{proveidors.accions}">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,9 +45,9 @@
                                 <td th:text="${proveidor.nom}"></td>
                                 <td th:text="${proveidor.adreca}"></td>
                                 <td th:text="${proveidor.notes != null && !proveidor.notes.isBlank() ? proveidor.notes : '-'}"></td>
-                                <td th:text="${proveidor.telefon != null && !proveidor.telefon.isBlank() ? proveidor.telefon : '-'}"></td>
-                                <td th:text="${proveidor.email != null && !proveidor.email.isBlank() ? proveidor.email : '-'}"></td>
-                                <td>
+                                <td class="nowrap-col" th:text="${proveidor.telefon != null && !proveidor.telefon.isBlank() ? proveidor.telefon : '-'}"></td>
+                                <td class="nowrap-col" th:text="${proveidor.email != null && !proveidor.email.isBlank() ? proveidor.email : '-'}"></td>
+                                <td class="nowrap-col actions-col">
                                     <div class="actions actions-table">
                                         <a th:href="@{/web/proveidors/editar/{cif}(cif=${proveidor.cif})}"
                                            class="btn btn-secondary"

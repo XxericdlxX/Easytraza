@@ -2,7 +2,9 @@ package cat.copernic.easytraza_backend.service;
 
 import cat.copernic.easytraza_backend.dto.ProveidorDto;
 import cat.copernic.easytraza_backend.model.Proveidor;
+import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
+import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ public class ProveidorService {
 
     @Autowired
     private ProveidorRepository proveidorRepository;
+
+    @Autowired
+    private UsuariRepository usuariRepository;
 
     public List<Proveidor> findAll() {
         return proveidorRepository.findAll();
@@ -66,6 +71,21 @@ public class ProveidorService {
             }
         }
 
+        String emailNormalitzat = normalitzarEmail(proveidorDto.getEmail());
+        if (emailNormalitzat != null && !emailNormalitzat.isBlank()) {
+            Optional<Proveidor> proveidorAmbMateixEmail = proveidorRepository.findByEmailIgnoreCase(emailNormalitzat);
+            if (proveidorAmbMateixEmail.isPresent()) {
+                if (cifActual == null || !proveidorAmbMateixEmail.get().getCif().equalsIgnoreCase(cifActual)) {
+                    return "proveidors.error.email.duplicat";
+                }
+            }
+
+            Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
+            if (usuariAmbMateixEmail.isPresent()) {
+                return "proveidors.error.email.usuari";
+            }
+        }
+
         return null;
     }
 
@@ -76,7 +96,7 @@ public class ProveidorService {
         proveidor.setAdreca(proveidorDto.getAdreca());
         proveidor.setNotes(buitANull(proveidorDto.getNotes()));
         proveidor.setTelefon(buitANull(proveidorDto.getTelefon()));
-        proveidor.setEmail(buitANull(proveidorDto.getEmail()));
+        proveidor.setEmail(buitANull(normalitzarEmail(proveidorDto.getEmail())));
         return proveidor;
     }
 
@@ -100,6 +120,10 @@ public class ProveidorService {
             return null;
         }
         return document.trim().toUpperCase().replace(" ", "");
+    }
+
+    private String normalitzarEmail(String email) {
+        return email == null ? null : email.trim().toLowerCase();
     }
 
     private boolean esDocumentValid(String document) {
