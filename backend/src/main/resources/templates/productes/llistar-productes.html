@@ -28,8 +28,8 @@
                 <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
 
                 <div class="form-card" style="margin-bottom: 24px;">
-                    <form th:action="@{/web/productes}" method="get">
-                        <div class="form-group">
+                    <form th:action="@{/web/productes}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
                             <label for="nomCerca" th:text="#{productes.nom}">Nombre</label>
                             <input type="text"
                                    id="nomCerca"
@@ -38,7 +38,7 @@
                                    th:placeholder="#{productes.cerca.nom.placeholder}">
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="flex: 1; min-width: 260px; margin-bottom: 0;">
                             <label for="descripcioCerca" th:text="#{productes.descripcio}">Notas/observaciones</label>
                             <input type="text"
                                    id="descripcioCerca"
@@ -47,48 +47,54 @@
                                    th:placeholder="#{productes.cerca.descripcio.placeholder}">
                         </div>
 
-                        <div class="actions">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <button type="submit" class="btn btn-secondary" th:text="#{productes.cerca.boto}">Buscar</button>
                         </div>
                     </form>
                 </div>
 
-                <div class="table-wrapper" th:if="${!#lists.isEmpty(productes)}">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th th:text="#{productes.id}">ID</th>
-                                <th th:text="#{productes.nom}">Nombre</th>
-                                <th th:text="#{productes.descripcio}">Notas/observaciones</th>
-                                <th th:text="#{productes.accions}">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="producte : ${productes}">
-                                <td th:text="${producte.id}"></td>
-                                <td th:text="${producte.nom}"></td>
-                                <td th:text="${producte.descripcio}"></td>
-                                <td>
-                                    <div class="actions">
-                                        <a th:href="@{/web/productes/editar/{id}(id=${producte.id})}"
-                                           class="btn btn-secondary"
-                                           th:text="#{productes.editar}">Editar</a>
-
-                                        <a th:href="@{/web/productes/eliminar/{id}(id=${producte.id})}"
-                                           class="btn btn-danger"
-                                           th:attr="onclick=|return confirm('${#messages.msg('productes.confirmar.eliminar')}');|"
-                                           th:text="#{productes.eliminar}">Eliminar</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="actions">
+                    <button type="submit" class="btn btn-secondary" th:text="#{productes.cerca.boto}">Buscar</button>
                 </div>
+                </form>
+            </div>
 
-                <div class="empty-message" th:if="${#lists.isEmpty(productes)}" th:text="#{productes.buit}">
-                    No hay productos registrados.
-                </div>
+            <div class="table-wrapper" th:if="${!#lists.isEmpty(productes)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th th:text="#{productes.id}">ID</th>
+                            <th th:text="#{productes.nom}">Nombre</th>
+                            <th th:text="#{productes.descripcio}">Notas/observaciones</th>
+                            <th th:text="#{productes.accions}">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="producte : ${productes}">
+                            <td th:text="${producte.id}"></td>
+                            <td th:text="${producte.nom}"></td>
+                            <td th:text="${producte.descripcio}"></td>
+                            <td>
+                                <div class="actions">
+                                    <a th:href="@{/web/productes/editar/{id}(id=${producte.id})}"
+                                       class="btn btn-secondary"
+                                       th:text="#{productes.editar}">Editar</a>
+
+                                    <a th:href="@{/web/productes/eliminar/{id}(id=${producte.id})}"
+                                       class="btn btn-danger"
+                                       th:attr="onclick=|return confirm('${#messages.msg('productes.confirmar.eliminar')}');|"
+                                       th:text="#{productes.eliminar}">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-message" th:if="${#lists.isEmpty(productes)}" th:text="#{productes.buit}">
+                No hay productos registrados.
             </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>
