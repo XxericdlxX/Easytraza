@@ -5,11 +5,13 @@ import cat.copernic.easytraza_backend.model.Producte;
 import cat.copernic.easytraza_backend.service.ProducteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -18,6 +20,9 @@ public class ProducteWebController {
 
     @Autowired
     private ProducteService producteService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping
     public String llistarProductes(@RequestParam(required = false) String cerca, Model model) {
@@ -36,7 +41,8 @@ public class ProducteWebController {
     @PostMapping("/guardar")
     public String guardarProducte(@Valid @ModelAttribute("producte") ProducteDto producteDto,
             BindingResult result,
-            Model model) {
+            Model model,
+            Locale locale) {
 
         if (result.hasErrors()) {
             return "productes/crear-productes";
@@ -44,7 +50,7 @@ public class ProducteWebController {
 
         String errorNegoci = producteService.validarProducte(producteDto, null);
         if (errorNegoci != null) {
-            model.addAttribute("errorNegoci", errorNegoci);
+            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
             return "productes/crear-productes";
         }
 
@@ -70,7 +76,8 @@ public class ProducteWebController {
     public String actualitzarProducte(@PathVariable Long id,
             @Valid @ModelAttribute("producte") ProducteDto producteDto,
             BindingResult result,
-            Model model) {
+            Model model,
+            Locale locale) {
 
         if (result.hasErrors()) {
             return "productes/editar-productes";
@@ -78,7 +85,7 @@ public class ProducteWebController {
 
         String errorNegoci = producteService.validarProducte(producteDto, id);
         if (errorNegoci != null) {
-            model.addAttribute("errorNegoci", errorNegoci);
+            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
             return "productes/editar-productes";
         }
 
