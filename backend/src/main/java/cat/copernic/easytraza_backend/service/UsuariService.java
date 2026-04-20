@@ -1,8 +1,10 @@
 package cat.copernic.easytraza_backend.service;
 
 import cat.copernic.easytraza_backend.dto.UsuariDto;
+import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.model.enums.Rol;
+import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class UsuariService {
 
     @Autowired
     private UsuariRepository usuariRepository;
+
+    @Autowired
+    private ProveidorRepository proveidorRepository;
 
     public List<Usuari> findAll() {
         return usuariRepository.findAll();
@@ -35,11 +40,17 @@ public class UsuariService {
 
         if (usuariExistent.isPresent()) {
             Usuari usuari = usuariExistent.get();
+
+            if (isProtectedUser(usuari)) {
+                if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
+                    usuari.setContrasenya(usuariActualitzat.getContrasenya());
+                }
+                return usuariRepository.save(usuari);
+            }
+
             usuari.setNom(usuariActualitzat.getNom());
             usuari.setCognoms(usuariActualitzat.getCognoms());
             usuari.setRol(usuariActualitzat.getRol());
-
-            // L'email és la clau funcional i no s'ha de modificar
             usuari.setEmail(usuari.getEmail());
 
             // Si a edició es deixa la contrasenya buida, es manté l'actual
@@ -75,12 +86,19 @@ public class UsuariService {
     }
 
     public String validarUsuari(UsuariDto usuariDto, Long idActual) {
-        Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmail(usuariDto.getEmail());
+        String emailNormalitzat = normalitzarEmail(usuariDto.getEmail());
+
+        Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
 
         if (usuariAmbMateixEmail.isPresent()) {
             if (idActual == null || !usuariAmbMateixEmail.get().getId().equals(idActual)) {
                 return "usuaris.error.email.duplicat";
             }
+        }
+
+        Optional<Proveidor> proveidorAmbMateixEmail = proveidorRepository.findByEmailIgnoreCase(emailNormalitzat);
+        if (proveidorAmbMateixEmail.isPresent()) {
+            return "usuaris.error.email.proveidor";
         }
 
         if (idActual == null && (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank())) {
@@ -115,7 +133,7 @@ public class UsuariService {
         usuari.setNom(usuariDto.getNom());
         usuari.setCognoms(usuariDto.getCognoms());
         usuari.setRol(usuariDto.getRol());
-        usuari.setEmail(usuariDto.getEmail());
+        usuari.setEmail(normalitzarEmail(usuariDto.getEmail()));
         usuari.setContrasenya(usuariDto.getContrasenya());
         return usuari;
     }
@@ -129,5 +147,9 @@ public class UsuariService {
         usuariDto.setEmail(usuari.getEmail());
         usuariDto.setContrasenya("");
         return usuariDto;
+    }
+
+    private String normalitzarEmail(String email) {
+        return email == null ? null : email.trim().toLowerCase();
     }
 }
