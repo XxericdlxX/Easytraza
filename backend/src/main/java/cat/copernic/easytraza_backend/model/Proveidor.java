@@ -19,17 +19,25 @@ public class Proveidor {
     @Column(nullable = false)
     private String adreca;
 
-    @Column(nullable = false)
-    private String descripcio;
+    @Column(length = 255)
+    private String notes;
+
+    @Column(length = 20)
+    private String telefon;
+
+    @Column(length = 100)
+    private String email;
 
     public Proveidor() {
     }
 
-    public Proveidor(String cif, String nom, String adreca, String descripcio) {
+    public Proveidor(String cif, String nom, String adreca, String notes, String telefon, String email) {
         this.cif = cif;
         this.nom = nom;
         this.adreca = adreca;
-        this.descripcio = descripcio;
+        this.notes = notes;
+        this.telefon = telefon;
+        this.email = email;
     }
 
     public String getCif() {
@@ -56,11 +64,27 @@ public class Proveidor {
         this.adreca = adreca;
     }
 
-    public String getDescripcio() {
-        return descripcio;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setDescripcio(String descripcio) {
-        this.descripcio = descripcio;
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getTelefon() {
+        return telefon;
+    }
+
+    public void setTelefon(String telefon) {
+        this.telefon = telefon;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
