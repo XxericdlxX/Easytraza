@@ -28,13 +28,28 @@
                 <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
 
                 <div class="form-card" style="margin-bottom: 24px;">
-                    <form th:action="@{/web/productes}" method="get" class="actions">
-                        <input type="text"
-                               name="cerca"
-                               th:value="${cerca}"
-                               th:placeholder="#{productes.cerca.placeholder}"
-                               style="flex: 1; min-width: 240px;">
-                        <button type="submit" class="btn btn-secondary" th:text="#{productes.cerca.boto}">Cercar</button>
+                    <form th:action="@{/web/productes}" method="get">
+                        <div class="form-group">
+                            <label for="nomCerca" th:text="#{productes.nom}">Nombre</label>
+                            <input type="text"
+                                   id="nomCerca"
+                                   name="nom"
+                                   th:value="${nom}"
+                                   th:placeholder="#{productes.cerca.nom.placeholder}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcioCerca" th:text="#{productes.descripcio}">Notas/observaciones</label>
+                            <input type="text"
+                                   id="descripcioCerca"
+                                   name="descripcio"
+                                   th:value="${descripcio}"
+                                   th:placeholder="#{productes.cerca.descripcio.placeholder}">
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit" class="btn btn-secondary" th:text="#{productes.cerca.boto}">Buscar</button>
+                        </div>
                     </form>
                 </div>
 
