@@ -32,6 +32,7 @@ public class ProducteService {
 
         if (producteExistent.isPresent()) {
             Producte producte = producteExistent.get();
+            producte.setNom(producteActualitzat.getNom());
             producte.setDescripcio(producteActualitzat.getDescripcio());
             return producteRepository.save(producte);
         } else {
@@ -43,21 +44,22 @@ public class ProducteService {
         producteRepository.deleteById(id);
     }
 
-    public List<Producte> buscarPerDescripcio(String text) {
+    public List<Producte> buscar(String text) {
         if (text == null || text.isBlank()) {
             return findAll();
         }
-        return producteRepository.findByDescripcioContainingIgnoreCase(text.trim());
+        String cerca = text.trim();
+        return producteRepository.findByNomContainingIgnoreCaseOrDescripcioContainingIgnoreCase(cerca, cerca);
     }
 
     public String validarProducte(ProducteDto producteDto, Long idActual) {
-        String descripcioNormalitzada = normalitzarDescripcio(producteDto.getDescripcio());
+        String nomNormalitzat = normalitzar(producteDto.getNom());
 
-        Optional<Producte> producteAmbMateixaDescripcio = producteRepository.findByDescripcio(descripcioNormalitzada);
+        Optional<Producte> producteAmbMateixNom = producteRepository.findByNomIgnoreCase(nomNormalitzat);
 
-        if (producteAmbMateixaDescripcio.isPresent()) {
-            if (idActual == null || !producteAmbMateixaDescripcio.get().getId().equals(idActual)) {
-                return "productes.error.descripcio.duplicada";
+        if (producteAmbMateixNom.isPresent()) {
+            if (idActual == null || !producteAmbMateixNom.get().getId().equals(idActual)) {
+                return "productes.error.nom.duplicat";
             }
         }
 
@@ -67,18 +69,20 @@ public class ProducteService {
     public Producte convertirDtoAEntity(ProducteDto producteDto) {
         Producte producte = new Producte();
         producte.setId(producteDto.getId());
-        producte.setDescripcio(normalitzarDescripcio(producteDto.getDescripcio()));
+        producte.setNom(normalitzar(producteDto.getNom()));
+        producte.setDescripcio(normalitzar(producteDto.getDescripcio()));
         return producte;
     }
 
     public ProducteDto convertirEntityADto(Producte producte) {
         ProducteDto producteDto = new ProducteDto();
         producteDto.setId(producte.getId());
+        producteDto.setNom(producte.getNom());
         producteDto.setDescripcio(producte.getDescripcio());
         return producteDto;
     }
 
-    private String normalitzarDescripcio(String descripcio) {
-        return descripcio == null ? null : descripcio.trim();
+    private String normalitzar(String text) {
+        return text == null ? null : text.trim();
     }
 }
