@@ -24,14 +24,18 @@
                     <a th:href="@{/web/proveidors/crear}" class="btn btn-primary" th:text="#{proveidors.afegir}">Añadir proveedor</a>
                 </div>
 
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
                 <div class="table-wrapper" th:if="${!#lists.isEmpty(proveidors)}">
-                    <table>
+                    <table class="proveidors-table">
                         <thead>
                             <tr>
                                 <th th:text="#{proveidors.id}">CIF/NIF/NIE</th>
                                 <th th:text="#{proveidors.nom}">Nombre</th>
                                 <th th:text="#{proveidors.adreca}">Dirección</th>
-                                <th th:text="#{proveidors.descripcio}">Descripción</th>
+                                <th th:text="#{proveidors.notes}">Notas/observaciones</th>
+                                <th th:text="#{proveidors.telefon}">Teléfono</th>
+                                <th th:text="#{proveidors.email}">Correo electrónico</th>
                                 <th th:text="#{proveidors.accions}">Acciones</th>
                             </tr>
                         </thead>
@@ -40,11 +44,18 @@
                                 <td th:text="${proveidor.cif}"></td>
                                 <td th:text="${proveidor.nom}"></td>
                                 <td th:text="${proveidor.adreca}"></td>
-                                <td th:text="${proveidor.descripcio}"></td>
+                                <td th:text="${proveidor.notes != null && !proveidor.notes.isBlank() ? proveidor.notes : '-'}"></td>
+                                <td th:text="${proveidor.telefon != null && !proveidor.telefon.isBlank() ? proveidor.telefon : '-'}"></td>
+                                <td th:text="${proveidor.email != null && !proveidor.email.isBlank() ? proveidor.email : '-'}"></td>
                                 <td>
-                                    <div class="actions">
-                                        <a th:href="@{/web/proveidors/editar/{cif}(cif=${proveidor.cif})}" class="btn btn-secondary" th:text="#{proveidors.editar}">Editar</a>
-                                        <a th:href="@{/web/proveidors/eliminar/{cif}(cif=${proveidor.cif})}" class="btn btn-danger" onclick="return confirm('Segur que vols eliminar aquest proveïdor?');" th:text="#{proveidors.eliminar}">Eliminar</a>
+                                    <div class="actions actions-table">
+                                        <a th:href="@{/web/proveidors/editar/{cif}(cif=${proveidor.cif})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{proveidors.editar}">Editar</a>
+                                        <a th:href="@{/web/proveidors/eliminar/{cif}(cif=${proveidor.cif})}"
+                                           class="btn btn-danger"
+                                           th:attr="onclick=|return confirm('${#messages.msg('proveidors.confirmar.eliminar')}');|"
+                                           th:text="#{proveidors.eliminar}">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>

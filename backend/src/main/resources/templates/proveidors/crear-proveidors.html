@@ -21,32 +21,44 @@
             </div>
 
             <div class="form-card">
-                <form th:action="@{/web/proveidors/guardar}" th:object="${proveidor}" method="post">
+                <form th:action="@{/web/proveidors/guardar}" th:object="${proveidor}" method="post" novalidate>
 
                     <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
 
                     <div class="form-group">
                         <label for="cif"><span th:text="#{proveidors.cif}">CIF/NIF/NIE</span> <span class="required">*</span></label>
-                        <input type="text" id="cif" th:field="*{cif}" required>
+                        <input type="text" id="cif" th:field="*{cif}">
                         <div class="field-error" th:if="${#fields.hasErrors('cif')}" th:errors="*{cif}"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="nom"><span th:text="#{proveidors.nom}">Nombre</span> <span class="required">*</span></label>
-                        <input type="text" id="nom" th:field="*{nom}" required>
+                        <input type="text" id="nom" th:field="*{nom}">
                         <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="adreca"><span th:text="#{proveidors.adreca}">Dirección</span> <span class="required">*</span></label>
-                        <input type="text" id="adreca" th:field="*{adreca}" required>
+                        <input type="text" id="adreca" th:field="*{adreca}">
                         <div class="field-error" th:if="${#fields.hasErrors('adreca')}" th:errors="*{adreca}"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="descripcio"><span th:text="#{proveidors.descripcio}">Descripción</span> <span class="required">*</span></label>
-                        <input type="text" id="descripcio" th:field="*{descripcio}" required>
-                        <div class="field-error" th:if="${#fields.hasErrors('descripcio')}" th:errors="*{descripcio}"></div>
+                        <label for="notes" th:text="#{proveidors.notes}">Notes/observacions</label>
+                        <input type="text" id="notes" th:field="*{notes}">
+                        <div class="field-error" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefon" th:text="#{proveidors.telefon}">Teléfono</label>
+                        <input type="text" id="telefon" th:field="*{telefon}">
+                        <div class="field-error" th:if="${#fields.hasErrors('telefon')}" th:errors="*{telefon}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" th:text="#{proveidors.email}">Correo electrónico</label>
+                        <input type="email" id="email" th:field="*{email}">
+                        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                     </div>
 
                     <div class="actions">
