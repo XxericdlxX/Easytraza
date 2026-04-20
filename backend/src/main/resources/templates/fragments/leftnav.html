@@ -18,8 +18,14 @@
 
                 <a th:href="@{/web/materies-primeres}"
                    th:classappend="${currentPath == '/web/materies-primeres'} ? ' active' : ''">
-                    <span class="leftnav-icon">🌾</span>
+                    <span class="leftnav-icon">🧂</span>
                     <span th:text="#{nav.materies}">Materias primas</span>
+                </a>
+
+                <a th:href="@{/web/productes}"
+                   th:classappend="${currentPath == '/web/productes'} ? ' active' : ''">
+                    <span class="leftnav-icon">🥖</span>
+                    <span th:text="#{nav.productes}">Productos</span>
                 </a>
 
                 <a th:href="@{/web/proveidors}"
