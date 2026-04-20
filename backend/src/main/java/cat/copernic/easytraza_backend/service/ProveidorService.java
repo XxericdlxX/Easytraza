@@ -34,7 +34,9 @@ public class ProveidorService {
             Proveidor proveidor = proveidorExistent.get();
             proveidor.setNom(proveidorActualitzat.getNom());
             proveidor.setAdreca(proveidorActualitzat.getAdreca());
-            proveidor.setDescripcio(proveidorActualitzat.getDescripcio());
+            proveidor.setNotes(proveidorActualitzat.getNotes());
+            proveidor.setTelefon(proveidorActualitzat.getTelefon());
+            proveidor.setEmail(proveidorActualitzat.getEmail());
             return proveidorRepository.save(proveidor);
         } else {
             return null;
@@ -49,18 +51,18 @@ public class ProveidorService {
         String document = normalitzarDocument(proveidorDto.getCif());
 
         if (document == null || document.isBlank()) {
-            return "El CIF/NIF/NIE és obligatori";
+            return "proveidors.cif.obligatori";
         }
 
         if (!esDocumentValid(document)) {
-            return "El CIF/NIF/NIE no té un format vàlid";
+            return "proveidors.cif.invalid";
         }
 
         Optional<Proveidor> proveidorAmbMateixDocument = proveidorRepository.findById(document);
 
         if (proveidorAmbMateixDocument.isPresent()) {
             if (cifActual == null || !proveidorAmbMateixDocument.get().getCif().equalsIgnoreCase(cifActual)) {
-                return "Ja existeix un proveïdor amb aquest CIF/NIF/NIE";
+                return "proveidors.error.cif.duplicat";
             }
         }
 
@@ -72,7 +74,9 @@ public class ProveidorService {
         proveidor.setCif(normalitzarDocument(proveidorDto.getCif()));
         proveidor.setNom(proveidorDto.getNom());
         proveidor.setAdreca(proveidorDto.getAdreca());
-        proveidor.setDescripcio(proveidorDto.getDescripcio());
+        proveidor.setNotes(buitANull(proveidorDto.getNotes()));
+        proveidor.setTelefon(buitANull(proveidorDto.getTelefon()));
+        proveidor.setEmail(buitANull(proveidorDto.getEmail()));
         return proveidor;
     }
 
@@ -81,8 +85,14 @@ public class ProveidorService {
         proveidorDto.setCif(proveidor.getCif());
         proveidorDto.setNom(proveidor.getNom());
         proveidorDto.setAdreca(proveidor.getAdreca());
-        proveidorDto.setDescripcio(proveidor.getDescripcio());
+        proveidorDto.setNotes(proveidor.getNotes());
+        proveidorDto.setTelefon(proveidor.getTelefon());
+        proveidorDto.setEmail(proveidor.getEmail());
         return proveidorDto;
+    }
+
+    private String buitANull(String valor) {
+        return valor == null || valor.isBlank() ? null : valor.trim();
     }
 
     private String normalitzarDocument(String document) {
