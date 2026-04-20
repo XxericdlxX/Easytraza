@@ -49,7 +49,7 @@ public class MateriaPrimaService {
 
         if (materiaAmbMateixNom.isPresent()) {
             if (idActual == null || !materiaAmbMateixNom.get().getId().equals(idActual)) {
-                return "Ja existeix una matèria primera amb aquest nom";
+                return "materies.error.nom.duplicat";
             }
         }
 

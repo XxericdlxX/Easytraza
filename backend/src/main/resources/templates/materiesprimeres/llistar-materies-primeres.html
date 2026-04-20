@@ -24,6 +24,8 @@
                     <a th:href="@{/web/materies-primeres/crear}" class="btn btn-primary" th:text="#{materies.afegir}">Añadir materia prima</a>
                 </div>
 
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
                 <div class="table-wrapper" th:if="${!#lists.isEmpty(materiesPrimeres)}">
                     <table>
                         <thead>
@@ -41,8 +43,13 @@
                                 <td th:text="${materiaPrima.descripcio}"></td>
                                 <td>
                                     <div class="actions">
-                                        <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id})}" class="btn btn-secondary" th:text="#{materies.editar}">Editar</a>
-                                        <a th:href="@{/web/materies-primeres/eliminar/{id}(id=${materiaPrima.id})}" class="btn btn-danger" onclick="return confirm('Segur que vols eliminar aquesta matèria primera?');" th:text="#{materies.eliminar}">Eliminar</a>
+                                        <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{materies.editar}">Editar</a>
+                                        <a th:href="@{/web/materies-primeres/eliminar/{id}(id=${materiaPrima.id})}"
+                                           class="btn btn-danger"
+                                           th:attr="onclick=|return confirm('${#messages.msg('materies.confirmar.eliminar')}');|"
+                                           th:text="#{materies.eliminar}">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>
