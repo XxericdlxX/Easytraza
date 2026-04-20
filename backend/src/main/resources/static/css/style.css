@@ -217,6 +217,16 @@ textarea[readonly] {
     font-weight: bold;
 }
 
+.success-message {
+    background-color: #EAF4E4;
+    color: #3E6B2F;
+    border: 1px solid #CFE3C6;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-weight: bold;
+}
+
 .field-error {
     color: #B3261E;
     font-size: 13px;
@@ -300,6 +310,10 @@ textarea[readonly] {
 
 .materials-card {
     background-color: #FBF3DD;
+}
+
+.products-card {
+    background-color: #F3E8D7;
 }
 
 .providers-card {
