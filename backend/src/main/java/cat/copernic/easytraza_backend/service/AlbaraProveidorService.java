@@ -14,6 +14,7 @@ import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,21 +46,90 @@ public class AlbaraProveidorService {
         return albaraProveidorRepository.save(albaraProveidor);
     }
 
+    public AlbaraProveidor update(Long id, AlbaraProveidor albaraActualitzat) {
+        Optional<AlbaraProveidor> existentOpt = albaraProveidorRepository.findById(id);
+
+        if (existentOpt.isEmpty()) {
+            return null;
+        }
+
+        AlbaraProveidor existent = existentOpt.get();
+        existent.setDataRecepcio(albaraActualitzat.getDataRecepcio());
+        existent.setProveidor(albaraActualitzat.getProveidor());
+
+        existent.getLots().clear();
+        for (LotProveidor lot : albaraActualitzat.getLots()) {
+            lot.setId(null);
+            lot.setAlbaraProveidor(existent);
+            existent.getLots().add(lot);
+        }
+
+        return albaraProveidorRepository.save(existent);
+    }
+
     public void deleteById(Long id) {
         albaraProveidorRepository.deleteById(id);
     }
 
-    public String validarAlbara(AlbaraProveidorDto dto) {
+    public List<AlbaraProveidor> buscar(String proveidorCif, LocalDate dataRecepcio) {
+        String cif = normalitzarTextCerca(proveidorCif);
+
+        if (cif.isEmpty() && dataRecepcio == null) {
+            return findAll();
+        }
+
+        if (!cif.isEmpty() && dataRecepcio != null) {
+            return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCaseAndDataRecepcio(cif, dataRecepcio);
+        }
+
+        if (!cif.isEmpty()) {
+            return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCase(cif);
+        }
+
+        return albaraProveidorRepository.findByDataRecepcio(dataRecepcio);
+    }
+
+    public String validarAlbara(AlbaraProveidorDto dto, Long idActual) {
+        if (dto.getDataRecepcio() == null) {
+            return "albara.proveidor.data.obligatoria";
+        }
+
+        if (dto.getProveidorCif() == null || dto.getProveidorCif().isBlank()) {
+            return "albara.proveidor.proveidor.obligatori";
+        }
+
         if (dto.getLots() == null || dto.getLots().isEmpty()) {
             return "albara.proveidor.lots.obligatori";
         }
 
         for (LotProveidorDto lotDto : dto.getLots()) {
-            Optional<LotProveidor> lotExistent = lotProveidorRepository
-                    .findByProveidor_CifAndCodiLotIgnoreCase(dto.getProveidorCif(), lotDto.getCodiLot());
+            if (lotDto.getCodiLot() == null || lotDto.getCodiLot().isBlank()) {
+                return "lot.proveidor.codi.obligatori";
+            }
+
+            if (lotDto.getQuantitat() == null || lotDto.getQuantitat() <= 0) {
+                return "lot.proveidor.quantitat.min";
+            }
+
+            if (lotDto.getMateriaPrimaId() == null) {
+                return "lot.proveidor.materia.obligatoria";
+            }
+
+            Optional<LotProveidor> lotExistent
+                    = lotProveidorRepository.findByProveidor_CifAndCodiLotIgnoreCase(
+                            dto.getProveidorCif(),
+                            lotDto.getCodiLot().trim()
+                    );
 
             if (lotExistent.isPresent()) {
-                return "lot.proveidor.codi.duplicat";
+                boolean esMateixLotEnMateixAlbara
+                        = idActual != null
+                        && lotExistent.get().getAlbaraProveidor() != null
+                        && idActual.equals(lotExistent.get().getAlbaraProveidor().getId());
+
+                if (!esMateixLotEnMateixAlbara) {
+                    return "lot.proveidor.codi.duplicat";
+                }
             }
         }
 
@@ -82,9 +152,11 @@ public class AlbaraProveidorService {
 
                 LotProveidor lot = new LotProveidor();
                 lot.setId(lotDto.getId());
-                lot.setCodiLot(lotDto.getCodiLot() != null ? lotDto.getCodiLot().trim() : null);
+                lot.setCodiLot(normalitzar(lotDto.getCodiLot()));
                 lot.setQuantitat(lotDto.getQuantitat());
                 lot.setEstat(EstatLot.EN_ESTOC);
+                lot.setDataObertura(null);
+                lot.setDataAcabament(null);
                 lot.setMateriaPrima(materiaPrima);
                 lot.setProveidor(proveidor);
                 lot.setAlbaraProveidor(albara);
@@ -117,5 +189,13 @@ public class AlbaraProveidorService {
 
         dto.setLots(lotsDto);
         return dto;
+    }
+
+    private String normalitzar(String text) {
+        return text == null ? null : text.trim();
+    }
+
+    private String normalitzarTextCerca(String text) {
+        return text == null ? "" : text.trim();
     }
 }
