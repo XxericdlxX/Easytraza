@@ -34,7 +34,7 @@
                                th:value="${cerca}"
                                th:placeholder="#{productes.cerca.placeholder}"
                                style="flex: 1; min-width: 240px;">
-                        <button type="submit" class="btn btn-secondary" th:text="#{productes.cerca.boto}">Buscar</button>
+                        <button type="submit" class="btn btn-secondary" th:text="#{productes.cerca.boto}">Cercar</button>
                     </form>
                 </div>
 
@@ -43,13 +43,15 @@
                         <thead>
                             <tr>
                                 <th th:text="#{productes.id}">ID</th>
-                                <th th:text="#{productes.descripcio}">Descripción</th>
+                                <th th:text="#{productes.nom}">Nombre</th>
+                                <th th:text="#{productes.descripcio}">Notas/observaciones</th>
                                 <th th:text="#{productes.accions}">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="producte : ${productes}">
                                 <td th:text="${producte.id}"></td>
+                                <td th:text="${producte.nom}"></td>
                                 <td th:text="${producte.descripcio}"></td>
                                 <td>
                                     <div class="actions">
