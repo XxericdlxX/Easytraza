@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{productes.editar}">Editar producto</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{productes.editar}">Editar producto</h1>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/web/productes/editar/{id}(id=${producte.id},lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/productes/editar/{id}(id=${producte.id},lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <form th:action="@{/web/productes/actualitzar/{id}(id=${producte.id})}" th:object="${producte}" method="post" novalidate>
+
+                    <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                    <div class="form-group">
+                        <label for="descripcio">
+                            <span th:text="#{productes.descripcio}">Descripción</span> <span class="required">*</span>
+                        </label>
+                        <input type="text" id="descripcio" th:field="*{descripcio}">
+                        <div class="field-error" th:if="${#fields.hasErrors('descripcio')}" th:errors="*{descripcio}"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{productes.guardar.canvis}">Guardar cambios</button>
+                        <a th:href="@{/web/productes}" class="btn btn-secondary" th:text="#{productes.tornar}">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
