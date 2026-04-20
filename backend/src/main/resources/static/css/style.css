@@ -162,6 +162,14 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.18);
 }
 
+input[readonly],
+select[disabled],
+textarea[readonly] {
+    background-color: #F6F1EA;
+    color: #6E5848;
+    cursor: not-allowed;
+}
+
 .actions {
     display: flex;
     gap: 10px;
@@ -215,55 +223,7 @@ textarea:focus {
     margin-top: 6px;
 }
 
-.topnav {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    width: 100%;
-    background-color: rgba(255, 253, 249, 0.96);
-    border-bottom: 1px solid #D8C8B8;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 14px 28px;
-    box-shadow: 0 4px 12px rgba(74, 46, 31, 0.08);
-}
-
-.topnav-left,
-.topnav-center,
-.topnav-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #8B5E3C;
-    font-weight: bold;
-    font-size: 20px;
-}
-
-.brand img {
-    height: 42px;
-    width: auto;
-}
-
-.topnav-center a {
-    text-decoration: none;
-    color: #4A2E1F;
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 10px;
-}
-
-.topnav-center a:hover {
-    background-color: #F4EBDD;
-}
+/* ===== Home ===== */
 
 .home-body {
     min-height: 100vh;
@@ -366,9 +326,89 @@ textarea:focus {
     color: #4A2E1F;
 }
 
-.page-with-nav {
-    padding-top: 18px;
+/* ===== Navegació lateral ===== */
+
+.side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100vh;
+    background-color: #FFFDF9;
+    border-right: 1px solid #D8C8B8;
+    box-shadow: 4px 0 12px rgba(74, 46, 31, 0.08);
+    padding: 24px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    z-index: 1000;
 }
+
+.side-nav-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #8B5E3C;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.brand img {
+    height: 42px;
+    width: auto;
+}
+
+.side-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.side-nav-links a {
+    text-decoration: none;
+    color: #4A2E1F;
+    font-weight: bold;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background-color: transparent;
+    transition: 0.2s ease;
+}
+
+.side-nav-links a:hover {
+    background-color: #F4EBDD;
+}
+
+.side-nav-links a.active {
+    background-color: #D9A441;
+    color: #4A2E1F;
+}
+
+.side-nav-lang {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.page-with-nav {
+    padding: 24px 24px 24px 250px;
+}
+
+.page-with-nav .container {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+}
+
+/* ===== Capçalera de llistats ===== */
 
 .list-header {
     display: flex;
@@ -436,17 +476,23 @@ textarea:focus {
 /* ===== Responsive ===== */
 
 @media (max-width: 900px) {
-    .topnav {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 16px;
+    .side-nav {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #D8C8B8;
+        box-shadow: 0 4px 12px rgba(74, 46, 31, 0.08);
     }
 
-    .topnav-left,
-    .topnav-center,
-    .topnav-right {
-        justify-content: center;
+    .side-nav-links {
+        flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .page-with-nav {
+        padding: 18px 0 0 0;
     }
 
     .home-hero h1 {
