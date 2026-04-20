@@ -44,12 +44,18 @@ public class ProducteService {
         producteRepository.deleteById(id);
     }
 
-    public List<Producte> buscar(String text) {
-        if (text == null || text.isBlank()) {
+    public List<Producte> buscar(String nom, String descripcio) {
+        String nomNormalitzat = normalitzarTextCerca(nom);
+        String descripcioNormalitzada = normalitzarTextCerca(descripcio);
+
+        if (nomNormalitzat.isEmpty() && descripcioNormalitzada.isEmpty()) {
             return findAll();
         }
-        String cerca = text.trim();
-        return producteRepository.findByNomContainingIgnoreCaseOrDescripcioContainingIgnoreCase(cerca, cerca);
+
+        return producteRepository.findByNomContainingIgnoreCaseAndDescripcioContainingIgnoreCase(
+                nomNormalitzat,
+                descripcioNormalitzada
+        );
     }
 
     public String validarProducte(ProducteDto producteDto, Long idActual) {
@@ -84,5 +90,9 @@ public class ProducteService {
 
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
+    }
+
+    private String normalitzarTextCerca(String text) {
+        return text == null ? "" : text.trim();
     }
 }
