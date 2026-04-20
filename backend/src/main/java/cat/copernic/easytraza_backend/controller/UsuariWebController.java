@@ -71,7 +71,9 @@ public class UsuariWebController {
         Optional<Usuari> usuari = usuariService.findById(id);
 
         if (usuari.isPresent()) {
-            model.addAttribute("usuari", usuariService.convertirEntityADto(usuari.get()));
+            Usuari usuariEntity = usuari.get();
+            model.addAttribute("usuari", usuariService.convertirEntityADto(usuariEntity));
+            model.addAttribute("superadminProtegit", usuariService.isProtectedUser(usuariEntity));
             return "usuaris/editar-usuaris";
         } else {
             redirectAttributes.addFlashAttribute(
@@ -89,6 +91,10 @@ public class UsuariWebController {
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
+
+        Optional<Usuari> usuariExistent = usuariService.findById(id);
+        boolean superadminProtegit = usuariExistent.map(usuariService::isProtectedUser).orElse(false);
+        model.addAttribute("superadminProtegit", superadminProtegit);
 
         if (result.hasErrors()) {
             return "usuaris/editar-usuaris";
