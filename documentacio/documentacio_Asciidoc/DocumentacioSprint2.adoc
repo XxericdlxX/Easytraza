@@ -29,7 +29,7 @@ image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López |Vaig corregir dos CRUD's materies primeres i usuaris |Acabaré de corregir errors visuals i el CRUD de proveïdors i començaré els arxius de l'Sprint2 | - | 6h 
 |===
 
 === DIA 3 Dimarts - 21/04/2026
