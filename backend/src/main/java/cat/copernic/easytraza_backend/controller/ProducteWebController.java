@@ -4,6 +4,8 @@ import cat.copernic.easytraza_backend.dto.ProducteDto;
 import cat.copernic.easytraza_backend.model.Producte;
 import cat.copernic.easytraza_backend.service.ProducteService;
 import jakarta.validation.Valid;
+import java.util.Locale;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,9 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Locale;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/productes")
@@ -28,7 +27,7 @@ public class ProducteWebController {
 
     @GetMapping
     public String llistarProductes(@RequestParam(required = false) String cerca, Model model) {
-        model.addAttribute("productes", producteService.buscarPerDescripcio(cerca));
+        model.addAttribute("productes", producteService.buscar(cerca));
         model.addAttribute("cerca", cerca);
         model.addAttribute("currentPath", "/web/productes");
         return "productes/llistar-productes";
