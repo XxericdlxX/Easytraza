@@ -26,9 +26,12 @@ public class ProducteWebController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String llistarProductes(@RequestParam(required = false) String cerca, Model model) {
-        model.addAttribute("productes", producteService.buscar(cerca));
-        model.addAttribute("cerca", cerca);
+    public String llistarProductes(@RequestParam(required = false) String nom,
+            @RequestParam(required = false) String descripcio,
+            Model model) {
+        model.addAttribute("productes", producteService.buscar(nom, descripcio));
+        model.addAttribute("nom", nom);
+        model.addAttribute("descripcio", descripcio);
         model.addAttribute("currentPath", "/web/productes");
         return "productes/llistar-productes";
     }
