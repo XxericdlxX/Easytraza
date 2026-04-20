@@ -1,6 +1,8 @@
 package cat.copernic.easytraza_backend.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ProveidorDto {
@@ -17,18 +19,30 @@ public class ProveidorDto {
     @Size(max = 255, message = "{proveidors.adreca.max}")
     private String adreca;
 
-    @NotBlank(message = "{proveidors.descripcio.obligatoria}")
-    @Size(max = 255, message = "{proveidors.descripcio.max}")
-    private String descripcio;
+    @Size(max = 255, message = "{proveidors.notes.max}")
+    private String notes;
+
+    @Size(max = 20, message = "{proveidors.telefon.max}")
+    @Pattern(
+            regexp = "^$|^[+0-9 ()-]{7,20}$",
+            message = "{proveidors.telefon.invalid}"
+    )
+    private String telefon;
+
+    @Size(max = 100, message = "{proveidors.email.max}")
+    @Email(message = "{proveidors.email.invalid}")
+    private String email;
 
     public ProveidorDto() {
     }
 
-    public ProveidorDto(String cif, String nom, String adreca, String descripcio) {
+    public ProveidorDto(String cif, String nom, String adreca, String notes, String telefon, String email) {
         this.cif = cif;
         this.nom = nom;
         this.adreca = adreca;
-        this.descripcio = descripcio;
+        this.notes = notes;
+        this.telefon = telefon;
+        this.email = email;
     }
 
     public String getCif() {
@@ -55,11 +69,27 @@ public class ProveidorDto {
         this.adreca = adreca;
     }
 
-    public String getDescripcio() {
-        return descripcio;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setDescripcio(String descripcio) {
-        this.descripcio = descripcio;
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getTelefon() {
+        return telefon;
+    }
+
+    public void setTelefon(String telefon) {
+        this.telefon = telefon;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
