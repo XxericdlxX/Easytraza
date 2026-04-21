@@ -15,10 +15,9 @@ public class AlbaraProveidorDto {
     @NotNull(message = "{albara.proveidor.proveidor.obligatori}")
     private String proveidorCif;
 
-    private List<LotProveidorDto> lots = new ArrayList<>();
+    private String usuariReceptorNom;
 
-    public AlbaraProveidorDto() {
-    }
+    private List<LotProveidorDto> lots = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -42,6 +41,14 @@ public class AlbaraProveidorDto {
 
     public void setProveidorCif(String proveidorCif) {
         this.proveidorCif = proveidorCif;
+    }
+
+    public String getUsuariReceptorNom() {
+        return usuariReceptorNom;
+    }
+
+    public void setUsuariReceptorNom(String usuariReceptorNom) {
+        this.usuariReceptorNom = usuariReceptorNom;
     }
 
     public List<LotProveidorDto> getLots() {
