@@ -320,6 +320,10 @@ textarea[readonly] {
     background-color: #EEF5E8;
 }
 
+.delivery-notes-card {
+    background-color: #EDE7F6;
+}
+
 .home-card-image,
 .home-card-title {
     position: relative;
