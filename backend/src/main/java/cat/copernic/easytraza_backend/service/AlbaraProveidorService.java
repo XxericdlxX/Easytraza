@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class AlbaraProveidorService {
         return albaraProveidorRepository.save(albaraProveidor);
     }
 
+    @Transactional
     public AlbaraProveidor update(Long id, AlbaraProveidor albaraActualitzat) {
         Optional<AlbaraProveidor> existentOpt = albaraProveidorRepository.findById(id);
 
@@ -90,6 +92,7 @@ public class AlbaraProveidorService {
         }
 
         existent.getLots().clear();
+        albaraProveidorRepository.flush();
 
         for (LotProveidor lot : albaraActualitzat.getLots()) {
             lot.setId(null);
@@ -97,7 +100,7 @@ public class AlbaraProveidorService {
             existent.getLots().add(lot);
         }
 
-        return albaraProveidorRepository.save(existent);
+        return albaraProveidorRepository.saveAndFlush(existent);
     }
 
     public void deleteById(Long id) {
@@ -238,6 +241,7 @@ public class AlbaraProveidorService {
                 valids.add(lot);
             }
         }
+
         return valids;
     }
 
