@@ -8,82 +8,163 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body>
-        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
-
-        <div class="page-with-nav">
-            <div class="container">
-                <div class="header-actions">
-                    <div class="logo-title">
-                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
-                        <h1 th:text="#{albara.proveidor.crear}">Crear albarán de proveedor</h1>
-                    </div>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{albara.proveidor.crear}">Crear albarán de proveedor</h1>
                 </div>
+            </div>
 
-                <div class="form-card">
-                    <form th:action="@{/web/albarans-proveidor/guardar}" th:object="${albara}" method="post" novalidate>
+            <div class="form-card">
+                <form th:action="@{/web/albarans-proveidor/guardar}" th:object="${albara}" method="post" novalidate>
+                    <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
 
-                        <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+                    <div class="form-group">
+                        <label for="dataRecepcio">
+                            <span th:text="#{albara.proveidor.data}">Fecha de recepción</span> <span class="required">*</span>
+                        </label>
+                        <input type="date" id="dataRecepcio" th:field="*{dataRecepcio}">
+                    </div>
 
-                        <div class="form-group">
-                            <label for="dataRecepcio">
-                                <span th:text="#{albara.proveidor.data}">Fecha de recepción</span> <span class="required">*</span>
-                            </label>
-                            <input type="date" id="dataRecepcio" th:field="*{dataRecepcio}">
-                            <div class="field-error" th:if="${#fields.hasErrors('dataRecepcio')}" th:errors="*{dataRecepcio}"></div>
-                        </div>
+                    <div class="form-group">
+                        <label for="proveidorCif">
+                            <span th:text="#{albara.proveidor.proveidor}">Proveedor</span> <span class="required">*</span>
+                        </label>
+                        <select id="proveidorCif" th:field="*{proveidorCif}">
+                            <option value="">--</option>
+                            <option th:each="proveidor : ${proveidors}"
+                                    th:value="${proveidor.cif}"
+                                    th:text="${proveidor.nom} + ' (' + proveidor.cif + ')'">
+                            </option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="proveidorCif">
-                                <span th:text="#{albara.proveidor.proveidor}">Proveedor</span> <span class="required">*</span>
-                            </label>
-                            <select id="proveidorCif" th:field="*{proveidorCif}">
-                                <option value="">--</option>
-                                <option th:each="proveidor : ${proveidors}"
-                                        th:value="${proveidor.cif}"
-                                        th:text="${proveidor.nom} + ' (' + proveidor.cif + ')'">
-                                </option>
-                            </select>
-                            <div class="field-error" th:if="${#fields.hasErrors('proveidorCif')}" th:errors="*{proveidorCif}"></div>
-                        </div>
-
-                        <div th:each="lot, stat : *{lots}" class="form-card" style="margin-top: 20px;">
-                            <h3 th:text="#{lot.proveidor.titol} + ' ' + ${stat.index + 1}">Lote 1</h3>
+                    <div id="lots-container">
+                        <div class="form-card lot-card" th:each="lot, stat : *{lots}" style="margin-top: 20px;">
+                            <div class="header-actions" style="margin-bottom: 12px;">
+                                <h3 th:text="#{lot.proveidor.titol} + ' ' + ${stat.index + 1}">Lote 1</h3>
+                                <button type="button" class="btn btn-danger remove-lot-btn">Eliminar lote</button>
+                            </div>
 
                             <div class="form-group">
                                 <label>
-                                    <span th:text="#{lot.proveidor.codi}">Código de lote</span> <span class="required">*</span>
+                                    <span th:text="#{lot.proveidor.codi}">Código/identificador de lote</span> <span class="required">*</span>
                                 </label>
-                                <input type="text" th:field="*{lots[__${stat.index}__].codiLot}">
+                                <input type="text" th:name="${'lots[' + stat.index + '].codiLot'}" th:value="${lot.codiLot}">
                             </div>
 
                             <div class="form-group">
                                 <label>
                                     <span th:text="#{lot.proveidor.quantitat}">Cantidad</span> <span class="required">*</span>
                                 </label>
-                                <input type="number" min="1" th:field="*{lots[__${stat.index}__].quantitat}">
+                                <input type="number" min="1" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
                             </div>
 
                             <div class="form-group">
                                 <label>
                                     <span th:text="#{lot.proveidor.materia}">Materia prima</span> <span class="required">*</span>
                                 </label>
-                                <select th:field="*{lots[__${stat.index}__].materiaPrimaId}">
+                                <select th:name="${'lots[' + stat.index + '].materiaPrimaId'}">
                                     <option value="">--</option>
                                     <option th:each="materia : ${materiesPrimeres}"
                                             th:value="${materia.id}"
+                                            th:selected="${lot.materiaPrimaId == materia.id}"
                                             th:text="${materia.nom}">
                                     </option>
                                 </select>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="actions" style="margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary" th:text="#{albara.proveidor.guardar}">Guardar</button>
-                            <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">Volver</a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="actions" style="margin-top: 20px;">
+                        <button type="button" id="add-lot-btn" class="btn btn-accent">Añadir lote</button>
+                    </div>
+
+                    <div class="actions" style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" th:text="#{albara.proveidor.guardar}">Guardar</button>
+                        <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">Volver</a>
+                    </div>
+                </form>
             </div>
         </div>
+
+        <template id="lot-template">
+            <div class="form-card lot-card" style="margin-top: 20px;">
+                <div class="header-actions" style="margin-bottom: 12px;">
+                    <h3 class="lot-title">Lote</h3>
+                    <button type="button" class="btn btn-danger remove-lot-btn">Eliminar lote</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Código/identificador de lote <span class="required">*</span></label>
+                    <input type="text" data-field="codiLot">
+                </div>
+
+                <div class="form-group">
+                    <label>Cantidad <span class="required">*</span></label>
+                    <input type="number" min="1" data-field="quantitat">
+                </div>
+
+                <div class="form-group">
+                    <label>Materia prima <span class="required">*</span></label>
+                    <select data-field="materiaPrimaId">
+                        <option value="">--</option>
+                        <option th:each="materia : ${materiesPrimeres}"
+                                th:value="${materia.id}"
+                                th:text="${materia.nom}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </template>
+
+        <script>
+            const lotsContainer = document.getElementById('lots-container');
+            const addLotBtn = document.getElementById('add-lot-btn');
+            const lotTemplate = document.getElementById('lot-template');
+
+            function refreshLotIndexes() {
+                const cards = lotsContainer.querySelectorAll('.lot-card');
+                cards.forEach((card, index) => {
+                    const title = card.querySelector('.lot-title') || card.querySelector('h3');
+                    if (title)
+                        title.textContent = `Lote ${index + 1}`;
+
+                    const codiInput = card.querySelector('[data-field="codiLot"], input[type="text"]');
+                    const quantitatInput = card.querySelector('[data-field="quantitat"], input[type="number"]');
+                    const materiaSelect = card.querySelector('[data-field="materiaPrimaId"], select');
+
+                    if (codiInput)
+                        codiInput.name = `lots[${index}].codiLot`;
+                    if (quantitatInput)
+                        quantitatInput.name = `lots[${index}].quantitat`;
+                    if (materiaSelect)
+                        materiaSelect.name = `lots[${index}].materiaPrimaId`;
+                });
+            }
+
+            function bindRemoveButtons() {
+                lotsContainer.querySelectorAll('.remove-lot-btn').forEach(btn => {
+                    btn.onclick = function () {
+                        const cards = lotsContainer.querySelectorAll('.lot-card');
+                        if (cards.length > 1) {
+                            btn.closest('.lot-card').remove();
+                            refreshLotIndexes();
+                        }
+                    };
+                });
+            }
+
+            addLotBtn.addEventListener('click', () => {
+                const clone = lotTemplate.content.cloneNode(true);
+                lotsContainer.appendChild(clone);
+                refreshLotIndexes();
+                bindRemoveButtons();
+            });
+
+            refreshLotIndexes();
+            bindRemoveButtons();
+        </script>
     </body>
 </html>
