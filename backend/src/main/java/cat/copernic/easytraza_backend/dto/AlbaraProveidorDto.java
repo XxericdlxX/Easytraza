@@ -1,6 +1,7 @@
 package cat.copernic.easytraza_backend.dto;
 
-import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,15 +10,17 @@ public class AlbaraProveidorDto {
 
     private Long id;
 
-    @NotNull(message = "{albara.proveidor.data.obligatoria}")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataRecepcio;
 
-    @NotNull(message = "{albara.proveidor.proveidor.obligatori}")
     private String proveidorCif;
 
     private String usuariReceptorNom;
 
     private List<LotProveidorDto> lots = new ArrayList<>();
+
+    public AlbaraProveidorDto() {
+    }
 
     public Long getId() {
         return id;
