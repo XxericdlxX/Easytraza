@@ -57,8 +57,9 @@
                         <thead>
                             <tr>
                                 <th th:text="#{albara.proveidor.id}">ID</th>
-                                <th th:text="#{albara.proveidor.data}">Fecha de recepción</th>
+                                <th th:text="#{albara.proveidor.data}">Fecha</th>
                                 <th th:text="#{albara.proveidor.proveidor}">Proveedor</th>
+                                <th th:text="#{albara.proveidor.usuari}">Usuario receptor</th>
                                 <th th:text="#{albara.proveidor.lots}">Lotes</th>
                                 <th th:text="#{albara.proveidor.accions}">Acciones</th>
                             </tr>
@@ -67,7 +68,8 @@
                             <tr th:each="albara : ${albarans}">
                                 <td th:text="${albara.id}"></td>
                                 <td th:text="${albara.dataRecepcio}"></td>
-                                <td th:text="${albara.proveidor.nom} + ' (' + ${albara.proveidor.cif} + ')'"></td>
+                                <td th:text="${albara.proveidor.nom} + ' (' + albara.proveidor.cif + ')'"></td>
+                                <td th:text="${albara.usuariReceptor != null ? albara.usuariReceptor.nom + ' ' + albara.usuariReceptor.cognoms : '-'}"></td>
                                 <td th:text="${#lists.size(albara.lots)}"></td>
                                 <td>
                                     <div class="actions">
