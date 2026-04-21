@@ -20,16 +20,14 @@ public class AlbaraProveidor {
     @JoinColumn(name = "proveidor_cif", nullable = false)
     private Proveidor proveidor;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "usuari_id", nullable = false)
+    private Usuari usuariReceptor;
+
     @OneToMany(mappedBy = "albaraProveidor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LotProveidor> lots = new ArrayList<>();
 
     public AlbaraProveidor() {
-    }
-
-    public AlbaraProveidor(Long id, LocalDate dataRecepcio, Proveidor proveidor) {
-        this.id = id;
-        this.dataRecepcio = dataRecepcio;
-        this.proveidor = proveidor;
     }
 
     public Long getId() {
@@ -56,21 +54,19 @@ public class AlbaraProveidor {
         this.proveidor = proveidor;
     }
 
+    public Usuari getUsuariReceptor() {
+        return usuariReceptor;
+    }
+
+    public void setUsuariReceptor(Usuari usuariReceptor) {
+        this.usuariReceptor = usuariReceptor;
+    }
+
     public List<LotProveidor> getLots() {
         return lots;
     }
 
     public void setLots(List<LotProveidor> lots) {
         this.lots = lots;
-    }
-
-    public void afegirLot(LotProveidor lot) {
-        lots.add(lot);
-        lot.setAlbaraProveidor(this);
-    }
-
-    public void eliminarLot(LotProveidor lot) {
-        lots.remove(lot);
-        lot.setAlbaraProveidor(null);
     }
 }
