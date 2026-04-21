@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.proveidor.editar}">Editar albarán de proveedor</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="header-actions">
+                    <div class="logo-title">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                        <h1 th:text="#{albara.proveidor.editar}">Editar albarán de proveedor</h1>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <form th:action="@{/web/albarans-proveidor/actualitzar/{id}(id=${albara.id})}" th:object="${albara}" method="post" novalidate>
+
+                        <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                        <div class="form-group">
+                            <label for="dataRecepcio">
+                                <span th:text="#{albara.proveidor.data}">Fecha de recepción</span> <span class="required">*</span>
+                            </label>
+                            <input type="date" id="dataRecepcio" th:field="*{dataRecepcio}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proveidorCif">
+                                <span th:text="#{albara.proveidor.proveidor}">Proveedor</span> <span class="required">*</span>
+                            </label>
+                            <select id="proveidorCif" th:field="*{proveidorCif}">
+                                <option value="">--</option>
+                                <option th:each="proveidor : ${proveidors}"
+                                        th:value="${proveidor.cif}"
+                                        th:text="${proveidor.nom} + ' (' + proveidor.cif + ')'">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div th:each="lot, stat : *{lots}" class="form-card" style="margin-top: 20px;">
+                            <h3 th:text="#{lot.proveidor.titol} + ' ' + ${stat.index + 1}">Lote 1</h3>
+
+                            <input type="hidden" th:field="*{lots[__${stat.index}__].id}">
+
+                            <div class="form-group">
+                                <label>
+                                    <span th:text="#{lot.proveidor.codi}">Código de lote</span> <span class="required">*</span>
+                                </label>
+                                <input type="text" th:field="*{lots[__${stat.index}__].codiLot}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <span th:text="#{lot.proveidor.quantitat}">Cantidad</span> <span class="required">*</span>
+                                </label>
+                                <input type="number" min="1" th:field="*{lots[__${stat.index}__].quantitat}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <span th:text="#{lot.proveidor.materia}">Materia prima</span> <span class="required">*</span>
+                                </label>
+                                <select th:field="*{lots[__${stat.index}__].materiaPrimaId}">
+                                    <option value="">--</option>
+                                    <option th:each="materia : ${materiesPrimeres}"
+                                            th:value="${materia.id}"
+                                            th:text="${materia.nom}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="actions" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary" th:text="#{albara.proveidor.guardar.canvis}">Guardar cambios</button>
+                            <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
