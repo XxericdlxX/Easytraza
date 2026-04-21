@@ -205,6 +205,15 @@ public class AlbaraProveidorService {
         return dto;
     }
 
+    public void assegurarMinimUnLot(AlbaraProveidorDto dto) {
+        if (dto.getLots() == null) {
+            dto.setLots(new ArrayList<>());
+        }
+        if (dto.getLots().isEmpty()) {
+            dto.getLots().add(new LotProveidorDto());
+        }
+    }
+
     private List<LotProveidorDto> obtenirLotsValids(List<LotProveidorDto> lots) {
         List<LotProveidorDto> valids = new ArrayList<>();
         if (lots == null) {
