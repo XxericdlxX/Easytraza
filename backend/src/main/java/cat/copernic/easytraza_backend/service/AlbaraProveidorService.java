@@ -85,7 +85,12 @@ public class AlbaraProveidorService {
         existent.setDataRecepcio(albaraActualitzat.getDataRecepcio());
         existent.setProveidor(albaraActualitzat.getProveidor());
 
+        if (albaraActualitzat.getUsuariReceptor() != null) {
+            existent.setUsuariReceptor(albaraActualitzat.getUsuariReceptor());
+        }
+
         existent.getLots().clear();
+
         for (LotProveidor lot : albaraActualitzat.getLots()) {
             lot.setId(null);
             lot.setAlbaraProveidor(existent);
