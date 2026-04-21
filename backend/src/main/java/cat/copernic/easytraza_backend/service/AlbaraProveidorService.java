@@ -42,6 +42,26 @@ public class AlbaraProveidorService {
         return albaraProveidorRepository.findById(id);
     }
 
+    public List<AlbaraProveidor> buscar(String proveidorCif, LocalDate dataRecepcio) {
+        String cifNormalitzat = normalitzarTextCerca(proveidorCif);
+
+        if (cifNormalitzat.isEmpty() && dataRecepcio == null) {
+            return findAll();
+        }
+
+        if (!cifNormalitzat.isEmpty() && dataRecepcio != null) {
+            return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCaseAndDataRecepcio(
+                    cifNormalitzat, dataRecepcio
+            );
+        }
+
+        if (!cifNormalitzat.isEmpty()) {
+            return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCase(cifNormalitzat);
+        }
+
+        return albaraProveidorRepository.findByDataRecepcio(dataRecepcio);
+    }
+
     public AlbaraProveidor save(AlbaraProveidor albaraProveidor) {
         return albaraProveidorRepository.save(albaraProveidor);
     }
@@ -58,10 +78,13 @@ public class AlbaraProveidorService {
         existent.setProveidor(albaraActualitzat.getProveidor());
 
         existent.getLots().clear();
-        for (LotProveidor lot : albaraActualitzat.getLots()) {
-            lot.setId(null);
-            lot.setAlbaraProveidor(existent);
-            existent.getLots().add(lot);
+
+        if (albaraActualitzat.getLots() != null) {
+            for (LotProveidor lot : albaraActualitzat.getLots()) {
+                lot.setId(null);
+                lot.setAlbaraProveidor(existent);
+                existent.getLots().add(lot);
+            }
         }
 
         return albaraProveidorRepository.save(existent);
@@ -69,24 +92,6 @@ public class AlbaraProveidorService {
 
     public void deleteById(Long id) {
         albaraProveidorRepository.deleteById(id);
-    }
-
-    public List<AlbaraProveidor> buscar(String proveidorCif, LocalDate dataRecepcio) {
-        String cif = normalitzarTextCerca(proveidorCif);
-
-        if (cif.isEmpty() && dataRecepcio == null) {
-            return findAll();
-        }
-
-        if (!cif.isEmpty() && dataRecepcio != null) {
-            return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCaseAndDataRecepcio(cif, dataRecepcio);
-        }
-
-        if (!cif.isEmpty()) {
-            return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCase(cif);
-        }
-
-        return albaraProveidorRepository.findByDataRecepcio(dataRecepcio);
     }
 
     public String validarAlbara(AlbaraProveidorDto dto, Long idActual) {
@@ -122,12 +127,12 @@ public class AlbaraProveidorService {
                     );
 
             if (lotExistent.isPresent()) {
-                boolean esMateixLotEnMateixAlbara
+                boolean esMateixLotMateixAlbara
                         = idActual != null
                         && lotExistent.get().getAlbaraProveidor() != null
                         && idActual.equals(lotExistent.get().getAlbaraProveidor().getId());
 
-                if (!esMateixLotEnMateixAlbara) {
+                if (!esMateixLotMateixAlbara) {
                     return "lot.proveidor.codi.duplicat";
                 }
             }
@@ -176,6 +181,7 @@ public class AlbaraProveidorService {
         dto.setProveidorCif(entity.getProveidor().getCif());
 
         List<LotProveidorDto> lotsDto = new ArrayList<>();
+
         if (entity.getLots() != null) {
             for (LotProveidor lot : entity.getLots()) {
                 LotProveidorDto lotDto = new LotProveidorDto();
