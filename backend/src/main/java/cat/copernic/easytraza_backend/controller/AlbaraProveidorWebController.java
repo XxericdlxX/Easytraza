@@ -130,20 +130,15 @@ public class AlbaraProveidorWebController {
     @PostMapping("/actualitzar/{id}")
     public String actualitzar(@PathVariable Long id,
             @ModelAttribute("albara") AlbaraProveidorDto dto,
-            BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
         String errorNegoci = albaraProveidorService.validarAlbara(dto, id);
-        if (result.hasErrors() || errorNegoci != null) {
+        if (errorNegoci != null) {
             carregarDadesFormulari(model);
             albaraProveidorService.assegurarMinimUnLot(dto);
-
-            if (errorNegoci != null) {
-                model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
-            }
-
+            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
             return "albarans_proveidor/editar-albara-proveidor";
         }
 
