@@ -29,7 +29,10 @@
                         <label for="dataRecepcio">
                             <span th:text="#{albara.proveidor.data}">Fecha de recepción</span> <span class="required">*</span>
                         </label>
-                        <input type="date" id="dataRecepcio" th:field="*{dataRecepcio}">
+                        <input type="date"
+                               id="dataRecepcio"
+                               th:field="*{dataRecepcio}"
+                               th:attr="max=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
                     </div>
 
                     <div class="form-group">
@@ -60,21 +63,21 @@
                                 <label>
                                     <span th:text="#{lot.proveidor.codi}">Código/identificador de lote</span> <span class="required">*</span>
                                 </label>
-                                <input type="text" th:name="${'lots[' + stat.index + '].codiLot'}" th:value="${lot.codiLot}">
+                                <input type="text" class="lot-codi-field" th:name="${'lots[' + stat.index + '].codiLot'}" th:value="${lot.codiLot}">
                             </div>
 
                             <div class="form-group">
                                 <label>
                                     <span th:text="#{lot.proveidor.quantitat}">Cantidad</span> <span class="required">*</span>
                                 </label>
-                                <input type="number" min="1" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
+                                <input type="number" min="1" class="lot-quantitat-field" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
                             </div>
 
                             <div class="form-group">
                                 <label>
                                     <span th:text="#{lot.proveidor.materia}">Materia prima</span> <span class="required">*</span>
                                 </label>
-                                <select th:name="${'lots[' + stat.index + '].materiaPrimaId'}">
+                                <select class="lot-materia-field" th:name="${'lots[' + stat.index + '].materiaPrimaId'}">
                                     <option value="">--</option>
                                     <option th:each="materia : ${materiesPrimeres}"
                                             th:value="${materia.id}"
@@ -107,17 +110,17 @@
 
                 <div class="form-group">
                     <label>Código/identificador de lote <span class="required">*</span></label>
-                    <input type="text" data-field="codiLot">
+                    <input type="text" class="lot-codi-field">
                 </div>
 
                 <div class="form-group">
                     <label>Cantidad <span class="required">*</span></label>
-                    <input type="number" min="1" data-field="quantitat">
+                    <input type="number" min="1" class="lot-quantitat-field">
                 </div>
 
                 <div class="form-group">
                     <label>Materia prima <span class="required">*</span></label>
-                    <select data-field="materiaPrimaId">
+                    <select class="lot-materia-field">
                         <option value="">--</option>
                         <option th:each="materia : ${materiesPrimeres}"
                                 th:value="${materia.id}"
@@ -142,9 +145,9 @@
                         title.textContent = `Lote ${index + 1}`;
                     }
 
-                    const codiInput = card.querySelector('[data-field="codiLot"], input[type="text"]');
-                    const quantitatInput = card.querySelector('[data-field="quantitat"], input[type="number"]');
-                    const materiaSelect = card.querySelector('[data-field="materiaPrimaId"], select');
+                    const codiInput = card.querySelector('.lot-codi-field');
+                    const quantitatInput = card.querySelector('.lot-quantitat-field');
+                    const materiaSelect = card.querySelector('.lot-materia-field');
 
                     if (codiInput)
                         codiInput.name = `lots[${index}].codiLot`;
@@ -158,9 +161,9 @@
             }
 
             function cardHasData(card) {
-                const text = card.querySelector('input[type="text"]')?.value?.trim() || "";
-                const number = card.querySelector('input[type="number"]')?.value?.trim() || "";
-                const select = card.querySelector('select')?.value?.trim() || "";
+                const text = card.querySelector('.lot-codi-field')?.value?.trim() || "";
+                const number = card.querySelector('.lot-quantitat-field')?.value?.trim() || "";
+                const select = card.querySelector('.lot-materia-field')?.value?.trim() || "";
                 return text !== "" || number !== "" || select !== "";
             }
 
