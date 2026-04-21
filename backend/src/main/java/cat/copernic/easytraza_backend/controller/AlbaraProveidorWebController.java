@@ -3,10 +3,13 @@ package cat.copernic.easytraza_backend.controller;
 import cat.copernic.easytraza_backend.dto.AlbaraProveidorDto;
 import cat.copernic.easytraza_backend.dto.LotProveidorDto;
 import cat.copernic.easytraza_backend.model.AlbaraProveidor;
+import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
+import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.service.AlbaraProveidorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,11 +28,21 @@ public class AlbaraProveidorWebController {
     private AlbaraProveidorService albaraProveidorService;
 
     @Autowired
+    private ProveidorRepository proveidorRepository;
+
+    @Autowired
+    private MateriaPrimaRepository materiaPrimaRepository;
+
+    @Autowired
     private MessageSource messageSource;
 
     @GetMapping
-    public String llistar(Model model) {
-        model.addAttribute("albarans", albaraProveidorService.findAll());
+    public String llistar(@RequestParam(required = false) String proveidorCif,
+            @RequestParam(required = false) LocalDate dataRecepcio,
+            Model model) {
+        model.addAttribute("albarans", albaraProveidorService.buscar(proveidorCif, dataRecepcio));
+        model.addAttribute("proveidorCif", proveidorCif);
+        model.addAttribute("dataRecepcio", dataRecepcio);
         model.addAttribute("currentPath", "/web/albarans-proveidor");
         return "albarans-proveidor/llistar-albarans-proveidor";
     }
@@ -39,6 +52,8 @@ public class AlbaraProveidorWebController {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
         dto.setDataRecepcio(LocalDate.now());
         dto.getLots().add(new LotProveidorDto());
+
+        carregarDadesFormulari(model);
         model.addAttribute("albara", dto);
         return "albarans-proveidor/crear-albara-proveidor";
     }
@@ -51,11 +66,13 @@ public class AlbaraProveidorWebController {
             Locale locale) {
 
         if (result.hasErrors()) {
+            carregarDadesFormulari(model);
             return "albarans-proveidor/crear-albara-proveidor";
         }
 
-        String errorNegoci = albaraProveidorService.validarAlbara(dto);
+        String errorNegoci = albaraProveidorService.validarAlbara(dto, null);
         if (errorNegoci != null) {
+            carregarDadesFormulari(model);
             model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
             return "albarans-proveidor/crear-albara-proveidor";
         }
@@ -79,6 +96,7 @@ public class AlbaraProveidorWebController {
         Optional<AlbaraProveidor> albara = albaraProveidorService.findById(id);
 
         if (albara.isPresent()) {
+            carregarDadesFormulari(model);
             model.addAttribute("albara", albaraProveidorService.convertirEntityADto(albara.get()));
             return "albarans-proveidor/editar-albara-proveidor";
         }
@@ -88,5 +106,66 @@ public class AlbaraProveidorWebController {
                 messageSource.getMessage("albara.proveidor.flash.no.trobat", null, locale)
         );
         return "redirect:/web/albarans-proveidor";
+    }
+
+    @PostMapping("/actualitzar/{id}")
+    public String actualitzar(@PathVariable Long id,
+            @Valid @ModelAttribute("albara") AlbaraProveidorDto dto,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        if (result.hasErrors()) {
+            carregarDadesFormulari(model);
+            return "albarans-proveidor/editar-albara-proveidor";
+        }
+
+        String errorNegoci = albaraProveidorService.validarAlbara(dto, id);
+        if (errorNegoci != null) {
+            carregarDadesFormulari(model);
+            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
+            return "albarans-proveidor/editar-albara-proveidor";
+        }
+
+        AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
+        albaraProveidorService.update(id, entity);
+
+        redirectAttributes.addFlashAttribute(
+                "missatgeExit",
+                messageSource.getMessage("albara.proveidor.flash.actualitzat", null, locale)
+        );
+
+        return "redirect:/web/albarans-proveidor";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+        try {
+            albaraProveidorService.deleteById(id);
+            redirectAttributes.addFlashAttribute(
+                    "missatgeExit",
+                    messageSource.getMessage("albara.proveidor.flash.eliminat", null, locale)
+            );
+        } catch (DataIntegrityViolationException ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("albara.proveidor.error.eliminar.relacions", null, locale)
+            );
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("albara.proveidor.error.eliminar.generic", null, locale)
+            );
+        }
+
+        return "redirect:/web/albarans-proveidor";
+    }
+
+    private void carregarDadesFormulari(Model model) {
+        model.addAttribute("proveidors", proveidorRepository.findAll());
+        model.addAttribute("materiesPrimeres", materiaPrimaRepository.findAll());
     }
 }
