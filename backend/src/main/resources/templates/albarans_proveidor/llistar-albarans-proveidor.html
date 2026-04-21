@@ -68,7 +68,7 @@
                             <tr th:each="albara : ${albarans}">
                                 <td th:text="${albara.id}"></td>
                                 <td th:text="${albara.dataRecepcio}"></td>
-                                <td th:text="${albara.proveidor.nom} + ' (' + albara.proveidor.cif + ')'"></td>
+                                <td th:text="${albara.proveidor.nom}"></td>
                                 <td th:text="${albara.usuariReceptor != null ? albara.usuariReceptor.nom + ' ' + albara.usuariReceptor.cognoms : '-'}"></td>
                                 <td th:text="${#lists.size(albara.lots)}"></td>
                                 <td>
