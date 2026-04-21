@@ -6,12 +6,17 @@ import cat.copernic.easytraza_backend.model.AlbaraProveidor;
 import cat.copernic.easytraza_backend.model.LotProveidor;
 import cat.copernic.easytraza_backend.model.MateriaPrima;
 import cat.copernic.easytraza_backend.model.Proveidor;
+import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.model.enums.EstatLot;
 import cat.copernic.easytraza_backend.repository.AlbaraProveidorRepository;
 import cat.copernic.easytraza_backend.repository.LotProveidorRepository;
 import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
+import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,6 +38,9 @@ public class AlbaraProveidorService {
 
     @Autowired
     private MateriaPrimaRepository materiaPrimaRepository;
+
+    @Autowired
+    private UsuariRepository usuariRepository;
 
     public List<AlbaraProveidor> findAll() {
         return albaraProveidorRepository.findAll();
@@ -78,13 +86,10 @@ public class AlbaraProveidorService {
         existent.setProveidor(albaraActualitzat.getProveidor());
 
         existent.getLots().clear();
-
-        if (albaraActualitzat.getLots() != null) {
-            for (LotProveidor lot : albaraActualitzat.getLots()) {
-                lot.setId(null);
-                lot.setAlbaraProveidor(existent);
-                existent.getLots().add(lot);
-            }
+        for (LotProveidor lot : albaraActualitzat.getLots()) {
+            lot.setId(null);
+            lot.setAlbaraProveidor(existent);
+            existent.getLots().add(lot);
         }
 
         return albaraProveidorRepository.save(existent);
@@ -103,23 +108,12 @@ public class AlbaraProveidorService {
             return "albara.proveidor.proveidor.obligatori";
         }
 
-        if (dto.getLots() == null || dto.getLots().isEmpty()) {
+        List<LotProveidorDto> lotsValids = obtenirLotsValids(dto.getLots());
+        if (lotsValids.isEmpty()) {
             return "albara.proveidor.lots.obligatori";
         }
 
-        for (LotProveidorDto lotDto : dto.getLots()) {
-            if (lotDto.getCodiLot() == null || lotDto.getCodiLot().isBlank()) {
-                return "lot.proveidor.codi.obligatori";
-            }
-
-            if (lotDto.getQuantitat() == null || lotDto.getQuantitat() <= 0) {
-                return "lot.proveidor.quantitat.min";
-            }
-
-            if (lotDto.getMateriaPrimaId() == null) {
-                return "lot.proveidor.materia.obligatoria";
-            }
-
+        for (LotProveidorDto lotDto : lotsValids) {
             Optional<LotProveidor> lotExistent
                     = lotProveidorRepository.findByProveidor_CifAndCodiLotIgnoreCase(
                             dto.getProveidorCif(),
@@ -143,31 +137,31 @@ public class AlbaraProveidorService {
 
     public AlbaraProveidor convertirDtoAEntity(AlbaraProveidorDto dto) {
         Proveidor proveidor = proveidorRepository.findById(dto.getProveidorCif()).orElse(null);
+        Usuari usuariLoguejat = obtenirUsuariLoguejat();
 
         AlbaraProveidor albara = new AlbaraProveidor();
         albara.setId(dto.getId());
         albara.setDataRecepcio(dto.getDataRecepcio());
         albara.setProveidor(proveidor);
+        albara.setUsuariReceptor(usuariLoguejat);
 
         List<LotProveidor> lots = new ArrayList<>();
 
-        if (dto.getLots() != null) {
-            for (LotProveidorDto lotDto : dto.getLots()) {
-                MateriaPrima materiaPrima = materiaPrimaRepository.findById(lotDto.getMateriaPrimaId()).orElse(null);
+        for (LotProveidorDto lotDto : obtenirLotsValids(dto.getLots())) {
+            MateriaPrima materiaPrima = materiaPrimaRepository.findById(lotDto.getMateriaPrimaId()).orElse(null);
 
-                LotProveidor lot = new LotProveidor();
-                lot.setId(lotDto.getId());
-                lot.setCodiLot(normalitzar(lotDto.getCodiLot()));
-                lot.setQuantitat(lotDto.getQuantitat());
-                lot.setEstat(EstatLot.EN_ESTOC);
-                lot.setDataObertura(null);
-                lot.setDataAcabament(null);
-                lot.setMateriaPrima(materiaPrima);
-                lot.setProveidor(proveidor);
-                lot.setAlbaraProveidor(albara);
+            LotProveidor lot = new LotProveidor();
+            lot.setId(lotDto.getId());
+            lot.setCodiLot(normalitzar(lotDto.getCodiLot()));
+            lot.setQuantitat(lotDto.getQuantitat());
+            lot.setEstat(EstatLot.EN_ESTOC);
+            lot.setDataObertura(null);
+            lot.setDataAcabament(null);
+            lot.setMateriaPrima(materiaPrima);
+            lot.setProveidor(proveidor);
+            lot.setAlbaraProveidor(albara);
 
-                lots.add(lot);
-            }
+            lots.add(lot);
         }
 
         albara.setLots(lots);
@@ -180,8 +174,13 @@ public class AlbaraProveidorService {
         dto.setDataRecepcio(entity.getDataRecepcio());
         dto.setProveidorCif(entity.getProveidor().getCif());
 
-        List<LotProveidorDto> lotsDto = new ArrayList<>();
+        if (entity.getUsuariReceptor() != null) {
+            String nom = entity.getUsuariReceptor().getNom() != null ? entity.getUsuariReceptor().getNom() : "";
+            String cognoms = entity.getUsuariReceptor().getCognoms() != null ? entity.getUsuariReceptor().getCognoms() : "";
+            dto.setUsuariReceptorNom((nom + " " + cognoms).trim());
+        }
 
+        List<LotProveidorDto> lotsDto = new ArrayList<>();
         if (entity.getLots() != null) {
             for (LotProveidor lot : entity.getLots()) {
                 LotProveidorDto lotDto = new LotProveidorDto();
@@ -193,8 +192,53 @@ public class AlbaraProveidorService {
             }
         }
 
+        if (lotsDto.isEmpty()) {
+            lotsDto.add(new LotProveidorDto());
+        }
+
         dto.setLots(lotsDto);
         return dto;
+    }
+
+    private List<LotProveidorDto> obtenirLotsValids(List<LotProveidorDto> lots) {
+        List<LotProveidorDto> valids = new ArrayList<>();
+        if (lots == null) {
+            return valids;
+        }
+
+        for (LotProveidorDto lot : lots) {
+            boolean teCodi = lot.getCodiLot() != null && !lot.getCodiLot().isBlank();
+            boolean teQuantitat = lot.getQuantitat() != null;
+            boolean teMateria = lot.getMateriaPrimaId() != null;
+
+            if (teCodi || teQuantitat || teMateria) {
+                if (!teCodi) {
+                    continue;
+                }
+                if (lot.getQuantitat() == null || lot.getQuantitat() <= 0) {
+                    continue;
+                }
+                if (lot.getMateriaPrimaId() == null) {
+                    continue;
+                }
+                valids.add(lot);
+            }
+        }
+        return valids;
+    }
+
+    private Usuari obtenirUsuariLoguejat() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null
+                && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+
+            String email = authentication.getName();
+            return usuariRepository.findByEmailIgnoreCase(email).orElse(null);
+        }
+
+        return null;
     }
 
     private String normalitzar(String text) {
