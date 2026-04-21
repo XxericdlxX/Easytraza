@@ -44,7 +44,7 @@ public class AlbaraProveidorWebController {
         model.addAttribute("proveidorCif", proveidorCif);
         model.addAttribute("dataRecepcio", dataRecepcio);
         model.addAttribute("currentPath", "/web/albarans-proveidor");
-        return "albarans-proveidor/llistar-albarans-proveidor";
+        return "albarans_proveidor/llistar-albarans-proveidor";
     }
 
     @GetMapping("/crear")
@@ -55,7 +55,7 @@ public class AlbaraProveidorWebController {
 
         carregarDadesFormulari(model);
         model.addAttribute("albara", dto);
-        return "albarans-proveidor/crear-albara-proveidor";
+        return "albarans_proveidor/crear-albara-proveidor";
     }
 
     @PostMapping("/guardar")
@@ -67,14 +67,14 @@ public class AlbaraProveidorWebController {
 
         if (result.hasErrors()) {
             carregarDadesFormulari(model);
-            return "albarans-proveidor/crear-albara-proveidor";
+            return "albarans_proveidor/crear-albara-proveidor";
         }
 
         String errorNegoci = albaraProveidorService.validarAlbara(dto, null);
         if (errorNegoci != null) {
             carregarDadesFormulari(model);
             model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
-            return "albarans-proveidor/crear-albara-proveidor";
+            return "albarans_proveidor/crear-albara-proveidor";
         }
 
         AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
@@ -98,7 +98,7 @@ public class AlbaraProveidorWebController {
         if (albara.isPresent()) {
             carregarDadesFormulari(model);
             model.addAttribute("albara", albaraProveidorService.convertirEntityADto(albara.get()));
-            return "albarans-proveidor/editar-albara-proveidor";
+            return "albarans_proveidor/editar-albara-proveidor";
         }
 
         redirectAttributes.addFlashAttribute(
@@ -118,14 +118,14 @@ public class AlbaraProveidorWebController {
 
         if (result.hasErrors()) {
             carregarDadesFormulari(model);
-            return "albarans-proveidor/editar-albara-proveidor";
+            return "albarans_proveidor/editar-albara-proveidor";
         }
 
         String errorNegoci = albaraProveidorService.validarAlbara(dto, id);
         if (errorNegoci != null) {
             carregarDadesFormulari(model);
             model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
-            return "albarans-proveidor/editar-albara-proveidor";
+            return "albarans_proveidor/editar-albara-proveidor";
         }
 
         AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
