@@ -13,19 +13,19 @@ import java.util.Optional;
 public interface AlbaraProveidorRepository extends JpaRepository<AlbaraProveidor, Long> {
 
     @Override
-    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots"})
+    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots", "lots.materiaPrima"})
     List<AlbaraProveidor> findAll();
 
     @Override
-    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots"})
+    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots", "lots.materiaPrima"})
     Optional<AlbaraProveidor> findById(Long id);
 
-    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots"})
+    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots", "lots.materiaPrima"})
     List<AlbaraProveidor> findByProveidor_CifContainingIgnoreCase(String cif);
 
-    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots"})
+    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots", "lots.materiaPrima"})
     List<AlbaraProveidor> findByDataRecepcio(LocalDate dataRecepcio);
 
-    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots"})
+    @EntityGraph(attributePaths = {"proveidor", "usuariReceptor", "lots", "lots.materiaPrima"})
     List<AlbaraProveidor> findByProveidor_CifContainingIgnoreCaseAndDataRecepcio(String cif, LocalDate dataRecepcio);
 }
