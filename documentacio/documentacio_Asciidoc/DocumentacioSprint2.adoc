@@ -36,7 +36,8 @@ image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López |Vaig fer el CRUD de Productes i també vaig corregir errors visuals i el CRUD de proveïdors i vaig començar el RF07 - CRUD d’albarans de proveïdor
+ | Continuaré el RF07 - CRUD d’albarans de proveïdor | els canvis del enunciat que han descuadrat coses | 5h 
 |===
 
 === DIA 4 Dimecres - 22/04/2026
