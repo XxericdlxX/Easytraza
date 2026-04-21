@@ -20,8 +20,8 @@ public class AlbaraProveidor {
     @JoinColumn(name = "proveidor_cif", nullable = false)
     private Proveidor proveidor;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "usuari_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "usuari_id")
     private Usuari usuariReceptor;
 
     @OneToMany(mappedBy = "albaraProveidor", cascade = CascadeType.ALL, orphanRemoval = true)
