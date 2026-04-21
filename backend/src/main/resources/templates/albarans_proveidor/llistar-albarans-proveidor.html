@@ -21,7 +21,9 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/web/albarans-proveidor/crear}" class="btn btn-primary" th:text="#{albara.proveidor.afegir}">Añadir albarán de proveedor</a>
+                    <a th:href="@{/web/albarans-proveidor/crear}" class="btn btn-primary" th:text="#{albara.proveidor.afegir}">
+                        Añadir albarán de proveedor
+                    </a>
                 </div>
 
                 <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
@@ -68,11 +70,15 @@
                             <tr th:each="albara : ${albarans}">
                                 <td th:text="${albara.id}"></td>
                                 <td th:text="${albara.dataRecepcio}"></td>
-                                <td th:text="${albara.proveidor.nom}"></td>
+                                <td th:text="${albara.proveidor.nom + ' (' + albara.proveidor.cif + ')'}"></td>
                                 <td th:text="${albara.usuariReceptor != null ? albara.usuariReceptor.nom + ' ' + albara.usuariReceptor.cognoms : '-'}"></td>
                                 <td th:text="${#lists.size(albara.lots)}"></td>
                                 <td>
                                     <div class="actions">
+                                        <a th:href="@{/web/albarans-proveidor/veure/{id}(id=${albara.id})}"
+                                           class="btn btn-accent"
+                                           th:text="#{albara.proveidor.veure.lots}">Ver lots</a>
+
                                         <a th:href="@{/web/albarans-proveidor/editar/{id}(id=${albara.id})}"
                                            class="btn btn-secondary"
                                            th:text="#{albara.proveidor.editar}">Editar</a>
