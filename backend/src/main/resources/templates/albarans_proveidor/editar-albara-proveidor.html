@@ -14,6 +14,11 @@
                     <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
                     <h1 th:text="#{albara.proveidor.editar}">Editar albarán de proveedor</h1>
                 </div>
+
+                <div class="actions">
+                    <a th:href="@{/web/albarans-proveidor/editar/{id}(id=${albara.id},lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/albarans-proveidor/editar/{id}(id=${albara.id},lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
             </div>
 
             <div class="form-card">
@@ -35,7 +40,7 @@
                             <option value="">--</option>
                             <option th:each="proveidor : ${proveidors}"
                                     th:value="${proveidor.cif}"
-                                    th:text="${proveidor.nom} + ' (' + proveidor.cif + ')'">
+                                    th:text="${proveidor.nom}">
                             </option>
                         </select>
                     </div>
@@ -44,23 +49,33 @@
                         <div class="form-card lot-card" th:each="lot, stat : *{lots}" style="margin-top: 20px;">
                             <div class="header-actions" style="margin-bottom: 12px;">
                                 <h3 class="lot-title" th:text="#{lot.proveidor.titol} + ' ' + ${stat.index + 1}">Lote 1</h3>
-                                <button type="button" class="btn btn-danger remove-lot-btn">Eliminar lote</button>
+
+                                <div class="actions">
+                                    <button type="button" class="btn btn-accent add-lot-inline-btn" th:text="#{lot.proveidor.afegir}">Añadir lote</button>
+                                    <button type="button" class="btn btn-danger remove-lot-btn" th:text="#{lot.proveidor.eliminar}">Eliminar lote</button>
+                                </div>
                             </div>
 
                             <input type="hidden" th:name="${'lots[' + stat.index + '].id'}" th:value="${lot.id}">
 
                             <div class="form-group">
-                                <label>Código/identificador de lote <span class="required">*</span></label>
+                                <label>
+                                    <span th:text="#{lot.proveidor.codi}">Código/identificador de lote</span> <span class="required">*</span>
+                                </label>
                                 <input type="text" th:name="${'lots[' + stat.index + '].codiLot'}" th:value="${lot.codiLot}">
                             </div>
 
                             <div class="form-group">
-                                <label>Cantidad <span class="required">*</span></label>
+                                <label>
+                                    <span th:text="#{lot.proveidor.quantitat}">Cantidad</span> <span class="required">*</span>
+                                </label>
                                 <input type="number" min="1" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
                             </div>
 
                             <div class="form-group">
-                                <label>Materia prima <span class="required">*</span></label>
+                                <label>
+                                    <span th:text="#{lot.proveidor.materia}">Materia prima</span> <span class="required">*</span>
+                                </label>
                                 <select th:name="${'lots[' + stat.index + '].materiaPrimaId'}">
                                     <option value="">--</option>
                                     <option th:each="materia : ${materiesPrimeres}"
@@ -71,10 +86,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="actions" style="margin-top: 20px;">
-                        <button type="button" id="add-lot-btn" class="btn btn-accent">Añadir lote</button>
                     </div>
 
                     <div class="actions" style="margin-top: 20px;">
@@ -89,7 +100,11 @@
             <div class="form-card lot-card" style="margin-top: 20px;">
                 <div class="header-actions" style="margin-bottom: 12px;">
                     <h3 class="lot-title">Lote</h3>
-                    <button type="button" class="btn btn-danger remove-lot-btn">Eliminar lote</button>
+
+                    <div class="actions">
+                        <button type="button" class="btn btn-accent add-lot-inline-btn">Añadir lote</button>
+                        <button type="button" class="btn btn-danger remove-lot-btn">Eliminar lote</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -115,17 +130,19 @@
             </div>
         </template>
 
-        <script>
+        <script th:inline="javascript">
             const lotsContainer = document.getElementById('lots-container');
-            const addLotBtn = document.getElementById('add-lot-btn');
             const lotTemplate = document.getElementById('lot-template');
+            const missatgeEliminarBloquejat = /*[[#{albara.proveidor.eliminar.lot.bloquejat}]]*/ 'Tienes información puesta, no puedes eliminar este lote.';
 
             function refreshLotIndexes() {
                 const cards = lotsContainer.querySelectorAll('.lot-card');
+
                 cards.forEach((card, index) => {
-                    const title = card.querySelector('.lot-title') || card.querySelector('h3');
-                    if (title)
+                    const title = card.querySelector('.lot-title');
+                    if (title) {
                         title.textContent = `Lote ${index + 1}`;
+                    }
 
                     const hiddenId = card.querySelector('input[type="hidden"]');
                     const codiInput = card.querySelector('[data-field="codiLot"], input[type="text"]');
@@ -141,29 +158,70 @@
                     if (materiaSelect)
                         materiaSelect.name = `lots[${index}].materiaPrimaId`;
                 });
+
+                refreshButtons();
             }
 
-            function bindRemoveButtons() {
+            function cardHasData(card) {
+                const text = card.querySelector('input[type="text"]')?.value?.trim() || "";
+                const number = card.querySelector('input[type="number"]')?.value?.trim() || "";
+                const select = card.querySelector('select')?.value?.trim() || "";
+                return text !== "" || number !== "" || select !== "";
+            }
+
+            function refreshButtons() {
+                const cards = lotsContainer.querySelectorAll('.lot-card');
+
+                cards.forEach((card, index) => {
+                    const addBtn = card.querySelector('.add-lot-inline-btn');
+                    const removeBtn = card.querySelector('.remove-lot-btn');
+
+                    if (addBtn) {
+                        addBtn.style.display = index === cards.length - 1 ? 'inline-block' : 'none';
+                    }
+
+                    if (removeBtn) {
+                        removeBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+                    }
+                });
+            }
+
+            function addLot() {
+                const clone = lotTemplate.content.cloneNode(true);
+                lotsContainer.appendChild(clone);
+                bindButtons();
+                refreshLotIndexes();
+            }
+
+            function bindButtons() {
+                lotsContainer.querySelectorAll('.add-lot-inline-btn').forEach(btn => {
+                    btn.onclick = function () {
+                        addLot();
+                    };
+                });
+
                 lotsContainer.querySelectorAll('.remove-lot-btn').forEach(btn => {
                     btn.onclick = function () {
+                        const card = btn.closest('.lot-card');
                         const cards = lotsContainer.querySelectorAll('.lot-card');
-                        if (cards.length > 1) {
-                            btn.closest('.lot-card').remove();
-                            refreshLotIndexes();
+
+                        if (cards.length <= 1) {
+                            return;
                         }
+
+                        if (cardHasData(card)) {
+                            alert(missatgeEliminarBloquejat);
+                            return;
+                        }
+
+                        card.remove();
+                        refreshLotIndexes();
                     };
                 });
             }
 
-            addLotBtn.addEventListener('click', () => {
-                const clone = lotTemplate.content.cloneNode(true);
-                lotsContainer.appendChild(clone);
-                refreshLotIndexes();
-                bindRemoveButtons();
-            });
-
+            bindButtons();
             refreshLotIndexes();
-            bindRemoveButtons();
         </script>
     </body>
 </html>
