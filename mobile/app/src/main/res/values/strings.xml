@@ -13,7 +13,6 @@
 
     <string name="connection_error_invalid_ip">Introduce una IP válida antes de continuar.</string>
     <string name="connection_error_backend_response">El servidor ha respondido con error (%1$d).</string>
-    <string name="connection_error_ssl">No se ha podido establecer una conexión segura con el servidor. Revisa el certificado o la configuración HTTPS.</string>
     <string name="connection_error_host">No se ha encontrado el servidor indicado. Revisa la IP configurada.</string>
     <string name="connection_error_connect">No se ha podido conectar con el servidor. Comprueba que el backend esté en marcha y accesible.</string>
     <string name="connection_error_timeout">El servidor ha tardado demasiado en responder. Vuelve a intentarlo.</string>
@@ -31,20 +30,13 @@
     <string name="dashboard_change_user_button">Cambiar usuario</string>
     <string name="dashboard_hero_emoji">🍞</string>
     <string name="dashboard_hero_title">Panel principal de EasyTraza</string>
-    <string name="dashboard_hero_subtitle">Accede rápidamente a las operaciones principales disponibles en este sprint.</string>
-    <string name="dashboard_actions_section_title">Acciones principales</string>
+    <string name="dashboard_hero_subtitle">Accede rápidamente a la operación principal disponible en este sprint.</string>
+    <string name="dashboard_actions_section_title">Acción principal</string>
     <string name="dashboard_action_open">Abrir</string>
     <string name="dashboard_action_pending">Pantalla pendiente: %1$s</string>
 
     <string name="dashboard_action_receive_title">Recepcionar albarán</string>
-    <string name="dashboard_action_receive_subtitle">Crear el albarán en móvil y escoger si quieres introducir los datos manualmente o mediante foto.</string>
-
-    <string name="dashboard_action_edit_title">Editar albarán</string>
-    <string name="dashboard_action_edit_subtitle">Consultar y modificar albaranes de proveedor ya registrados.</string>
-
-    <string name="dashboard_ocr_combined_emoji">📸</string>
-    <string name="dashboard_ocr_combined_title">Recepción con foto OCR</string>
-    <string name="dashboard_ocr_combined_subtitle">La recepción del albarán permite también capturar una foto para detectar automáticamente sus datos y después revisarlos o editarlos.</string>
+    <string name="dashboard_action_receive_subtitle">Crear el albarán en móvil y, dentro de este mismo flujo, escoger si quieres introducir los datos manualmente o mediante foto OCR.</string>
 
     <string name="dashboard_config_section_title">Configuración de conexión</string>
     <string name="dashboard_config_section_subtitle">Mantén accesible la IP del backend desde esta pantalla independiente.</string>
