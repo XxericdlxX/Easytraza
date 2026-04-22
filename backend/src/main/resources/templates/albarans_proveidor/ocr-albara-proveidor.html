@@ -32,9 +32,29 @@
                 <form th:action="@{/web/albarans-proveidor/ocr/processar}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="fitxer">
-                            <span th:text="#{albara.proveidor.ocr.fitxer}">Imagen o PDF</span> <span class="required">*</span>
+                            <span th:text="#{albara.proveidor.ocr.fitxer}">Imagen o PDF del albarán</span>
+                            <span class="required">*</span>
                         </label>
-                        <input id="fitxer" name="fitxer" type="file" accept="image/*,application/pdf" required>
+
+                        <input id="fitxer"
+                               name="fitxer"
+                               type="file"
+                               accept="image/*,application/pdf"
+                               required
+                               style="display: none;">
+
+                        <div class="actions" style="margin-top: 8px; align-items: center; gap: 12px;">
+                            <label for="fitxer"
+                                   class="btn btn-secondary"
+                                   th:text="#{albara.proveidor.ocr.seleccionar}">
+                                Seleccionar archivo
+                            </label>
+
+                            <span id="fitxer-nom"
+                                  th:text="#{albara.proveidor.ocr.cap.fitxer}">
+                                Ningún archivo seleccionado
+                            </span>
+                        </div>
                     </div>
 
                     <div class="actions">
@@ -45,5 +65,19 @@
                 </form>
             </div>
         </div>
+
+        <script th:inline="javascript">
+            const inputFitxer = document.getElementById('fitxer');
+            const nomFitxer = document.getElementById('fitxer-nom');
+            const textCapFitxer = /*[[#{albara.proveidor.ocr.cap.fitxer}]]*/ 'Ningún archivo seleccionado';
+
+            inputFitxer.addEventListener('change', function () {
+                if (inputFitxer.files && inputFitxer.files.length > 0) {
+                    nomFitxer.textContent = inputFitxer.files[0].name;
+                } else {
+                    nomFitxer.textContent = textCapFitxer;
+                }
+            });
+        </script>
     </body>
 </html>
