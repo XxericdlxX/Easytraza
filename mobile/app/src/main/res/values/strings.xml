@@ -1,15 +1,11 @@
 <resources>
     <string name="app_name">EasyTraza</string>
 
-    <string name="config_ip_title">Configuración del servidor</string>
-    <string name="config_ip_description">Define la IP del backend para probar la conexión desde el dispositivo.</string>
     <string name="config_ip_label">IP del servidor</string>
     <string name="config_ip_placeholder">Ejemplo: 10.0.2.2</string>
     <string name="config_ip_save_button">Guardar IP</string>
     <string name="config_ip_test_button">Probar conexión</string>
     <string name="config_ip_status_label">Estado: %1$s</string>
-    <string name="config_ip_help_emulator">Emulador: usa 10.0.2.2 para acceder a tu ordenador.</string>
-    <string name="config_ip_help_device">Dispositivo físico: usa la IP local del PC dentro de la misma red.</string>
 
     <string name="connection_status_not_tested">Conexión aún no probada</string>
     <string name="connection_status_ip_saved">IP guardada correctamente</string>
@@ -22,4 +18,36 @@
     <string name="connection_error_connect">No se ha podido conectar con el servidor. Comprueba que el backend esté en marcha y accesible.</string>
     <string name="connection_error_timeout">El servidor ha tardado demasiado en responder. Vuelve a intentarlo.</string>
     <string name="connection_error_generic">No se ha podido completar la conexión. Revisa la configuración y vuelve a intentarlo.</string>
+
+    <string name="user_selector_emoji">👥</string>
+    <string name="user_selector_title">Selecciona un usuario</string>
+    <string name="user_selector_subtitle">Escoge un perfil demo para entrar en el panel principal del módulo móvil.</string>
+    <string name="user_selector_section_title">Usuarios disponibles</string>
+    <string name="user_selector_open_profile">Entrar</string>
+    <string name="user_selector_config_button">Configuración de conexión</string>
+
+    <string name="dashboard_welcome_label">Hola 👋</string>
+    <string name="dashboard_config_short_button">IP</string>
+    <string name="dashboard_change_user_button">Cambiar usuario</string>
+    <string name="dashboard_hero_emoji">🍞</string>
+    <string name="dashboard_hero_title">Panel principal de EasyTraza</string>
+    <string name="dashboard_hero_subtitle">Accede rápidamente a las operaciones principales disponibles en este sprint.</string>
+    <string name="dashboard_actions_section_title">Acciones principales</string>
+    <string name="dashboard_action_open">Abrir</string>
+    <string name="dashboard_action_pending">Pantalla pendiente: %1$s</string>
+
+    <string name="dashboard_action_receive_title">Recepcionar albarán</string>
+    <string name="dashboard_action_receive_subtitle">Crear el albarán en móvil y escoger si quieres introducir los datos manualmente o mediante foto.</string>
+
+    <string name="dashboard_action_edit_title">Editar albarán</string>
+    <string name="dashboard_action_edit_subtitle">Consultar y modificar albaranes de proveedor ya registrados.</string>
+
+    <string name="dashboard_ocr_combined_emoji">📸</string>
+    <string name="dashboard_ocr_combined_title">Recepción con foto OCR</string>
+    <string name="dashboard_ocr_combined_subtitle">La recepción del albarán permite también capturar una foto para detectar automáticamente sus datos y después revisarlos o editarlos.</string>
+
+    <string name="dashboard_config_section_title">Configuración de conexión</string>
+    <string name="dashboard_config_section_subtitle">Mantén accesible la IP del backend desde esta pantalla independiente.</string>
+
+    <string name="config_back_button">Volver</string>
 </resources>
