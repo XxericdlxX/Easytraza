@@ -11,5 +11,7 @@ public interface MateriaPrimaRepository extends JpaRepository<MateriaPrima, Long
 
     Optional<MateriaPrima> findByNom(String nom);
 
-    boolean existsByNom(String nom);
+    Optional<MateriaPrima> findByNomIgnoreCase(String nom);
+
+    boolean existsByNomIgnoreCase(String nom);
 }
