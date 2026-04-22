@@ -13,7 +13,6 @@
 
     <string name="connection_error_invalid_ip">Introdueix una IP vàlida abans de continuar.</string>
     <string name="connection_error_backend_response">El servidor ha respost amb error (%1$d).</string>
-    <string name="connection_error_ssl">No s’ha pogut establir una connexió segura amb el servidor. Revisa el certificat o la configuració HTTPS.</string>
     <string name="connection_error_host">No s’ha trobat el servidor indicat. Revisa la IP configurada.</string>
     <string name="connection_error_connect">No s’ha pogut connectar amb el servidor. Comprova que el backend estigui en marxa i accessible.</string>
     <string name="connection_error_timeout">El servidor ha trigat massa a respondre. Torna-ho a provar.</string>
@@ -31,20 +30,13 @@
     <string name="dashboard_change_user_button">Canviar usuari</string>
     <string name="dashboard_hero_emoji">🍞</string>
     <string name="dashboard_hero_title">Panell principal d’EasyTraza</string>
-    <string name="dashboard_hero_subtitle">Accedeix ràpidament a les operacions principals disponibles en aquest sprint.</string>
-    <string name="dashboard_actions_section_title">Accions principals</string>
+    <string name="dashboard_hero_subtitle">Accedeix ràpidament a l’operació principal disponible en aquest sprint.</string>
+    <string name="dashboard_actions_section_title">Acció principal</string>
     <string name="dashboard_action_open">Obrir</string>
     <string name="dashboard_action_pending">Pantalla pendent: %1$s</string>
 
     <string name="dashboard_action_receive_title">Recepcionar albarà</string>
-    <string name="dashboard_action_receive_subtitle">Crear l’albarà al mòbil i escollir si vols introduir les dades manualment o mitjançant foto.</string>
-
-    <string name="dashboard_action_edit_title">Editar albarà</string>
-    <string name="dashboard_action_edit_subtitle">Consultar i modificar albarans de proveïdor ja registrats.</string>
-
-    <string name="dashboard_ocr_combined_emoji">📸</string>
-    <string name="dashboard_ocr_combined_title">Recepció amb foto OCR</string>
-    <string name="dashboard_ocr_combined_subtitle">La recepció de l’albarà permet també capturar una foto per detectar automàticament les seves dades i després revisar-les o editar-les.</string>
+    <string name="dashboard_action_receive_subtitle">Crear l’albarà al mòbil i, dins d’aquest mateix flux, escollir si vols introduir les dades manualment o mitjançant foto OCR.</string>
 
     <string name="dashboard_config_section_title">Configuració de connexió</string>
     <string name="dashboard_config_section_subtitle">Mantén accessible la IP del backend des d’aquesta pantalla independent.</string>
