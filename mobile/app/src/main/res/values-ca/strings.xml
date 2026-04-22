@@ -1,15 +1,11 @@
 <resources>
     <string name="app_name">EasyTraza</string>
 
-    <string name="config_ip_title">Configuració del servidor</string>
-    <string name="config_ip_description">Defineix la IP del backend per provar la connexió des del dispositiu.</string>
     <string name="config_ip_label">IP del servidor</string>
     <string name="config_ip_placeholder">Exemple: 10.0.2.2</string>
     <string name="config_ip_save_button">Desar IP</string>
     <string name="config_ip_test_button">Provar connexió</string>
     <string name="config_ip_status_label">Estat: %1$s</string>
-    <string name="config_ip_help_emulator">Emulador: utilitza 10.0.2.2 per accedir al teu ordinador.</string>
-    <string name="config_ip_help_device">Dispositiu físic: utilitza la IP local del PC dins la mateixa xarxa.</string>
 
     <string name="connection_status_not_tested">Connexió encara no provada</string>
     <string name="connection_status_ip_saved">IP desada correctament</string>
@@ -22,4 +18,36 @@
     <string name="connection_error_connect">No s’ha pogut connectar amb el servidor. Comprova que el backend estigui en marxa i accessible.</string>
     <string name="connection_error_timeout">El servidor ha trigat massa a respondre. Torna-ho a provar.</string>
     <string name="connection_error_generic">No s’ha pogut completar la connexió. Revisa la configuració i torna-ho a provar.</string>
+
+    <string name="user_selector_emoji">👥</string>
+    <string name="user_selector_title">Selecciona un usuari</string>
+    <string name="user_selector_subtitle">Escull un perfil demo per entrar al panell principal del mòdul mòbil.</string>
+    <string name="user_selector_section_title">Usuaris disponibles</string>
+    <string name="user_selector_open_profile">Entrar</string>
+    <string name="user_selector_config_button">Configuració de connexió</string>
+
+    <string name="dashboard_welcome_label">Hola 👋</string>
+    <string name="dashboard_config_short_button">IP</string>
+    <string name="dashboard_change_user_button">Canviar usuari</string>
+    <string name="dashboard_hero_emoji">🍞</string>
+    <string name="dashboard_hero_title">Panell principal d’EasyTraza</string>
+    <string name="dashboard_hero_subtitle">Accedeix ràpidament a les operacions principals disponibles en aquest sprint.</string>
+    <string name="dashboard_actions_section_title">Accions principals</string>
+    <string name="dashboard_action_open">Obrir</string>
+    <string name="dashboard_action_pending">Pantalla pendent: %1$s</string>
+
+    <string name="dashboard_action_receive_title">Recepcionar albarà</string>
+    <string name="dashboard_action_receive_subtitle">Crear l’albarà al mòbil i escollir si vols introduir les dades manualment o mitjançant foto.</string>
+
+    <string name="dashboard_action_edit_title">Editar albarà</string>
+    <string name="dashboard_action_edit_subtitle">Consultar i modificar albarans de proveïdor ja registrats.</string>
+
+    <string name="dashboard_ocr_combined_emoji">📸</string>
+    <string name="dashboard_ocr_combined_title">Recepció amb foto OCR</string>
+    <string name="dashboard_ocr_combined_subtitle">La recepció de l’albarà permet també capturar una foto per detectar automàticament les seves dades i després revisar-les o editar-les.</string>
+
+    <string name="dashboard_config_section_title">Configuració de connexió</string>
+    <string name="dashboard_config_section_subtitle">Mantén accessible la IP del backend des d’aquesta pantalla independent.</string>
+
+    <string name="config_back_button">Tornar</string>
 </resources>
