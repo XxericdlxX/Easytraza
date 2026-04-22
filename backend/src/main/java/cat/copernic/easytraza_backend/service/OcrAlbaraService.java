@@ -2,104 +2,55 @@ package cat.copernic.easytraza_backend.service;
 
 import cat.copernic.easytraza_backend.dto.OcrAlbaraResponseDto;
 import cat.copernic.easytraza_backend.dto.OcrLotRespostaDto;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class OcrAlbaraService {
 
-    @Value("${ocr.space.api.url}")
-    private String ocrApiUrl;
+    @Value("${ocr.tessdata.path}")
+    private String tessdataPath;
 
-    @Value("${ocr.space.api.key}")
-    private String ocrApiKey;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Value("${ocr.tesseract.language}")
+    private String tesseractLanguage;
 
     public OcrAlbaraResponseDto processarImatgeAlbara(MultipartFile image) {
         if (image == null || image.isEmpty()) {
             throw new IllegalArgumentException("La imatge és obligatòria.");
         }
 
-        String textOcr = cridarOcrSpace(image);
+        String textOcr = extreureText(image);
         return parsejarTextOcr(textOcr);
     }
 
-    private String cridarOcrSpace(MultipartFile image) {
+    private String extreureText(MultipartFile image) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-            headers.set("apikey", ocrApiKey);
+            BufferedImage bufferedImage = ImageIO.read(image.getInputStream());
 
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("language", "spa");
-            body.add("isOverlayRequired", "false");
-            body.add("OCREngine", "2");
-            body.add("file", buildFileResource(image));
-
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    ocrApiUrl,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
-
-            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                throw new IllegalStateException("No s'ha pogut obtenir resposta de l'OCR.");
+            if (bufferedImage == null) {
+                throw new IllegalStateException("No s'ha pogut llegir la imatge enviada.");
             }
 
-            JsonNode root = objectMapper.readTree(response.getBody());
+            Tesseract tesseract = new Tesseract();
+            tesseract.setDatapath(tessdataPath);
+            tesseract.setLanguage(tesseractLanguage);
 
-            JsonNode parsedResults = root.path("ParsedResults");
-            if (!parsedResults.isArray() || parsedResults.isEmpty()) {
-                throw new IllegalStateException("L'OCR no ha retornat text processat.");
-            }
-
-            StringBuilder textFinal = new StringBuilder();
-            for (JsonNode result : parsedResults) {
-                String parsedText = result.path("ParsedText").asText("");
-                if (!parsedText.isBlank()) {
-                    textFinal.append(parsedText).append("\n");
-                }
-            }
-
-            if (textFinal.toString().isBlank()) {
-                throw new IllegalStateException("L'OCR no ha detectat text a la imatge.");
-            }
-
-            return textFinal.toString().trim();
+            return tesseract.doOCR(bufferedImage);
 
         } catch (IOException ex) {
-            throw new IllegalStateException("Error processant la resposta de l'OCR.", ex);
-        } catch (Exception ex) {
-            throw new IllegalStateException("Error cridant el servei OCR.", ex);
+            throw new IllegalStateException("Error llegint la imatge per OCR.", ex);
+        } catch (TesseractException ex) {
+            throw new IllegalStateException("Error executant Tesseract OCR.", ex);
         }
-    }
-
-    private ByteArrayResource buildFileResource(MultipartFile image) throws IOException {
-        return new ByteArrayResource(image.getBytes()) {
-            @Override
-            public String getFilename() {
-                return image.getOriginalFilename() != null
-                        ? image.getOriginalFilename()
-                        : "albara.jpg";
-            }
-        };
     }
 
     private OcrAlbaraResponseDto parsejarTextOcr(String textOcr) {
