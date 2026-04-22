@@ -7,13 +7,12 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val DEFAULT_SCHEME = "https"
-    private const val DEFAULT_PORT = 8443
+    private const val DEFAULT_SCHEME = "http"
+    private const val DEFAULT_PORT = 8080
 
     fun buildBaseUrl(serverHost: String): String {
         val cleanHost = serverHost
             .trim()
-            .removePrefix("https://")
             .removePrefix("http://")
             .removeSuffix("/")
             .substringBefore(":")
