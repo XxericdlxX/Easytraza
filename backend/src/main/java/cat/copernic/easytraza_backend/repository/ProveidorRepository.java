@@ -12,4 +12,6 @@ public interface ProveidorRepository extends JpaRepository<Proveidor, String> {
     Optional<Proveidor> findByEmailIgnoreCase(String email);
 
     boolean existsByEmailIgnoreCase(String email);
+
+    Optional<Proveidor> findByNomIgnoreCase(String nom);
 }
