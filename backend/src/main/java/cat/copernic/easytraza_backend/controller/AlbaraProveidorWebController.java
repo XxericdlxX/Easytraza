@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/web/albarans-proveidor")
@@ -264,7 +266,7 @@ public class AlbaraProveidorWebController {
     private AlbaraProveidorDto convertirOcrAAlbaraDto(OcrAlbaraResponseDto resposta) {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
         dto.setDataRecepcio(parseDataOcr(resposta.getDataAlbara()));
-        dto.setProveidorCif(resoldreProveidorPerCifONom(resposta));
+        dto.setProveidorCif(resoldreOCrearProveidor(resposta));
 
         List<LotProveidorDto> lots = new ArrayList<>();
         if (resposta.getLots() != null) {
@@ -307,11 +309,45 @@ public class AlbaraProveidorWebController {
         return LocalDate.now();
     }
 
-    private String resoldreProveidorPerCifONom(OcrAlbaraResponseDto resposta) {
-        if (resposta.getProveidorCif() != null && !resposta.getProveidorCif().isBlank()) {
-            Optional<Proveidor> proveidor = proveidorRepository.findById(resposta.getProveidorCif().trim());
-            if (proveidor.isPresent()) {
-                return proveidor.get().getCif();
+    private String resoldreOCrearProveidor(OcrAlbaraResponseDto resposta) {
+        String cifDetectat = normalitzarDocument(resposta.getProveidorCif());
+
+        if (cifDetectat != null && !cifDetectat.isBlank()) {
+            Optional<Proveidor> existentPerCif = proveidorRepository.findById(cifDetectat);
+            if (existentPerCif.isPresent()) {
+                return existentPerCif.get().getCif();
+            }
+
+            String nomDetectat = extreureNomProveidor(resposta.getTextDetectat(), cifDetectat);
+
+            if (nomDetectat != null && !nomDetectat.isBlank()) {
+                Optional<Proveidor> existentPerNom = proveidorRepository.findByNomIgnoreCase(nomDetectat.trim());
+                if (existentPerNom.isPresent()) {
+                    return existentPerNom.get().getCif();
+                }
+            }
+
+            Proveidor nouProveidor = new Proveidor();
+            nouProveidor.setCif(cifDetectat);
+            nouProveidor.setNom(
+                    nomDetectat != null && !nomDetectat.isBlank()
+                    ? nomDetectat.trim()
+                    : "Proveïdor OCR " + cifDetectat
+            );
+            nouProveidor.setAdreca("Pendent OCR");
+            nouProveidor.setNotes("Creat automàticament des del flux OCR");
+            nouProveidor.setTelefon(null);
+            nouProveidor.setEmail(null);
+
+            proveidorRepository.save(nouProveidor);
+            return nouProveidor.getCif();
+        }
+
+        String nomDetectatSenseCif = extreureNomProveidor(resposta.getTextDetectat(), null);
+        if (nomDetectatSenseCif != null && !nomDetectatSenseCif.isBlank()) {
+            Optional<Proveidor> existentPerNom = proveidorRepository.findByNomIgnoreCase(nomDetectatSenseCif.trim());
+            if (existentPerNom.isPresent()) {
+                return existentPerNom.get().getCif();
             }
         }
 
@@ -325,6 +361,54 @@ public class AlbaraProveidorWebController {
         }
 
         return null;
+    }
+
+    private String extreureNomProveidor(String text, String cifDetectat) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+
+        String[] linies = text.split("\\R");
+
+        for (String linia : linies) {
+            String valor = linia == null ? "" : linia.trim();
+            if (valor.isBlank()) {
+                continue;
+            }
+
+            String upper = valor.toUpperCase();
+
+            if (cifDetectat != null && upper.contains(cifDetectat.toUpperCase())) {
+                continue;
+            }
+
+            if (upper.startsWith("ALBAR") || upper.startsWith("FECHA") || upper.startsWith("DATA")
+                    || upper.startsWith("LOT") || upper.startsWith("LOTE")
+                    || upper.startsWith("CANTIDAD") || upper.startsWith("QUANTITAT")
+                    || upper.startsWith("MATERIA") || upper.startsWith("MATÈRIA")
+                    || upper.startsWith("CIF") || upper.startsWith("NIF") || upper.startsWith("NIE")) {
+                continue;
+            }
+
+            if (valor.length() < 3) {
+                continue;
+            }
+
+            if (valor.matches(".*\\d{2}/\\d{2}/\\d{4}.*") || valor.matches(".*\\d{4}-\\d{2}-\\d{2}.*")) {
+                continue;
+            }
+
+            return valor;
+        }
+
+        return null;
+    }
+
+    private String normalitzarDocument(String document) {
+        if (document == null) {
+            return null;
+        }
+        return document.trim().toUpperCase().replace(" ", "");
     }
 
     private Long resoldreMateriaPrimaPerNom(String nomMateria) {
