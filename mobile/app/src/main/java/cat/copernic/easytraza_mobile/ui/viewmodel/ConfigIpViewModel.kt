@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import javax.net.ssl.SSLException
 
 class ConfigIpViewModel(
     application: Application,
@@ -81,9 +80,6 @@ class ConfigIpViewModel(
                         response.code()
                     )
                 }
-            } catch (_: SSLException) {
-                _status.value = getApplication<Application>()
-                    .getString(R.string.connection_error_ssl)
             } catch (_: UnknownHostException) {
                 _status.value = getApplication<Application>()
                     .getString(R.string.connection_error_host)
@@ -106,7 +102,6 @@ class ConfigIpViewModel(
     private fun normalizeServerHost(rawValue: String): String {
         return rawValue
             .trim()
-            .removePrefix("https://")
             .removePrefix("http://")
             .removeSuffix("/")
             .substringBefore(":")
