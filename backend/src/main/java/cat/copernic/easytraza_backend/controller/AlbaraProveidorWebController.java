@@ -2,10 +2,15 @@ package cat.copernic.easytraza_backend.controller;
 
 import cat.copernic.easytraza_backend.dto.AlbaraProveidorDto;
 import cat.copernic.easytraza_backend.dto.LotProveidorDto;
+import cat.copernic.easytraza_backend.dto.OcrAlbaraResponseDto;
+import cat.copernic.easytraza_backend.dto.OcrLotRespostaDto;
 import cat.copernic.easytraza_backend.model.AlbaraProveidor;
+import cat.copernic.easytraza_backend.model.MateriaPrima;
+import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.service.AlbaraProveidorService;
+import cat.copernic.easytraza_backend.service.OcrAlbaraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,9 +18,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -25,6 +35,9 @@ public class AlbaraProveidorWebController {
 
     @Autowired
     private AlbaraProveidorService albaraProveidorService;
+
+    @Autowired
+    private OcrAlbaraService ocrAlbaraService;
 
     @Autowired
     private ProveidorRepository proveidorRepository;
@@ -153,6 +166,71 @@ public class AlbaraProveidorWebController {
         return "redirect:/web/albarans-proveidor";
     }
 
+    @GetMapping("/ocr")
+    public String mostrarFormulariOcr(Model model) {
+        model.addAttribute("currentPath", "/web/albarans-proveidor");
+        return "albarans_proveidor/ocr-albara-proveidor";
+    }
+
+    @PostMapping("/ocr/processar")
+    public String processarOcr(@RequestParam("fitxer") MultipartFile fitxer,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        try {
+            if (fitxer == null || fitxer.isEmpty()) {
+                redirectAttributes.addFlashAttribute(
+                        "missatgeError",
+                        messageSource.getMessage("albara.proveidor.ocr.fitxer.obligatori", null, locale)
+                );
+                return "redirect:/web/albarans-proveidor/ocr";
+            }
+
+            OcrAlbaraResponseDto resposta = ocrAlbaraService.processarImatgeAlbara(fitxer);
+            AlbaraProveidorDto albara = convertirOcrAAlbaraDto(resposta);
+
+            carregarDadesFormulari(model);
+            model.addAttribute("ocrResposta", resposta);
+            model.addAttribute("albara", albara);
+            model.addAttribute("currentPath", "/web/albarans-proveidor");
+            return "albarans_proveidor/revisar-ocr-albara-proveidor";
+
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("albara.proveidor.ocr.error.processar", null, locale)
+            );
+            return "redirect:/web/albarans-proveidor/ocr";
+        }
+    }
+
+    @PostMapping("/ocr/guardar")
+    public String guardarDesDeOcr(@ModelAttribute("albara") AlbaraProveidorDto dto,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        String errorNegoci = albaraProveidorService.validarAlbara(dto, null);
+        if (errorNegoci != null) {
+            carregarDadesFormulari(model);
+            albaraProveidorService.assegurarMinimUnLot(dto);
+            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
+            model.addAttribute("currentPath", "/web/albarans-proveidor");
+            return "albarans_proveidor/revisar-ocr-albara-proveidor";
+        }
+
+        AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
+        albaraProveidorService.save(entity);
+
+        redirectAttributes.addFlashAttribute(
+                "missatgeExit",
+                messageSource.getMessage("albara.proveidor.flash.creat", null, locale)
+        );
+
+        return "redirect:/web/albarans-proveidor";
+    }
+
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id,
             RedirectAttributes redirectAttributes,
@@ -181,5 +259,94 @@ public class AlbaraProveidorWebController {
     private void carregarDadesFormulari(Model model) {
         model.addAttribute("proveidors", proveidorRepository.findAll());
         model.addAttribute("materiesPrimeres", materiaPrimaRepository.findAll());
+    }
+
+    private AlbaraProveidorDto convertirOcrAAlbaraDto(OcrAlbaraResponseDto resposta) {
+        AlbaraProveidorDto dto = new AlbaraProveidorDto();
+        dto.setDataRecepcio(parseDataOcr(resposta.getDataAlbara()));
+        dto.setProveidorCif(resoldreProveidorPerCifONom(resposta));
+
+        List<LotProveidorDto> lots = new ArrayList<>();
+        if (resposta.getLots() != null) {
+            for (OcrLotRespostaDto lotOcr : resposta.getLots()) {
+                LotProveidorDto lotDto = new LotProveidorDto();
+                lotDto.setCodiLot(lotOcr.getCodiLot());
+                lotDto.setQuantitat(lotOcr.getQuantitat() != null ? lotOcr.getQuantitat().intValue() : null);
+                lotDto.setMateriaPrimaId(resoldreMateriaPrimaPerNom(lotOcr.getMateriaPrima()));
+                lots.add(lotDto);
+            }
+        }
+
+        if (lots.isEmpty()) {
+            lots.add(new LotProveidorDto());
+        }
+
+        dto.setLots(lots);
+        return dto;
+    }
+
+    private LocalDate parseDataOcr(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return LocalDate.now();
+        }
+
+        List<DateTimeFormatter> formatters = List.of(
+                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy"),
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        );
+
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalDate.parse(valor.trim(), formatter);
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+
+        return LocalDate.now();
+    }
+
+    private String resoldreProveidorPerCifONom(OcrAlbaraResponseDto resposta) {
+        if (resposta.getProveidorCif() != null && !resposta.getProveidorCif().isBlank()) {
+            Optional<Proveidor> proveidor = proveidorRepository.findById(resposta.getProveidorCif().trim());
+            if (proveidor.isPresent()) {
+                return proveidor.get().getCif();
+            }
+        }
+
+        if (resposta.getTextDetectat() != null) {
+            String text = resposta.getTextDetectat().toLowerCase();
+            for (Proveidor proveidor : proveidorRepository.findAll()) {
+                if (proveidor.getNom() != null && text.contains(proveidor.getNom().toLowerCase())) {
+                    return proveidor.getCif();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Long resoldreMateriaPrimaPerNom(String nomMateria) {
+        if (nomMateria == null || nomMateria.isBlank()) {
+            return null;
+        }
+
+        Optional<MateriaPrima> exacta = materiaPrimaRepository.findByNom(nomMateria.trim());
+        if (exacta.isPresent()) {
+            return exacta.get().getId();
+        }
+
+        String nomNormalitzat = nomMateria.trim().toLowerCase();
+        for (MateriaPrima materia : materiaPrimaRepository.findAll()) {
+            if (materia.getNom() != null && materia.getNom().trim().toLowerCase().contains(nomNormalitzat)) {
+                return materia.getId();
+            }
+            if (materia.getNom() != null && nomNormalitzat.contains(materia.getNom().trim().toLowerCase())) {
+                return materia.getId();
+            }
+        }
+
+        return null;
     }
 }
