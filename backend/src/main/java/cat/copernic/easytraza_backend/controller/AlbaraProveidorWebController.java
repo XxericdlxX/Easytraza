@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/web/albarans-proveidor")
@@ -274,7 +272,7 @@ public class AlbaraProveidorWebController {
                 LotProveidorDto lotDto = new LotProveidorDto();
                 lotDto.setCodiLot(lotOcr.getCodiLot());
                 lotDto.setQuantitat(lotOcr.getQuantitat() != null ? lotOcr.getQuantitat().intValue() : null);
-                lotDto.setMateriaPrimaId(resoldreMateriaPrimaPerNom(lotOcr.getMateriaPrima()));
+                lotDto.setMateriaPrimaId(resoldreOCrearMateriaPrima(lotOcr.getMateriaPrima()));
                 lots.add(lotDto);
             }
         }
@@ -411,18 +409,26 @@ public class AlbaraProveidorWebController {
         return document.trim().toUpperCase().replace(" ", "");
     }
 
-    private Long resoldreMateriaPrimaPerNom(String nomMateria) {
+    private Long resoldreOCrearMateriaPrima(String nomMateria) {
         if (nomMateria == null || nomMateria.isBlank()) {
             return null;
         }
 
-        Optional<MateriaPrima> exacta = materiaPrimaRepository.findByNom(nomMateria.trim());
-        if (exacta.isPresent()) {
-            return exacta.get().getId();
+        String nomNet = netejarNomMateria(nomMateria);
+        if (nomNet == null || nomNet.isBlank()) {
+            return null;
         }
 
-        String nomNormalitzat = nomMateria.trim().toLowerCase();
+        Optional<MateriaPrima> exactaIgnoreCase = materiaPrimaRepository.findByNomIgnoreCase(nomNet);
+        if (exactaIgnoreCase.isPresent()) {
+            return exactaIgnoreCase.get().getId();
+        }
+
+        String nomNormalitzat = nomNet.trim().toLowerCase();
         for (MateriaPrima materia : materiaPrimaRepository.findAll()) {
+            if (materia.getNom() != null && materia.getNom().trim().toLowerCase().equals(nomNormalitzat)) {
+                return materia.getId();
+            }
             if (materia.getNom() != null && materia.getNom().trim().toLowerCase().contains(nomNormalitzat)) {
                 return materia.getId();
             }
@@ -431,6 +437,33 @@ public class AlbaraProveidorWebController {
             }
         }
 
-        return null;
+        MateriaPrima novaMateria = new MateriaPrima();
+        novaMateria.setNom(nomNet);
+        novaMateria.setDescripcio("Creada automàticament des del flux OCR");
+
+        materiaPrimaRepository.save(novaMateria);
+        return novaMateria.getId();
+    }
+
+    private String netejarNomMateria(String nomMateria) {
+        if (nomMateria == null) {
+            return null;
+        }
+
+        String valor = nomMateria
+                .replace("\n", " ")
+                .replace("\r", " ")
+                .trim()
+                .replaceAll("\\s{2,}", " ");
+
+        valor = valor.replaceAll("(?i)\\b\\d+(?:[\\.,]\\d+)?\\s*(kg|g|gr|grams|grams\\.|uds|ud|unitats|unitats\\.)\\b", "")
+                .trim()
+                .replaceAll("\\s{2,}", " ");
+
+        if (valor.length() < 2) {
+            return null;
+        }
+
+        return valor;
     }
 }
