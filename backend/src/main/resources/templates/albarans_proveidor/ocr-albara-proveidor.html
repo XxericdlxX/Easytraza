@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.proveidor.ocr.titol}">Procesar albarán con OCR</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{albara.proveidor.ocr.titol}">Procesar albarán con OCR</h1>
+                </div>
+
+                <div class="actions">
+                    <a th:href="@{/web/albarans-proveidor/ocr(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/albarans-proveidor/ocr(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+            <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+
+            <div class="form-card">
+                <p th:text="#{albara.proveidor.ocr.descripcio}">
+                    Sube una imagen, foto o PDF del albarán para detectar automáticamente sus datos.
+                </p>
+
+                <form th:action="@{/web/albarans-proveidor/ocr/processar}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="fitxer">
+                            <span th:text="#{albara.proveidor.ocr.fitxer}">Imagen o PDF</span> <span class="required">*</span>
+                        </label>
+                        <input id="fitxer" name="fitxer" type="file" accept="image/*,application/pdf" required>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{albara.proveidor.ocr.processar}">Procesar OCR</button>
+                        <a th:href="@{/web/albarans-proveidor/crear}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar.manual}">Volver al modo manual</a>
+                        <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
