@@ -44,7 +44,7 @@ image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López |Vaig acabar el RF07 - CRUD d’albarans de proveïdor per part web sin OCR | Faré la part mobile del RF07 - CRUD d’albarans de proveïdor i intentar afegir ocr a web i a mobile  | els canvis del enunciat que han descuadrat coses | 3h + 3h
 |===
 
 === DIA 5 Dijous - 23/04/2026
