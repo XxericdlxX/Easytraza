@@ -46,8 +46,7 @@
                         <tbody>
                             <tr th:each="lot : ${albaraDetall.lots}">
                                 <td th:text="${lot.codiLot}"></td>
-                                <td th:text="${lot.quantitat}"></td>
-                                <td th:text="${lot.materiaPrima.nom}"></td>
+                                <td th:text="${lot.quantitat != null ? lot.quantitat + ' KG' : '-'}">12 KG</td>                                <td th:text="${lot.materiaPrima.nom}"></td>
                                 <td th:text="${lot.estat}"></td>
                             </tr>
                         </tbody>
