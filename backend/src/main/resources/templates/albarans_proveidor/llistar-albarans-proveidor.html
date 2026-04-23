@@ -85,7 +85,8 @@
 
                                         <a th:href="@{/web/albarans-proveidor/eliminar/{id}(id=${albara.id})}"
                                            class="btn btn-danger"
-                                           th:text="#{albara.proveidor.eliminar}">Eliminar</a>
+                                           th:text="#{albara.proveidor.eliminar}"
+                                           th:attr="onclick=|return confirm('${#messages.msg('albara.proveidor.confirmar.eliminar')}');|">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>
