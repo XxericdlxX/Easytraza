@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,7 +40,7 @@ fun UserSelectionScreen(
     onUserSelected: (DemoUser) -> Unit,
     onOpenConfig: () -> Unit
 ) {
-    androidx.compose.foundation.layout.Column(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -55,7 +56,7 @@ fun UserSelectionScreen(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
-            androidx.compose.foundation.layout.Column(
+            Column(
                 modifier = Modifier.padding(22.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -103,7 +104,7 @@ fun UserSelectionScreen(
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
                 ) {
-                    androidx.compose.foundation.layout.Column(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(18.dp),
