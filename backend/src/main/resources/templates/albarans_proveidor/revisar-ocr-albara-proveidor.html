@@ -60,7 +60,12 @@
                                 <h3 class="lot-title" th:text="#{lot.proveidor.titol} + ' ' + ${stat.index + 1}">Lote 1</h3>
 
                                 <div class="actions">
-                                    <button type="button" class="btn btn-accent add-lot-inline-btn" th:text="#{lot.proveidor.afegir}">Añadir lote</button>
+                                    <button type="button"
+                                            class="btn btn-accent add-lot-inline-btn"
+                                            th:if="${ocrResposta == null}"
+                                            th:text="#{lot.proveidor.afegir}">
+                                        Añadir lote
+                                    </button>
                                     <button type="button" class="btn btn-danger remove-lot-btn" th:text="#{lot.proveidor.eliminar}">Eliminar lote</button>
                                 </div>
                             </div>
@@ -69,14 +74,26 @@
                                 <label>
                                     <span th:text="#{lot.proveidor.codi}">Código/identificador de lote</span> <span class="required">*</span>
                                 </label>
-                                <input type="text" class="lot-codi-field" th:name="${'lots[' + stat.index + '].codiLot'}" th:value="${lot.codiLot}">
+                                <input type="text"
+                                       class="lot-codi-field"
+                                       th:name="${'lots[' + stat.index + '].codiLot'}"
+                                       th:value="${lot.codiLot}">
                             </div>
 
                             <div class="form-group">
                                 <label>
                                     <span th:text="#{lot.proveidor.quantitat}">Cantidad</span> <span class="required">*</span>
                                 </label>
-                                <input type="number" min="1" class="lot-quantitat-field" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
+                                <input type="number"
+                                       min="1"
+                                       class="lot-quantitat-field"
+                                       th:name="${'lots[' + stat.index + '].quantitat'}"
+                                       th:value="${lot.quantitat}">
+                                <small class="field-help"
+                                       th:if="${lot.quantitat != null}"
+                                       th:text="${lot.quantitat + ' KG'}">
+                                    25 KG
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -123,6 +140,7 @@
                 <div class="form-group">
                     <label>Cantidad <span class="required">*</span></label>
                     <input type="number" min="1" class="lot-quantitat-field">
+                    <small class="field-help lot-quantitat-help"></small>
                 </div>
 
                 <div class="form-group">
@@ -161,6 +179,8 @@
                         quantitatInput.name = `lots[${index}].quantitat`;
                     if (materiaSelect)
                         materiaSelect.name = `lots[${index}].materiaPrimaId`;
+
+                    updateQuantitatHelp(card);
                 });
 
                 refreshButtons();
@@ -187,10 +207,28 @@
                 });
             }
 
+            function updateQuantitatHelp(card) {
+                const quantitatInput = card.querySelector('.lot-quantitat-field');
+                let help = card.querySelector('.lot-quantitat-help, .field-help');
+
+                if (!quantitatInput)
+                    return;
+
+                if (!help) {
+                    help = document.createElement('small');
+                    help.className = 'field-help lot-quantitat-help';
+                    quantitatInput.insertAdjacentElement('afterend', help);
+                }
+
+                const valor = quantitatInput.value?.trim() || "";
+                help.textContent = valor !== "" ? `${valor} KG` : "";
+            }
+
             function addLot() {
                 const clone = lotTemplate.content.cloneNode(true);
                 lotsContainer.appendChild(clone);
                 bindButtons();
+                bindQuantitatInputs();
                 refreshLotIndexes();
             }
 
@@ -220,7 +258,17 @@
                 });
             }
 
+            function bindQuantitatInputs() {
+                lotsContainer.querySelectorAll('.lot-quantitat-field').forEach(input => {
+                    input.oninput = function () {
+                        const card = input.closest('.lot-card');
+                        updateQuantitatHelp(card);
+                    };
+                });
+            }
+
             bindButtons();
+            bindQuantitatInputs();
             refreshLotIndexes();
         </script>
     </body>
