@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.ui.viewmodel.EditableLotUi
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
+
 @Composable
 fun RecepcioAlbaraScreen(
     currentUserName: String,
@@ -89,7 +90,11 @@ fun RecepcioAlbaraScreen(
     ) { uri ->
         if (uri != null) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarUri(context.contentResolver, uri, "imatge-ocr.jpg")
+            viewModel.analitzarUri(
+                context.contentResolver,
+                uri,
+                "imatge-ocr.jpg"
+            )
         }
     }
 
@@ -98,7 +103,11 @@ fun RecepcioAlbaraScreen(
     ) { uri ->
         if (uri != null) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarUri(context.contentResolver, uri, "document-ocr.pdf")
+            viewModel.analitzarUri(
+                context.contentResolver,
+                uri,
+                "document-ocr.pdf"
+            )
         }
     }
 
@@ -386,7 +395,10 @@ private fun LotEditableCard(
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                     ) {
-                        Text("Eliminar")
+                        Text(
+                            text = "Eliminar",
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
@@ -403,6 +415,11 @@ private fun LotEditableCard(
                 value = lot.quantitat,
                 onValueChange = onQuantitatChange,
                 label = { Text(stringResource(R.string.recepcio_field_quantity)) },
+                supportingText = {
+                    if (lot.quantitat.isNotBlank()) {
+                        Text("${lot.quantitat} KG")
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
             )
@@ -417,7 +434,6 @@ private fun LotEditableCard(
         }
     }
 }
-
 private enum class RecepcioMode {
     Manual,
     Ocr
