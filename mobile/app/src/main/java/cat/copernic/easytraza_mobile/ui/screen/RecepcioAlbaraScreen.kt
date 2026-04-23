@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
+import cat.copernic.easytraza_mobile.network.dto.MobileLotSaveRequestDto
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 
 @Composable
@@ -58,6 +60,7 @@ fun RecepcioAlbaraScreen(
     val materiaPrima by viewModel.materiaPrima.collectAsState()
     val textOcr by viewModel.textOcr.collectAsState()
     val status by viewModel.status.collectAsState()
+    val lotsDetectats by viewModel.lotsDetectats.collectAsState()
 
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -70,7 +73,7 @@ fun RecepcioAlbaraScreen(
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
+    ) { granted: Boolean ->
         if (granted) {
             takePictureLauncher.launch(null)
         }
@@ -81,7 +84,11 @@ fun RecepcioAlbaraScreen(
     ) { uri ->
         if (uri != null) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarUri(context.contentResolver, uri, "imatge-ocr.jpg")
+            viewModel.analitzarUri(
+                context.contentResolver,
+                uri,
+                "imatge-ocr.jpg"
+            )
         }
     }
 
@@ -90,7 +97,11 @@ fun RecepcioAlbaraScreen(
     ) { uri ->
         if (uri != null) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarUri(context.contentResolver, uri, "document-ocr.pdf")
+            viewModel.analitzarUri(
+                context.contentResolver,
+                uri,
+                "document-ocr.pdf"
+            )
         }
     }
 
@@ -126,7 +137,10 @@ fun RecepcioAlbaraScreen(
                 modifier = Modifier.padding(22.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(text = "📦", style = MaterialTheme.typography.displaySmall)
+                Text(
+                    text = "📦",
+                    style = MaterialTheme.typography.displaySmall
+                )
 
                 Text(
                     text = stringResource(R.string.recepcio_screen_title),
@@ -143,7 +157,9 @@ fun RecepcioAlbaraScreen(
             }
         }
 
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             SegmentedButton(
                 selected = mode.value == RecepcioMode.Manual,
                 onClick = { mode.value = RecepcioMode.Manual },
@@ -164,7 +180,9 @@ fun RecepcioAlbaraScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         ) {
             Column(
                 modifier = Modifier.padding(18.dp),
@@ -182,7 +200,9 @@ fun RecepcioAlbaraScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     OutlinedButton(
                         onClick = {
                             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -207,19 +227,23 @@ fun RecepcioAlbaraScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { pdfPickerLauncher.launch(arrayOf("application/pdf")) },
+                    onClick = {
+                        pdfPickerLauncher.launch(arrayOf("application/pdf"))
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(stringResource(R.string.recepcio_ocr_pdf_button))
                 }
 
-                Text(
-                    text = status,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontWeight = FontWeight.SemiBold
-                )
+                if (status.isNotBlank()) {
+                    Text(
+                        text = status,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
 
                 if (textOcr.isNotBlank()) {
                     OutlinedTextField(
@@ -232,13 +256,40 @@ fun RecepcioAlbaraScreen(
                         shape = RoundedCornerShape(16.dp)
                     )
                 }
+
+                if (lotsDetectats.isNotEmpty()) {
+                    HorizontalDivider()
+
+                    Text(
+                        text = "Lotes detectados por OCR",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    lotsDetectats.forEachIndexed { index: Int, lot: MobileLotSaveRequestDto ->
+                        LotDetectatCard(
+                            index = index,
+                            lot = lot,
+                            esPrincipal = index == 0
+                        )
+                    }
+
+                    Text(
+                        text = "El primer lote detectado se carga en el formulario editable. Si hay más lotes, también se enviarán al guardar.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         ) {
             Column(
                 modifier = Modifier.padding(18.dp),
@@ -312,6 +363,62 @@ fun RecepcioAlbaraScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LotDetectatCard(
+    index: Int,
+    lot: MobileLotSaveRequestDto,
+    esPrincipal: Boolean
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (esPrincipal) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                text = if (esPrincipal) "Lote ${index + 1} (principal)" else "Lote ${index + 1}",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = if (esPrincipal) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
+            )
+
+            if (lot.codiLot.isNotBlank()) {
+                Text(
+                    text = "Código: ${lot.codiLot}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            if (lot.materiaPrimaNom.isNotBlank()) {
+                Text(
+                    text = "Materia prima: ${lot.materiaPrimaNom}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            if (lot.quantitat != null) {
+                Text(
+                    text = "Cantidad: ${lot.quantitat}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
