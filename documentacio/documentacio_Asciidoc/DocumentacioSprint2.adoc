@@ -51,7 +51,7 @@ image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | Vaig acabar la part manual per web per RF07 - CRUD d’albarans de proveïdor, vaig afegir usuaris demo i un home en mobile i vaig començar a afegir el ocr |Acabaré el RF07 - CRUD d’albarans de proveïdor + ocr en mobile i en web  | problemes amb el OCR | 4h +  
 |===
 
 
