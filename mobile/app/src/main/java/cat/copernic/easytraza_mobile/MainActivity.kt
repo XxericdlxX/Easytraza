@@ -1,6 +1,7 @@
 package cat.copernic.easytraza_mobile
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -96,6 +97,15 @@ class MainActivity : ComponentActivity() {
                                 currentUserName = currentUser.value?.name ?: "Operari Demo",
                                 viewModel = recepcioViewModel,
                                 onBack = {
+                                    currentScreen.value = AppScreen.Dashboard
+                                },
+                                onSaveSuccess = {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Albarán guardado correctamente",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
                                     currentScreen.value = AppScreen.Dashboard
                                 }
                             )
