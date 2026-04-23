@@ -28,13 +28,13 @@
     <string name="dashboard_welcome_label">Hola 👋</string>
     <string name="dashboard_config_short_button">IP</string>
     <string name="dashboard_change_user_button">Cambiar usuario</string>
-    <string name="dashboard_hero_emoji">🍞</string>
+    <string name="dashboard_hero_emoji">📦</string>
     <string name="dashboard_hero_title">Panel principal de EasyTraza</string>
-    <string name="dashboard_hero_subtitle">Accede rápidamente a la operación principal disponible en este sprint.</string>
+    <string name="dashboard_hero_subtitle">Accede rápidamente a la recepción de albaranes del sprint actual.</string>
     <string name="dashboard_actions_section_title">Acción principal</string>
     <string name="dashboard_action_open">Abrir</string>
     <string name="dashboard_action_receive_title">Recepcionar albarán</string>
-    <string name="dashboard_action_receive_subtitle">Crear el albarán en móvil y, dentro de este mismo flujo, escoger si quieres introducir los datos manualmente o mediante OCR.</string>
+    <string name="dashboard_action_receive_subtitle">Crea el albarán desde móvil manualmente o mediante OCR usando cámara, imagen o PDF.</string>
 
     <string name="dashboard_config_section_title">Configuración de conexión</string>
     <string name="dashboard_config_section_subtitle">Mantén accesible la IP del backend desde esta pantalla independiente.</string>
@@ -43,7 +43,6 @@
 
     <string name="recepcio_screen_title">Recepcionar albarán</string>
     <string name="recepcio_screen_subtitle">Usuario activo: %1$s</string>
-    <string name="recepcio_mode_title">Modo de entrada</string>
     <string name="recepcio_mode_manual">Manual</string>
     <string name="recepcio_mode_ocr">OCR</string>
     <string name="recepcio_ocr_block_title">Entrada asistida por OCR</string>
@@ -60,4 +59,15 @@
     <string name="recepcio_field_quantity">Cantidad</string>
     <string name="recepcio_field_material">Materia prima</string>
     <string name="recepcio_save_button">Guardar albarán</string>
+
+    <string name="ocr_error_no_ip">Primero debes guardar una IP válida del backend.</string>
+    <string name="ocr_error_backend">El backend ha devuelto un error en el OCR.</string>
+    <string name="ocr_error_file">No se ha podido preparar el archivo para el OCR.</string>
+    <string name="ocr_success">OCR completado correctamente.</string>
+    <string name="ocr_saving">Guardando albarán…</string>
+    <string name="ocr_saved">Albarán guardado correctamente.</string>
+    <string name="ocr_save_error">No se ha podido guardar el albarán.</string>
+    <string name="ocr_processing_document">Analizando documento…</string>
+    <string name="ocr_processing_photo">Analizando fotografía…</string>
+    <string name="ocr_processing_error">Error analizando el documento.</string>
 </resources>
