@@ -70,4 +70,6 @@
     <string name="ocr_processing_document">Analitzant document…</string>
     <string name="ocr_processing_photo">Analitzant fotografia…</string>
     <string name="ocr_processing_error">Error analitzant el document.</string>
+
+    <string name="recepcio_save_success_toast">Albarà desat correctament</string>
 </resources>

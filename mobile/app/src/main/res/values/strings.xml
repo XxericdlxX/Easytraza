@@ -70,4 +70,6 @@
     <string name="ocr_processing_document">Analizando documento…</string>
     <string name="ocr_processing_photo">Analizando fotografía…</string>
     <string name="ocr_processing_error">Error analizando el documento.</string>
+
+    <string name="recepcio_save_success_toast">Albarán guardado correctamente</string>
 </resources>
