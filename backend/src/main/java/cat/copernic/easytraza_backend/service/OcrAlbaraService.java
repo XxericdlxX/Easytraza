@@ -52,7 +52,12 @@ public class OcrAlbaraService {
     );
 
     private static final Pattern PATTERN_QUANTITAT = Pattern.compile(
-            "\\b(\\d+(?:[\\.,]\\d+)?)\\s*(KG|KGS|G|GR|L|ML|UD|UDS|UNITATS)\\b",
+            "\\b(\\d+(?:[\\.,]\\d+)?)\\s*(KG|KGS|RG|G|GR|L|ML|UD|UDS|UNITATS)\\b",
+            Pattern.CASE_INSENSITIVE
+    );
+
+    private static final Pattern PATTERN_NUMERIC_SHORT_WITH_UNIT = Pattern.compile(
+            "^\\s*\\d+(?:[\\.,]\\d+)?\\s*[A-Z]{1,4}\\s*$",
             Pattern.CASE_INSENSITIVE
     );
 
@@ -309,7 +314,10 @@ public class OcrAlbaraService {
                 .replace("L0T", "LOT")
                 .replace("10T", "LOT")
                 .replace("IOT", "LOT")
-                .replace("LO7", "LOT");
+                .replace("LO7", "LOT")
+                .replaceAll("\\s*-\\s*", "-")
+                .replaceAll("\\s+", " ")
+                .trim();
 
         Matcher matcher = PATTERN_LOT.matcher(normalitzada);
         if (matcher.find()) {
@@ -323,7 +331,16 @@ public class OcrAlbaraService {
     }
 
     private Double extraureQuantitat(String line) {
-        Matcher matcher = PATTERN_QUANTITAT.matcher(line.toUpperCase(Locale.ROOT));
+        if (line == null || line.isBlank()) {
+            return null;
+        }
+
+        String normalitzada = line.toUpperCase(Locale.ROOT)
+                .replace(" RG", " KG")
+                .replace("\t", " ")
+                .trim();
+
+        Matcher matcher = PATTERN_QUANTITAT.matcher(normalitzada);
         while (matcher.find()) {
             String numeric = matcher.group(1);
             if (numeric != null) {
@@ -338,7 +355,7 @@ public class OcrAlbaraService {
     }
 
     private boolean esPossibleMateria(String line) {
-        String value = line.trim();
+        String value = line == null ? "" : line.trim();
 
         if (value.isBlank()) {
             return false;
@@ -355,10 +372,24 @@ public class OcrAlbaraService {
         if (PATTERN_LOT.matcher(value).find()) {
             return false;
         }
-        if (PATTERN_QUANTITAT.matcher(value).find()) {
+        if (PATTERN_QUANTITAT.matcher(value.toUpperCase(Locale.ROOT).replace(" RG", " KG")).find()) {
+            return false;
+        }
+        if (PATTERN_NUMERIC_SHORT_WITH_UNIT.matcher(value).matches()) {
             return false;
         }
         if (!value.matches(".*[A-Za-zÀ-ÿ].*")) {
+            return false;
+        }
+
+        String upper = value.toUpperCase(Locale.ROOT);
+
+        if (upper.equals("KG") || upper.equals("RG") || upper.equals("GR")
+                || upper.equals("G") || upper.equals("ML") || upper.equals("L")) {
+            return false;
+        }
+
+        if (upper.matches("^\\d+$")) {
             return false;
         }
 
