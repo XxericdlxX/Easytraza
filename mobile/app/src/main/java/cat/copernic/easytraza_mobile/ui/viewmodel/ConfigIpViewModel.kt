@@ -103,6 +103,7 @@ class ConfigIpViewModel(
         return rawValue
             .trim()
             .removePrefix("http://")
+            .removePrefix("https://")
             .removeSuffix("/")
             .substringBefore(":")
     }
