@@ -101,6 +101,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     fun prepararModeManual() {
         _textOcr.value = ""
         _status.value = ""
+        _dataRecepcio.value = todayIso()
         if (_lotsEditables.value.isEmpty()) {
             _lotsEditables.value = listOf(EditableLotUi())
         }
@@ -256,10 +257,8 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private fun omplirDesDeResposta(resposta: OcrAlbaraResponseDto) {
         _proveidorCif.value = resposta.proveidorCif.orEmpty()
 
-        val normalizedDate = resposta.dataAlbara?.let { normalitzarData(it) }.orEmpty()
-        if (normalizedDate.isNotBlank()) {
-            _dataRecepcio.value = normalizedDate
-        }
+        val dataFinal = resoldreDataRecepcio(resposta.dataAlbara)
+        _dataRecepcio.value = dataFinal
 
         _textOcr.value = resposta.textDetectat.orEmpty()
 
@@ -280,6 +279,12 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    private fun resoldreDataRecepcio(dataOcr: String?): String {
+        val avui = todayIso()
+        val dataOcrNormalitzada = dataOcr?.let { normalitzarData(it) }?.takeIf { it.isNotBlank() } ?: return avui
+        return if (dataOcrNormalitzada <= avui) dataOcrNormalitzada else avui
+    }
+
     private fun extraurePossibleNomProveidor(text: String): String {
         return text.lineSequence()
             .map { it.trim() }
@@ -296,10 +301,10 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private fun normalitzarData(value: String): String {
         val clean = value.trim().replace("/", "-")
         val parts = clean.split("-")
-        return if (parts.size == 3 && parts[0].length == 2) {
-            "${parts[2]}-${parts[1]}-${parts[0]}"
-        } else {
-            clean
+        return when (parts.size) {
+            3 if parts[0].length == 2 -> "${parts[2]}-${parts[1]}-${parts[0]}"
+            3 if parts[0].length == 4 -> clean
+            else -> ""
         }
     }
 
