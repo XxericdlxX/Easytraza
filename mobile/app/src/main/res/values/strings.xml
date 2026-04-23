@@ -33,13 +33,29 @@
     <string name="dashboard_hero_subtitle">Accede rápidamente a la operación principal disponible en este sprint.</string>
     <string name="dashboard_actions_section_title">Acción principal</string>
     <string name="dashboard_action_open">Abrir</string>
-    <string name="dashboard_action_pending">Pantalla pendiente: %1$s</string>
-
     <string name="dashboard_action_receive_title">Recepcionar albarán</string>
-    <string name="dashboard_action_receive_subtitle">Crear el albarán en móvil y, dentro de este mismo flujo, escoger si quieres introducir los datos manualmente o mediante foto OCR.</string>
+    <string name="dashboard_action_receive_subtitle">Crear el albarán en móvil y, dentro de este mismo flujo, escoger si quieres introducir los datos manualmente o mediante OCR.</string>
 
     <string name="dashboard_config_section_title">Configuración de conexión</string>
     <string name="dashboard_config_section_subtitle">Mantén accesible la IP del backend desde esta pantalla independiente.</string>
 
     <string name="config_back_button">Volver</string>
+
+    <string name="recepcio_screen_title">Recepcionar albarán</string>
+    <string name="recepcio_screen_subtitle">Usuario activo: %1$s</string>
+    <string name="recepcio_mode_title">Modo de entrada</string>
+    <string name="recepcio_mode_manual">Manual</string>
+    <string name="recepcio_mode_ocr">OCR</string>
+    <string name="recepcio_ocr_block_title">Entrada asistida por OCR</string>
+    <string name="recepcio_ocr_block_subtitle">Selecciona una imagen o un PDF del albarán y, después, revisa los datos detectados antes de guardar.</string>
+    <string name="recepcio_ocr_image_button">Imagen / foto</string>
+    <string name="recepcio_ocr_pdf_button">PDF</string>
+    <string name="recepcio_ocr_pending_help">Esta parte queda preparada para conectar con el OCR real del backend.</string>
+    <string name="recepcio_form_title">Datos del albarán</string>
+    <string name="recepcio_field_date">Fecha de recepción</string>
+    <string name="recepcio_field_supplier">Proveedor</string>
+    <string name="recepcio_field_lot">Código de lote</string>
+    <string name="recepcio_field_quantity">Cantidad</string>
+    <string name="recepcio_field_material">Materia prima</string>
+    <string name="recepcio_save_button">Guardar albarán</string>
 </resources>

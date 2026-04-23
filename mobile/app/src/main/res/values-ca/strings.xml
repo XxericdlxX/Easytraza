@@ -33,13 +33,29 @@
     <string name="dashboard_hero_subtitle">Accedeix ràpidament a l’operació principal disponible en aquest sprint.</string>
     <string name="dashboard_actions_section_title">Acció principal</string>
     <string name="dashboard_action_open">Obrir</string>
-    <string name="dashboard_action_pending">Pantalla pendent: %1$s</string>
-
     <string name="dashboard_action_receive_title">Recepcionar albarà</string>
-    <string name="dashboard_action_receive_subtitle">Crear l’albarà al mòbil i, dins d’aquest mateix flux, escollir si vols introduir les dades manualment o mitjançant foto OCR.</string>
+    <string name="dashboard_action_receive_subtitle">Crear l’albarà al mòbil i, dins d’aquest mateix flux, escollir si vols introduir les dades manualment o mitjançant OCR.</string>
 
     <string name="dashboard_config_section_title">Configuració de connexió</string>
     <string name="dashboard_config_section_subtitle">Mantén accessible la IP del backend des d’aquesta pantalla independent.</string>
 
     <string name="config_back_button">Tornar</string>
+
+    <string name="recepcio_screen_title">Recepcionar albarà</string>
+    <string name="recepcio_screen_subtitle">Usuari actiu: %1$s</string>
+    <string name="recepcio_mode_title">Mode d’entrada</string>
+    <string name="recepcio_mode_manual">Manual</string>
+    <string name="recepcio_mode_ocr">OCR</string>
+    <string name="recepcio_ocr_block_title">Entrada assistida per OCR</string>
+    <string name="recepcio_ocr_block_subtitle">Selecciona una imatge o un PDF de l’albarà i, després, revisa les dades detectades abans de desar.</string>
+    <string name="recepcio_ocr_image_button">Imatge / foto</string>
+    <string name="recepcio_ocr_pdf_button">PDF</string>
+    <string name="recepcio_ocr_pending_help">Aquesta part queda preparada per connectar amb l’OCR real del backend.</string>
+    <string name="recepcio_form_title">Dades de l’albarà</string>
+    <string name="recepcio_field_date">Data de recepció</string>
+    <string name="recepcio_field_supplier">Proveïdor</string>
+    <string name="recepcio_field_lot">Codi de lot</string>
+    <string name="recepcio_field_quantity">Quantitat</string>
+    <string name="recepcio_field_material">Matèria primera</string>
+    <string name="recepcio_save_button">Desar albarà</string>
 </resources>
