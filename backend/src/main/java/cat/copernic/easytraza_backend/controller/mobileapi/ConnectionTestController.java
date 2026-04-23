@@ -1,4 +1,4 @@
-package cat.copernic.easytraza_backend.controller;
+package cat.copernic.easytraza_backend.controller.mobileapi;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
