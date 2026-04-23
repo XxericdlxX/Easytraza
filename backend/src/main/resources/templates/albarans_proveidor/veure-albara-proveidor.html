@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.proveidor.veure}">Ver albarán de proveedor</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{albara.proveidor.veure}">Ver albarán de proveedor</h1>
+                            <p th:text="#{albara.proveidor.gestio}">Gestión de los albaranes de proveedor del sistema</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">
+                        Volver
+                    </a>
+                </div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <p><strong th:text="#{albara.proveidor.id}">ID</strong>: <span th:text="${albaraDetall.id}"></span></p>
+                    <p><strong th:text="#{albara.proveidor.data}">Fecha</strong>: <span th:text="${albaraDetall.dataRecepcio}"></span></p>
+                    <p><strong th:text="#{albara.proveidor.proveidor}">Proveedor</strong>: <span th:text="${albaraDetall.proveidor.nom + ' (' + albaraDetall.proveidor.cif + ')'}"></span></p>
+                    <p><strong th:text="#{albara.proveidor.usuari}">Usuario receptor</strong>: <span th:text="${albaraDetall.usuariReceptor != null ? albaraDetall.usuariReceptor.nom + ' ' + albaraDetall.usuariReceptor.cognoms : '-'}"></span></p>
+                </div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(albaraDetall.lots)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{lot.proveidor.codi}">Código/identificador de lote</th>
+                                <th th:text="#{lot.proveidor.quantitat}">Cantidad</th>
+                                <th th:text="#{lot.proveidor.materia}">Materia prima</th>
+                                <th th:text="#{lot.proveidor.estat}">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="lot : ${albaraDetall.lots}">
+                                <td th:text="${lot.codiLot}"></td>
+                                <td th:text="${lot.quantitat != null ? lot.quantitat + ' KG' : '-'}">12 KG</td>                                <td th:text="${lot.materiaPrima.nom}"></td>
+                                <td th:text="${lot.estat}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message" th:if="${#lists.isEmpty(albaraDetall.lots)}" th:text="#{albara.proveidor.lots.buit}">
+                    Este albarán no tiene lotes.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

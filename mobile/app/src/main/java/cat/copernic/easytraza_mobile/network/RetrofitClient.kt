@@ -7,14 +7,14 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val DEFAULT_SCHEME = "https"
-    private const val DEFAULT_PORT = 8443
+    private const val DEFAULT_SCHEME = "http"
+    private const val DEFAULT_PORT = 8080
 
     fun buildBaseUrl(serverHost: String): String {
         val cleanHost = serverHost
             .trim()
-            .removePrefix("https://")
             .removePrefix("http://")
+            .removePrefix("https://")
             .removeSuffix("/")
             .substringBefore(":")
 
@@ -25,9 +25,9 @@ object RetrofitClient {
 
     fun create(baseUrl: String): BackendApiService {
         val okHttpClient = OkHttpClient.Builder()
-            .connectTimeout(8, TimeUnit.SECONDS)
-            .readTimeout(8, TimeUnit.SECONDS)
-            .writeTimeout(8, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
             .build()
 
         return Retrofit.Builder()

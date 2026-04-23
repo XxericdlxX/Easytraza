@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.proveidor.ocr.titol}">Procesar albarán con OCR</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{albara.proveidor.ocr.titol}">Procesar albarán con OCR</h1>
+                </div>
+
+                <div class="actions">
+                    <a th:href="@{/web/albarans-proveidor/ocr(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/albarans-proveidor/ocr(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+            <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+
+            <div class="form-card">
+                <p th:text="#{albara.proveidor.ocr.descripcio}">
+                    Sube una imagen, foto o PDF del albarán para detectar automáticamente sus datos.
+                </p>
+
+                <form id="ocr-form"
+                      th:action="@{/web/albarans-proveidor/ocr/processar}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label for="fitxer">
+                            <span th:text="#{albara.proveidor.ocr.fitxer}">Imagen o PDF del albarán</span>
+                            <span class="required">*</span>
+                        </label>
+
+                        <input id="fitxer"
+                               name="fitxer"
+                               type="file"
+                               accept="image/*,application/pdf"
+                               required
+                               class="ocr-hidden-input">
+
+                        <div class="actions ocr-file-actions">
+                            <label for="fitxer"
+                                   class="btn btn-secondary"
+                                   th:text="#{albara.proveidor.ocr.seleccionar}">
+                                Seleccionar archivo
+                            </label>
+
+                            <span id="fitxer-nom"
+                                  th:text="#{albara.proveidor.ocr.cap.fitxer}">
+                                Ningún archivo seleccionado
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="camera-panel">
+                        <h3 th:text="#{albara.proveidor.ocr.camera.titol}">Hacer foto con cámara</h3>
+                        <p th:text="#{albara.proveidor.ocr.camera.desc}">
+                            Puedes abrir la cámara del dispositivo, capturar una imagen y usarla directamente en el OCR.
+                        </p>
+
+                        <video id="camera-video" class="camera-video" autoplay playsinline></video>
+                        <canvas id="camera-canvas" class="camera-canvas"></canvas>
+
+                        <div class="camera-actions">
+                            <button type="button"
+                                    id="btn-start-camera"
+                                    class="btn btn-accent"
+                                    th:text="#{albara.proveidor.ocr.camera.obrir}">
+                                Abrir cámara
+                            </button>
+
+                            <button type="button"
+                                    id="btn-take-photo"
+                                    class="btn btn-primary"
+                                    th:text="#{albara.proveidor.ocr.camera.foto}">
+                                Hacer foto
+                            </button>
+
+                            <button type="button"
+                                    id="btn-close-camera"
+                                    class="btn btn-secondary"
+                                    th:text="#{albara.proveidor.ocr.camera.tancar}">
+                                Cerrar cámara
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="actions ocr-main-actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{albara.proveidor.ocr.processar}">
+                            Procesar OCR
+                        </button>
+                        <a th:href="@{/web/albarans-proveidor/crear}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar.manual}">
+                            Volver al modo manual
+                        </a>
+                        <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            const inputFitxer = document.getElementById('fitxer');
+            const nomFitxer = document.getElementById('fitxer-nom');
+            const textCapFitxer = /*[[#{albara.proveidor.ocr.cap.fitxer}]]*/ 'Ningún archivo seleccionado';
+
+            const video = document.getElementById('camera-video');
+            const canvas = document.getElementById('camera-canvas');
+            const btnStartCamera = document.getElementById('btn-start-camera');
+            const btnTakePhoto = document.getElementById('btn-take-photo');
+            const btnCloseCamera = document.getElementById('btn-close-camera');
+
+            let cameraStream = null;
+
+            inputFitxer.addEventListener('change', function () {
+                if (inputFitxer.files && inputFitxer.files.length > 0) {
+                    nomFitxer.textContent = inputFitxer.files[0].name;
+                } else {
+                    nomFitxer.textContent = textCapFitxer;
+                }
+            });
+
+            async function obrirCamera() {
+                try {
+                    if (cameraStream) {
+                        tancarCamera();
+                    }
+
+                    cameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: {facingMode: {ideal: 'environment'}},
+                        audio: false
+                    });
+
+                    video.srcObject = cameraStream;
+                    video.style.display = 'block';
+                    canvas.style.display = 'none';
+                } catch (error) {
+                    alert('No se ha podido abrir la cámara.');
+                }
+            }
+
+            function tancarCamera() {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    cameraStream = null;
+                }
+            }
+
+            async function ferFoto() {
+                if (!cameraStream) {
+                    await obrirCamera();
+                    return;
+                }
+
+                const width = video.videoWidth || 1280;
+                const height = video.videoHeight || 720;
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, width, height);
+
+                canvas.style.display = 'block';
+                video.style.display = 'none';
+
+                canvas.toBlob(function (blob) {
+                    if (!blob) {
+                        alert('No se ha podido generar la foto.');
+                        return;
+                    }
+
+                    const file = new File([blob], 'captura-ocr.jpg', {type: 'image/jpeg'});
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    inputFitxer.files = dataTransfer.files;
+                    nomFitxer.textContent = file.name;
+                }, 'image/jpeg', 0.92);
+
+                tancarCamera();
+            }
+
+            btnStartCamera.addEventListener('click', obrirCamera);
+            btnTakePhoto.addEventListener('click', ferFoto);
+            btnCloseCamera.addEventListener('click', function () {
+                tancarCamera();
+                video.style.display = 'block';
+                canvas.style.display = 'none';
+            });
+
+            window.addEventListener('beforeunload', function () {
+                tancarCamera();
+            });
+        </script>
+    </body>
+</html>
