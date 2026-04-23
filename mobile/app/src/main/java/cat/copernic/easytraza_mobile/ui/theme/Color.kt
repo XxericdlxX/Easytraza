@@ -25,6 +25,5 @@ val EasyTrazaOnBackground = Color(0xFF4A2E1F)
 
 val EasyTrazaSurface = Color(0xFFFFFDFA)
 val EasyTrazaOnSurface = Color(0xFF4A2E1F)
-val EasyTrazaOnSurfaceVariant = Color(0xFF7A5A46)
 
 val EasyTrazaOutline = Color(0xFFD8C8B8)
