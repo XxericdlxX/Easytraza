@@ -21,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +29,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +40,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
-import cat.copernic.easytraza_mobile.network.dto.MobileLotSaveRequestDto
+import cat.copernic.easytraza_mobile.ui.viewmodel.EditableLotUi
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
-
 @Composable
 fun RecepcioAlbaraScreen(
     currentUserName: String,
     viewModel: RecepcioAlbaraViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onSaveSuccess: () -> Unit
 ) {
     val context = LocalContext.current
     val mode = remember { mutableStateOf(RecepcioMode.Manual) }
@@ -55,12 +55,17 @@ fun RecepcioAlbaraScreen(
     val dataRecepcio by viewModel.dataRecepcio.collectAsState()
     val proveidorCif by viewModel.proveidorCif.collectAsState()
     val proveidorNom by viewModel.proveidorNom.collectAsState()
-    val codiLot by viewModel.codiLot.collectAsState()
-    val quantitat by viewModel.quantitat.collectAsState()
-    val materiaPrima by viewModel.materiaPrima.collectAsState()
     val textOcr by viewModel.textOcr.collectAsState()
     val status by viewModel.status.collectAsState()
-    val lotsDetectats by viewModel.lotsDetectats.collectAsState()
+    val lotsEditables by viewModel.lotsEditables.collectAsState()
+    val saveCompleted by viewModel.saveCompleted.collectAsState()
+
+    LaunchedEffect(saveCompleted) {
+        if (saveCompleted) {
+            viewModel.marcarSaveConsumit()
+            onSaveSuccess()
+        }
+    }
 
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -84,11 +89,7 @@ fun RecepcioAlbaraScreen(
     ) { uri ->
         if (uri != null) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarUri(
-                context.contentResolver,
-                uri,
-                "imatge-ocr.jpg"
-            )
+            viewModel.analitzarUri(context.contentResolver, uri, "imatge-ocr.jpg")
         }
     }
 
@@ -97,11 +98,7 @@ fun RecepcioAlbaraScreen(
     ) { uri ->
         if (uri != null) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarUri(
-                context.contentResolver,
-                uri,
-                "document-ocr.pdf"
-            )
+            viewModel.analitzarUri(context.contentResolver, uri, "document-ocr.pdf")
         }
     }
 
@@ -162,7 +159,10 @@ fun RecepcioAlbaraScreen(
         ) {
             SegmentedButton(
                 selected = mode.value == RecepcioMode.Manual,
-                onClick = { mode.value = RecepcioMode.Manual },
+                onClick = {
+                    mode.value = RecepcioMode.Manual
+                    viewModel.prepararModeManual()
+                },
                 shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
             ) {
                 Text(stringResource(R.string.recepcio_mode_manual))
@@ -177,109 +177,86 @@ fun RecepcioAlbaraScreen(
             }
         }
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+        if (mode.value == RecepcioMode.Ocr) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             ) {
-                Text(
-                    text = stringResource(R.string.recepcio_ocr_block_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = stringResource(R.string.recepcio_ocr_block_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                Column(
+                    modifier = Modifier.padding(18.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    OutlinedButton(
-                        onClick = {
-                            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text(stringResource(R.string.recepcio_ocr_camera_button))
-                    }
-
-                    OutlinedButton(
-                        onClick = {
-                            imagePickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text(stringResource(R.string.recepcio_ocr_image_button))
-                    }
-                }
-
-                OutlinedButton(
-                    onClick = {
-                        pdfPickerLauncher.launch(arrayOf("application/pdf"))
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(stringResource(R.string.recepcio_ocr_pdf_button))
-                }
-
-                if (status.isNotBlank()) {
                     Text(
-                        text = status,
+                        text = stringResource(R.string.recepcio_ocr_block_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = stringResource(R.string.recepcio_ocr_block_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        fontWeight = FontWeight.SemiBold
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
 
-                if (textOcr.isNotBlank()) {
-                    OutlinedTextField(
-                        value = textOcr,
-                        onValueChange = {},
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text(stringResource(R.string.recepcio_ocr_camera_button))
+                        }
+
+                        OutlinedButton(
+                            onClick = {
+                                imagePickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text(stringResource(R.string.recepcio_ocr_image_button))
+                        }
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            pdfPickerLauncher.launch(arrayOf("application/pdf"))
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text(stringResource(R.string.recepcio_ocr_text_label)) },
-                        readOnly = true,
-                        minLines = 6,
                         shape = RoundedCornerShape(16.dp)
-                    )
-                }
+                    ) {
+                        Text(stringResource(R.string.recepcio_ocr_pdf_button))
+                    }
 
-                if (lotsDetectats.isNotEmpty()) {
-                    HorizontalDivider()
-
-                    Text(
-                        text = "Lotes detectados por OCR",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    lotsDetectats.forEachIndexed { index: Int, lot: MobileLotSaveRequestDto ->
-                        LotDetectatCard(
-                            index = index,
-                            lot = lot,
-                            esPrincipal = index == 0
+                    if (status.isNotBlank()) {
+                        Text(
+                            text = status,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
 
-                    Text(
-                        text = "El primer lote detectado se carga en el formulario editable. Si hay más lotes, también se enviarán al guardar.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (textOcr.isNotBlank()) {
+                        OutlinedTextField(
+                            value = textOcr,
+                            onValueChange = {},
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text(stringResource(R.string.recepcio_ocr_text_label)) },
+                            readOnly = true,
+                            minLines = 6,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                    }
                 }
             }
         }
@@ -325,29 +302,31 @@ fun RecepcioAlbaraScreen(
                     shape = RoundedCornerShape(16.dp)
                 )
 
-                OutlinedTextField(
-                    value = codiLot,
-                    onValueChange = viewModel::onCodiLotChange,
-                    label = { Text(stringResource(R.string.recepcio_field_lot)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
+                Text(
+                    text = "Lotes del albarán",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
                 )
 
-                OutlinedTextField(
-                    value = quantitat,
-                    onValueChange = viewModel::onQuantitatChange,
-                    label = { Text(stringResource(R.string.recepcio_field_quantity)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                )
+                lotsEditables.forEachIndexed { index, lot ->
+                    LotEditableCard(
+                        index = index,
+                        lot = lot,
+                        canDelete = lotsEditables.size > 1,
+                        onCodiChange = { viewModel.onLotCodiChange(index, it) },
+                        onQuantitatChange = { viewModel.onLotQuantitatChange(index, it) },
+                        onMateriaChange = { viewModel.onLotMateriaPrimaChange(index, it) },
+                        onDelete = { viewModel.eliminarLot(index) }
+                    )
+                }
 
-                OutlinedTextField(
-                    value = materiaPrima,
-                    onValueChange = viewModel::onMateriaPrimaChange,
-                    label = { Text(stringResource(R.string.recepcio_field_material)) },
+                OutlinedButton(
+                    onClick = { viewModel.afegirLotBuit() },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
-                )
+                ) {
+                    Text("Añadir lote")
+                }
 
                 Button(
                     onClick = { viewModel.guardarAlbara() },
@@ -369,57 +348,70 @@ fun RecepcioAlbaraScreen(
 }
 
 @Composable
-private fun LotDetectatCard(
+private fun LotEditableCard(
     index: Int,
-    lot: MobileLotSaveRequestDto,
-    esPrincipal: Boolean
+    lot: EditableLotUi,
+    canDelete: Boolean,
+    onCodiChange: (String) -> Unit,
+    onQuantitatChange: (String) -> Unit,
+    onMateriaChange: (String) -> Unit,
+    onDelete: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (esPrincipal) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Column(
             modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                text = if (esPrincipal) "Lote ${index + 1} (principal)" else "Lote ${index + 1}",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = if (esPrincipal) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Lote ${index + 1}",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (canDelete) {
+                    OutlinedButton(
+                        onClick = onDelete,
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text("Eliminar")
+                    }
                 }
+            }
+
+            OutlinedTextField(
+                value = lot.codiLot,
+                onValueChange = onCodiChange,
+                label = { Text(stringResource(R.string.recepcio_field_lot)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
             )
 
-            if (lot.codiLot.isNotBlank()) {
-                Text(
-                    text = "Código: ${lot.codiLot}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            OutlinedTextField(
+                value = lot.quantitat,
+                onValueChange = onQuantitatChange,
+                label = { Text(stringResource(R.string.recepcio_field_quantity)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
+            )
 
-            if (lot.materiaPrimaNom.isNotBlank()) {
-                Text(
-                    text = "Materia prima: ${lot.materiaPrimaNom}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            if (lot.quantitat != null) {
-                Text(
-                    text = "Cantidad: ${lot.quantitat}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            OutlinedTextField(
+                value = lot.materiaPrimaNom,
+                onValueChange = onMateriaChange,
+                label = { Text(stringResource(R.string.recepcio_field_material)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
+            )
         }
     }
 }
