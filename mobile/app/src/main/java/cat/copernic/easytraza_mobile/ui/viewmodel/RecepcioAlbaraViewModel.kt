@@ -25,6 +25,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+data class EditableLotUi(
+    val codiLot: String = "",
+    val quantitat: String = "",
+    val materiaPrimaNom: String = ""
+)
+
 class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = IpPreferencesRepository(application.applicationContext)
@@ -38,23 +44,17 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private val _proveidorNom = MutableStateFlow("")
     val proveidorNom: StateFlow<String> = _proveidorNom
 
-    private val _codiLot = MutableStateFlow("")
-    val codiLot: StateFlow<String> = _codiLot
-
-    private val _quantitat = MutableStateFlow("")
-    val quantitat: StateFlow<String> = _quantitat
-
-    private val _materiaPrima = MutableStateFlow("")
-    val materiaPrima: StateFlow<String> = _materiaPrima
-
     private val _textOcr = MutableStateFlow("")
     val textOcr: StateFlow<String> = _textOcr
 
     private val _status = MutableStateFlow("")
     val status: StateFlow<String> = _status
 
-    private val _lotsDetectats = MutableStateFlow<List<MobileLotSaveRequestDto>>(emptyList())
-    val lotsDetectats: StateFlow<List<MobileLotSaveRequestDto>> = _lotsDetectats
+    private val _lotsEditables = MutableStateFlow(listOf(EditableLotUi()))
+    val lotsEditables: StateFlow<List<EditableLotUi>> = _lotsEditables
+
+    private val _saveCompleted = MutableStateFlow(false)
+    val saveCompleted: StateFlow<Boolean> = _saveCompleted
 
     fun onDataRecepcioChange(value: String) {
         _dataRecepcio.value = value
@@ -68,21 +68,48 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         _proveidorNom.value = value
     }
 
-    fun onCodiLotChange(value: String) {
-        _codiLot.value = value
+    fun onLotCodiChange(index: Int, value: String) {
+        updateLot(index) { it.copy(codiLot = value) }
     }
 
-    fun onQuantitatChange(value: String) {
-        _quantitat.value = value
+    fun onLotQuantitatChange(index: Int, value: String) {
+        updateLot(index) { it.copy(quantitat = value) }
     }
 
-    fun onMateriaPrimaChange(value: String) {
-        _materiaPrima.value = value
+    fun onLotMateriaPrimaChange(index: Int, value: String) {
+        updateLot(index) { it.copy(materiaPrimaNom = value) }
+    }
+
+    fun afegirLotBuit() {
+        _lotsEditables.value = _lotsEditables.value + EditableLotUi()
+    }
+
+    fun eliminarLot(index: Int) {
+        val actuals = _lotsEditables.value.toMutableList()
+        if (actuals.size <= 1) {
+            actuals[0] = EditableLotUi()
+        } else if (index in actuals.indices) {
+            actuals.removeAt(index)
+        }
+        _lotsEditables.value = actuals
+    }
+
+    fun marcarSaveConsumit() {
+        _saveCompleted.value = false
+    }
+
+    fun prepararModeManual() {
+        _textOcr.value = ""
+        _status.value = ""
+        if (_lotsEditables.value.isEmpty()) {
+            _lotsEditables.value = listOf(EditableLotUi())
+        }
     }
 
     fun analitzarUri(contentResolver: ContentResolver, uri: Uri, fileName: String) {
         viewModelScope.launch {
             try {
+                _saveCompleted.value = false
                 _status.value = getApplication<Application>().getString(R.string.ocr_processing_document)
 
                 val savedIp = repository.serverIpFlow.first().trim()
@@ -111,11 +138,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
                 val requestBody = tempFile.asRequestBody(mimeType.toMediaTypeOrNull())
-                val part = MultipartBody.Part.createFormData(
-                    "fitxer",
-                    tempFile.name,
-                    requestBody
-                )
+                val part = MultipartBody.Part.createFormData("fitxer", tempFile.name, requestBody)
 
                 val resposta = api.analitzarAlbara(part)
                 omplirDesDeResposta(resposta)
@@ -131,6 +154,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     fun analitzarBitmap(bitmap: Bitmap) {
         viewModelScope.launch {
             try {
+                _saveCompleted.value = false
                 _status.value = getApplication<Application>().getString(R.string.ocr_processing_photo)
 
                 val savedIp = repository.serverIpFlow.first().trim()
@@ -156,11 +180,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
                 val requestBody = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val part = MultipartBody.Part.createFormData(
-                    "fitxer",
-                    tempFile.name,
-                    requestBody
-                )
+                val part = MultipartBody.Part.createFormData("fitxer", tempFile.name, requestBody)
 
                 val resposta = api.analitzarAlbara(part)
                 omplirDesDeResposta(resposta)
@@ -176,6 +196,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     fun guardarAlbara() {
         viewModelScope.launch {
             try {
+                _saveCompleted.value = false
                 _status.value = getApplication<Application>().getString(R.string.ocr_saving)
 
                 val savedIp = repository.serverIpFlow.first().trim()
@@ -194,10 +215,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 )
 
                 val response = api.guardarAlbara(request)
-                _status.value = if (response.isSuccessful) {
-                    getApplication<Application>().getString(R.string.ocr_saved)
+                if (response.isSuccessful) {
+                    _status.value = getApplication<Application>().getString(R.string.ocr_saved)
+                    _saveCompleted.value = true
                 } else {
-                    getApplication<Application>().getString(R.string.ocr_save_error)
+                    _status.value = getApplication<Application>().getString(R.string.ocr_save_error)
                 }
             } catch (_: Exception) {
                 _status.value = getApplication<Application>().getString(R.string.ocr_save_error)
@@ -206,23 +228,28 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     }
 
     private fun buildLotsPerGuardar(): List<MobileLotSaveRequestDto> {
-        val lotEditable = MobileLotSaveRequestDto(
-            codiLot = _codiLot.value.trim(),
-            quantitat = _quantitat.value.trim().toIntOrNull(),
-            materiaPrimaNom = _materiaPrima.value.trim()
-        )
+        return _lotsEditables.value.mapNotNull { lot ->
+            val codi = lot.codiLot.trim()
+            val materia = lot.materiaPrimaNom.trim()
+            val quantitat = lot.quantitat.trim().toIntOrNull()
 
-        val detectats = _lotsDetectats.value.toMutableList()
-
-        return when {
-            detectats.isEmpty() -> listOf(lotEditable)
-            detectats.size == 1 -> listOf(lotEditable)
-            else -> {
-                detectats[0] = lotEditable
-                detectats
+            if (codi.isBlank() && materia.isBlank() && quantitat == null) {
+                null
+            } else {
+                MobileLotSaveRequestDto(
+                    codiLot = codi,
+                    quantitat = quantitat,
+                    materiaPrimaNom = materia
+                )
             }
-        }.filter {
-            it.codiLot.isNotBlank() || it.materiaPrimaNom.isNotBlank() || it.quantitat != null
+        }.ifEmpty {
+            listOf(
+                MobileLotSaveRequestDto(
+                    codiLot = "",
+                    quantitat = null,
+                    materiaPrimaNom = ""
+                )
+            )
         }
     }
 
@@ -237,19 +264,18 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         _textOcr.value = resposta.textDetectat.orEmpty()
 
         val lotsMapejats = resposta.lots.map { lot ->
-            MobileLotSaveRequestDto(
+            EditableLotUi(
                 codiLot = lot.codiLot.orEmpty(),
-                quantitat = lot.quantitat?.toInt(),
+                quantitat = lot.quantitat?.toInt()?.toString().orEmpty(),
                 materiaPrimaNom = lot.materiaPrima.orEmpty()
             )
         }
 
-        _lotsDetectats.value = lotsMapejats
-
-        val primerLot = lotsMapejats.firstOrNull()
-        _codiLot.value = primerLot?.codiLot.orEmpty()
-        _quantitat.value = primerLot?.quantitat?.toString().orEmpty()
-        _materiaPrima.value = primerLot?.materiaPrimaNom.orEmpty()
+        _lotsEditables.value = if (lotsMapejats.isNotEmpty()) {
+            lotsMapejats
+        } else {
+            listOf(EditableLotUi())
+        }
 
         if (_proveidorNom.value.isBlank()) {
             _proveidorNom.value = extraurePossibleNomProveidor(_textOcr.value)
@@ -305,5 +331,13 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
     private fun todayIso(): String {
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    }
+
+    private fun updateLot(index: Int, transform: (EditableLotUi) -> EditableLotUi) {
+        val actuals = _lotsEditables.value.toMutableList()
+        if (index in actuals.indices) {
+            actuals[index] = transform(actuals[index])
+            _lotsEditables.value = actuals
+        }
     }
 }
