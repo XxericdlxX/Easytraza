@@ -47,7 +47,7 @@ public class OcrAlbaraService {
     );
 
     private static final Pattern PATTERN_LOT = Pattern.compile(
-            "\\b((?:LOT|LOTE|L)[-\\s]?[A-Z0-9][A-Z0-9\\-]{1,})\\b",
+            "\\b((?:LOT|L0T|10T|LOTE|L)[-\\s]?[A-Z0-9][A-Z0-9\\-]{1,})\\b",
             Pattern.CASE_INSENSITIVE
     );
 
@@ -288,6 +288,7 @@ public class OcrAlbaraService {
                 return q;
             }
         }
+
         return null;
     }
 
@@ -300,10 +301,24 @@ public class OcrAlbaraService {
     }
 
     private String extraureLot(String line) {
-        Matcher matcher = PATTERN_LOT.matcher(line.toUpperCase(Locale.ROOT));
-        if (matcher.find()) {
-            return matcher.group(1);
+        if (line == null || line.isBlank()) {
+            return null;
         }
+
+        String normalitzada = line.toUpperCase(Locale.ROOT)
+                .replace("L0T", "LOT")
+                .replace("10T", "LOT")
+                .replace("IOT", "LOT")
+                .replace("LO7", "LOT");
+
+        Matcher matcher = PATTERN_LOT.matcher(normalitzada);
+        if (matcher.find()) {
+            String lot = matcher.group(1);
+            lot = lot.replaceAll("\\s+", "-");
+            lot = lot.replaceAll("-{2,}", "-");
+            return lot;
+        }
+
         return null;
     }
 
