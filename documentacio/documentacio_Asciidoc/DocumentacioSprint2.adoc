@@ -64,13 +64,16 @@ image::Sprint2/BoardFinal/BoardFinalSprint2.2.png[Board final 2]
 image::Sprint2/BoardFinal/BoardFinalSprint2.3.png[Board final 3]
 image::Sprint2/BoardFinal/BoardFinalSprint2.4.png[Board final 4]
 image::Sprint2/BoardFinal/BoardFinalSprint2.5.png[Board final 5]
+image::Sprint2/BoardFinal/BoardFinalSprint2.6.png[Board final 5]
 
 == 4. Personal Retrospective
 
 [cols="1,4", options="header"]
 |===
 | Apartat | Contingut
-| Aspectes positius | 
-| Aspectes a millorar | 
-| Accions concretes per al següent sprint | 
+| Aspectes positius | En aquest segon sprint, vaig notar una millora en la manera d’organitzar-me i de seguir les tasques previstes. Gràcies a l’experiència del sprint anterior, vaig poder treballar amb més seguretat i tenir una visió més clara del que havia de fer en cada moment. Això em va ajudar a avançar de manera més ordenada i constant.
+
+| Aspectes a millorar | Tot i la millora en l’organització, encara podria optimitzar millor el temps dedicat a algunes tasques, ja que en alguns moments vaig invertir més hores de les necessàries per acabar determinades parts del treball. També hauria estat convenient revisar més sovint l’estat general del sprint per detectar abans possibles retards.
+
+| Accions concretes per al següent sprint | Per al següent sprint, em proposo continuar planificant les tasques des de l’inici, però d’una manera encara més detallada, establint prioritats clares i marcant objectius més concrets per a cada sessió de treball. A més, intentaré fer un seguiment més constant del progrés i aprofitar millor el temps disponible per mantenir un ritme de treball més eficient.
 |===
