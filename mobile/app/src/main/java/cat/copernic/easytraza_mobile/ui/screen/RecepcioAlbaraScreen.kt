@@ -320,12 +320,14 @@ fun RecepcioAlbaraScreen(
                     )
                 }
 
-                OutlinedButton(
-                    onClick = { viewModel.afegirLotBuit() },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text("Añadir lote")
+                if (mode.value == RecepcioMode.Manual) {
+                    OutlinedButton(
+                        onClick = { viewModel.afegirLotBuit() },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text("Añadir lote")
+                    }
                 }
 
                 Button(
