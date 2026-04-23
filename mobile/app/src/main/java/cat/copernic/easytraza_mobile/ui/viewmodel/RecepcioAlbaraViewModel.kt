@@ -53,12 +53,32 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private val _status = MutableStateFlow("")
     val status: StateFlow<String> = _status
 
-    fun onDataRecepcioChange(value: String) { _dataRecepcio.value = value }
-    fun onProveidorCifChange(value: String) { _proveidorCif.value = value }
-    fun onProveidorNomChange(value: String) { _proveidorNom.value = value }
-    fun onCodiLotChange(value: String) { _codiLot.value = value }
-    fun onQuantitatChange(value: String) { _quantitat.value = value }
-    fun onMateriaPrimaChange(value: String) { _materiaPrima.value = value }
+    private val _lotsDetectats = MutableStateFlow<List<MobileLotSaveRequestDto>>(emptyList())
+    val lotsDetectats: StateFlow<List<MobileLotSaveRequestDto>> = _lotsDetectats
+
+    fun onDataRecepcioChange(value: String) {
+        _dataRecepcio.value = value
+    }
+
+    fun onProveidorCifChange(value: String) {
+        _proveidorCif.value = value
+    }
+
+    fun onProveidorNomChange(value: String) {
+        _proveidorNom.value = value
+    }
+
+    fun onCodiLotChange(value: String) {
+        _codiLot.value = value
+    }
+
+    fun onQuantitatChange(value: String) {
+        _quantitat.value = value
+    }
+
+    fun onMateriaPrimaChange(value: String) {
+        _materiaPrima.value = value
+    }
 
     fun analitzarUri(contentResolver: ContentResolver, uri: Uri, fileName: String) {
         viewModelScope.launch {
@@ -90,7 +110,6 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 }
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-
                 val requestBody = tempFile.asRequestBody(mimeType.toMediaTypeOrNull())
                 val part = MultipartBody.Part.createFormData(
                     "fitxer",
@@ -103,7 +122,8 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
                 _status.value = getApplication<Application>().getString(R.string.ocr_success)
             } catch (ex: Exception) {
-                _status.value = ex.message ?: getApplication<Application>().getString(R.string.ocr_processing_error)
+                _status.value = ex.message
+                    ?: getApplication<Application>().getString(R.string.ocr_processing_error)
             }
         }
     }
@@ -135,7 +155,6 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 }
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-
                 val requestBody = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 val part = MultipartBody.Part.createFormData(
                     "fitxer",
@@ -148,7 +167,8 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
                 _status.value = getApplication<Application>().getString(R.string.ocr_success)
             } catch (ex: Exception) {
-                _status.value = ex.message ?: getApplication<Application>().getString(R.string.ocr_processing_error)
+                _status.value = ex.message
+                    ?: getApplication<Application>().getString(R.string.ocr_processing_error)
             }
         }
     }
@@ -170,13 +190,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                     dataRecepcio = _dataRecepcio.value.ifBlank { todayIso() },
                     proveidorCif = _proveidorCif.value.ifBlank { null },
                     proveidorNom = _proveidorNom.value.ifBlank { "Proveïdor OCR" },
-                    lots = listOf(
-                        MobileLotSaveRequestDto(
-                            codiLot = _codiLot.value.trim(),
-                            quantitat = _quantitat.value.trim().toIntOrNull(),
-                            materiaPrimaNom = _materiaPrima.value.trim()
-                        )
-                    )
+                    lots = buildLotsPerGuardar()
                 )
 
                 val response = api.guardarAlbara(request)
@@ -191,6 +205,27 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    private fun buildLotsPerGuardar(): List<MobileLotSaveRequestDto> {
+        val lotEditable = MobileLotSaveRequestDto(
+            codiLot = _codiLot.value.trim(),
+            quantitat = _quantitat.value.trim().toIntOrNull(),
+            materiaPrimaNom = _materiaPrima.value.trim()
+        )
+
+        val detectats = _lotsDetectats.value.toMutableList()
+
+        return when {
+            detectats.isEmpty() -> listOf(lotEditable)
+            detectats.size == 1 -> listOf(lotEditable)
+            else -> {
+                detectats[0] = lotEditable
+                detectats
+            }
+        }.filter {
+            it.codiLot.isNotBlank() || it.materiaPrimaNom.isNotBlank() || it.quantitat != null
+        }
+    }
+
     private fun omplirDesDeResposta(resposta: OcrAlbaraResponseDto) {
         _proveidorCif.value = resposta.proveidorCif.orEmpty()
 
@@ -201,10 +236,20 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
         _textOcr.value = resposta.textDetectat.orEmpty()
 
-        val primerLot = resposta.lots.firstOrNull()
+        val lotsMapejats = resposta.lots.map { lot ->
+            MobileLotSaveRequestDto(
+                codiLot = lot.codiLot.orEmpty(),
+                quantitat = lot.quantitat?.toInt(),
+                materiaPrimaNom = lot.materiaPrima.orEmpty()
+            )
+        }
+
+        _lotsDetectats.value = lotsMapejats
+
+        val primerLot = lotsMapejats.firstOrNull()
         _codiLot.value = primerLot?.codiLot.orEmpty()
-        _quantitat.value = primerLot?.quantitat?.toInt()?.toString().orEmpty()
-        _materiaPrima.value = primerLot?.materiaPrima.orEmpty()
+        _quantitat.value = primerLot?.quantitat?.toString().orEmpty()
+        _materiaPrima.value = primerLot?.materiaPrimaNom.orEmpty()
 
         if (_proveidorNom.value.isBlank()) {
             _proveidorNom.value = extraurePossibleNomProveidor(_textOcr.value)
