@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
 import cat.copernic.easytraza_mobile.ui.screen.ConfigScreen
 import cat.copernic.easytraza_mobile.ui.screen.DashboardScreen
@@ -18,6 +19,7 @@ import cat.copernic.easytraza_mobile.ui.screen.RecepcioAlbaraScreen
 import cat.copernic.easytraza_mobile.ui.screen.UserSelectionScreen
 import cat.copernic.easytraza_mobile.ui.theme.Projecte4_EasyTraza_EricTheme
 import cat.copernic.easytraza_mobile.ui.viewmodel.ConfigIpViewModel
+import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -43,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         AppScreen.UserSelection -> {
                             UserSelectionScreen(
                                 users = demoUsers(),
-                                onUserSelected = { user ->
+                                onUserSelected = { user: DemoUser ->
                                     currentUser.value = user
                                     currentScreen.value = AppScreen.Dashboard
                                 },
@@ -76,20 +78,23 @@ class MainActivity : ComponentActivity() {
                                 connectionStatus = status,
                                 onSaveIp = { configViewModel.saveIp() },
                                 onTestConnection = { configViewModel.testConnection() },
-                                onIpChange = { configViewModel.onIpChange(it) },
+                                onIpChange = { newValue: String ->
+                                    configViewModel.onIpChange(newValue)
+                                },
                                 onBack = {
-                                    currentScreen.value = if (currentUser.value != null) {
-                                        AppScreen.Dashboard
-                                    } else {
-                                        AppScreen.UserSelection
-                                    }
+                                    currentScreen.value =
+                                        if (currentUser.value != null) AppScreen.Dashboard
+                                        else AppScreen.UserSelection
                                 }
                             )
                         }
 
                         AppScreen.Recepcio -> {
+                            val recepcioViewModel: RecepcioAlbaraViewModel = viewModel()
+
                             RecepcioAlbaraScreen(
                                 currentUserName = currentUser.value?.name ?: "Operari Demo",
+                                viewModel = recepcioViewModel,
                                 onBack = {
                                     currentScreen.value = AppScreen.Dashboard
                                 }
