@@ -1,5 +1,10 @@
 package cat.copernic.easytraza_mobile.ui.screen
 
+import android.Manifest
+import android.graphics.Bitmap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,27 +29,70 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
+import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 
 @Composable
 fun RecepcioAlbaraScreen(
     currentUserName: String,
+    viewModel: RecepcioAlbaraViewModel,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val mode = remember { mutableStateOf(RecepcioMode.Manual) }
 
-    val dataRecepcio = remember { mutableStateOf("") }
-    val proveidor = remember { mutableStateOf("") }
-    val codiLot = remember { mutableStateOf("") }
-    val quantitat = remember { mutableStateOf("") }
-    val materiaPrima = remember { mutableStateOf("") }
+    val dataRecepcio by viewModel.dataRecepcio.collectAsState()
+    val proveidorCif by viewModel.proveidorCif.collectAsState()
+    val proveidorNom by viewModel.proveidorNom.collectAsState()
+    val codiLot by viewModel.codiLot.collectAsState()
+    val quantitat by viewModel.quantitat.collectAsState()
+    val materiaPrima by viewModel.materiaPrima.collectAsState()
+    val textOcr by viewModel.textOcr.collectAsState()
+    val status by viewModel.status.collectAsState()
+
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        if (bitmap != null) {
+            mode.value = RecepcioMode.Ocr
+            viewModel.analitzarBitmap(bitmap)
+        }
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            takePictureLauncher.launch(null)
+        }
+    }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            mode.value = RecepcioMode.Ocr
+            viewModel.analitzarUri(context.contentResolver, uri, "imatge-ocr.jpg")
+        }
+    }
+
+    val pdfPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            mode.value = RecepcioMode.Ocr
+            viewModel.analitzarUri(context.contentResolver, uri, "document-ocr.pdf")
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -73,17 +120,13 @@ fun RecepcioAlbaraScreen(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+            )
         ) {
             Column(
                 modifier = Modifier.padding(22.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = "📦",
-                    style = MaterialTheme.typography.displaySmall
-                )
+                Text(text = "📦", style = MaterialTheme.typography.displaySmall)
 
                 Text(
                     text = stringResource(R.string.recepcio_screen_title),
@@ -100,22 +143,13 @@ fun RecepcioAlbaraScreen(
             }
         }
 
-        Text(
-            text = stringResource(R.string.recepcio_mode_title),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        SingleChoiceSegmentedButtonRow(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             SegmentedButton(
                 selected = mode.value == RecepcioMode.Manual,
                 onClick = { mode.value = RecepcioMode.Manual },
                 shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2)
             ) {
-                Text(text = stringResource(R.string.recepcio_mode_manual))
+                Text(stringResource(R.string.recepcio_mode_manual))
             }
 
             SegmentedButton(
@@ -123,68 +157,79 @@ fun RecepcioAlbaraScreen(
                 onClick = { mode.value = RecepcioMode.Ocr },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2)
             ) {
-                Text(text = stringResource(R.string.recepcio_mode_ocr))
+                Text(stringResource(R.string.recepcio_mode_ocr))
             }
         }
 
-        if (mode.value == RecepcioMode.Ocr) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(18.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.recepcio_ocr_block_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                Text(
+                    text = stringResource(R.string.recepcio_ocr_block_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
 
-                    Text(
-                        text = stringResource(R.string.recepcio_ocr_block_subtitle),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                Text(
+                    text = stringResource(R.string.recepcio_ocr_block_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        OutlinedButton(
-                            onClick = { },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.recepcio_ocr_image_button),
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-
-                        OutlinedButton(
-                            onClick = { },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.recepcio_ocr_pdf_button),
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                        Text(stringResource(R.string.recepcio_ocr_camera_button))
                     }
 
-                    Text(
-                        text = stringResource(R.string.recepcio_ocr_pending_help),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    OutlinedButton(
+                        onClick = {
+                            imagePickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text(stringResource(R.string.recepcio_ocr_image_button))
+                    }
+                }
+
+                OutlinedButton(
+                    onClick = { pdfPickerLauncher.launch(arrayOf("application/pdf")) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(stringResource(R.string.recepcio_ocr_pdf_button))
+                }
+
+                Text(
+                    text = status,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                if (textOcr.isNotBlank()) {
+                    OutlinedTextField(
+                        value = textOcr,
+                        onValueChange = {},
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(stringResource(R.string.recepcio_ocr_text_label)) },
+                        readOnly = true,
+                        minLines = 6,
+                        shape = RoundedCornerShape(16.dp)
                     )
                 }
             }
@@ -193,10 +238,7 @@ fun RecepcioAlbaraScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(
                 modifier = Modifier.padding(18.dp),
@@ -205,58 +247,59 @@ fun RecepcioAlbaraScreen(
                 Text(
                     text = stringResource(R.string.recepcio_form_title),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    fontWeight = FontWeight.Bold
                 )
 
                 OutlinedTextField(
-                    value = dataRecepcio.value,
-                    onValueChange = { dataRecepcio.value = it },
+                    value = dataRecepcio,
+                    onValueChange = viewModel::onDataRecepcioChange,
                     label = { Text(stringResource(R.string.recepcio_field_date)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
                     shape = RoundedCornerShape(16.dp)
                 )
 
                 OutlinedTextField(
-                    value = proveidor.value,
-                    onValueChange = { proveidor.value = it },
-                    label = { Text(stringResource(R.string.recepcio_field_supplier)) },
+                    value = proveidorCif,
+                    onValueChange = viewModel::onProveidorCifChange,
+                    label = { Text(stringResource(R.string.recepcio_field_supplier_cif)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
                     shape = RoundedCornerShape(16.dp)
                 )
 
                 OutlinedTextField(
-                    value = codiLot.value,
-                    onValueChange = { codiLot.value = it },
+                    value = proveidorNom,
+                    onValueChange = viewModel::onProveidorNomChange,
+                    label = { Text(stringResource(R.string.recepcio_field_supplier_name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                )
+
+                OutlinedTextField(
+                    value = codiLot,
+                    onValueChange = viewModel::onCodiLotChange,
                     label = { Text(stringResource(R.string.recepcio_field_lot)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
                     shape = RoundedCornerShape(16.dp)
                 )
 
                 OutlinedTextField(
-                    value = quantitat.value,
-                    onValueChange = { quantitat.value = it },
+                    value = quantitat,
+                    onValueChange = viewModel::onQuantitatChange,
                     label = { Text(stringResource(R.string.recepcio_field_quantity)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     shape = RoundedCornerShape(16.dp)
                 )
 
                 OutlinedTextField(
-                    value = materiaPrima.value,
-                    onValueChange = { materiaPrima.value = it },
+                    value = materiaPrima,
+                    onValueChange = viewModel::onMateriaPrimaChange,
                     label = { Text(stringResource(R.string.recepcio_field_material)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
                     shape = RoundedCornerShape(16.dp)
                 )
 
                 Button(
-                    onClick = { },
+                    onClick = { viewModel.guardarAlbara() },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
