@@ -81,7 +81,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun afegirLotBuit() {
-        _lotsEditables.value = _lotsEditables.value + EditableLotUi()
+        _lotsEditables.value += EditableLotUi()
     }
 
     fun eliminarLot(index: Int) {
@@ -271,9 +271,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             )
         }
 
-        _lotsEditables.value = if (lotsMapejats.isNotEmpty()) {
-            lotsMapejats
-        } else {
+        _lotsEditables.value = lotsMapejats.ifEmpty {
             listOf(EditableLotUi())
         }
 
