@@ -89,11 +89,6 @@
                                        class="lot-quantitat-field"
                                        th:name="${'lots[' + stat.index + '].quantitat'}"
                                        th:value="${lot.quantitat}">
-                                <small class="field-help"
-                                       th:if="${lot.quantitat != null}"
-                                       th:text="${lot.quantitat + ' KG'}">
-                                    25 KG
-                                </small>
                             </div>
 
                             <div class="form-group">
@@ -140,7 +135,6 @@
                 <div class="form-group">
                     <label>Cantidad <span class="required">*</span></label>
                     <input type="number" min="1" class="lot-quantitat-field">
-                    <small class="field-help lot-quantitat-help"></small>
                 </div>
 
                 <div class="form-group">
@@ -166,21 +160,23 @@
 
                 cards.forEach((card, index) => {
                     const title = card.querySelector('.lot-title');
-                    if (title)
+                    if (title) {
                         title.textContent = `Lote ${index + 1}`;
+                    }
 
                     const codiInput = card.querySelector('.lot-codi-field');
                     const quantitatInput = card.querySelector('.lot-quantitat-field');
                     const materiaSelect = card.querySelector('.lot-materia-field');
 
-                    if (codiInput)
+                    if (codiInput) {
                         codiInput.name = `lots[${index}].codiLot`;
-                    if (quantitatInput)
+                    }
+                    if (quantitatInput) {
                         quantitatInput.name = `lots[${index}].quantitat`;
-                    if (materiaSelect)
+                    }
+                    if (materiaSelect) {
                         materiaSelect.name = `lots[${index}].materiaPrimaId`;
-
-                    updateQuantitatHelp(card);
+                    }
                 });
 
                 refreshButtons();
@@ -200,35 +196,20 @@
                     const addBtn = card.querySelector('.add-lot-inline-btn');
                     const removeBtn = card.querySelector('.remove-lot-btn');
 
-                    if (addBtn)
+                    if (addBtn) {
                         addBtn.style.display = index === cards.length - 1 ? 'inline-block' : 'none';
-                    if (removeBtn)
+                    }
+
+                    if (removeBtn) {
                         removeBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+                    }
                 });
-            }
-
-            function updateQuantitatHelp(card) {
-                const quantitatInput = card.querySelector('.lot-quantitat-field');
-                let help = card.querySelector('.lot-quantitat-help, .field-help');
-
-                if (!quantitatInput)
-                    return;
-
-                if (!help) {
-                    help = document.createElement('small');
-                    help.className = 'field-help lot-quantitat-help';
-                    quantitatInput.insertAdjacentElement('afterend', help);
-                }
-
-                const valor = quantitatInput.value?.trim() || "";
-                help.textContent = valor !== "" ? `${valor} KG` : "";
             }
 
             function addLot() {
                 const clone = lotTemplate.content.cloneNode(true);
                 lotsContainer.appendChild(clone);
                 bindButtons();
-                bindQuantitatInputs();
                 refreshLotIndexes();
             }
 
@@ -244,8 +225,9 @@
                         const card = btn.closest('.lot-card');
                         const cards = lotsContainer.querySelectorAll('.lot-card');
 
-                        if (cards.length <= 1)
+                        if (cards.length <= 1) {
                             return;
+                        }
 
                         if (cardHasData(card)) {
                             alert(missatgeEliminarBloquejat);
@@ -258,17 +240,7 @@
                 });
             }
 
-            function bindQuantitatInputs() {
-                lotsContainer.querySelectorAll('.lot-quantitat-field').forEach(input => {
-                    input.oninput = function () {
-                        const card = input.closest('.lot-card');
-                        updateQuantitatHelp(card);
-                    };
-                });
-            }
-
             bindButtons();
-            bindQuantitatInputs();
             refreshLotIndexes();
         </script>
     </body>

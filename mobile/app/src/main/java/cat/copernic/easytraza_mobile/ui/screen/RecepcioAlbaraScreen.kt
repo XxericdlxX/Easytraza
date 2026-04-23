@@ -415,11 +415,6 @@ private fun LotEditableCard(
                 value = lot.quantitat,
                 onValueChange = onQuantitatChange,
                 label = { Text(stringResource(R.string.recepcio_field_quantity)) },
-                supportingText = {
-                    if (lot.quantitat.isNotBlank()) {
-                        Text("${lot.quantitat} KG")
-                    }
-                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
             )
