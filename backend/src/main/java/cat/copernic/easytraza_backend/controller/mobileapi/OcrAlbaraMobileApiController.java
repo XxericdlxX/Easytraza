@@ -12,16 +12,15 @@ import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.service.AlbaraProveidorService;
 import cat.copernic.easytraza_backend.service.OcrAlbaraService;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/mobile-api/ocr/albarans-proveidor")
@@ -79,7 +78,15 @@ public class OcrAlbaraMobileApiController {
         if (value == null || value.isBlank()) {
             return LocalDate.now();
         }
-        return LocalDate.parse(value);
+
+        String clean = value.trim().replace("/", "-");
+        String[] parts = clean.split("-");
+
+        if (parts.length == 3 && parts[0].length() == 2) {
+            clean = parts[2] + "-" + parts[1] + "-" + parts[0];
+        }
+
+        return LocalDate.parse(clean);
     }
 
     private List<LotProveidorDto> convertirLots(List<MobileLotSaveRequestDto> lotsRequest) {
@@ -87,16 +94,23 @@ public class OcrAlbaraMobileApiController {
 
         if (lotsRequest != null) {
             for (MobileLotSaveRequestDto lotRequest : lotsRequest) {
+                if (lotRequest == null) {
+                    continue;
+                }
+
+                String codiLot = lotRequest.getCodiLot() != null ? lotRequest.getCodiLot().trim() : "";
+                String materiaNom = lotRequest.getMateriaPrimaNom() != null ? lotRequest.getMateriaPrimaNom().trim() : "";
+
+                if (codiLot.isBlank() && materiaNom.isBlank() && lotRequest.getQuantitat() == null) {
+                    continue;
+                }
+
                 LotProveidorDto lot = new LotProveidorDto();
-                lot.setCodiLot(lotRequest.getCodiLot());
+                lot.setCodiLot(codiLot);
                 lot.setQuantitat(lotRequest.getQuantitat());
-                lot.setMateriaPrimaId(resoldreOCrearMateriaPrima(lotRequest.getMateriaPrimaNom()));
+                lot.setMateriaPrimaId(resoldreOCrearMateriaPrima(materiaNom));
                 lots.add(lot);
             }
-        }
-
-        if (lots.isEmpty()) {
-            lots.add(new LotProveidorDto());
         }
 
         return lots;
