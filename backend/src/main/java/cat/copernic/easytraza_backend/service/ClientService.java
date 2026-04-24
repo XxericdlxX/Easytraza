@@ -38,7 +38,6 @@ public class ClientService {
         if (clientExistent.isPresent()) {
             Client client = clientExistent.get();
             client.setNom(clientActualitzat.getNom());
-            client.setCognoms(clientActualitzat.getCognoms());
             client.setTipusClient(clientActualitzat.getTipusClient());
             client.setAdreca(clientActualitzat.getAdreca());
             client.setTelefon(clientActualitzat.getTelefon());
@@ -95,7 +94,6 @@ public class ClientService {
         Client client = new Client();
         client.setNif(normalitzarDocument(clientDto.getNif()));
         client.setNom(clientDto.getNom());
-        client.setCognoms(buitANull(clientDto.getCognoms()));
         client.setTipusClient(clientDto.getTipusClient());
         client.setAdreca(clientDto.getAdreca());
         client.setTelefon(buitANull(clientDto.getTelefon()));
@@ -108,7 +106,6 @@ public class ClientService {
         ClientDto clientDto = new ClientDto();
         clientDto.setNif(client.getNif());
         clientDto.setNom(client.getNom());
-        clientDto.setCognoms(client.getCognoms());
         clientDto.setTipusClient(client.getTipusClient());
         clientDto.setAdreca(client.getAdreca());
         clientDto.setTelefon(client.getTelefon());

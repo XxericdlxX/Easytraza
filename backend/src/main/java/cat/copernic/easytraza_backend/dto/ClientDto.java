@@ -17,9 +17,6 @@ public class ClientDto {
     @Size(max = 100, message = "{clients.nom.max}")
     private String nom;
 
-    @Size(max = 100, message = "{clients.cognoms.max}")
-    private String cognoms;
-
     @NotNull(message = "{clients.tipus.obligatori}")
     private TipusClient tipusClient;
 
@@ -44,11 +41,10 @@ public class ClientDto {
     public ClientDto() {
     }
 
-    public ClientDto(String nif, String nom, String cognoms, TipusClient tipusClient,
+    public ClientDto(String nif, String nom, TipusClient tipusClient,
             String adreca, String telefon, String email, String notes) {
         this.nif = nif;
         this.nom = nom;
-        this.cognoms = cognoms;
         this.tipusClient = tipusClient;
         this.adreca = adreca;
         this.telefon = telefon;
@@ -70,14 +66,6 @@ public class ClientDto {
 
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    public String getCognoms() {
-        return cognoms;
-    }
-
-    public void setCognoms(String cognoms) {
-        this.cognoms = cognoms;
     }
 
     public TipusClient getTipusClient() {

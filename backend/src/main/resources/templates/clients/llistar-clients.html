@@ -33,7 +33,6 @@
                             <tr>
                                 <th th:text="#{clients.nif}">NIF/CIF/NIE</th>
                                 <th th:text="#{clients.nom}">Nombre</th>
-                                <th th:text="#{clients.cognoms}">Apellidos</th>
                                 <th th:text="#{clients.tipus}">Tipo de cliente</th>
                                 <th th:text="#{clients.adreca}">Dirección</th>
                                 <th class="nowrap-col" th:text="#{clients.telefon}">Teléfono</th>
@@ -45,7 +44,6 @@
                             <tr th:each="client : ${clients}">
                                 <td th:text="${client.nif}"></td>
                                 <td th:text="${client.nom}"></td>
-                                <td th:text="${client.cognoms != null && !client.cognoms.isBlank() ? client.cognoms : '-'}"></td>
                                 <td th:text="#{${'clients.tipus.' + client.tipusClient}}"></td>
                                 <td th:text="${client.adreca}"></td>
                                 <td class="nowrap-col" th:text="${client.telefon != null && !client.telefon.isBlank() ? client.telefon : '-'}"></td>

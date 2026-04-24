@@ -19,9 +19,6 @@ public class Client {
     @Column(nullable = false, length = 100)
     private String nom;
 
-    @Column(length = 100)
-    private String cognoms;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private TipusClient tipusClient;
@@ -41,11 +38,10 @@ public class Client {
     public Client() {
     }
 
-    public Client(String nif, String nom, String cognoms, TipusClient tipusClient,
+    public Client(String nif, String nom, TipusClient tipusClient,
             String adreca, String telefon, String email, String notes) {
         this.nif = nif;
         this.nom = nom;
-        this.cognoms = cognoms;
         this.tipusClient = tipusClient;
         this.adreca = adreca;
         this.telefon = telefon;
@@ -67,14 +63,6 @@ public class Client {
 
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    public String getCognoms() {
-        return cognoms;
-    }
-
-    public void setCognoms(String cognoms) {
-        this.cognoms = cognoms;
     }
 
     public TipusClient getTipusClient() {
