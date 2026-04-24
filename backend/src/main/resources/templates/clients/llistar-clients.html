@@ -36,7 +36,6 @@
                                 <th th:text="#{clients.cognoms}">Apellidos</th>
                                 <th th:text="#{clients.tipus}">Tipo de cliente</th>
                                 <th th:text="#{clients.adreca}">Dirección</th>
-                                <th class="nowrap-col" th:text="#{clients.rgs}">RGS</th>
                                 <th class="nowrap-col" th:text="#{clients.telefon}">Teléfono</th>
                                 <th class="nowrap-col" th:text="#{clients.email}">Correo electrónico</th>
                                 <th class="nowrap-col actions-col" th:text="#{clients.accions}">Acciones</th>
@@ -49,7 +48,6 @@
                                 <td th:text="${client.cognoms != null && !client.cognoms.isBlank() ? client.cognoms : '-'}"></td>
                                 <td th:text="#{${'clients.tipus.' + client.tipusClient}}"></td>
                                 <td th:text="${client.adreca}"></td>
-                                <td class="nowrap-col" th:text="${client.rgs != null && !client.rgs.isBlank() ? client.rgs : '-'}"></td>
                                 <td class="nowrap-col" th:text="${client.telefon != null && !client.telefon.isBlank() ? client.telefon : '-'}"></td>
                                 <td class="nowrap-col" th:text="${client.email != null && !client.email.isBlank() ? client.email : '-'}"></td>
                                 <td class="nowrap-col actions-col">

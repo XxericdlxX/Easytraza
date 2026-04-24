@@ -27,9 +27,6 @@ public class ClientDto {
     @Size(max = 255, message = "{clients.adreca.max}")
     private String adreca;
 
-    @Size(max = 50, message = "{clients.rgs.max}")
-    private String rgs;
-
     @Size(max = 20, message = "{clients.telefon.max}")
     @Pattern(
             regexp = "^$|^[+0-9 ()-]{7,20}$",
@@ -48,13 +45,12 @@ public class ClientDto {
     }
 
     public ClientDto(String nif, String nom, String cognoms, TipusClient tipusClient,
-            String adreca, String rgs, String telefon, String email, String notes) {
+            String adreca, String telefon, String email, String notes) {
         this.nif = nif;
         this.nom = nom;
         this.cognoms = cognoms;
         this.tipusClient = tipusClient;
         this.adreca = adreca;
-        this.rgs = rgs;
         this.telefon = telefon;
         this.email = email;
         this.notes = notes;
@@ -98,14 +94,6 @@ public class ClientDto {
 
     public void setAdreca(String adreca) {
         this.adreca = adreca;
-    }
-
-    public String getRgs() {
-        return rgs;
-    }
-
-    public void setRgs(String rgs) {
-        this.rgs = rgs;
     }
 
     public String getTelefon() {

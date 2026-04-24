@@ -29,9 +29,6 @@ public class Client {
     @Column(nullable = false)
     private String adreca;
 
-    @Column(length = 50)
-    private String rgs;
-
     @Column(length = 20)
     private String telefon;
 
@@ -45,13 +42,12 @@ public class Client {
     }
 
     public Client(String nif, String nom, String cognoms, TipusClient tipusClient,
-            String adreca, String rgs, String telefon, String email, String notes) {
+            String adreca, String telefon, String email, String notes) {
         this.nif = nif;
         this.nom = nom;
         this.cognoms = cognoms;
         this.tipusClient = tipusClient;
         this.adreca = adreca;
-        this.rgs = rgs;
         this.telefon = telefon;
         this.email = email;
         this.notes = notes;
@@ -95,14 +91,6 @@ public class Client {
 
     public void setAdreca(String adreca) {
         this.adreca = adreca;
-    }
-
-    public String getRgs() {
-        return rgs;
-    }
-
-    public void setRgs(String rgs) {
-        this.rgs = rgs;
     }
 
     public String getTelefon() {

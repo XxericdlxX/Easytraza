@@ -41,14 +41,13 @@ public class ClientService {
             client.setCognoms(clientActualitzat.getCognoms());
             client.setTipusClient(clientActualitzat.getTipusClient());
             client.setAdreca(clientActualitzat.getAdreca());
-            client.setRgs(clientActualitzat.getRgs());
             client.setTelefon(clientActualitzat.getTelefon());
             client.setEmail(clientActualitzat.getEmail());
             client.setNotes(clientActualitzat.getNotes());
             return clientRepository.save(client);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public void deleteById(String nif) {
@@ -99,7 +98,6 @@ public class ClientService {
         client.setCognoms(buitANull(clientDto.getCognoms()));
         client.setTipusClient(clientDto.getTipusClient());
         client.setAdreca(clientDto.getAdreca());
-        client.setRgs(buitANull(clientDto.getRgs()));
         client.setTelefon(buitANull(clientDto.getTelefon()));
         client.setEmail(buitANull(normalitzarEmail(clientDto.getEmail())));
         client.setNotes(buitANull(clientDto.getNotes()));
@@ -113,7 +111,6 @@ public class ClientService {
         clientDto.setCognoms(client.getCognoms());
         clientDto.setTipusClient(client.getTipusClient());
         clientDto.setAdreca(client.getAdreca());
-        clientDto.setRgs(client.getRgs());
         clientDto.setTelefon(client.getTelefon());
         clientDto.setEmail(client.getEmail());
         clientDto.setNotes(client.getNotes());
@@ -128,6 +125,7 @@ public class ClientService {
         if (document == null) {
             return null;
         }
+
         return document.trim().toUpperCase().replace(" ", "");
     }
 
