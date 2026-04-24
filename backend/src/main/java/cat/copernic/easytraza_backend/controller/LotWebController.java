@@ -51,6 +51,8 @@ public class LotWebController {
 
     @PostMapping("/{id}/iniciar")
     public String iniciarLot(@PathVariable Long id,
+            @RequestParam(required = false) String origen,
+            @RequestParam(required = false) Long albaraId,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
@@ -67,11 +69,13 @@ public class LotWebController {
             );
         }
 
-        return "redirect:/web/lots";
+        return obtenirRedireccio(origen, albaraId);
     }
 
     @PostMapping("/{id}/finalitzar")
     public String finalitzarLot(@PathVariable Long id,
+            @RequestParam(required = false) String origen,
+            @RequestParam(required = false) Long albaraId,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
@@ -86,6 +90,14 @@ public class LotWebController {
                     "missatgeError",
                     messageSource.getMessage(ex.getMessage(), null, locale)
             );
+        }
+
+        return obtenirRedireccio(origen, albaraId);
+    }
+
+    private String obtenirRedireccio(String origen, Long albaraId) {
+        if ("albara".equalsIgnoreCase(origen) && albaraId != null) {
+            return "redirect:/web/albarans-proveidor/veure/" + albaraId;
         }
 
         return "redirect:/web/lots";
