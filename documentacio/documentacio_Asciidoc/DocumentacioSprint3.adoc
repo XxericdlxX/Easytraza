@@ -1,0 +1,108 @@
+= SPRINT - 3
+:toc:
+:toc-title: Índex de continguts
+:imagesdir: ../images
+
+== 1. Planificació Inicial
+
+=== 1.1. Planificació (Inicial)
+==== Board inicial — Eric Delgado López
+
+image::Sprint2/BoardInicial/BoardInicialSprint3.1.png[Board inicial 1]
+image::Sprint2/BoardInicial/BoardInicialSprint3.2.png[Board inicial 2]
+image::Sprint2/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
+
+== 2. Daily Stand Ups
+
+=== DIA 1 Divendres - 24/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig entregar el sprint 2 | Corregiré l'Sprint 2, organitzaré l'Sprint 3 i començaré a fer el RF02 - CRUD de clients | - | 6h
+|===
+
+=== DIA 2 Dilluns - 27/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 3 Dimarts - 28/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 4 Dimecres - 29/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 5 Dijous - 30/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 6 Divendres - 01/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 7 Dilluns - 04/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 8 Dimarts - 05/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 9 Dimecres - 06/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+=== DIA 10 Dijous - 07/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |  |  |  |
+|===
+
+
+== 3. Planificació Final
+
+=== 3.1. Planificació (Final de Sprint)
+==== Board final — Eric Delgado López
+image::Sprint2/BoardFinal/BoardFinalSprint3.1.png[Board final 1]
+image::Sprint2/BoardFinal/BoardFinalSprint3.2.png[Board final 2]
+image::Sprint2/BoardFinal/BoardFinalSprint3.3.png[Board final 3]
+image::Sprint2/BoardFinal/BoardFinalSprint3.4.png[Board final 4]
+image::Sprint2/BoardFinal/BoardFinalSprint3.5.png[Board final 5]
+
+== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius |
+
+| Aspectes a millorar |
+
+| Accions concretes per al següent sprint |
+|===
