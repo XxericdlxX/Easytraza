@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{clients.llistat}">Listado de clientes</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{clients.llistat}">Listado de clientes</h1>
+                            <p th:text="#{clients.gestio}">Gestión de los clientes del sistema</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/clients/crear}" class="btn btn-primary" th:text="#{clients.afegir}">Añadir cliente</a>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(clients)}">
+                    <table class="proveidors-table">
+                        <thead>
+                            <tr>
+                                <th th:text="#{clients.nif}">NIF/CIF/NIE</th>
+                                <th th:text="#{clients.nom}">Nombre</th>
+                                <th th:text="#{clients.cognoms}">Apellidos</th>
+                                <th th:text="#{clients.tipus}">Tipo de cliente</th>
+                                <th th:text="#{clients.adreca}">Dirección</th>
+                                <th class="nowrap-col" th:text="#{clients.rgs}">RGS</th>
+                                <th class="nowrap-col" th:text="#{clients.telefon}">Teléfono</th>
+                                <th class="nowrap-col" th:text="#{clients.email}">Correo electrónico</th>
+                                <th class="nowrap-col actions-col" th:text="#{clients.accions}">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="client : ${clients}">
+                                <td th:text="${client.nif}"></td>
+                                <td th:text="${client.nom}"></td>
+                                <td th:text="${client.cognoms != null && !client.cognoms.isBlank() ? client.cognoms : '-'}"></td>
+                                <td th:text="#{${'clients.tipus.' + client.tipusClient}}"></td>
+                                <td th:text="${client.adreca}"></td>
+                                <td class="nowrap-col" th:text="${client.rgs != null && !client.rgs.isBlank() ? client.rgs : '-'}"></td>
+                                <td class="nowrap-col" th:text="${client.telefon != null && !client.telefon.isBlank() ? client.telefon : '-'}"></td>
+                                <td class="nowrap-col" th:text="${client.email != null && !client.email.isBlank() ? client.email : '-'}"></td>
+                                <td class="nowrap-col actions-col">
+                                    <div class="actions actions-table">
+                                        <a th:href="@{/web/clients/editar/{nif}(nif=${client.nif})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{clients.editar}">Editar</a>
+                                        <a th:href="@{/web/clients/eliminar/{nif}(nif=${client.nif})}"
+                                           class="btn btn-danger"
+                                           th:attr="onclick=|return confirm('${#messages.msg('clients.confirmar.eliminar')}');|"
+                                           th:text="#{clients.eliminar}">Eliminar</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message" th:if="${#lists.isEmpty(clients)}" th:text="#{clients.buit}">
+                    No hay clientes registrados.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
