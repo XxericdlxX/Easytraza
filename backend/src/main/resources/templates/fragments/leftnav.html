@@ -34,6 +34,12 @@
                     <span th:text="#{nav.proveidors}">Proveedores</span>
                 </a>
 
+                <a th:href="@{/web/clients}"
+                   th:classappend="${currentPath == '/web/clients'} ? ' active' : ''">
+                    <span class="leftnav-icon">🤝</span>
+                    <span th:text="#{nav.clients}">Clientes</span>
+                </a>
+
                 <a th:href="@{/web/albarans-proveidor}"
                    th:classappend="${currentPath == '/web/albarans-proveidor'} ? ' active' : ''">
                     <span class="leftnav-icon">📄</span>

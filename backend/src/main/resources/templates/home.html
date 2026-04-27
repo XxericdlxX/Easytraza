@@ -15,7 +15,6 @@
 
         <section class="home-hero">
             <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="home-logo">
-            <h1 th:text="#{home.title}">EasyTraza</h1>
             <p th:text="#{home.subtitle}">Gestión y trazabilidad del sistema</p>
         </section>
 
@@ -38,6 +37,11 @@
             <a th:href="@{/web/proveidors}" class="home-card providers-card">
                 <div class="home-card-image">🚚</div>
                 <div class="home-card-title" th:text="#{nav.proveidors}">Proveedores</div>
+            </a>
+
+            <a th:href="@{/web/clients}" class="home-card clients-card">
+                <div class="home-card-image">🤝</div>
+                <div class="home-card-title" th:text="#{nav.clients}">Clientes</div>
             </a>
 
             <a th:href="@{/web/albarans-proveidor}" class="home-card delivery-notes-card">

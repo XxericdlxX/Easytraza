@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{clients.crear}">Crear cliente</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{clients.crear}">Crear cliente</h1>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/web/clients/crear(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/clients/crear(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <form th:action="@{/web/clients/guardar}" th:object="${client}" method="post" novalidate>
+
+                    <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                    <div class="form-group">
+                        <label for="nif"><span th:text="#{clients.nif}">NIF/CIF/NIE</span> <span class="required">*</span></label>
+                        <input type="text" id="nif" th:field="*{nif}">
+                        <div class="field-error" th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nom"><span th:text="#{clients.nom}">Nombre</span> <span class="required">*</span></label>
+                        <input type="text" id="nom" th:field="*{nom}">
+                        <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipusClient">
+                            <span th:text="#{clients.tipus}">Tipo de cliente</span>
+                            <span class="required">*</span>
+                        </label>
+                        <select id="tipusClient" th:field="*{tipusClient}">
+                            <option value="" th:text="#{clients.tipus.placeholder}">Selecciona un tipo de cliente</option>
+                            <option th:each="tipus : ${tipusClients}"
+                                    th:value="${tipus}"
+                                    th:text="#{${'clients.tipus.' + tipus}}">
+                                Tipo
+                            </option>
+                        </select>
+                        <div class="field-error" th:if="${#fields.hasErrors('tipusClient')}" th:errors="*{tipusClient}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adreca"><span th:text="#{clients.adreca}">Dirección</span> <span class="required">*</span></label>
+                        <input type="text" id="adreca" th:field="*{adreca}">
+                        <div class="field-error" th:if="${#fields.hasErrors('adreca')}" th:errors="*{adreca}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefon" th:text="#{clients.telefon}">Teléfono</label>
+                        <input type="text" id="telefon" th:field="*{telefon}">
+                        <div class="field-error" th:if="${#fields.hasErrors('telefon')}" th:errors="*{telefon}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" th:text="#{clients.email}">Correo electrónico</label>
+                        <input type="email" id="email" th:field="*{email}">
+                        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes" th:text="#{clients.notes}">Notas/observaciones</label>
+                        <input type="text" id="notes" th:field="*{notes}">
+                        <div class="field-error" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{clients.guardar}">Guardar</button>
+                        <a th:href="@{/web/clients}" class="btn btn-secondary" th:text="#{clients.tornar}">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
