@@ -45,6 +45,12 @@
                     <span class="leftnav-icon">📄</span>
                     <span th:text="#{nav.albarans.proveidor}">Albaranes proveedor</span>
                 </a>
+
+                <a th:href="@{/web/lots}"
+                   th:classappend="${currentPath == '/web/lots'} ? ' active' : ''">
+                    <span class="leftnav-icon">🏷️</span>
+                    <span th:text="#{nav.lots}">Gestión de lotes</span>
+                </a>
             </div>
 
             <div class="leftnav-bottom">
@@ -54,11 +60,25 @@
                 </div>
 
                 <div class="leftnav-lang">
-                    <a th:if="${currentPath != null}" th:href="@{${currentPath}(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
-                    <a th:if="${currentPath != null}" th:href="@{${currentPath}(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                    <a th:if="${currentPath != null}"
+                       th:href="@{${currentPath}(lang='es')}"
+                       class="btn btn-secondary"
+                       th:text="#{lang.es}">ES</a>
 
-                    <a th:if="${currentPath == null}" th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
-                    <a th:if="${currentPath == null}" th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                    <a th:if="${currentPath != null}"
+                       th:href="@{${currentPath}(lang='ca')}"
+                       class="btn btn-secondary"
+                       th:text="#{lang.ca}">CA</a>
+
+                    <a th:if="${currentPath == null}"
+                       th:href="@{/(lang='es')}"
+                       class="btn btn-secondary"
+                       th:text="#{lang.es}">ES</a>
+
+                    <a th:if="${currentPath == null}"
+                       th:href="@{/(lang='ca')}"
+                       class="btn btn-secondary"
+                       th:text="#{lang.ca}">CA</a>
                 </div>
             </div>
         </nav>
