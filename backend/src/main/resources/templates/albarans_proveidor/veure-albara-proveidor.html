@@ -23,9 +23,21 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">
-                        Volver
-                    </a>
+                    <div class="actions">
+                        <a th:if="${param.origen != null && param.origen[0] == 'lots'}"
+                           th:href="@{/web/lots}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+
+                        <a th:if="${param.origen == null || param.origen[0] != 'lots'}"
+                           th:href="@{/web/albarans-proveidor}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+                    </div>
                 </div>
 
                 <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
@@ -53,8 +65,8 @@
                     </p>
                 </div>
 
-                <div class="table-wrapper" th:if="${albaraDetall.lots != null && !#lists.isEmpty(albaraDetall.lots)}">
-                    <table>
+                <div class="table-wrapper lots-table-wrapper" th:if="${albaraDetall.lots != null && !#lists.isEmpty(albaraDetall.lots)}">
+                    <table class="lots-table">
                         <thead>
                             <tr>
                                 <th th:text="#{lot.proveidor.codi}">Código/identificador de lote</th>
@@ -93,7 +105,7 @@
                                 </td>
 
                                 <td>
-                                    <div class="actions">
+                                    <div class="actions actions-table">
                                         <form th:if="${lot.estat.name() == 'EN_ESTOC'}"
                                               th:action="@{/web/lots/{id}/iniciar(id=${lot.id}, origen='albara', albaraId=${albaraDetall.id})}"
                                               method="post"
