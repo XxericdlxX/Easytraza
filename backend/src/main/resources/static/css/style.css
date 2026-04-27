@@ -257,8 +257,8 @@ textarea[readonly] {
 }
 
 .home-logo {
-    width: 280px;
-    max-width: 70vw;
+    width: 340px;
+    max-width: 78vw;
     height: auto;
     margin-bottom: 18px;
 }
@@ -400,8 +400,17 @@ textarea[readonly] {
 .leftnav-menu {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     margin-top: 8px;
+}
+
+.leftnav-section-title {
+    margin: 14px 0 2px 4px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.7px;
+    color: #8B5E3C;
+    text-transform: uppercase;
 }
 
 .leftnav-menu a {
@@ -411,11 +420,11 @@ textarea[readonly] {
     text-decoration: none;
     color: #4A2E1F;
     font-weight: 700;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-radius: 16px;
     transition: all 0.2s ease;
     background-color: transparent;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .leftnav-menu a:hover {
@@ -756,6 +765,12 @@ textarea[readonly] {
         justify-content: center;
     }
 
+    .leftnav-section-title {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
     .leftnav-bottom {
         margin-top: 0;
         padding-top: 0;
@@ -778,7 +793,7 @@ textarea[readonly] {
     }
 
     .home-logo {
-        width: 220px;
+        width: 260px;
     }
 }
 
