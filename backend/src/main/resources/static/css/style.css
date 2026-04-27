@@ -238,59 +238,87 @@ textarea[readonly] {
 .home-body {
     min-height: 100vh;
     background-color: #F8F4EE;
-    padding: 24px;
+    padding: 14px 24px 22px 24px;
 }
 
 .home-language {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    max-width: 1200px;
-    margin: 0 auto 10px auto;
+    max-width: 1280px;
+    margin: 0 auto 6px auto;
+}
+
+.home-language .btn {
+    padding: 8px 14px;
+    font-size: 13px;
 }
 
 .home-hero {
-    max-width: 1200px;
-    margin: 20px auto 40px auto;
+    max-width: 1280px;
+    margin: 4px auto 16px auto;
     text-align: center;
-    padding: 20px;
+    padding: 6px 20px 10px 20px;
 }
 
 .home-logo {
-    width: 280px;
-    max-width: 70vw;
+    width: 310px;
+    max-width: 72vw;
     height: auto;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
 }
 
 .home-hero h1 {
-    font-size: 52px;
-    margin-bottom: 12px;
+    font-size: 48px;
+    margin-bottom: 8px;
     color: #8B5E3C;
 }
 
 .home-hero p {
-    font-size: 18px;
+    font-size: 17px;
     color: #7A5A46;
     margin: 0;
 }
 
-.home-modules {
-    max-width: 1200px;
+.home-content {
+    max-width: 1280px;
     margin: 0 auto;
+}
+
+.home-section {
+    margin-bottom: 18px;
+}
+
+.home-section-title {
+    font-size: 15px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #8B5E3C;
+    margin: 0 0 10px 2px;
+    font-weight: 900;
+}
+
+.home-modules {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
+    gap: 16px;
+}
+
+.home-modules-admin {
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+}
+
+.home-modules-operations {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
 }
 
 .home-card {
     text-decoration: none;
     background-color: #FFFDF9;
     border: 1px solid #D8C8B8;
-    border-radius: 20px;
-    box-shadow: 0 10px 24px rgba(74, 46, 31, 0.10);
-    padding: 26px 22px;
-    min-height: 240px;
+    border-radius: 18px;
+    box-shadow: 0 8px 18px rgba(74, 46, 31, 0.10);
+    padding: 20px 18px;
+    min-height: 145px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -301,7 +329,7 @@ textarea[readonly] {
 
 .home-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 14px 30px rgba(74, 46, 31, 0.16);
+    box-shadow: 0 12px 26px rgba(74, 46, 31, 0.16);
 }
 
 .users-card {
@@ -324,6 +352,10 @@ textarea[readonly] {
     background-color: #EDE7F6;
 }
 
+.client-delivery-notes-card {
+    background-color: #EAF4E4;
+}
+
 .clients-card {
     background-color: #F4EBDD;
 }
@@ -340,16 +372,17 @@ textarea[readonly] {
 
 .home-card-image {
     position: absolute;
-    top: 24px;
-    left: 24px;
-    font-size: 72px;
+    top: 18px;
+    left: 18px;
+    font-size: 46px;
     line-height: 1;
 }
 
 .home-card-title {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     color: #4A2E1F;
+    line-height: 1.15;
 }
 
 /* ===== Leftnav ===== */
@@ -396,8 +429,17 @@ textarea[readonly] {
 .leftnav-menu {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     margin-top: 8px;
+}
+
+.leftnav-section-title {
+    margin: 14px 0 2px 4px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.7px;
+    color: #8B5E3C;
+    text-transform: uppercase;
 }
 
 .leftnav-menu a {
@@ -407,11 +449,11 @@ textarea[readonly] {
     text-decoration: none;
     color: #4A2E1F;
     font-weight: 700;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-radius: 16px;
     transition: all 0.2s ease;
     background-color: transparent;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .leftnav-menu a:hover {
@@ -722,6 +764,7 @@ textarea[readonly] {
     transform-origin: top left;
     width: 125%;
 }
+
 /* ===== Responsive ===== */
 
 @media (max-width: 1100px) {
@@ -751,6 +794,12 @@ textarea[readonly] {
         justify-content: center;
     }
 
+    .leftnav-section-title {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
     .leftnav-bottom {
         margin-top: 0;
         padding-top: 0;
@@ -773,7 +822,12 @@ textarea[readonly] {
     }
 
     .home-logo {
-        width: 220px;
+        width: 240px;
+    }
+
+    .home-modules-admin,
+    .home-modules-operations {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
     }
 }
 
@@ -826,5 +880,30 @@ textarea[readonly] {
         font-size: 0.9rem;
         color: #8a6a4a;
         font-weight: 600;
+    }
+
+    .home-body {
+        padding: 14px;
+    }
+
+    .home-logo {
+        width: 210px;
+    }
+
+    .home-modules-admin,
+    .home-modules-operations {
+        grid-template-columns: 1fr;
+    }
+
+    .home-card {
+        min-height: 130px;
+    }
+
+    .home-card-image {
+        font-size: 42px;
+    }
+
+    .home-card-title {
+        font-size: 19px;
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
-        <nav class="leftnav" th:fragment="leftnav">
+        <nav th:fragment="leftnav" class="leftnav">
             <div class="leftnav-top">
                 <a th:href="@{/}" class="leftnav-brand">
                     <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
@@ -10,22 +10,20 @@
             </div>
 
             <div class="leftnav-menu">
-                <a th:href="@{/web/usuaris}"
-                   th:classappend="${currentPath == '/web/usuaris'} ? ' active' : ''">
-                    <span class="leftnav-icon">👤</span>
-                    <span th:text="#{nav.usuaris}">Usuarios</span>
-                </a>
-
-                <a th:href="@{/web/materies-primeres}"
-                   th:classappend="${currentPath == '/web/materies-primeres'} ? ' active' : ''">
-                    <span class="leftnav-icon">🌾</span>
-                    <span th:text="#{nav.materies}">Materias primas</span>
-                </a>
+                <div class="leftnav-section-title" th:text="#{nav.section.administracio}">
+                    ADMINISTRACIÓN
+                </div>
 
                 <a th:href="@{/web/productes}"
                    th:classappend="${currentPath == '/web/productes'} ? ' active' : ''">
                     <span class="leftnav-icon">🥖</span>
                     <span th:text="#{nav.productes}">Productos</span>
+                </a>
+
+                <a th:href="@{/web/usuaris}"
+                   th:classappend="${currentPath == '/web/usuaris'} ? ' active' : ''">
+                    <span class="leftnav-icon">👤</span>
+                    <span th:text="#{nav.usuaris}">Usuarios</span>
                 </a>
 
                 <a th:href="@{/web/proveidors}"
@@ -34,16 +32,32 @@
                     <span th:text="#{nav.proveidors}">Proveedores</span>
                 </a>
 
+                <a th:href="@{/web/materies-primeres}"
+                   th:classappend="${currentPath == '/web/materies-primeres'} ? ' active' : ''">
+                    <span class="leftnav-icon">🌾</span>
+                    <span th:text="#{nav.materies}">Materias primas</span>
+                </a>
+
                 <a th:href="@{/web/clients}"
                    th:classappend="${currentPath == '/web/clients'} ? ' active' : ''">
                     <span class="leftnav-icon">🤝</span>
                     <span th:text="#{nav.clients}">Clientes</span>
                 </a>
 
+                <div class="leftnav-section-title" th:text="#{nav.section.operacions}">
+                    OPERACIONES
+                </div>
+
                 <a th:href="@{/web/albarans-proveidor}"
                    th:classappend="${currentPath == '/web/albarans-proveidor'} ? ' active' : ''">
                     <span class="leftnav-icon">📄</span>
                     <span th:text="#{nav.albarans.proveidor}">Albaranes proveedor</span>
+                </a>
+
+                <a th:href="@{/web/albarans-client}"
+                   th:classappend="${currentPath == '/web/albarans-client'} ? ' active' : ''">
+                    <span class="leftnav-icon">🧾</span>
+                    <span th:text="#{nav.albarans.client}">Albaranes cliente</span>
                 </a>
 
                 <a th:href="@{/web/lots}"
@@ -54,31 +68,34 @@
             </div>
 
             <div class="leftnav-bottom">
-                <div class="leftnav-user">
-                    <div class="leftnav-user-avatar" th:text="${navUserInitials}">SU</div>
-                    <div class="leftnav-user-name" th:text="${navUserName}">Superadmin Sistema</div>
-                </div>
-
                 <div class="leftnav-lang">
                     <a th:if="${currentPath != null}"
                        th:href="@{${currentPath}(lang='es')}"
                        class="btn btn-secondary"
-                       th:text="#{lang.es}">ES</a>
+                       th:text="#{lang.es}">
+                        ES
+                    </a>
 
                     <a th:if="${currentPath != null}"
                        th:href="@{${currentPath}(lang='ca')}"
                        class="btn btn-secondary"
-                       th:text="#{lang.ca}">CA</a>
+                       th:text="#{lang.ca}">
+                        CA
+                    </a>
 
                     <a th:if="${currentPath == null}"
                        th:href="@{/(lang='es')}"
                        class="btn btn-secondary"
-                       th:text="#{lang.es}">ES</a>
+                       th:text="#{lang.es}">
+                        ES
+                    </a>
 
                     <a th:if="${currentPath == null}"
                        th:href="@{/(lang='ca')}"
                        class="btn btn-secondary"
-                       th:text="#{lang.ca}">CA</a>
+                       th:text="#{lang.ca}">
+                        CA
+                    </a>
                 </div>
             </div>
         </nav>
