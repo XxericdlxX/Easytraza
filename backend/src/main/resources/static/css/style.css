@@ -324,6 +324,14 @@ textarea[readonly] {
     background-color: #EDE7F6;
 }
 
+.clients-card {
+    background-color: #F4EBDD;
+}
+
+.lots-card {
+    background-color: #FFF2D8;
+}
+
 .home-card-image,
 .home-card-title {
     position: relative;
@@ -636,6 +644,84 @@ textarea[readonly] {
     margin-top: 12px;
 }
 
+/* ===== Gestió de lots ===== */
+
+.lots-table-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.lots-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+.lots-table th,
+.lots-table td {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    vertical-align: middle !important;
+    padding: 9px 6px;
+    font-size: 12px;
+}
+
+.lots-table th {
+    font-size: 12px;
+}
+
+.lots-table .lot-col-codi {
+    width: 8%;
+}
+
+.lots-table .lot-col-materia {
+    width: 13%;
+}
+
+.lots-table .lot-col-proveidor {
+    width: 27%;
+}
+
+.lots-table .lot-col-quantitat {
+    width: 6%;
+}
+
+.lots-table .lot-col-data {
+    width: 9%;
+}
+
+.lots-table .lot-col-estat {
+    width: 7%;
+}
+
+.lots-table .lot-col-albara {
+    width: 8%;
+}
+
+.lots-table .lot-col-accions {
+    width: 7%;
+}
+
+.lots-table .actions-table {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start;
+}
+
+.lots-table .btn {
+    white-space: nowrap !important;
+    padding: 7px 10px;
+    font-size: 12px;
+    min-width: auto;
+    width: auto;
+}
+
+.lots-table-zoom {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%;
+}
 /* ===== Responsive ===== */
 
 @media (max-width: 1100px) {
