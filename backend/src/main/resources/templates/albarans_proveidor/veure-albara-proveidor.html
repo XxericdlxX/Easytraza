@@ -17,46 +17,144 @@
                         <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
                         <div>
                             <h1 th:text="#{albara.proveidor.veure}">Ver albarán de proveedor</h1>
-                            <p th:text="#{albara.proveidor.gestio}">Gestión de los albaranes de proveedor del sistema</p>
+                            <p th:text="#{albara.proveidor.gestio}">
+                                Gestión de los albaranes de proveedor del sistema
+                            </p>
                         </div>
                     </div>
 
-                    <a th:href="@{/web/albarans-proveidor}" class="btn btn-secondary" th:text="#{albara.proveidor.tornar}">
-                        Volver
-                    </a>
+                    <div class="actions">
+                        <a th:if="${param.origen != null && param.origen[0] == 'lots'}"
+                           th:href="@{/web/lots}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+
+                        <a th:if="${param.origen == null || param.origen[0] != 'lots'}"
+                           th:href="@{/web/albarans-proveidor}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+                    </div>
                 </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
 
                 <div class="form-card" style="margin-bottom: 24px;">
-                    <p><strong th:text="#{albara.proveidor.id}">ID</strong>: <span th:text="${albaraDetall.id}"></span></p>
-                    <p><strong th:text="#{albara.proveidor.data}">Fecha</strong>: <span th:text="${albaraDetall.dataRecepcio}"></span></p>
-                    <p><strong th:text="#{albara.proveidor.proveidor}">Proveedor</strong>: <span th:text="${albaraDetall.proveidor.nom + ' (' + albaraDetall.proveidor.cif + ')'}"></span></p>
-                    <p><strong th:text="#{albara.proveidor.usuari}">Usuario receptor</strong>: <span th:text="${albaraDetall.usuariReceptor != null ? albaraDetall.usuariReceptor.nom + ' ' + albaraDetall.usuariReceptor.cognoms : '-'}"></span></p>
+                    <p>
+                        <strong th:text="#{albara.proveidor.id}">ID</strong>:
+                        <span th:text="${albaraDetall.id}"></span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.proveidor.data}">Fecha</strong>:
+                        <span th:text="${albaraDetall.dataRecepcio}"></span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.proveidor.proveidor}">Proveedor</strong>:
+                        <span th:text="${albaraDetall.proveidor != null ? albaraDetall.proveidor.nom + ' (' + albaraDetall.proveidor.cif + ')' : '-'}"></span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.proveidor.usuari}">Usuario receptor</strong>:
+                        <span th:text="${albaraDetall.usuariReceptor != null ? albaraDetall.usuariReceptor.nom + ' ' + albaraDetall.usuariReceptor.cognoms : '-'}"></span>
+                    </p>
                 </div>
 
-                <div class="table-wrapper" th:if="${!#lists.isEmpty(albaraDetall.lots)}">
-                    <table>
+                <div class="table-wrapper lots-table-wrapper" th:if="${albaraDetall.lots != null && !#lists.isEmpty(albaraDetall.lots)}">
+                    <table class="lots-table">
                         <thead>
                             <tr>
                                 <th th:text="#{lot.proveidor.codi}">Código/identificador de lote</th>
                                 <th th:text="#{lot.proveidor.quantitat}">Cantidad</th>
                                 <th th:text="#{lot.proveidor.materia}">Materia prima</th>
                                 <th th:text="#{lot.proveidor.estat}">Estado</th>
+                                <th th:text="#{lots.data.obertura}">Fecha apertura</th>
+                                <th th:text="#{lots.data.acabament}">Fecha finalización</th>
+                                <th th:text="#{lots.accions}">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="lot : ${albaraDetall.lots}">
-                                <td th:text="${lot.codiLot}"></td>
-                                <td th:text="${lot.quantitat != null ? lot.quantitat + ' KG' : '-'}">12 KG</td>                                <td th:text="${lot.materiaPrima.nom}"></td>
-                                <td th:text="${lot.estat}"></td>
+                                <td th:text="${lot.codiLot}">LOT-001</td>
+
+                                <td th:text="${lot.quantitat != null ? lot.quantitat + ' KG' : '-'}">
+                                    10 KG
+                                </td>
+
+                                <td th:text="${lot.materiaPrima != null ? lot.materiaPrima.nom : '-'}">
+                                    Farina
+                                </td>
+
+                                <td>
+                                    <span th:text="#{${'lots.estat.' + lot.estat}}">
+                                        Estado
+                                    </span>
+                                </td>
+
+                                <td th:text="${lot.dataObertura != null ? lot.dataObertura : '-'}">
+                                    -
+                                </td>
+
+                                <td th:text="${lot.dataAcabament != null ? lot.dataAcabament : '-'}">
+                                    -
+                                </td>
+
+                                <td>
+                                    <div class="actions actions-table">
+                                        <form th:if="${lot.estat.name() == 'EN_ESTOC'}"
+                                              th:action="@{/web/lots/{id}/iniciar(id=${lot.id}, origen='albara', albaraId=${albaraDetall.id})}"
+                                              method="post"
+                                              class="inline-form js-confirm-form"
+                                              th:attr="data-confirm-message=#{lots.confirmar.iniciar}">
+                                            <button type="submit" class="btn btn-primary" th:text="#{lots.iniciar}">
+                                                Iniciar
+                                            </button>
+                                        </form>
+
+                                        <form th:if="${lot.estat.name() == 'OBERT'}"
+                                              th:action="@{/web/lots/{id}/finalitzar(id=${lot.id}, origen='albara', albaraId=${albaraDetall.id})}"
+                                              method="post"
+                                              class="inline-form js-confirm-form"
+                                              th:attr="data-confirm-message=#{lots.confirmar.finalitzar}">
+                                            <button type="submit" class="btn btn-danger" th:text="#{lots.finalitzar}">
+                                                Finalizar
+                                            </button>
+                                        </form>
+
+                                        <span th:if="${lot.estat.name() == 'ACABAT'}" th:text="#{lots.sense.accions}">
+                                            Sin acciones
+                                        </span>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="empty-message" th:if="${#lists.isEmpty(albaraDetall.lots)}" th:text="#{albara.proveidor.lots.buit}">
+                <div class="empty-message"
+                     th:if="${albaraDetall.lots == null || #lists.isEmpty(albaraDetall.lots)}"
+                     th:text="#{albara.proveidor.lots.buit}">
                     Este albarán no tiene lotes.
                 </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-confirm-form').forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        const message = form.getAttribute('data-confirm-message') || '¿Confirmas la operación?';
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

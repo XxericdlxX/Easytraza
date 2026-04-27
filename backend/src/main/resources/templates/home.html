@@ -3,7 +3,6 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title th:text="#{home.title}">EasyTraza</title>
         <link rel="stylesheet" th:href="@{/css/style.css}">
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
@@ -15,6 +14,7 @@
 
         <section class="home-hero">
             <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="home-logo">
+            <h1 th:text="#{home.title}">EasyTraza</h1>
             <p th:text="#{home.subtitle}">Gestión y trazabilidad del sistema</p>
         </section>
 
@@ -47,6 +47,11 @@
             <a th:href="@{/web/albarans-proveidor}" class="home-card delivery-notes-card">
                 <div class="home-card-image">📄</div>
                 <div class="home-card-title" th:text="#{nav.albarans.proveidor}">Albaranes proveedor</div>
+            </a>
+
+            <a th:href="@{/web/lots}" class="home-card lots-card">
+                <div class="home-card-image">🏷️</div>
+                <div class="home-card-title" th:text="#{nav.lots}">Gestión de lotes</div>
             </a>
         </section>
     </body>
