@@ -324,6 +324,10 @@ textarea[readonly] {
     background-color: #EDE7F6;
 }
 
+.client-delivery-notes-card {
+    background-color: #EAF4E4;
+}
+
 .clients-card {
     background-color: #F4EBDD;
 }
@@ -722,6 +726,7 @@ textarea[readonly] {
     transform-origin: top left;
     width: 125%;
 }
+
 /* ===== Responsive ===== */
 
 @media (max-width: 1100px) {
