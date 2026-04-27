@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.client.veure}">Ver albarán de cliente</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{albara.client.veure}">Ver albarán de cliente</h1>
+                            <p th:text="#{albara.client.gestio}">Gestión de los albaranes de cliente del sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <a th:href="@{/web/albarans-client}" class="btn btn-secondary" th:text="#{albara.client.tornar}">
+                            Volver
+                        </a>
+
+                        <a th:if="${albaraDetall.estat.name() == 'PENDENT_LLIURAR'}"
+                           th:href="@{/web/albarans-client/editar/{id}(id=${albaraDetall.id})}"
+                           class="btn btn-primary"
+                           th:text="#{albara.client.editar}">
+                            Editar
+                        </a>
+
+                        <form th:if="${albaraDetall.estat.name() == 'PENDENT_LLIURAR'}"
+                              th:action="@{/web/albarans-client/lliurar/{id}(id=${albaraDetall.id})}"
+                              method="post"
+                              class="inline-form js-confirm-form"
+                              th:attr="data-confirm-message=#{albara.client.confirmar.lliurar}">
+                            <button type="submit" class="btn btn-accent" th:text="#{albara.client.lliurar}">
+                                Marcar como entregado
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <p>
+                        <strong th:text="#{albara.client.id}">ID</strong>:
+                        <span th:text="${albaraDetall.id}">1</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.client.data}">Fecha</strong>:
+                        <span th:text="${albaraDetall.dataProduccio}">2026-04-27</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.client.client}">Cliente</strong>:
+                        <span th:text="${albaraDetall.client != null ? albaraDetall.client.nom + ' (' + albaraDetall.client.nif + ')' : '-'}">
+                            Cliente
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.client.usuari}">Usuario creador</strong>:
+                        <span th:text="${albaraDetall.usuariCreador != null ? albaraDetall.usuariCreador.nom + ' ' + albaraDetall.usuariCreador.cognoms : '-'}">
+                            Usuario
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.client.estat}">Estado</strong>:
+                        <span th:text="#{${'albara.client.estat.' + albaraDetall.estat}}">
+                            Estado
+                        </span>
+                    </p>
+                </div>
+
+                <div class="table-wrapper" th:if="${albaraDetall.linies != null && !#lists.isEmpty(albaraDetall.linies)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{albara.client.linia.lot.intern}">Lote interno</th>
+                                <th th:text="#{albara.client.linia.producte}">Producto</th>
+                                <th th:text="#{albara.client.linia.quantitat}">Cantidad</th>
+                                <th th:text="#{albara.client.linia.operari}">Operario</th>
+                                <th th:text="#{albara.client.linia.estat}">Estado</th>
+                                <th th:text="#{albara.client.linia.lots.associats}">Lotes asociados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="linia : ${albaraDetall.linies}">
+                                <td>
+                                    <span th:text="#{albara.client.lot.prefix} + ${#numbers.formatInteger(linia.numeroLotIntern, 2)}">
+                                        Lot-01
+                                    </span>
+                                </td>
+
+                                <td th:text="${linia.producte != null ? linia.producte.nom : '-'}">
+                                    Producto
+                                </td>
+
+                                <td th:text="${linia.quantitat}">
+                                    10
+                                </td>
+
+                                <td th:text="${linia.operari != null ? linia.operari.nom + ' ' + linia.operari.cognoms : '-'}">
+                                    Operario
+                                </td>
+
+                                <td th:text="#{${'albara.client.linia.estat.' + linia.estat}}">
+                                    Estado
+                                </td>
+
+                                <td>
+                                    <span th:if="${linia.lotsAssociats == null || #sets.isEmpty(linia.lotsAssociats)}">-</span>
+
+                                    <span th:if="${linia.lotsAssociats != null && !#sets.isEmpty(linia.lotsAssociats)}"
+                                          th:each="lot, iterStat : ${linia.lotsAssociats}">
+                                        <span th:text="${lot.codiLot}">LOT-PROV-01</span><span th:if="${!iterStat.last}">, </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message"
+                     th:if="${albaraDetall.linies == null || #lists.isEmpty(albaraDetall.linies)}"
+                     th:text="#{albara.client.linies.buit}">
+                    Este albarán no tiene líneas.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-confirm-form').forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        const message = form.getAttribute('data-confirm-message') || '¿Confirmas la operación?';
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
