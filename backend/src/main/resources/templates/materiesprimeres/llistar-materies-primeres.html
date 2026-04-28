@@ -9,6 +9,7 @@
     </head>
     <body>
         <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
         <div class="page-with-nav">
             <div class="container">
                 <div class="list-header">
@@ -20,10 +21,41 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/web/materies-primeres/crear}" class="btn btn-primary" th:text="#{materies.afegir}">Añadir materia prima</a>
+                    <a th:href="@{/web/materies-primeres/crear}" class="btn btn-primary" th:text="#{materies.afegir}">
+                        Añadir materia prima
+                    </a>
                 </div>
 
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
                 <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/materies-primeres}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+                            <label for="nom" th:text="#{materies.nom}">Nombre</label>
+                            <input type="text"
+                                   id="nom"
+                                   name="nom"
+                                   th:value="${nom}"
+                                   th:placeholder="#{materies.cerca.nom.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1.5; min-width: 260px; margin-bottom: 0;">
+                            <label for="descripcio" th:text="#{materies.descripcio}">Descripción</label>
+                            <input type="text"
+                                   id="descripcio"
+                                   name="descripcio"
+                                   th:value="${descripcio}"
+                                   th:placeholder="#{materies.cerca.descripcio.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit" class="btn btn-secondary" th:text="#{materies.cerca.boto}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
                 <div class="table-wrapper" th:if="${!#lists.isEmpty(materiesPrimeres)}">
                     <table>
@@ -37,18 +69,22 @@
                         </thead>
                         <tbody>
                             <tr th:each="materiaPrima : ${materiesPrimeres}">
-                                <td th:text="${materiaPrima.id}"></td>
-                                <td th:text="${materiaPrima.nom}"></td>
-                                <td th:text="${materiaPrima.descripcio}"></td>
+                                <td th:text="${materiaPrima.id}">1</td>
+                                <td th:text="${materiaPrima.nom}">Materia</td>
+                                <td th:text="${materiaPrima.descripcio}">Descripción</td>
                                 <td>
                                     <div class="actions">
                                         <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id})}"
                                            class="btn btn-secondary"
-                                           th:text="#{materies.editar}">Editar</a>
+                                           th:text="#{materies.editar}">
+                                            Editar
+                                        </a>
                                         <a th:href="@{/web/materies-primeres/eliminar/{id}(id=${materiaPrima.id})}"
                                            class="btn btn-danger"
                                            th:attr="onclick=|return confirm('${#messages.msg('materies.confirmar.eliminar')}');|"
-                                           th:text="#{materies.eliminar}">Eliminar</a>
+                                           th:text="#{materies.eliminar}">
+                                            Eliminar
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
