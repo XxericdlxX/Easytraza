@@ -135,27 +135,20 @@ public class AlbaraProveidorWebController {
 
         Optional<AlbaraProveidor> albara = albaraProveidorService.findById(id);
 
-        if (albara.isEmpty()) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("albara.proveidor.flash.no.trobat", null, locale)
-            );
-            return "redirect:/web/albarans-proveidor";
+        if (albara.isPresent()) {
+            carregarDadesFormulari(model);
+            model.addAttribute("albara", albaraProveidorService.convertirEntityADto(albara.get()));
+            model.addAttribute("currentPath", "/web/albarans-proveidor");
+
+            return "albarans_proveidor/editar-albara-proveidor";
         }
 
-        if (!albaraProveidorService.esAlbaraEditable(albara.get())) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("albara.proveidor.error.modificar.lots.no.estoc", null, locale)
-            );
-            return "redirect:/web/albarans-proveidor/veure/" + id;
-        }
+        redirectAttributes.addFlashAttribute(
+                "missatgeError",
+                messageSource.getMessage("albara.proveidor.flash.no.trobat", null, locale)
+        );
 
-        carregarDadesFormulari(model);
-        model.addAttribute("albara", albaraProveidorService.convertirEntityADto(albara.get()));
-        model.addAttribute("currentPath", "/web/albarans-proveidor");
-
-        return "albarans_proveidor/editar-albara-proveidor";
+        return "redirect:/web/albarans-proveidor";
     }
 
     @PostMapping("/actualitzar/{id}")
@@ -176,25 +169,15 @@ public class AlbaraProveidorWebController {
             return "albarans_proveidor/editar-albara-proveidor";
         }
 
-        try {
-            AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
-            albaraProveidorService.update(id, entity);
+        AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
+        albaraProveidorService.update(id, entity);
 
-            redirectAttributes.addFlashAttribute(
-                    "missatgeExit",
-                    messageSource.getMessage("albara.proveidor.flash.actualitzat", null, locale)
-            );
+        redirectAttributes.addFlashAttribute(
+                "missatgeExit",
+                messageSource.getMessage("albara.proveidor.flash.actualitzat", null, locale)
+        );
 
-            return "redirect:/web/albarans-proveidor";
-
-        } catch (IllegalStateException ex) {
-            carregarDadesFormulari(model);
-            albaraProveidorService.assegurarMinimUnLot(dto);
-            model.addAttribute("errorNegoci", messageSource.getMessage(ex.getMessage(), null, locale));
-            model.addAttribute("currentPath", "/web/albarans-proveidor");
-
-            return "albarans_proveidor/editar-albara-proveidor";
-        }
+        return "redirect:/web/albarans-proveidor";
     }
 
     @GetMapping("/ocr")
@@ -272,24 +255,15 @@ public class AlbaraProveidorWebController {
 
         try {
             albaraProveidorService.deleteById(id);
-
             redirectAttributes.addFlashAttribute(
                     "missatgeExit",
                     messageSource.getMessage("albara.proveidor.flash.eliminat", null, locale)
             );
-
-        } catch (IllegalStateException ex) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage(ex.getMessage(), null, locale)
-            );
-
         } catch (DataIntegrityViolationException ex) {
             redirectAttributes.addFlashAttribute(
                     "missatgeError",
                     messageSource.getMessage("albara.proveidor.error.eliminar.relacions", null, locale)
             );
-
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute(
                     "missatgeError",
@@ -309,16 +283,20 @@ public class AlbaraProveidorWebController {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
 
         dto.setDataRecepcio(parseDataOcr(resposta.getDataAlbara()));
-        dto.setProveidorCif(resoldreProveidorExistent(resposta));
+        dto.setProveidorCif(resoldreProveidorCif(resposta));
+        dto.setProveidorNomDetectat(extreureProveidorDetectat(resposta.getTextDetectat()));
 
         List<LotProveidorDto> lots = new ArrayList<>();
 
         if (resposta.getLots() != null) {
             for (OcrLotRespostaDto lotOcr : resposta.getLots()) {
                 LotProveidorDto lotDto = new LotProveidorDto();
+
                 lotDto.setCodiLot(lotOcr.getCodiLot());
                 lotDto.setQuantitat(lotOcr.getQuantitat() != null ? lotOcr.getQuantitat().intValue() : null);
-                lotDto.setMateriaPrimaId(resoldreMateriaPrimaExistent(lotOcr.getMateriaPrima()));
+                lotDto.setMateriaPrimaNomDetectada(lotOcr.getMateriaPrima());
+                lotDto.setMateriaPrimaId(resoldreMateriaPrimaId(lotOcr.getMateriaPrima()));
+
                 lots.add(lotDto);
             }
         }
@@ -353,7 +331,7 @@ public class AlbaraProveidorWebController {
         return LocalDate.now();
     }
 
-    private String resoldreProveidorExistent(OcrAlbaraResponseDto resposta) {
+    private String resoldreProveidorCif(OcrAlbaraResponseDto resposta) {
         String cifDetectat = normalitzarDocument(resposta.getProveidorCif());
 
         if (cifDetectat != null && !cifDetectat.isBlank()) {
@@ -362,60 +340,48 @@ public class AlbaraProveidorWebController {
             if (existentPerCif.isPresent()) {
                 return existentPerCif.get().getCif();
             }
+
+            return cifDetectat;
         }
 
-        if (resposta.getTextDetectat() != null) {
-            String text = resposta.getTextDetectat().toLowerCase();
+        String nomDetectat = extreureProveidorDetectat(resposta.getTextDetectat());
 
-            for (Proveidor proveidor : proveidorRepository.findAll()) {
-                if (proveidor.getNom() != null
-                        && !proveidor.getNom().isBlank()
-                        && text.contains(proveidor.getNom().toLowerCase())) {
-                    return proveidor.getCif();
-                }
+        if (nomDetectat != null && !nomDetectat.isBlank()) {
+            Optional<Proveidor> existentPerNom = proveidorRepository.findByNomIgnoreCase(nomDetectat);
 
-                if (proveidor.getCif() != null
-                        && !proveidor.getCif().isBlank()
-                        && text.contains(proveidor.getCif().toLowerCase())) {
-                    return proveidor.getCif();
-                }
+            if (existentPerNom.isPresent()) {
+                return existentPerNom.get().getCif();
             }
         }
 
         return null;
     }
 
-    private Long resoldreMateriaPrimaExistent(String nomMateria) {
-        String nomNet = netejarNomMateria(nomMateria);
+    private Long resoldreMateriaPrimaId(String materiaDetectada) {
+        String nomNet = normalitzarText(materiaDetectada);
 
         if (nomNet == null || nomNet.isBlank()) {
             return null;
         }
 
-        Optional<MateriaPrima> exactaIgnoreCase = materiaPrimaRepository.findByNomIgnoreCase(nomNet);
+        Optional<MateriaPrima> exacta = materiaPrimaRepository.findByNomIgnoreCase(nomNet);
 
-        if (exactaIgnoreCase.isPresent()) {
-            return exactaIgnoreCase.get().getId();
+        if (exacta.isPresent()) {
+            return exacta.get().getId();
         }
 
-        String nomNormalitzat = nomNet.trim().toLowerCase();
+        String nomNormalitzat = nomNet.toLowerCase();
 
         for (MateriaPrima materia : materiaPrimaRepository.findAll()) {
-            if (materia.getNom() == null || materia.getNom().isBlank()) {
+            if (materia.getNom() == null) {
                 continue;
             }
 
-            String nomMateriaSistema = materia.getNom().trim().toLowerCase();
+            String nomSistema = materia.getNom().trim().toLowerCase();
 
-            if (nomMateriaSistema.equals(nomNormalitzat)) {
-                return materia.getId();
-            }
-
-            if (nomMateriaSistema.contains(nomNormalitzat)) {
-                return materia.getId();
-            }
-
-            if (nomNormalitzat.contains(nomMateriaSistema)) {
+            if (nomSistema.equals(nomNormalitzat)
+                    || nomSistema.contains(nomNormalitzat)
+                    || nomNormalitzat.contains(nomSistema)) {
                 return materia.getId();
             }
         }
@@ -423,26 +389,20 @@ public class AlbaraProveidorWebController {
         return null;
     }
 
-    private String netejarNomMateria(String nomMateria) {
-        if (nomMateria == null) {
+    private String extreureProveidorDetectat(String textDetectat) {
+        if (textDetectat == null || textDetectat.isBlank()) {
             return null;
         }
 
-        String valor = nomMateria
-                .replace("\n", " ")
-                .replace("\r", " ")
-                .trim()
-                .replaceAll("\\s{2,}", " ");
+        String prefix = "PROVEIDOR DETECTAT OCR:";
 
-        valor = valor.replaceAll("(?i)\\b\\d+(?:[\\.,]\\d+)?\\s*(kg|g|gr|grams|grams\\.|uds|ud|unitats|unitats\\.)\\b", "")
-                .trim()
-                .replaceAll("\\s{2,}", " ");
-
-        if (valor.length() < 2) {
-            return null;
+        for (String linia : textDetectat.split("\\R")) {
+            if (linia.toUpperCase().startsWith(prefix)) {
+                return linia.substring(prefix.length()).trim();
+            }
         }
 
-        return valor;
+        return null;
     }
 
     private String normalitzarDocument(String document) {
@@ -451,5 +411,13 @@ public class AlbaraProveidorWebController {
         }
 
         return document.trim().toUpperCase().replace(" ", "");
+    }
+
+    private String normalitzarText(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        return text.trim().replaceAll("\\s{2,}", " ");
     }
 }
