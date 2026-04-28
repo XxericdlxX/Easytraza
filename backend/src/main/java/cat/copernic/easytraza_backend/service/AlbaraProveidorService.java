@@ -13,17 +13,16 @@ import cat.copernic.easytraza_backend.repository.LotProveidorRepository;
 import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AlbaraProveidorService {
@@ -60,7 +59,8 @@ public class AlbaraProveidorService {
 
         if (!cifNormalitzat.isEmpty() && dataRecepcio != null) {
             return albaraProveidorRepository.findByProveidor_CifContainingIgnoreCaseAndDataRecepcio(
-                    cifNormalitzat, dataRecepcio
+                    cifNormalitzat,
+                    dataRecepcio
             );
         }
 
@@ -72,6 +72,7 @@ public class AlbaraProveidorService {
     }
 
     public AlbaraProveidor save(AlbaraProveidor albaraProveidor) {
+        prepararLotsAbansDeGuardar(albaraProveidor);
         return albaraProveidorRepository.save(albaraProveidor);
     }
 
@@ -84,6 +85,8 @@ public class AlbaraProveidorService {
         }
 
         AlbaraProveidor existent = existentOpt.get();
+        validarAlbaraEditable(existent);
+
         existent.setDataRecepcio(albaraActualitzat.getDataRecepcio());
         existent.setProveidor(albaraActualitzat.getProveidor());
 
@@ -100,10 +103,17 @@ public class AlbaraProveidorService {
             existent.getLots().add(lot);
         }
 
+        prepararLotsAbansDeGuardar(existent);
         return albaraProveidorRepository.saveAndFlush(existent);
     }
 
     public void deleteById(Long id) {
+        Optional<AlbaraProveidor> albaraOpt = albaraProveidorRepository.findById(id);
+
+        if (albaraOpt.isPresent()) {
+            validarAlbaraEditable(albaraOpt.get());
+        }
+
         albaraProveidorRepository.deleteById(id);
     }
 
@@ -116,16 +126,69 @@ public class AlbaraProveidorService {
             return "albara.proveidor.proveidor.obligatori";
         }
 
-        List<LotProveidorDto> lotsValids = obtenirLotsValids(dto.getLots());
-        if (lotsValids.isEmpty()) {
+        String proveidorCifNormalitzat = normalitzarDocument(dto.getProveidorCif());
+
+        Optional<Proveidor> proveidor = proveidorRepository.findById(proveidorCifNormalitzat);
+        if (proveidor.isEmpty()) {
+            return "albara.proveidor.error.proveidor.no.trobat";
+        }
+
+        if (idActual != null) {
+            Optional<AlbaraProveidor> albaraExistent = albaraProveidorRepository.findById(idActual);
+
+            if (albaraExistent.isPresent() && !esAlbaraEditable(albaraExistent.get())) {
+                return "albara.proveidor.error.modificar.lots.no.estoc";
+            }
+        }
+
+        if (dto.getLots() == null || dto.getLots().isEmpty()) {
             return "albara.proveidor.lots.obligatori";
         }
 
-        for (LotProveidorDto lotDto : lotsValids) {
+        boolean hiHaAlgunLotAmbDades = false;
+
+        for (LotProveidorDto lotDto : dto.getLots()) {
+            boolean teCodi = lotDto.getCodiLot() != null && !lotDto.getCodiLot().isBlank();
+            boolean teQuantitat = lotDto.getQuantitat() != null;
+            boolean teMateria = lotDto.getMateriaPrimaId() != null;
+
+            if (!teCodi && !teQuantitat && !teMateria) {
+                continue;
+            }
+
+            hiHaAlgunLotAmbDades = true;
+
+            if (!teCodi) {
+                return "lot.proveidor.codi.obligatori";
+            }
+
+            if (lotDto.getCodiLot().trim().length() > 100) {
+                return "lot.proveidor.codi.max";
+            }
+
+            if (!teQuantitat) {
+                return "lot.proveidor.quantitat.obligatoria";
+            }
+
+            if (lotDto.getQuantitat() <= 0) {
+                return "lot.proveidor.quantitat.min";
+            }
+
+            if (!teMateria) {
+                return "lot.proveidor.materia.obligatoria";
+            }
+
+            Optional<MateriaPrima> materiaPrima = materiaPrimaRepository.findById(lotDto.getMateriaPrimaId());
+            if (materiaPrima.isEmpty()) {
+                return "albara.proveidor.error.materia.no.trobada";
+            }
+
+            String codiLotNormalitzat = normalitzar(lotDto.getCodiLot());
+
             Optional<LotProveidor> lotExistent
                     = lotProveidorRepository.findByProveidor_CifAndCodiLotIgnoreCase(
-                            dto.getProveidorCif(),
-                            lotDto.getCodiLot().trim()
+                            proveidorCifNormalitzat,
+                            codiLotNormalitzat
                     );
 
             if (lotExistent.isPresent()) {
@@ -140,11 +203,17 @@ public class AlbaraProveidorService {
             }
         }
 
+        if (!hiHaAlgunLotAmbDades) {
+            return "albara.proveidor.lots.obligatori";
+        }
+
         return null;
     }
 
     public AlbaraProveidor convertirDtoAEntity(AlbaraProveidorDto dto) {
-        Proveidor proveidor = proveidorRepository.findById(dto.getProveidorCif()).orElse(null);
+        String proveidorCifNormalitzat = normalitzarDocument(dto.getProveidorCif());
+
+        Proveidor proveidor = proveidorRepository.findById(proveidorCifNormalitzat).orElse(null);
         Usuari usuariLoguejat = obtenirUsuariLoguejat();
 
         AlbaraProveidor albara = new AlbaraProveidor();
@@ -180,7 +249,10 @@ public class AlbaraProveidorService {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
         dto.setId(entity.getId());
         dto.setDataRecepcio(entity.getDataRecepcio());
-        dto.setProveidorCif(entity.getProveidor().getCif());
+
+        if (entity.getProveidor() != null) {
+            dto.setProveidorCif(entity.getProveidor().getCif());
+        }
 
         if (entity.getUsuariReceptor() != null) {
             String nom = entity.getUsuariReceptor().getNom() != null ? entity.getUsuariReceptor().getNom() : "";
@@ -195,7 +267,11 @@ public class AlbaraProveidorService {
                 lotDto.setId(lot.getId());
                 lotDto.setCodiLot(lot.getCodiLot());
                 lotDto.setQuantitat(lot.getQuantitat());
-                lotDto.setMateriaPrimaId(lot.getMateriaPrima().getId());
+
+                if (lot.getMateriaPrima() != null) {
+                    lotDto.setMateriaPrimaId(lot.getMateriaPrima().getId());
+                }
+
                 lotsDto.add(lotDto);
             }
         }
@@ -212,8 +288,52 @@ public class AlbaraProveidorService {
         if (dto.getLots() == null) {
             dto.setLots(new ArrayList<>());
         }
+
         if (dto.getLots().isEmpty()) {
             dto.getLots().add(new LotProveidorDto());
+        }
+    }
+
+    public boolean esAlbaraEditable(AlbaraProveidor albara) {
+        if (albara == null || albara.getLots() == null) {
+            return true;
+        }
+
+        for (LotProveidor lot : albara.getLots()) {
+            if (lot.getEstat() != EstatLot.EN_ESTOC) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void validarAlbaraEditable(AlbaraProveidor albara) {
+        if (!esAlbaraEditable(albara)) {
+            throw new IllegalStateException("albara.proveidor.error.modificar.lots.no.estoc");
+        }
+    }
+
+    private void prepararLotsAbansDeGuardar(AlbaraProveidor albara) {
+        if (albara == null || albara.getLots() == null) {
+            return;
+        }
+
+        for (LotProveidor lot : albara.getLots()) {
+            lot.setAlbaraProveidor(albara);
+
+            if (lot.getProveidor() == null) {
+                lot.setProveidor(albara.getProveidor());
+            }
+
+            if (lot.getEstat() == null) {
+                lot.setEstat(EstatLot.EN_ESTOC);
+            }
+
+            if (lot.getEstat() == EstatLot.EN_ESTOC) {
+                lot.setDataObertura(null);
+                lot.setDataAcabament(null);
+            }
         }
     }
 
@@ -228,16 +348,7 @@ public class AlbaraProveidorService {
             boolean teQuantitat = lot.getQuantitat() != null;
             boolean teMateria = lot.getMateriaPrimaId() != null;
 
-            if (teCodi || teQuantitat || teMateria) {
-                if (!teCodi) {
-                    continue;
-                }
-                if (lot.getQuantitat() == null || lot.getQuantitat() <= 0) {
-                    continue;
-                }
-                if (lot.getMateriaPrimaId() == null) {
-                    continue;
-                }
+            if (teCodi && teQuantitat && teMateria && lot.getQuantitat() > 0) {
                 valids.add(lot);
             }
         }
@@ -265,5 +376,13 @@ public class AlbaraProveidorService {
 
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
+    }
+
+    private String normalitzarDocument(String document) {
+        if (document == null) {
+            return null;
+        }
+
+        return document.trim().toUpperCase().replace(" ", "");
     }
 }
