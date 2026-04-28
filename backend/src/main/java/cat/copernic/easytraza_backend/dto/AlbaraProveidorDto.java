@@ -1,10 +1,9 @@
 package cat.copernic.easytraza_backend.dto;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class AlbaraProveidorDto {
 
@@ -14,6 +13,10 @@ public class AlbaraProveidorDto {
     private LocalDate dataRecepcio;
 
     private String proveidorCif;
+
+    private String proveidorNomDetectat;
+
+    private boolean crearProveidorSiNoExisteix;
 
     private String usuariReceptorNom;
 
@@ -44,6 +47,22 @@ public class AlbaraProveidorDto {
 
     public void setProveidorCif(String proveidorCif) {
         this.proveidorCif = proveidorCif;
+    }
+
+    public String getProveidorNomDetectat() {
+        return proveidorNomDetectat;
+    }
+
+    public void setProveidorNomDetectat(String proveidorNomDetectat) {
+        this.proveidorNomDetectat = proveidorNomDetectat;
+    }
+
+    public boolean isCrearProveidorSiNoExisteix() {
+        return crearProveidorSiNoExisteix;
+    }
+
+    public void setCrearProveidorSiNoExisteix(boolean crearProveidorSiNoExisteix) {
+        this.crearProveidorSiNoExisteix = crearProveidorSiNoExisteix;
     }
 
     public String getUsuariReceptorNom() {
