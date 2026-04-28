@@ -3,11 +3,10 @@ package cat.copernic.easytraza_backend.service;
 import cat.copernic.easytraza_backend.dto.MateriaPrimaDto;
 import cat.copernic.easytraza_backend.model.MateriaPrima;
 import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MateriaPrimaService {
@@ -21,6 +20,16 @@ public class MateriaPrimaService {
 
     public Optional<MateriaPrima> findById(Long id) {
         return materiaPrimaRepository.findById(id);
+    }
+
+    public List<MateriaPrima> buscar(String nom, String descripcio) {
+        String nomNormalitzat = normalitzarTextCerca(nom);
+        String descripcioNormalitzada = normalitzarTextCerca(descripcio);
+
+        return materiaPrimaRepository.findByNomContainingIgnoreCaseAndDescripcioContainingIgnoreCase(
+                nomNormalitzat,
+                descripcioNormalitzada
+        );
     }
 
     public MateriaPrima save(MateriaPrima materiaPrima) {
@@ -45,7 +54,9 @@ public class MateriaPrimaService {
     }
 
     public String validarMateriaPrima(MateriaPrimaDto materiaPrimaDto, Long idActual) {
-        Optional<MateriaPrima> materiaAmbMateixNom = materiaPrimaRepository.findByNom(materiaPrimaDto.getNom());
+        Optional<MateriaPrima> materiaAmbMateixNom = materiaPrimaRepository.findByNomIgnoreCase(
+                normalitzarText(materiaPrimaDto.getNom())
+        );
 
         if (materiaAmbMateixNom.isPresent()) {
             if (idActual == null || !materiaAmbMateixNom.get().getId().equals(idActual)) {
@@ -59,8 +70,8 @@ public class MateriaPrimaService {
     public MateriaPrima convertirDtoAEntity(MateriaPrimaDto materiaPrimaDto) {
         MateriaPrima materiaPrima = new MateriaPrima();
         materiaPrima.setId(materiaPrimaDto.getId());
-        materiaPrima.setNom(materiaPrimaDto.getNom());
-        materiaPrima.setDescripcio(materiaPrimaDto.getDescripcio());
+        materiaPrima.setNom(normalitzarText(materiaPrimaDto.getNom()));
+        materiaPrima.setDescripcio(normalitzarText(materiaPrimaDto.getDescripcio()));
         return materiaPrima;
     }
 
@@ -70,5 +81,13 @@ public class MateriaPrimaService {
         materiaPrimaDto.setNom(materiaPrima.getNom());
         materiaPrimaDto.setDescripcio(materiaPrima.getDescripcio());
         return materiaPrimaDto;
+    }
+
+    private String normalitzarText(String text) {
+        return text == null ? null : text.trim();
+    }
+
+    private String normalitzarTextCerca(String text) {
+        return text == null ? "" : text.trim();
     }
 }
