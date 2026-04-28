@@ -20,6 +20,10 @@ public class LotProveidorDto {
     @NotNull(message = "{lot.proveidor.materia.obligatoria}")
     private Long materiaPrimaId;
 
+    private String materiaPrimaNomDetectada;
+
+    private boolean crearMateriaPrimaSiNoExisteix;
+
     public LotProveidorDto() {
     }
 
@@ -53,5 +57,21 @@ public class LotProveidorDto {
 
     public void setMateriaPrimaId(Long materiaPrimaId) {
         this.materiaPrimaId = materiaPrimaId;
+    }
+
+    public String getMateriaPrimaNomDetectada() {
+        return materiaPrimaNomDetectada;
+    }
+
+    public void setMateriaPrimaNomDetectada(String materiaPrimaNomDetectada) {
+        this.materiaPrimaNomDetectada = materiaPrimaNomDetectada;
+    }
+
+    public boolean isCrearMateriaPrimaSiNoExisteix() {
+        return crearMateriaPrimaSiNoExisteix;
+    }
+
+    public void setCrearMateriaPrimaSiNoExisteix(boolean crearMateriaPrimaSiNoExisteix) {
+        this.crearMateriaPrimaSiNoExisteix = crearMateriaPrimaSiNoExisteix;
     }
 }
