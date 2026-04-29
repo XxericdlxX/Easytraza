@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -124,8 +126,10 @@ public class AlbaraProveidorService {
             return "albara.proveidor.lots.obligatori";
         }
 
+        Set<String> lotsRevisats = new HashSet<>();
+
         for (LotProveidorDto lotDto : lotsValids) {
-            String errorLot = validarLot(lotDto, proveidor.getCif(), idActual);
+            String errorLot = validarLot(lotDto, proveidor.getCif(), dto.getDataRecepcio(), idActual, lotsRevisats);
             if (errorLot != null) {
                 return errorLot;
             }
@@ -219,8 +223,10 @@ public class AlbaraProveidorService {
         }
     }
 
-    private String validarLot(LotProveidorDto lotDto, String proveidorCif, Long idActual) {
-        if (lotDto.getCodiLot() == null || lotDto.getCodiLot().isBlank()) {
+    private String validarLot(LotProveidorDto lotDto, String proveidorCif, LocalDate dataRecepcio, Long idActual, Set<String> lotsRevisats) {
+        String codiLot = normalitzar(lotDto.getCodiLot());
+
+        if (codiLot == null || codiLot.isBlank()) {
             return "lot.proveidor.codi.obligatori";
         }
 
@@ -237,22 +243,19 @@ public class AlbaraProveidorService {
             return "albara.proveidor.error.materia.no.trobada";
         }
 
-        Optional<LotProveidor> lotExistent = lotProveidorRepository.findByProveidor_CifAndCodiLotIgnoreCase(
-                proveidorCif,
-                lotDto.getCodiLot().trim()
-        );
-
-        if (lotExistent.isPresent()) {
-            boolean mateixAlbara = idActual != null
-                    && lotExistent.get().getAlbaraProveidor() != null
-                    && idActual.equals(lotExistent.get().getAlbaraProveidor().getId());
-
-            if (!mateixAlbara) {
-                return "lot.proveidor.codi.duplicat";
-            }
+        String clauRecepcio = proveidorCif.trim().toUpperCase() + "|" + dataRecepcio + "|" + codiLot.toUpperCase();
+        if (!lotsRevisats.add(clauRecepcio)) {
+            return "lot.proveidor.codi.duplicat.recepcio";
         }
 
-        return null;
+        long repetits = lotProveidorRepository.countLotRepetitEnRecepcio(
+                proveidorCif,
+                dataRecepcio,
+                codiLot,
+                idActual
+        );
+
+        return repetits > 0 ? "lot.proveidor.codi.duplicat.recepcio" : null;
     }
 
     private Proveidor obtenirOCrearProveidor(AlbaraProveidorDto dto) {
