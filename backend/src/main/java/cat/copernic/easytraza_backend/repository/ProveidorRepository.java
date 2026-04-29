@@ -13,6 +13,8 @@ public interface ProveidorRepository extends JpaRepository<Proveidor, String> {
 
     Optional<Proveidor> findByNomIgnoreCase(String nom);
 
+    Optional<Proveidor> findByEmailIgnoreCase(String email);
+
     boolean existsByCifIgnoreCase(String cif);
 
     boolean existsByEmailIgnoreCase(String email);
@@ -20,4 +22,14 @@ public interface ProveidorRepository extends JpaRepository<Proveidor, String> {
     List<Proveidor> findByNomContainingIgnoreCase(String nom);
 
     List<Proveidor> findByCifContainingIgnoreCase(String cif);
+
+    List<Proveidor> findByCifContainingIgnoreCaseAndNomContainingIgnoreCase(String cif, String nom);
+
+    List<Proveidor> findByNomContainingIgnoreCaseOrCifContainingIgnoreCase(String nom, String cif);
+
+    List<Proveidor> findByCifContainingIgnoreCaseOrNomContainingIgnoreCase(String cif, String nom);
+
+    List<Proveidor> findByEmailContainingIgnoreCase(String email);
+
+    List<Proveidor> findByTelefonContainingIgnoreCase(String telefon);
 }
