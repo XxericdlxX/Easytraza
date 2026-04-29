@@ -32,7 +32,7 @@ image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  |
+| Eric Delgado López | Vaig Corregir el Sprint2 i vaig acabar el RF10-RF11-gestio-lots, iniciar i finalitzar lots i vaig començar el RF05 - CRUD d’albarans de client | Començaré a corregir els errors que em van sortir al Sprint2 sobretot de negoci i començaré a corregir el OCR amb el albarans reals de rafa |Problemes amb el OCR que no agafa bé tot   | 0h + 4h
 |===
 
 === DIA 4 Dimecres - 29/04/2026
