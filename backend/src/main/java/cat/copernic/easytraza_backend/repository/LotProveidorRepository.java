@@ -3,18 +3,32 @@ package cat.copernic.easytraza_backend.repository;
 import cat.copernic.easytraza_backend.model.LotProveidor;
 import cat.copernic.easytraza_backend.model.enums.EstatLot;
 import java.time.LocalDate;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LotProveidorRepository extends JpaRepository<LotProveidor, Long> {
 
     Optional<LotProveidor> findByProveidor_CifAndCodiLotIgnoreCase(String proveidorCif, String codiLot);
+
+    @Query("""
+           SELECT COUNT(lot)
+           FROM LotProveidor lot
+           WHERE LOWER(lot.albaraProveidor.proveidor.cif) = LOWER(:proveidorCif)
+             AND lot.albaraProveidor.dataRecepcio = :dataRecepcio
+             AND LOWER(lot.codiLot) = LOWER(:codiLot)
+             AND (:idActual IS NULL OR lot.albaraProveidor.id <> :idActual)
+           """)
+    long countLotRepetitEnRecepcio(
+            @Param("proveidorCif") String proveidorCif,
+            @Param("dataRecepcio") LocalDate dataRecepcio,
+            @Param("codiLot") String codiLot,
+            @Param("idActual") Long idActual
+    );
 
     List<LotProveidor> findByEstat(EstatLot estat);
 
