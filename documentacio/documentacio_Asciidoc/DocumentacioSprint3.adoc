@@ -46,21 +46,21 @@ image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Vaig seguir millorant el ocr  |  |  |
+| Eric Delgado López | Vaig seguir millorant el ocr  | - | - | 0h
 |===
 
 === DIA 6 Divendres - 01/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  |
+| Eric Delgado López | - | - | - | 0h
 |===
 
 === DIA 7 Dilluns - 04/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  |
+| Eric Delgado López | - |Continuaré milorant el ocr y arreglar alguns errores del sprint 2  | Problemes amb el OCR  | 3h
 |===
 
 === DIA 8 Dimarts - 05/05/2026
