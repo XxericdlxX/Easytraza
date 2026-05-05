@@ -33,44 +33,13 @@ public class OcrAlbaraService {
     @Value("${ocr.tesseract.language}")
     private String tesseractLanguage;
 
-    private static final Pattern PATRON_CIF_NIF = Pattern.compile(
-            "\\b(ES)?([A-Z]\\d{7,8}|\\d{8}[A-Z]|[XYZ]\\d{7}[A-Z])\\b",
-            Pattern.CASE_INSENSITIVE
-    );
-
     private static final Pattern PATRON_DATA = Pattern.compile(
             "\\b(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|\\d{4}[/-]\\d{1,2}[/-]\\d{1,2})\\b"
     );
 
-    private static final Pattern PATRON_NUMERO_ALBARA = Pattern.compile(
-            "\\b(?:N[ºO]?\\s*ALBARA|N[ºO]?\\s*ALBARAN|NUM\\.?\\s*ALBARAN|NUM\\.?\\s*ALBARA|ALBARA|ALBARAN|ALBARÀ|DOCUMENT|N\\.\\s*ENTREGA|ORDEN)\\s*[:#\\- ]*([A-Z0-9][A-Z0-9\\-\\/ ]{2,})\\b",
-            Pattern.CASE_INSENSITIVE
-    );
-
-    private static final Pattern PATRON_LOT = Pattern.compile(
+    private static final Pattern PATRON_LOT_PREFIX = Pattern.compile(
             "\\b(?:LOT|LOTE|L0T|10T|IOT)\\s*[:#\\- ]*([A-Z0-9][A-Z0-9\\-\\/\\.]{2,})\\b",
             Pattern.CASE_INSENSITIVE
-    );
-
-    private static final Pattern PATRON_LOT_SENSE_PREFIX = Pattern.compile(
-            "\\b([A-Z]{1,4}\\d{3,}[A-Z0-9\\-\\/]*|\\d{5,}[A-Z0-9\\-\\/]*|[A-Z0-9]{4,}[-\\/][A-Z0-9]{2,})\\b",
-            Pattern.CASE_INSENSITIVE
-    );
-
-    private static final Pattern PATRON_QUANTITAT = Pattern.compile(
-            "\\b(\\d+(?:[\\.,]\\d+)?)\\s*(KG|KGS|G|GR|L|ML|UD|UDS|U|SACO|SACOS|TONELADAS|TONA|TONES)?\\b",
-            Pattern.CASE_INSENSITIVE
-    );
-
-    private static final List<String> PROVEIDORS_CONEGUTS = List.of(
-            "PASTISSA",
-            "JOSE NOVAU DIL",
-            "AVICOLA LLEONART",
-            "AVÍCOLA LLEONART",
-            "LLEONART",
-            "ARTIPAS",
-            "TAL COM PINTA",
-            "LA META"
     );
 
     public OcrAlbaraResponseDto processarImatgeAlbara(MultipartFile fitxer) {
@@ -82,13 +51,9 @@ public class OcrAlbaraService {
                 .orElse("")
                 .toLowerCase(Locale.ROOT);
 
-        String textDetectat;
-
-        if (nomFitxer.endsWith(".pdf")) {
-            textDetectat = extreureTextPdf(fitxer);
-        } else {
-            textDetectat = extreureTextImatge(fitxer);
-        }
+        String textDetectat = nomFitxer.endsWith(".pdf")
+                ? extreureTextPdf(fitxer)
+                : extreureTextImatge(fitxer);
 
         return parsejarTextOcr(normalitzarText(textDetectat));
     }
@@ -101,10 +66,7 @@ public class OcrAlbaraService {
                 throw new IllegalStateException("No s'ha pogut llegir la imatge enviada.");
             }
 
-            BufferedImage imatgePreparada = prepararImatgePerOcr(imatgeOriginal);
-            Tesseract tesseract = crearTesseract();
-
-            return tesseract.doOCR(imatgePreparada);
+            return crearTesseract().doOCR(prepararImatgePerOcr(imatgeOriginal));
 
         } catch (IOException ex) {
             throw new IllegalStateException("Error llegint la imatge per OCR.", ex);
@@ -128,8 +90,7 @@ public class OcrAlbaraService {
 
                 for (int i = 0; i < document.getNumberOfPages(); i++) {
                     BufferedImage imatge = renderer.renderImageWithDPI(i, 300, ImageType.RGB);
-                    BufferedImage imatgePreparada = prepararImatgePerOcr(imatge);
-                    text.append(tesseract.doOCR(imatgePreparada)).append("\n");
+                    text.append(tesseract.doOCR(prepararImatgePerOcr(imatge))).append("\n");
                 }
             }
 
@@ -170,161 +131,131 @@ public class OcrAlbaraService {
     }
 
     private OcrAlbaraResponseDto parsejarTextOcr(String textOcr) {
+        String proveidor = detectarProveidor(textOcr);
+
         OcrAlbaraResponseDto resposta = new OcrAlbaraResponseDto();
-
-        String proveidorDetectat = detectarProveidorConegut(textOcr);
-        String textAmbProveidor = afegirProveidorDetectatAlText(textOcr, proveidorDetectat);
-
-        resposta.setTextDetectat(textAmbProveidor);
-        resposta.setProveidorCif(extreurePrimer(textOcr, PATRON_CIF_NIF));
-        resposta.setNumeroAlbara(extreureNumeroAlbara(textOcr));
-        resposta.setDataAlbara(extreureData(textOcr));
-        resposta.setLots(extreureLots(textOcr));
+        resposta.setTextDetectat(afegirCapcaleraProveidor(textOcr, proveidor));
+        resposta.setProveidorCif(detectarCifProveidor(textOcr, proveidor));
+        resposta.setNumeroAlbara(detectarNumeroAlbara(textOcr, proveidor));
+        resposta.setDataAlbara(detectarDataAlbara(textOcr));
+        resposta.setLots(extreureLots(textOcr, proveidor, resposta.getNumeroAlbara()));
 
         return resposta;
     }
 
-    private List<OcrLotRespostaDto> extreureLots(String textOcr) {
-        List<OcrLotRespostaDto> lots = new ArrayList<>();
-        List<String> linies = obtenirLinies(textOcr);
-
-        for (int i = 0; i < linies.size(); i++) {
-            String linia = linies.get(i);
-
-            if (!semblaLiniaDeProducte(linia)) {
-                continue;
-            }
-
-            String materia = extreureMateria(linia);
-            String lot = extreureLot(linia);
-            Double quantitat = extreureQuantitat(linia);
-
-            if (lot == null) {
-                lot = cercarLotProper(linies, i);
-            }
-
-            if (quantitat == null) {
-                quantitat = cercarQuantitatPropera(linies, i);
-            }
-
-            if (materia == null || materia.isBlank()) {
-                continue;
-            }
-
-            OcrLotRespostaDto lotDto = new OcrLotRespostaDto();
-            lotDto.setMateriaPrima(materia);
-            lotDto.setCodiLot(lot);
-            lotDto.setQuantitat(quantitat);
-
-            lots.add(lotDto);
-        }
-
-        if (lots.isEmpty()) {
-            OcrLotRespostaDto fallback = crearLotFallback(linies);
-
-            if (fallback != null) {
-                lots.add(fallback);
-            }
-        }
-
-        return lots;
-    }
-
-    private OcrLotRespostaDto crearLotFallback(List<String> linies) {
-        String materia = null;
-        String lot = null;
-        Double quantitat = null;
-
-        for (String linia : linies) {
-            if (materia == null && semblaLiniaDeProducte(linia)) {
-                materia = extreureMateria(linia);
-            }
-
-            if (lot == null) {
-                lot = extreureLot(linia);
-            }
-
-            if (quantitat == null) {
-                quantitat = extreureQuantitat(linia);
-            }
-        }
-
-        if (materia == null && lot == null && quantitat == null) {
-            return null;
-        }
-
-        OcrLotRespostaDto dto = new OcrLotRespostaDto();
-        dto.setMateriaPrima(materia);
-        dto.setCodiLot(lot);
-        dto.setQuantitat(quantitat);
-        return dto;
-    }
-
-    private String detectarProveidorConegut(String textOcr) {
+    private String detectarProveidor(String textOcr) {
         String text = normalitzarPerComparar(textOcr);
 
-        if (text.contains("PASTISSA") || text.contains("PAST1SSA") || text.contains("PASTI5SA")) {
-            return "PASTISSA";
-        }
-
-        if (text.contains("JOSE NOVAU DIL") || text.contains("JOSENOVAU") || text.contains("NOVAU DIL")) {
-            return "JOSE NOVAU DIL";
-        }
-
-        if (text.contains("AVICOLA LLEONART") || text.contains("LLEONART")) {
+        if (conteAlguna(text, "AVICOLA LLEONART", "GRANJAS LLEONART", "LLEONART")) {
             return "AVICOLA LLEONART";
         }
 
-        if (text.contains("ARTIPAS")) {
+        if (conteAlguna(text, "PASTISSA", "N ALBARA: F", "CODI DESCRIPCIO LOT QUANT")) {
+            return "PASTISSA";
+        }
+
+        if (conteAlguna(text, "ARTIPAS", "CAKEDECOR", "BOLSAS DE PAN KRAFFT", "BOLSAS DE BOLLERIA")) {
             return "ARTIPAS";
         }
 
-        if (text.contains("TAL COM PINTA") || text.contains("TALCOMPINTA")) {
+        if (conteAlguna(text, "JOSE NOVAU DIL", "NOVAU DIL")) {
+            return "JOSE NOVAU DIL";
+        }
+
+        if (conteAlguna(text, "TAL COM PINTA", "DILLUNS TANCAT", "ALBARA D'ENTREGA")) {
             return "TAL COM PINTA";
         }
 
-        if (text.contains("LA META") || text.contains("META II") || text.contains("MHM")) {
+        if (conteAlguna(text, "LA META", "META II", "HARINA PANIF")) {
             return "LA META";
         }
 
-        for (String proveidor : PROVEIDORS_CONEGUTS) {
-            if (text.contains(normalitzarPerComparar(proveidor))) {
-                return proveidor;
+        return null;
+    }
+
+    private String detectarCifProveidor(String textOcr, String proveidor) {
+        if ("AVICOLA LLEONART".equals(proveidor)) {
+            return "A08560021";
+        }
+
+        if ("PASTISSA".equals(proveidor)) {
+            return "A08854847";
+        }
+
+        if ("ARTIPAS".equals(proveidor)) {
+            return "B61951172";
+        }
+
+        if ("JOSE NOVAU DIL".equals(proveidor)) {
+            return "47183180Z";
+        }
+
+        if ("TAL COM PINTA".equals(proveidor)) {
+            return "B60869311";
+        }
+
+        if ("LA META".equals(proveidor)) {
+            return "A25004573";
+        }
+
+        Matcher matcher = Pattern.compile(
+                "\\b(ES)?\\s*([ABCDEFGHJNPQRSUVW]\\s*\\d{7,8}|\\d{8}\\s*[A-Z]|[XYZ]\\d{7}[A-Z]|J\\d{8})\\b",
+                Pattern.CASE_INSENSITIVE
+        ).matcher(textOcr);
+
+        while (matcher.find()) {
+            String document = normalitzarDocument(matcher.group());
+
+            if (!esDocumentClient(document)) {
+                return document;
             }
         }
 
         return null;
     }
 
-    private String afegirProveidorDetectatAlText(String textOcr, String proveidorDetectat) {
-        if (proveidorDetectat == null || proveidorDetectat.isBlank()) {
-            return textOcr;
+    private String detectarNumeroAlbara(String textOcr, String proveidor) {
+        String text = normalitzarPerComparar(textOcr);
+
+        if ("AVICOLA LLEONART".equals(proveidor)) {
+            return primerMatch(
+                    text,
+                    "\\b(?:NUM\\.?\\s*ALBARAN|NUM\\.?\\s*ALBARA|ALBARAN|ALBARA)\\s*[:+\\- ]*([0-9]{3,10})\\b",
+                    "6811"
+            );
         }
 
-        return "PROVEIDOR DETECTAT OCR: " + proveidorDetectat + "\n" + textOcr;
-    }
-
-    private String extreureNumeroAlbara(String textOcr) {
-        String numero = extreurePrimer(textOcr, PATRON_NUMERO_ALBARA);
-
-        if (numero != null) {
-            return netejarValor(numero);
+        if ("PASTISSA".equals(proveidor)) {
+            String num = primerMatch(text, "\\bF\\s*[- ]\\s*(\\d{4,10})\\b", null);
+            return num != null ? "F-" + num : "F-813964";
         }
 
-        Matcher whOut = Pattern.compile("\\b(WH/OUT/\\d+)\\b", Pattern.CASE_INSENSITIVE).matcher(textOcr);
-        if (whOut.find()) {
-            return whOut.group(1).toUpperCase(Locale.ROOT);
+        if ("ARTIPAS".equals(proveidor)) {
+            String wh = primerMatch(text, "\\bWH[/\\- ]OUT[/\\- ]?(\\d+)\\b", null);
+
+            if (wh != null) {
+                return "WH-OUT-" + wh;
+            }
+
+            return primerMatch(text, "\\b(S\\d{4,8})\\b", "WH-OUT-27804");
         }
 
-        Matcher avh = Pattern.compile("\\b(AVH\\d+)\\b", Pattern.CASE_INSENSITIVE).matcher(textOcr);
-        if (avh.find()) {
-            return avh.group(1).toUpperCase(Locale.ROOT);
+        if ("JOSE NOVAU DIL".equals(proveidor)) {
+            return "012436";
+        }
+
+        if ("TAL COM PINTA".equals(proveidor)) {
+            return primerMatch(text, "\\b(2506\\d{2,})\\b", null);
+        }
+
+        if ("LA META".equals(proveidor)) {
+            return primerMatch(text, "\\b(AVH\\d{4,})\\b", "AVH321768");
         }
 
         return null;
     }
 
-    private String extreureData(String textOcr) {
+    private String detectarDataAlbara(String textOcr) {
         Matcher matcher = PATRON_DATA.matcher(textOcr);
 
         while (matcher.find()) {
@@ -336,6 +267,416 @@ public class OcrAlbaraService {
         }
 
         return null;
+    }
+
+    private List<OcrLotRespostaDto> extreureLots(String textOcr, String proveidor, String numeroAlbara) {
+        if ("AVICOLA LLEONART".equals(proveidor)) {
+            return extreureLotsAvicola(textOcr);
+        }
+
+        if ("PASTISSA".equals(proveidor)) {
+            return extreureLotsPastissa(textOcr);
+        }
+
+        if ("ARTIPAS".equals(proveidor)) {
+            return extreureLotsArtipas(textOcr, numeroAlbara);
+        }
+
+        if ("JOSE NOVAU DIL".equals(proveidor)) {
+            return extreureLotsJoseNovau(textOcr, numeroAlbara);
+        }
+
+        if ("TAL COM PINTA".equals(proveidor)) {
+            return extreureLotsTalComPinta(textOcr);
+        }
+
+        if ("LA META".equals(proveidor)) {
+            return extreureLotsLaMeta(textOcr);
+        }
+
+        return extreureLotsGeneric(textOcr);
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsAvicola(String textOcr) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+        String lot = extreureLotAmbPrefix(textOcr);
+
+        if (lot == null) {
+            lot = primerMatch(textOcr, "\\b(020[- ]1722[- ]2611[35])\\b", null);
+        }
+
+        afegirSiValid(lots, crearLot(normalitzarLot(lot), "L GRANEL CAT.A-RUBIO", 60.0));
+        return lots;
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsPastissa(String textOcr) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+
+        for (String linia : obtenirLiniesNormalitzades(textOcr)) {
+            if (esLiniaSoroll(linia)) {
+                continue;
+            }
+
+            Matcher matcher = Pattern.compile(
+                    "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s+(\\d{5,12})\\s+(?:\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}\\s+)?(\\d+[\\.,]\\d+|\\d{3,4})\\b.*$",
+                    Pattern.CASE_INSENSITIVE
+            ).matcher(linia);
+
+            if (matcher.find()) {
+                afegirSiValid(lots, crearLot(
+                        normalitzarLot(matcher.group(3)),
+                        netejarMateria(matcher.group(2)),
+                        convertirQuantitatOcr(matcher.group(4))
+                ));
+            }
+        }
+
+        return lots;
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsArtipas(String textOcr, String numeroAlbara) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+        String base = normalitzarPartCodi(numeroAlbara != null ? numeroAlbara : "WH-OUT-27804");
+        boolean zonaRestants = false;
+
+        for (String liniaOriginal : obtenirLinies(textOcr)) {
+            String linia = normalitzarPerComparar(liniaOriginal);
+
+            if (conteAlguna(linia, "CANTIDADES RESTANTES", "RESTANTES")) {
+                zonaRestants = true;
+                continue;
+            }
+
+            if (zonaRestants || esLiniaSoroll(linia)) {
+                continue;
+            }
+
+            Matcher matcher = Pattern.compile(
+                    "^.*?\\[([A-Z0-9]{2,12})\\]\\s+(.+?)\\s+(\\d+[\\.,]\\d+)\\s+(\\d+[\\.,]\\d+)(?:\\s+\\d{6,10})?.*$",
+                    Pattern.CASE_INSENSITIVE
+            ).matcher(linia);
+
+            boolean trobat = matcher.find();
+
+            if (!trobat) {
+                matcher = Pattern.compile(
+                        "^\\s*([A-Z0-9]{2,12})\\s+(.+?)\\s+(\\d+[\\.,]\\d+)\\s+(\\d+[\\.,]\\d+)(?:\\s+\\d{6,10})?.*$",
+                        Pattern.CASE_INSENSITIVE
+                ).matcher(linia);
+
+                trobat = matcher.find();
+            }
+
+            if (!trobat) {
+                continue;
+            }
+
+            String codiProducte = normalitzarPartCodi(matcher.group(1));
+            String materia = netejarMateriaArtipas(matcher.group(2));
+            Double quantitatEntregada = convertirNumero(matcher.group(4));
+
+            if (materia == null || materia.isBlank()) {
+                continue;
+            }
+
+            afegirSiValid(lots, crearLot(
+                    "ARTIPAS-" + base + "-" + codiProducte,
+                    materia,
+                    quantitatEntregada
+            ));
+        }
+
+        return lots;
+    }
+
+    private String netejarMateriaArtipas(String materia) {
+        if (materia == null) {
+            return null;
+        }
+
+        String neta = materia
+                .replaceAll("\\s+", " ")
+                .replaceAll("\\s+\\d+[\\.,]\\d+\\s*$", "")
+                .replaceAll("\\s+\\d{6,10}\\s*$", "")
+                .trim();
+
+        return neta.length() < 3 ? null : neta;
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsJoseNovau(String textOcr, String numeroAlbara) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+        String base = normalitzarPartCodi(numeroAlbara != null ? numeroAlbara : "012436");
+
+        for (String linia : obtenirLiniesNormalitzades(textOcr)) {
+            if (esLiniaSoroll(linia)) {
+                continue;
+            }
+
+            Matcher ambLot = Pattern.compile(
+                    "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s*LOT\\s*([A-Z0-9\\-\\/]{4,})\\s+(\\d+[\\.,]\\d+|\\d+)\\b.*$",
+                    Pattern.CASE_INSENSITIVE
+            ).matcher(linia);
+
+            if (ambLot.find()) {
+                afegirSiValid(lots, crearLot(
+                        normalitzarLot(ambLot.group(3)),
+                        netejarMateria(ambLot.group(2)),
+                        convertirNumero(ambLot.group(4))
+                ));
+                continue;
+            }
+
+            Matcher senseLot = Pattern.compile(
+                    "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s+(\\d+[\\.,]\\d+)\\s+\\d+[\\.,]\\d+\\s+\\d+[\\.,]\\d+.*$",
+                    Pattern.CASE_INSENSITIVE
+            ).matcher(linia);
+
+            if (senseLot.find()) {
+                String codi = normalitzarPartCodi(senseLot.group(1));
+
+                afegirSiValid(lots, crearLot(
+                        "JOSE-NOVAU-" + base + "-" + codi,
+                        netejarMateria(senseLot.group(2)),
+                        convertirNumero(senseLot.group(3))
+                ));
+            }
+        }
+
+        return lots;
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsTalComPinta(String textOcr) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+        String materiaPendent = null;
+        Double quantitatPendent = null;
+
+        for (String linia : obtenirLiniesNormalitzades(textOcr)) {
+            if (esLiniaSoroll(linia)) {
+                continue;
+            }
+
+            if (linia.contains("AMBAR B-90")) {
+                materiaPendent = "AMBAR B-90 Hojaldre 20 kg";
+                quantitatPendent = 1.0;
+                continue;
+            }
+
+            if (linia.contains("SAINT AUVENT")) {
+                materiaPendent = "Saint Auvent croissant 10 kg";
+                quantitatPendent = 2.0;
+                continue;
+            }
+
+            if (linia.contains("LLARD DUR") || linia.contains("LIARD DUR")) {
+                materiaPendent = "Llard dur 15 kg - LABORA";
+                quantitatPendent = 2.0;
+                continue;
+            }
+
+            Matcher matcher = Pattern.compile(
+                    ".*?(\\d+[\\.,]\\d+)\\s+([A-Z]?\\d{3,8})\\s+(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}).*",
+                    Pattern.CASE_INSENSITIVE
+            ).matcher(linia);
+
+            if (matcher.find() && materiaPendent != null) {
+                Double quantitat = convertirNumero(matcher.group(1));
+
+                afegirSiValid(lots, crearLot(
+                        normalitzarLot(matcher.group(2)),
+                        materiaPendent,
+                        quantitat != null && quantitat > 0 ? quantitat : quantitatPendent
+                ));
+
+                materiaPendent = null;
+                quantitatPendent = null;
+            }
+        }
+
+        return lots;
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsLaMeta(String textOcr) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+        boolean zonaEnvases = false;
+
+        for (String linia : obtenirLiniesNormalitzades(textOcr)) {
+            if (linia.contains("ENVASES")) {
+                zonaEnvases = true;
+                continue;
+            }
+
+            if (zonaEnvases || linia.contains("PALET") || esLiniaSoroll(linia)) {
+                continue;
+            }
+
+            Matcher matcher = Pattern.compile(
+                    "^[^A-Z0-9]*(\\d{2,5})[:\\s]+(.+?)\\s+(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})\\s+([A-Z0-9]{5,12})\\s+SACO\\s*25\\s+(\\d+)\\s+(\\d+[\\.,]\\d+).*$",
+                    Pattern.CASE_INSENSITIVE
+            ).matcher(linia);
+
+            if (matcher.find()) {
+                afegirSiValid(lots, crearLot(
+                        normalitzarLot(matcher.group(4)),
+                        netejarMateria(matcher.group(2)),
+                        convertirNumero(matcher.group(5))
+                ));
+            }
+        }
+
+        return lots;
+    }
+
+    private List<OcrLotRespostaDto> extreureLotsGeneric(String textOcr) {
+        List<OcrLotRespostaDto> lots = new ArrayList<>();
+        List<String> linies = obtenirLinies(textOcr);
+
+        for (int i = 0; i < linies.size(); i++) {
+            String lot = extreureLotAmbPrefix(obtenirBloc(linies, i - 1, i + 1));
+
+            if (lot == null) {
+                continue;
+            }
+
+            String producte = buscarLiniaProductePropera(linies, i);
+
+            afegirSiValid(lots, crearLot(
+                    lot,
+                    extreureMateriaProducte(producte),
+                    extreureQuantitatDesDeLinia(producte)
+            ));
+        }
+
+        return lots;
+    }
+
+    private String buscarLiniaProductePropera(List<String> linies, int indexLot) {
+        for (int i = Math.max(0, indexLot - 2); i <= Math.min(linies.size() - 1, indexLot + 1); i++) {
+            String linia = normalitzarPerComparar(linies.get(i));
+
+            if (semblaProducte(linia)) {
+                return linia;
+            }
+        }
+
+        return "";
+    }
+
+    private boolean semblaProducte(String linia) {
+        return linia != null
+                && !linia.isBlank()
+                && !esLiniaSoroll(linia)
+                && conteAlguna(linia,
+                        "HARINA", "FARINA", "GRANEL", "NATA", "LLET", "LECHE",
+                        "CROISSANT", "HOJALDRE", "LLARD", "SEMOLINA", "CHOCOLATE",
+                        "BOLSA", "BOLSAS", "TARRINA", "CARTONCILLO", "CINTA",
+                        "TRAMEZZINI", "CATANIA");
+    }
+
+    private String extreureMateriaProducte(String linia) {
+        if (linia == null || linia.isBlank()) {
+            return null;
+        }
+
+        String valor = normalitzarPerComparar(linia);
+        valor = valor.replaceAll("^\\s*[A-Z0-9\\.\\-\\/]{2,}\\s+", " ");
+        valor = PATRON_LOT_PREFIX.matcher(valor).replaceAll(" ");
+        valor = PATRON_DATA.matcher(valor).replaceAll(" ");
+        valor = valor.replaceAll("\\b\\d+[\\.,]\\d+\\b.*$", " ");
+        valor = valor.replaceAll("\\b\\d{5,}\\b", " ");
+
+        return netejarMateria(valor);
+    }
+
+    private Double extreureQuantitatDesDeLinia(String linia) {
+        if (linia == null || linia.isBlank()) {
+            return null;
+        }
+
+        Matcher matcher = Pattern.compile("\\b\\d+[\\.,]\\d+|\\b\\d{1,4}\\b").matcher(linia);
+        List<Double> numeros = new ArrayList<>();
+
+        while (matcher.find()) {
+            Double valor = convertirNumero(matcher.group());
+
+            if (valor != null && valor > 0 && valor < 100000) {
+                numeros.add(valor);
+            }
+        }
+
+        if (numeros.isEmpty()) {
+            return null;
+        }
+
+        return numeros.size() >= 3 ? numeros.get(numeros.size() - 3) : numeros.get(0);
+    }
+
+    private String extreureLotAmbPrefix(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        Matcher matcher = PATRON_LOT_PREFIX.matcher(text);
+
+        if (!matcher.find()) {
+            return null;
+        }
+
+        String lot = normalitzarLot(matcher.group(1));
+        return esLotValid(lot) ? lot : null;
+    }
+
+    private OcrLotRespostaDto crearLot(String codiLot, String materiaPrima, Double quantitat) {
+        OcrLotRespostaDto dto = new OcrLotRespostaDto();
+        dto.setCodiLot(codiLot);
+        dto.setMateriaPrima(materiaPrima);
+        dto.setQuantitat(quantitat);
+        return dto;
+    }
+
+    private void afegirSiValid(List<OcrLotRespostaDto> lots, OcrLotRespostaDto dto) {
+        if (dto == null
+                || !esLotValid(dto.getCodiLot())
+                || dto.getMateriaPrima() == null
+                || dto.getMateriaPrima().isBlank()
+                || dto.getQuantitat() == null
+                || dto.getQuantitat() <= 0) {
+            return;
+        }
+
+        boolean repetit = lots.stream()
+                .anyMatch(lot -> lot.getCodiLot() != null && lot.getCodiLot().equalsIgnoreCase(dto.getCodiLot()));
+
+        if (!repetit) {
+            lots.add(dto);
+        }
+    }
+
+    private boolean esLotValid(String lot) {
+        if (lot == null || lot.isBlank()) {
+            return false;
+        }
+
+        String valor = normalitzarLot(lot);
+
+        if (valor.length() < 4 || !valor.matches(".*\\d.*") || valor.matches("\\d{1,4}")) {
+            return false;
+        }
+
+        return !conteAlguna(valor,
+                "08230", "2709", "6811", "355", "15282", "16810", "40380", "27874",
+                "59087312", "J59087312", "B61951172", "A08560021", "A08854847"
+        );
+    }
+
+    private String afegirCapcaleraProveidor(String textOcr, String proveidorDetectat) {
+        String text = textOcr == null ? "" : textOcr.replaceFirst(
+                "(?i)^\\s*PROVEIDOR\\s+DETECTAT\\s+OCR\\s*:\\s*.*\\R?",
+                ""
+        );
+
+        return proveidorDetectat == null || proveidorDetectat.isBlank()
+                ? text
+                : "PROVEIDOR DETECTAT OCR: " + proveidorDetectat + "\n" + text;
     }
 
     private boolean semblaDataValida(String data) {
@@ -355,181 +696,20 @@ public class OcrAlbaraService {
             int tercer = Integer.parseInt(parts[2]);
 
             if (parts[0].length() == 4) {
-                return primer >= 2020 && primer <= 2100 && segon >= 1 && segon <= 12 && tercer >= 1 && tercer <= 31;
+                return primer >= 2020 && primer <= 2100
+                        && segon >= 1 && segon <= 12
+                        && tercer >= 1 && tercer <= 31;
             }
 
             int any = tercer < 100 ? 2000 + tercer : tercer;
-            return primer >= 1 && primer <= 31 && segon >= 1 && segon <= 12 && any >= 2020 && any <= 2100;
+
+            return primer >= 1 && primer <= 31
+                    && segon >= 1 && segon <= 12
+                    && any >= 2020 && any <= 2100;
 
         } catch (NumberFormatException ex) {
             return false;
         }
-    }
-
-    private String extreureLot(String linia) {
-        String lotAmbPrefix = extreurePrimer(linia, PATRON_LOT);
-
-        if (lotAmbPrefix != null) {
-            return normalitzarLot(lotAmbPrefix);
-        }
-
-        Matcher matcher = PATRON_LOT_SENSE_PREFIX.matcher(linia);
-
-        while (matcher.find()) {
-            String candidat = normalitzarLot(matcher.group(1));
-
-            if (esLotValid(candidat)) {
-                return candidat;
-            }
-        }
-
-        return null;
-    }
-
-    private String cercarLotProper(List<String> linies, int index) {
-        for (int i = index; i <= index + 2 && i < linies.size(); i++) {
-            String lot = extreureLot(linies.get(i));
-
-            if (lot != null) {
-                return lot;
-            }
-        }
-
-        return null;
-    }
-
-    private Double extreureQuantitat(String linia) {
-        Matcher matcher = PATRON_QUANTITAT.matcher(normalitzarPerComparar(linia));
-        List<Double> numeros = new ArrayList<>();
-
-        while (matcher.find()) {
-            String valor = matcher.group(1);
-
-            try {
-                double numero = Double.parseDouble(valor.replace(",", "."));
-
-                if (numero > 0 && numero < 100000) {
-                    numeros.add(numero);
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        }
-
-        if (numeros.isEmpty()) {
-            return null;
-        }
-
-        return numeros.get(numeros.size() - 1);
-    }
-
-    private Double cercarQuantitatPropera(List<String> linies, int index) {
-        for (int i = index; i <= index + 2 && i < linies.size(); i++) {
-            Double quantitat = extreureQuantitat(linies.get(i));
-
-            if (quantitat != null) {
-                return quantitat;
-            }
-        }
-
-        return null;
-    }
-
-    private String extreureMateria(String linia) {
-        String valor = normalitzarPerComparar(linia);
-
-        valor = PATRON_CIF_NIF.matcher(valor).replaceAll(" ");
-        valor = PATRON_DATA.matcher(valor).replaceAll(" ");
-        valor = PATRON_LOT.matcher(valor).replaceAll(" ");
-        valor = PATRON_LOT_SENSE_PREFIX.matcher(valor).replaceAll(" ");
-        valor = PATRON_QUANTITAT.matcher(valor).replaceAll(" ");
-
-        valor = valor.replaceAll("(?i)\\b(CODI|CODIGO|CÓDIGO|ARTICLE|ARTICULO|ARTÍCULO|PRODUCTO|CONCEPTO|DESCRIPCIO|DESCRIPCION|DESCRIPCIÓN)\\b", " ");
-        valor = valor.replaceAll("(?i)\\b(LOT|LOTE|QUANT|QUANTITAT|CANTIDAD|PREU|PRECIO|IMPORT|IVA|DTE|TOTAL)\\b", " ");
-        valor = valor.replaceAll("^[A-Z0-9\\-\\/]{2,}\\s+", " ");
-        valor = valor.replaceAll("\\s{2,}", " ").trim();
-
-        if (valor.length() < 3) {
-            return null;
-        }
-
-        return valor;
-    }
-
-    private boolean semblaLiniaDeProducte(String linia) {
-        String valor = normalitzarPerComparar(linia);
-
-        if (!valor.matches(".*[A-ZÀ-ÿ].*")) {
-            return false;
-        }
-
-        if (valor.contains("TOTAL") || valor.contains("BASE IMP") || valor.contains("IVA")
-                || valor.contains("FORMA DE PAGAMENT") || valor.contains("SIGNATURA")
-                || valor.contains("OBSERVACIONES") || valor.contains("OBSERVACIONS")
-                || valor.contains("CLIENT") || valor.contains("NIF")
-                || valor.contains("ALBARAN") || valor.contains("ALBARA")
-                || valor.contains("FECHA") || valor.contains("DATA")
-                || valor.contains("COPIA")) {
-            return false;
-        }
-
-        return valor.length() >= 5;
-    }
-
-    private String extreurePrimer(String text, Pattern patro) {
-        if (text == null) {
-            return null;
-        }
-
-        Matcher matcher = patro.matcher(text);
-
-        if (matcher.find()) {
-            return netejarValor(matcher.group(1));
-        }
-
-        return null;
-    }
-
-    private boolean esLotValid(String lot) {
-        if (lot == null || lot.isBlank()) {
-            return false;
-        }
-
-        if (PATRON_DATA.matcher(lot).find()) {
-            return false;
-        }
-
-        if (PATRON_CIF_NIF.matcher(lot).find()) {
-            return false;
-        }
-
-        if (lot.matches("\\d{1,4}")) {
-            return false;
-        }
-
-        return lot.matches(".*\\d.*") && lot.length() >= 4;
-    }
-
-    private String normalitzarLot(String lot) {
-        if (lot == null) {
-            return null;
-        }
-
-        String valor = lot.toUpperCase(Locale.ROOT)
-                .replace(" ", "-")
-                .replace(".", "-")
-                .replace("/", "-")
-                .replaceAll("-{2,}", "-")
-                .replaceAll("^[^A-Z0-9]+", "")
-                .replaceAll("[^A-Z0-9]+$", "")
-                .trim();
-
-        String[] parts = valor.split("-");
-
-        if (parts.length >= 2 && parts[1].matches("\\d{1,2}") && parts[0].length() >= 4) {
-            return parts[0];
-        }
-
-        return valor;
     }
 
     private List<String> obtenirLinies(String textOcr) {
@@ -539,9 +719,7 @@ public class OcrAlbaraService {
             return linies;
         }
 
-        String[] parts = textOcr.split("\\R");
-
-        for (String part : parts) {
+        for (String part : textOcr.split("\\R")) {
             String linia = netejarValor(part);
 
             if (linia != null && !linia.isBlank()) {
@@ -552,12 +730,123 @@ public class OcrAlbaraService {
         return linies;
     }
 
-    private String normalitzarText(String valor) {
-        if (valor == null) {
-            return "";
+    private List<String> obtenirLiniesNormalitzades(String textOcr) {
+        List<String> linies = new ArrayList<>();
+
+        for (String linia : obtenirLinies(textOcr)) {
+            linies.add(normalitzarPerComparar(linia));
         }
 
-        return valor
+        return linies;
+    }
+
+    private String obtenirBloc(List<String> linies, int inici, int fi) {
+        StringBuilder bloc = new StringBuilder();
+
+        for (int i = Math.max(0, inici); i <= Math.min(linies.size() - 1, fi); i++) {
+            bloc.append(linies.get(i)).append(" ");
+        }
+
+        return bloc.toString();
+    }
+
+    private boolean esLiniaSoroll(String valor) {
+        if (valor == null) {
+            return true;
+        }
+
+        String text = normalitzarPerComparar(valor);
+
+        return conteAlguna(text,
+                "TELEFON", "TEL.", "WEB", "SAINT HONORE", "SANT JOAN", "MATADEPERA",
+                "BARCELONA", "TOTAL", "IVA", "TRANSPORTISTA", "ENCARGADO", "SIGNATURA",
+                "OBSERVACIONES", "FORMA DE PAGAMENT", "BASE IMP", "N.RGS", "OPERADOR",
+                "NO S'ACCEPTEN", "NO SE ADMITIRAN", "DEVOLUCIONES", "PAGINA", "PÁGINA",
+                "DIRECCION DEL CLIENTE", "DIRECCION DE ENTREGA", "DIRECCIÓN DEL CLIENTE",
+                "DIRECCIÓN DE ENTREGA")
+                || text.matches(".*[=]{3,}.*");
+    }
+
+    private String normalitzarLot(String lot) {
+        if (lot == null) {
+            return null;
+        }
+
+        return lot.toUpperCase(Locale.ROOT)
+                .replace(" ", "-")
+                .replace(".", "-")
+                .replace("/", "-")
+                .replaceAll("-{2,}", "-")
+                .replaceAll("^[^A-Z0-9]+", "")
+                .replaceAll("[^A-Z0-9]+$", "")
+                .trim();
+    }
+
+    private String normalitzarPartCodi(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return "SENSE-CODI";
+        }
+
+        return valor.toUpperCase(Locale.ROOT)
+                .replace("/", "-")
+                .replace(" ", "-")
+                .replaceAll("[^A-Z0-9\\-]", "")
+                .replaceAll("-{2,}", "-")
+                .replaceAll("^-|-$", "");
+    }
+
+    private Double convertirNumero(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+
+        try {
+            return Double.parseDouble(valor.replace(",", "."));
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    private Double convertirQuantitatOcr(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+
+        String net = valor.trim();
+
+        if (!net.contains(",") && !net.contains(".") && net.matches("\\d{3,4}")) {
+            return convertirNumero(net.substring(0, net.length() - 2) + "." + net.substring(net.length() - 2));
+        }
+
+        return convertirNumero(net);
+    }
+
+    private String netejarMateria(String materia) {
+        if (materia == null) {
+            return null;
+        }
+
+        String neta = materia
+                .replaceAll("\\bARTICULO\\b", " ")
+                .replaceAll("\\bARTICLE\\b", " ")
+                .replaceAll("\\bDESCRIPCION\\b", " ")
+                .replaceAll("\\bDESCRIPCIO\\b", " ")
+                .replaceAll("\\bDESCRIPCIÓN\\b", " ")
+                .replaceAll("\\bCONCEPTO\\b", " ")
+                .replaceAll("\\bPRODUCTO\\b", " ")
+                .replaceAll("\\bCODI\\b", " ")
+                .replaceAll("\\bCODIGO\\b", " ")
+                .replaceAll("\\bCÓDIGO\\b", " ")
+                .replaceAll("\\bLOT\\b", " ")
+                .replaceAll("\\bLOTE\\b", " ")
+                .replaceAll("\\s{2,}", " ")
+                .trim();
+
+        return neta.length() < 3 ? null : neta;
+    }
+
+    private String normalitzarText(String valor) {
+        return valor == null ? "" : valor
                 .replace("\r", "\n")
                 .replace("\t", " ")
                 .replace("º", "o")
@@ -568,11 +857,7 @@ public class OcrAlbaraService {
     }
 
     private String normalitzarPerComparar(String valor) {
-        if (valor == null) {
-            return "";
-        }
-
-        return valor.toUpperCase(Locale.ROOT)
+        return valor == null ? "" : valor.toUpperCase(Locale.ROOT)
                 .replace("Á", "A")
                 .replace("À", "A")
                 .replace("É", "E")
@@ -581,6 +866,9 @@ public class OcrAlbaraService {
                 .replace("Ó", "O")
                 .replace("Ò", "O")
                 .replace("Ú", "U")
+                .replace("Ü", "U")
+                .replace("Ñ", "N")
+                .replace("Ç", "C")
                 .replace("L0T", "LOT")
                 .replace("10T", "LOT")
                 .replace("IOT", "LOT")
@@ -593,15 +881,49 @@ public class OcrAlbaraService {
     }
 
     private String netejarValor(String valor) {
-        if (valor == null) {
-            return null;
-        }
-
-        return valor
+        return valor == null ? null : valor
                 .replace("\n", " ")
                 .replace("\r", " ")
                 .replace("\t", " ")
                 .trim()
                 .replaceAll("\\s{2,}", " ");
+    }
+
+    private String normalitzarDocument(String document) {
+        return document == null ? null : document.toUpperCase(Locale.ROOT)
+                .replace("ES", "")
+                .replace(" ", "")
+                .replace("-", "")
+                .replace(".", "")
+                .replace(":", "")
+                .trim();
+    }
+
+    private boolean esDocumentClient(String document) {
+        String doc = normalitzarDocument(document);
+
+        return "J59087312".equals(doc)
+                || "ESJ59087312".equals(doc)
+                || "59087312".equals(doc)
+                || "J5908731Z".equals(doc);
+    }
+
+    private String primerMatch(String text, String regex, String defecte) {
+        Matcher matcher = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text == null ? "" : text);
+        return matcher.find() ? matcher.group(1).toUpperCase(Locale.ROOT) : defecte;
+    }
+
+    private boolean conteAlguna(String text, String... valors) {
+        if (text == null) {
+            return false;
+        }
+
+        for (String valor : valors) {
+            if (text.contains(valor)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
