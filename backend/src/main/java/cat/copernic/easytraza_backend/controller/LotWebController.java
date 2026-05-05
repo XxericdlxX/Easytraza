@@ -10,7 +10,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -49,10 +53,54 @@ public class LotWebController {
         return "lots/llistar-lots";
     }
 
-    @PostMapping("/{id}/iniciar")
-    public String iniciarLot(@PathVariable Long id,
+    @GetMapping({"/{id}/iniciar", "/iniciar/{id}"})
+    public String iniciarLotGet(
+            @PathVariable Long id,
             @RequestParam(required = false) String origen,
             @RequestParam(required = false) Long albaraId,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        return executarIniciLot(id, origen, albaraId, redirectAttributes, locale);
+    }
+
+    @PostMapping({"/{id}/iniciar", "/iniciar/{id}"})
+    public String iniciarLotPost(
+            @PathVariable Long id,
+            @RequestParam(required = false) String origen,
+            @RequestParam(required = false) Long albaraId,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        return executarIniciLot(id, origen, albaraId, redirectAttributes, locale);
+    }
+
+    @GetMapping({"/{id}/finalitzar", "/finalitzar/{id}"})
+    public String finalitzarLotGet(
+            @PathVariable Long id,
+            @RequestParam(required = false) String origen,
+            @RequestParam(required = false) Long albaraId,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        return executarFinalitzacioLot(id, origen, albaraId, redirectAttributes, locale);
+    }
+
+    @PostMapping({"/{id}/finalitzar", "/finalitzar/{id}"})
+    public String finalitzarLotPost(
+            @PathVariable Long id,
+            @RequestParam(required = false) String origen,
+            @RequestParam(required = false) Long albaraId,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        return executarFinalitzacioLot(id, origen, albaraId, redirectAttributes, locale);
+    }
+
+    private String executarIniciLot(
+            Long id,
+            String origen,
+            Long albaraId,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
@@ -60,22 +108,27 @@ public class LotWebController {
             lotProveidorService.iniciarLot(id);
             redirectAttributes.addFlashAttribute(
                     "missatgeExit",
-                    messageSource.getMessage("lots.flash.iniciat", null, locale)
+                    missatge("lots.flash.iniciat", locale)
             );
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute(
                     "missatgeError",
-                    messageSource.getMessage(ex.getMessage(), null, locale)
+                    missatge(ex.getMessage(), locale)
+            );
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    missatge("lots.error.no.trobat", locale)
             );
         }
 
         return obtenirRedireccio(origen, albaraId);
     }
 
-    @PostMapping("/{id}/finalitzar")
-    public String finalitzarLot(@PathVariable Long id,
-            @RequestParam(required = false) String origen,
-            @RequestParam(required = false) Long albaraId,
+    private String executarFinalitzacioLot(
+            Long id,
+            String origen,
+            Long albaraId,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
@@ -83,12 +136,17 @@ public class LotWebController {
             lotProveidorService.finalitzarLot(id);
             redirectAttributes.addFlashAttribute(
                     "missatgeExit",
-                    messageSource.getMessage("lots.flash.finalitzat", null, locale)
+                    missatge("lots.flash.finalitzat", locale)
             );
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute(
                     "missatgeError",
-                    messageSource.getMessage(ex.getMessage(), null, locale)
+                    missatge(ex.getMessage(), locale)
+            );
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    missatge("lots.error.no.trobat", locale)
             );
         }
 
@@ -101,5 +159,9 @@ public class LotWebController {
         }
 
         return "redirect:/web/lots";
+    }
+
+    private String missatge(String codi, Locale locale) {
+        return messageSource.getMessage(codi, null, codi, locale);
     }
 }
