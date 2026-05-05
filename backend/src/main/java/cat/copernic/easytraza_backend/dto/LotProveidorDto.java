@@ -1,6 +1,6 @@
 package cat.copernic.easytraza_backend.dto;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,11 +14,15 @@ public class LotProveidorDto {
     private String codiLot;
 
     @NotNull(message = "{lot.proveidor.quantitat.obligatoria}")
-    @Min(value = 1, message = "{lot.proveidor.quantitat.min}")
-    private Integer quantitat;
+    @DecimalMin(value = "0.01", message = "{lot.proveidor.quantitat.min}")
+    private Double quantitat;
 
     @NotNull(message = "{lot.proveidor.materia.obligatoria}")
     private Long materiaPrimaId;
+
+    private String materiaPrimaNomDetectada;
+
+    private boolean crearMateriaPrimaSiNoExisteix;
 
     public LotProveidorDto() {
     }
@@ -39,11 +43,11 @@ public class LotProveidorDto {
         this.codiLot = codiLot;
     }
 
-    public Integer getQuantitat() {
+    public Double getQuantitat() {
         return quantitat;
     }
 
-    public void setQuantitat(Integer quantitat) {
+    public void setQuantitat(Double quantitat) {
         this.quantitat = quantitat;
     }
 
@@ -53,5 +57,21 @@ public class LotProveidorDto {
 
     public void setMateriaPrimaId(Long materiaPrimaId) {
         this.materiaPrimaId = materiaPrimaId;
+    }
+
+    public String getMateriaPrimaNomDetectada() {
+        return materiaPrimaNomDetectada;
+    }
+
+    public void setMateriaPrimaNomDetectada(String materiaPrimaNomDetectada) {
+        this.materiaPrimaNomDetectada = materiaPrimaNomDetectada;
+    }
+
+    public boolean isCrearMateriaPrimaSiNoExisteix() {
+        return crearMateriaPrimaSiNoExisteix;
+    }
+
+    public void setCrearMateriaPrimaSiNoExisteix(boolean crearMateriaPrimaSiNoExisteix) {
+        this.crearMateriaPrimaSiNoExisteix = crearMateriaPrimaSiNoExisteix;
     }
 }

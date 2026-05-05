@@ -4,6 +4,8 @@ import cat.copernic.easytraza_backend.dto.MateriaPrimaDto;
 import cat.copernic.easytraza_backend.model.MateriaPrima;
 import cat.copernic.easytraza_backend.service.MateriaPrimaService;
 import jakarta.validation.Valid;
+import java.util.Locale;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,9 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Locale;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/materies-primeres")
@@ -27,9 +26,16 @@ public class MateriaPrimaWebController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String llistarMateriesPrimeres(Model model) {
-        model.addAttribute("materiesPrimeres", materiaPrimaService.findAll());
+    public String llistarMateriesPrimeres(
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String descripcio,
+            Model model) {
+
+        model.addAttribute("materiesPrimeres", materiaPrimaService.buscar(nom, descripcio));
+        model.addAttribute("nom", nom);
+        model.addAttribute("descripcio", descripcio);
         model.addAttribute("currentPath", "/web/materies-primeres");
+
         return "materiesprimeres/llistar-materies-primeres";
     }
 

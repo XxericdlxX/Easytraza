@@ -3,7 +3,7 @@ package cat.copernic.easytraza_backend.dto.mobile;
 public class MobileLotSaveRequestDto {
 
     private String codiLot;
-    private Integer quantitat;
+    private Double quantitat;
     private String materiaPrimaNom;
 
     public String getCodiLot() {
@@ -14,11 +14,11 @@ public class MobileLotSaveRequestDto {
         this.codiLot = codiLot;
     }
 
-    public Integer getQuantitat() {
+    public Double getQuantitat() {
         return quantitat;
     }
 
-    public void setQuantitat(Integer quantitat) {
+    public void setQuantitat(Double quantitat) {
         this.quantitat = quantitat;
     }
 

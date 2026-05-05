@@ -2,6 +2,7 @@ package cat.copernic.easytraza_backend.controller;
 
 import cat.copernic.easytraza_backend.dto.UsuariDto;
 import cat.copernic.easytraza_backend.model.Usuari;
+import cat.copernic.easytraza_backend.model.enums.Rol;
 import cat.copernic.easytraza_backend.service.UsuariService;
 import jakarta.validation.Valid;
 import java.util.Locale;
@@ -26,9 +27,21 @@ public class UsuariWebController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String llistarUsuaris(Model model) {
-        model.addAttribute("usuaris", usuariService.findAll());
+    public String llistarUsuaris(
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String cognoms,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Rol rol,
+            Model model) {
+
+        model.addAttribute("usuaris", usuariService.buscar(nom, cognoms, email, rol));
+        model.addAttribute("nom", nom);
+        model.addAttribute("cognoms", cognoms);
+        model.addAttribute("email", email);
+        model.addAttribute("rol", rol);
+        model.addAttribute("rols", Rol.values());
         model.addAttribute("currentPath", "/web/usuaris");
+
         return "usuaris/llistar-usuaris";
     }
 
@@ -67,7 +80,11 @@ public class UsuariWebController {
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormulariEditarUsuari(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+    public String mostrarFormulariEditarUsuari(@PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
         Optional<Usuari> usuari = usuariService.findById(id);
 
         if (usuari.isPresent()) {
@@ -118,7 +135,10 @@ public class UsuariWebController {
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminarUsuari(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
+    public String eliminarUsuari(@PathVariable Long id,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
         try {
             if (usuariService.isProtectedUserById(id)) {
                 redirectAttributes.addFlashAttribute(

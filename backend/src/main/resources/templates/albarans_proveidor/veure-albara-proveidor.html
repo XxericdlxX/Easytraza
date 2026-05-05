@@ -7,6 +7,7 @@
         <link rel="stylesheet" th:href="@{/css/style.css}">
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
+
     <body>
         <div th:replace="~{fragments/leftnav :: leftnav}"></div>
 
@@ -15,8 +16,12 @@
                 <div class="list-header">
                     <div class="list-title-block">
                         <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+
                         <div>
-                            <h1 th:text="#{albara.proveidor.veure}">Ver albarán de proveedor</h1>
+                            <h1 th:text="#{albara.proveidor.veure}">
+                                Ver albarán de proveedor
+                            </h1>
+
                             <p th:text="#{albara.proveidor.gestio}">
                                 Gestión de los albaranes de proveedor del sistema
                             </p>
@@ -46,87 +51,156 @@
                 <div class="form-card" style="margin-bottom: 24px;">
                     <p>
                         <strong th:text="#{albara.proveidor.id}">ID</strong>:
-                        <span th:text="${albaraDetall.id}"></span>
+                        <span th:text="${albara != null ? albara.id : '-'}">1</span>
                     </p>
 
                     <p>
                         <strong th:text="#{albara.proveidor.data}">Fecha</strong>:
-                        <span th:text="${albaraDetall.dataRecepcio}"></span>
+                        <span th:text="${albara != null && albara.dataRecepcio != null ? albara.dataRecepcio : '-'}">
+                            2026-04-24
+                        </span>
                     </p>
 
                     <p>
                         <strong th:text="#{albara.proveidor.proveidor}">Proveedor</strong>:
-                        <span th:text="${albaraDetall.proveidor != null ? albaraDetall.proveidor.nom + ' (' + albaraDetall.proveidor.cif + ')' : '-'}"></span>
+                        <span th:if="${albara != null && albara.proveidor != null}"
+                              th:text="${albara.proveidor.nom + ' (' + albara.proveidor.cif + ')'}">
+                            Proveedor
+                        </span>
+
+                        <span th:if="${albara == null || albara.proveidor == null}">-</span>
                     </p>
 
                     <p>
                         <strong th:text="#{albara.proveidor.usuari}">Usuario receptor</strong>:
-                        <span th:text="${albaraDetall.usuariReceptor != null ? albaraDetall.usuariReceptor.nom + ' ' + albaraDetall.usuariReceptor.cognoms : '-'}"></span>
+                        <span th:if="${albara != null && albara.usuariReceptor != null}"
+                              th:text="${albara.usuariReceptor.nom + ' ' + albara.usuariReceptor.cognoms}">
+                            Usuario
+                        </span>
+
+                        <span th:if="${albara == null || albara.usuariReceptor == null}">-</span>
                     </p>
                 </div>
 
-                <div class="table-wrapper lots-table-wrapper" th:if="${albaraDetall.lots != null && !#lists.isEmpty(albaraDetall.lots)}">
+                <div class="lots-table-wrapper"
+                     th:if="${albara != null && albara.lots != null && !#lists.isEmpty(albara.lots)}">
                     <table class="lots-table">
                         <thead>
                             <tr>
-                                <th th:text="#{lot.proveidor.codi}">Código/identificador de lote</th>
-                                <th th:text="#{lot.proveidor.quantitat}">Cantidad</th>
-                                <th th:text="#{lot.proveidor.materia}">Materia prima</th>
-                                <th th:text="#{lot.proveidor.estat}">Estado</th>
-                                <th th:text="#{lots.data.obertura}">Fecha apertura</th>
-                                <th th:text="#{lots.data.acabament}">Fecha finalización</th>
-                                <th th:text="#{lots.accions}">Acciones</th>
+                                <th class="lot-col-codi" th:text="#{lot.proveidor.codi}">
+                                    Código/identificador de lote
+                                </th>
+
+                                <th class="lot-col-quantitat" th:text="#{lot.proveidor.quantitat}">
+                                    Cantidad
+                                </th>
+
+                                <th class="lot-col-materia" th:text="#{lot.proveidor.materia}">
+                                    Materia prima
+                                </th>
+
+                                <th class="lot-col-estat" th:text="#{lot.proveidor.estat}">
+                                    Estado
+                                </th>
+
+                                <th class="lot-col-data" th:text="#{lots.data.obertura}">
+                                    Fecha apertura
+                                </th>
+
+                                <th class="lot-col-data" th:text="#{lots.data.acabament}">
+                                    Fecha finalización
+                                </th>
+
+                                <th class="lot-col-accions" th:text="#{lots.accions}">
+                                    Acciones
+                                </th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            <tr th:each="lot : ${albaraDetall.lots}">
-                                <td th:text="${lot.codiLot}">LOT-001</td>
-
-                                <td th:text="${lot.quantitat != null ? lot.quantitat + ' KG' : '-'}">
-                                    10 KG
+                            <tr th:each="lot : ${albara.lots}">
+                                <td class="lot-col-codi" th:text="${lot.codiLot}">
+                                    LOT-001
                                 </td>
 
-                                <td th:text="${lot.materiaPrima != null ? lot.materiaPrima.nom : '-'}">
-                                    Farina
+                                <td class="lot-col-quantitat" th:text="${lot.quantitat != null ? lot.quantitat : '-'}">
+                                    10
                                 </td>
 
-                                <td>
-                                    <span th:text="#{${'lots.estat.' + lot.estat}}">
-                                        Estado
+                                <td class="lot-col-materia">
+                                    <span th:if="${lot.materiaPrima != null}"
+                                          th:text="${lot.materiaPrima.nom}">
+                                        Farina
                                     </span>
+
+                                    <span th:if="${lot.materiaPrima == null}">-</span>
                                 </td>
 
-                                <td th:text="${lot.dataObertura != null ? lot.dataObertura : '-'}">
+                                <td class="lot-col-estat">
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'EN_ESTOC'}"
+                                          th:text="#{estat.lot.EN_ESTOC}">
+                                        En stock
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'OBERT'}"
+                                          th:text="#{estat.lot.OBERT}">
+                                        Abierto
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'ACABAT'}"
+                                          th:text="#{estat.lot.ACABAT}">
+                                        Acabado
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'INICIAT'}"
+                                          th:text="#{estat.lot.INICIAT}">
+                                        Iniciado
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'TANCAT'}"
+                                          th:text="#{estat.lot.TANCAT}">
+                                        Cerrado
+                                    </span>
+
+                                    <span th:if="${lot.estat == null}">-</span>
+                                </td>
+
+                                <td class="lot-col-data" th:text="${lot.dataObertura != null ? lot.dataObertura : '-'}">
                                     -
                                 </td>
 
-                                <td th:text="${lot.dataAcabament != null ? lot.dataAcabament : '-'}">
+                                <td class="lot-col-data" th:text="${lot.dataAcabament != null ? lot.dataAcabament : '-'}">
                                     -
                                 </td>
 
-                                <td>
-                                    <div class="actions actions-table">
-                                        <form th:if="${lot.estat.name() == 'EN_ESTOC'}"
-                                              th:action="@{/web/lots/{id}/iniciar(id=${lot.id}, origen='albara', albaraId=${albaraDetall.id})}"
+                                <td class="lot-col-accions">
+                                    <div class="actions-table">
+                                        <form th:if="${lot.estat != null && lot.estat.name() == 'EN_ESTOC'}"
+                                              th:action="@{/web/lots/{id}/iniciar(id=${lot.id}, origen='albara', albaraId=${albara.id})}"
                                               method="post"
                                               class="inline-form js-confirm-form"
                                               th:attr="data-confirm-message=#{lots.confirmar.iniciar}">
-                                            <button type="submit" class="btn btn-primary" th:text="#{lots.iniciar}">
+                                            <button type="submit"
+                                                    class="btn btn-primary"
+                                                    th:text="#{lots.iniciar}">
                                                 Iniciar
                                             </button>
                                         </form>
 
-                                        <form th:if="${lot.estat.name() == 'OBERT'}"
-                                              th:action="@{/web/lots/{id}/finalitzar(id=${lot.id}, origen='albara', albaraId=${albaraDetall.id})}"
+                                        <form th:if="${lot.estat != null && lot.estat.name() == 'OBERT'}"
+                                              th:action="@{/web/lots/{id}/finalitzar(id=${lot.id}, origen='albara', albaraId=${albara.id})}"
                                               method="post"
                                               class="inline-form js-confirm-form"
                                               th:attr="data-confirm-message=#{lots.confirmar.finalitzar}">
-                                            <button type="submit" class="btn btn-danger" th:text="#{lots.finalitzar}">
+                                            <button type="submit"
+                                                    class="btn btn-danger"
+                                                    th:text="#{lots.finalitzar}">
                                                 Finalizar
                                             </button>
                                         </form>
 
-                                        <span th:if="${lot.estat.name() == 'ACABAT'}" th:text="#{lots.sense.accions}">
+                                        <span th:if="${lot.estat == null || (lot.estat.name() != 'EN_ESTOC' && lot.estat.name() != 'OBERT')}"
+                                              th:text="#{lots.sense.accions}">
                                             Sin acciones
                                         </span>
                                     </div>
@@ -137,7 +211,7 @@
                 </div>
 
                 <div class="empty-message"
-                     th:if="${albaraDetall.lots == null || #lists.isEmpty(albaraDetall.lots)}"
+                     th:if="${albara == null || albara.lots == null || #lists.isEmpty(albara.lots)}"
                      th:text="#{albara.proveidor.lots.buit}">
                     Este albarán no tiene lotes.
                 </div>
@@ -149,6 +223,7 @@
                 document.querySelectorAll('.js-confirm-form').forEach(function (form) {
                     form.addEventListener('submit', function (event) {
                         const message = form.getAttribute('data-confirm-message') || '¿Confirmas la operación?';
+
                         if (!confirm(message)) {
                             event.preventDefault();
                         }

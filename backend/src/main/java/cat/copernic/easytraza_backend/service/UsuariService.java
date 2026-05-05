@@ -6,11 +6,10 @@ import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.model.enums.Rol;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UsuariService {
@@ -29,6 +28,27 @@ public class UsuariService {
 
     public Optional<Usuari> findById(Long id) {
         return usuariRepository.findById(id);
+    }
+
+    public List<Usuari> buscar(String nom, String cognoms, String email, Rol rol) {
+        String nomNormalitzat = normalitzarTextCerca(nom);
+        String cognomsNormalitzats = normalitzarTextCerca(cognoms);
+        String emailNormalitzat = normalitzarTextCerca(email);
+
+        if (rol == null) {
+            return usuariRepository.findByNomContainingIgnoreCaseAndCognomsContainingIgnoreCaseAndEmailContainingIgnoreCase(
+                    nomNormalitzat,
+                    cognomsNormalitzats,
+                    emailNormalitzat
+            );
+        }
+
+        return usuariRepository.findByNomContainingIgnoreCaseAndCognomsContainingIgnoreCaseAndEmailContainingIgnoreCaseAndRol(
+                nomNormalitzat,
+                cognomsNormalitzats,
+                emailNormalitzat,
+                rol
+        );
     }
 
     public Usuari save(Usuari usuari) {
@@ -53,7 +73,6 @@ public class UsuariService {
             usuari.setRol(usuariActualitzat.getRol());
             usuari.setEmail(usuari.getEmail());
 
-            // Si a edició es deixa la contrasenya buida, es manté l'actual
             if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
                 usuari.setContrasenya(usuariActualitzat.getContrasenya());
             }
@@ -130,8 +149,8 @@ public class UsuariService {
     public Usuari convertirDtoAEntity(UsuariDto usuariDto) {
         Usuari usuari = new Usuari();
         usuari.setId(usuariDto.getId());
-        usuari.setNom(usuariDto.getNom());
-        usuari.setCognoms(usuariDto.getCognoms());
+        usuari.setNom(normalitzarText(usuariDto.getNom()));
+        usuari.setCognoms(normalitzarText(usuariDto.getCognoms()));
         usuari.setRol(usuariDto.getRol());
         usuari.setEmail(normalitzarEmail(usuariDto.getEmail()));
         usuari.setContrasenya(usuariDto.getContrasenya());
@@ -151,5 +170,13 @@ public class UsuariService {
 
     private String normalitzarEmail(String email) {
         return email == null ? null : email.trim().toLowerCase();
+    }
+
+    private String normalitzarText(String text) {
+        return text == null ? null : text.trim();
+    }
+
+    private String normalitzarTextCerca(String text) {
+        return text == null ? "" : text.trim();
     }
 }

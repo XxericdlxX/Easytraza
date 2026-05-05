@@ -5,12 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(
-        name = "lots_proveidor",
-        uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"proveidor_cif", "codi_lot"})
-        }
-)
+@Table(name = "lots_proveidor")
 public class LotProveidor {
 
     @Id
@@ -21,7 +16,7 @@ public class LotProveidor {
     private String codiLot;
 
     @Column(nullable = false)
-    private Integer quantitat;
+    private Double quantitat;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -46,7 +41,7 @@ public class LotProveidor {
     public LotProveidor() {
     }
 
-    public LotProveidor(Long id, String codiLot, Integer quantitat, EstatLot estat,
+    public LotProveidor(Long id, String codiLot, Double quantitat, EstatLot estat,
             LocalDate dataObertura, LocalDate dataAcabament,
             MateriaPrima materiaPrima, Proveidor proveidor,
             AlbaraProveidor albaraProveidor) {
@@ -77,11 +72,11 @@ public class LotProveidor {
         this.codiLot = codiLot;
     }
 
-    public Integer getQuantitat() {
+    public Double getQuantitat() {
         return quantitat;
     }
 
-    public void setQuantitat(Integer quantitat) {
+    public void setQuantitat(Double quantitat) {
         this.quantitat = quantitat;
     }
 
