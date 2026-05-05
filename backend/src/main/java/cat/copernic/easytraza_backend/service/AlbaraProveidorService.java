@@ -15,9 +15,9 @@ import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -107,14 +107,34 @@ public class AlbaraProveidorService {
         return albaraProveidorRepository.saveAndFlush(existent);
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        albaraProveidorRepository.deleteById(id);
+        AlbaraProveidor albara = albaraProveidorRepository.findById(id).orElse(null);
+
+        if (albara == null) {
+            throw new IllegalArgumentException("albara.proveidor.error.no.trobat");
+        }
+
+        if (albara.getLots() != null) {
+            boolean teLotsActius = albara.getLots().stream()
+                    .anyMatch(lot -> lot.getEstat() != null
+                    && ("OBERT".equals(lot.getEstat().name())
+                    || "INICIAT".equals(lot.getEstat().name())));
+
+            if (teLotsActius) {
+                throw new IllegalStateException("albara.proveidor.error.eliminar.lots.iniciats");
+            }
+        }
+
+        albaraProveidorRepository.delete(albara);
     }
 
     public String validarAlbara(AlbaraProveidorDto dto, Long idActual) {
         if (dto.getDataRecepcio() == null) {
             return "albara.proveidor.data.obligatoria";
         }
+
+        completarReferenciesOcr(dto);
 
         Proveidor proveidor = obtenirOCrearProveidor(dto);
         if (proveidor == null) {
@@ -139,6 +159,8 @@ public class AlbaraProveidorService {
     }
 
     public AlbaraProveidor convertirDtoAEntity(AlbaraProveidorDto dto) {
+        completarReferenciesOcr(dto);
+
         Proveidor proveidor = obtenirOCrearProveidor(dto);
         Usuari usuariLoguejat = obtenirUsuariLoguejat();
 
@@ -220,6 +242,44 @@ public class AlbaraProveidorService {
 
         if (dto.getLots().isEmpty()) {
             dto.getLots().add(new LotProveidorDto());
+        }
+    }
+
+    public void completarReferenciesOcr(AlbaraProveidorDto dto) {
+        if (dto == null) {
+            return;
+        }
+
+        String cif = normalitzarDocument(dto.getProveidorCif());
+
+        if (cif != null && !cif.isBlank()) {
+            dto.setProveidorCif(cif);
+        }
+
+        if (dto.getLots() == null) {
+            return;
+        }
+
+        for (LotProveidorDto lotDto : dto.getLots()) {
+            completarMateriaPrimaSiExisteix(lotDto);
+        }
+    }
+
+    private void completarMateriaPrimaSiExisteix(LotProveidorDto lotDto) {
+        if (lotDto == null || lotDto.getMateriaPrimaId() != null) {
+            return;
+        }
+
+        String nomDetectat = normalitzar(lotDto.getMateriaPrimaNomDetectada());
+
+        if (nomDetectat == null || nomDetectat.isBlank()) {
+            return;
+        }
+
+        Optional<MateriaPrima> existent = materiaPrimaRepository.findByNomIgnoreCase(nomDetectat);
+
+        if (existent.isPresent()) {
+            lotDto.setMateriaPrimaId(existent.get().getId());
         }
     }
 
