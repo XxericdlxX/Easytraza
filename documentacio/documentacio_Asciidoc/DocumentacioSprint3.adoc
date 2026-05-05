@@ -67,14 +67,14 @@ image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  |
+| Eric Delgado López | Vaig a continuar milorant el ocr y vaig afegir filtres als CRUDS del sprint 1 i 2 |Acabaré de millorar el ocr per poder agafar els albarans del Rafa | problemes amb el ocr (es dificil fer que agafi tot) | 0h + 4'30h
 |===
 
 === DIA 9 Dimecres - 06/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  |
+| Eric Delgado López | Vaig acabar de millorar el ocr i vaig crear la següent task per afegir els filtres de Cruds restants | Començaré a fer els filtres dels Cruds que quedan | - | 0h + 
 |===
 
 === DIA 10 Dijous - 07/05/2026
