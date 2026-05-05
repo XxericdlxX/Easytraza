@@ -84,7 +84,7 @@
                                 <label>
                                     <span th:text="#{lot.proveidor.quantitat}">Cantidad</span> <span class="required">*</span>
                                 </label>
-                                <input type="number" min="1" class="lot-quantitat-field" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
+                                <input type="number" min="0.01" step="0.01" class="lot-quantitat-field" th:name="${'lots[' + stat.index + '].quantitat'}" th:value="${lot.quantitat}">
                             </div>
 
                             <div class="form-group">
@@ -129,7 +129,7 @@
 
                 <div class="form-group">
                     <label>Cantidad <span class="required">*</span></label>
-                    <input type="number" min="1" class="lot-quantitat-field">
+                    <input type="number" min="0.01" step="0.01" class="lot-quantitat-field">
                 </div>
 
                 <div class="form-group">
