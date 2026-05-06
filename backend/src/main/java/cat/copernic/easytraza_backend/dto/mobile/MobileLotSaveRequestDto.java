@@ -5,6 +5,10 @@ public class MobileLotSaveRequestDto {
     private String codiLot;
     private Double quantitat;
     private String materiaPrimaNom;
+    private boolean crearMateriaPrimaSiNoExisteix;
+
+    public MobileLotSaveRequestDto() {
+    }
 
     public String getCodiLot() {
         return codiLot;
@@ -28,5 +32,13 @@ public class MobileLotSaveRequestDto {
 
     public void setMateriaPrimaNom(String materiaPrimaNom) {
         this.materiaPrimaNom = materiaPrimaNom;
+    }
+
+    public boolean isCrearMateriaPrimaSiNoExisteix() {
+        return crearMateriaPrimaSiNoExisteix;
+    }
+
+    public void setCrearMateriaPrimaSiNoExisteix(boolean crearMateriaPrimaSiNoExisteix) {
+        this.crearMateriaPrimaSiNoExisteix = crearMateriaPrimaSiNoExisteix;
     }
 }
