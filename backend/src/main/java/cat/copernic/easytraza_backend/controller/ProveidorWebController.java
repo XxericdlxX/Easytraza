@@ -1,18 +1,18 @@
 package cat.copernic.easytraza_backend.controller;
 
-import cat.copernic.easytraza_backend.dto.ProveidorDto;
 import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.service.ProveidorService;
-import jakarta.validation.Valid;
 import java.util.Locale;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -26,111 +26,111 @@ public class ProveidorWebController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String llistarProveidors(Model model) {
-        model.addAttribute("proveidors", proveidorService.findAll());
+    public String llistar(@RequestParam(required = false) String document,
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String telefon,
+            @RequestParam(required = false) String email,
+            Model model) {
+
+        model.addAttribute("proveidors", proveidorService.buscar(document, nom, telefon, email));
+
+        model.addAttribute("document", document);
+        model.addAttribute("nom", nom);
+        model.addAttribute("telefon", telefon);
+        model.addAttribute("email", email);
+
         model.addAttribute("currentPath", "/web/proveidors");
+
         return "proveidors/llistar-proveidors";
     }
 
     @GetMapping("/crear")
-    public String mostrarFormulariCrearProveidor(Model model) {
-        model.addAttribute("proveidor", new ProveidorDto());
-        return "proveidors/crear-proveidors";
+    public String crear(Model model) {
+        model.addAttribute("proveidor", new Proveidor());
+        model.addAttribute("currentPath", "/web/proveidors");
+
+        return "proveidors/crear-proveidor";
     }
 
     @PostMapping("/guardar")
-    public String guardarProveidor(@Valid @ModelAttribute("proveidor") ProveidorDto proveidorDto,
-            BindingResult result,
-            Model model,
+    public String guardar(Proveidor proveidor,
             RedirectAttributes redirectAttributes,
-            Locale locale) {
+            Locale locale,
+            Model model) {
 
-        if (result.hasErrors()) {
-            return "proveidors/crear-proveidors";
+        if (proveidor.getCif() == null || proveidor.getCif().isBlank()) {
+            model.addAttribute("errorNegoci", missatge("proveidors.cif.obligatori", locale));
+            model.addAttribute("proveidor", proveidor);
+            return "proveidors/crear-proveidor";
         }
 
-        String errorNegoci = proveidorService.validarProveidor(proveidorDto, null);
-        if (errorNegoci != null) {
-            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
-            return "proveidors/crear-proveidors";
+        if (proveidorService.existsById(proveidor.getCif().trim().toUpperCase().replace(" ", ""))) {
+            model.addAttribute("errorNegoci", missatge("proveidors.error.duplicat", locale));
+            model.addAttribute("proveidor", proveidor);
+            return "proveidors/crear-proveidor";
         }
 
-        Proveidor proveidor = proveidorService.convertirDtoAEntity(proveidorDto);
         proveidorService.save(proveidor);
-
-        redirectAttributes.addFlashAttribute(
-                "missatgeExit",
-                messageSource.getMessage("proveidors.flash.creat", null, locale)
-        );
+        redirectAttributes.addFlashAttribute("missatgeExit", missatge("proveidors.flash.creat", locale));
 
         return "redirect:/web/proveidors";
     }
 
     @GetMapping("/editar/{cif}")
-    public String mostrarFormulariEditarProveidor(@PathVariable String cif, Model model, RedirectAttributes redirectAttributes, Locale locale) {
-        Optional<Proveidor> proveidor = proveidorService.findById(cif);
-
-        if (proveidor.isPresent()) {
-            model.addAttribute("proveidor", proveidorService.convertirEntityADto(proveidor.get()));
-            return "proveidors/editar-proveidors";
-        } else {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("proveidors.flash.no.trobat", null, locale)
-            );
-            return "redirect:/web/proveidors";
-        }
-    }
-
-    @PostMapping("/actualitzar/{cif}")
-    public String actualitzarProveidor(@PathVariable String cif,
-            @Valid @ModelAttribute("proveidor") ProveidorDto proveidorDto,
-            BindingResult result,
+    public String editar(@PathVariable String cif,
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
-        if (result.hasErrors()) {
-            return "proveidors/editar-proveidors";
+        Proveidor proveidor = proveidorService.findById(cif).orElse(null);
+
+        if (proveidor == null) {
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("proveidors.flash.no.trobat", locale));
+            return "redirect:/web/proveidors";
         }
 
-        String errorNegoci = proveidorService.validarProveidor(proveidorDto, cif);
-        if (errorNegoci != null) {
-            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
-            return "proveidors/editar-proveidors";
+        model.addAttribute("proveidor", proveidor);
+        model.addAttribute("currentPath", "/web/proveidors");
+
+        return "proveidors/editar-proveidor";
+    }
+
+    @PostMapping("/actualitzar/{cif}")
+    public String actualitzar(@PathVariable String cif,
+            Proveidor proveidor,
+            RedirectAttributes redirectAttributes,
+            Locale locale,
+            Model model) {
+
+        Proveidor actualitzat = proveidorService.update(cif, proveidor);
+
+        if (actualitzat == null) {
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("proveidors.flash.no.trobat", locale));
+            return "redirect:/web/proveidors";
         }
 
-        Proveidor proveidor = proveidorService.convertirDtoAEntity(proveidorDto);
-        proveidorService.update(cif, proveidor);
-
-        redirectAttributes.addFlashAttribute(
-                "missatgeExit",
-                messageSource.getMessage("proveidors.flash.actualitzat", null, locale)
-        );
-
+        redirectAttributes.addFlashAttribute("missatgeExit", missatge("proveidors.flash.actualitzat", locale));
         return "redirect:/web/proveidors";
     }
 
     @GetMapping("/eliminar/{cif}")
-    public String eliminarProveidor(@PathVariable String cif, RedirectAttributes redirectAttributes, Locale locale) {
+    public String eliminar(@PathVariable String cif,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
         try {
             proveidorService.deleteById(cif);
-            redirectAttributes.addFlashAttribute(
-                    "missatgeExit",
-                    messageSource.getMessage("proveidors.flash.eliminat", null, locale)
-            );
+            redirectAttributes.addFlashAttribute("missatgeExit", missatge("proveidors.flash.eliminat", locale));
         } catch (DataIntegrityViolationException ex) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("proveidors.error.eliminar.relacions", null, locale)
-            );
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("proveidors.error.eliminar.relacions", locale));
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("proveidors.error.eliminar.generic", null, locale)
-            );
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("proveidors.error.eliminar.generic", locale));
         }
 
         return "redirect:/web/proveidors";
+    }
+
+    private String missatge(String codi, Locale locale) {
+        return messageSource.getMessage(codi, null, codi, locale);
     }
 }

@@ -1,19 +1,18 @@
 package cat.copernic.easytraza_backend.controller;
 
-import cat.copernic.easytraza_backend.dto.ClientDto;
 import cat.copernic.easytraza_backend.model.Client;
-import cat.copernic.easytraza_backend.model.enums.TipusClient;
 import cat.copernic.easytraza_backend.service.ClientService;
-import jakarta.validation.Valid;
 import java.util.Locale;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -27,124 +26,118 @@ public class ClientWebController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String llistarClients(Model model) {
-        model.addAttribute("clients", clientService.findAll());
+    public String llistar(@RequestParam(required = false) String document,
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String tipus,
+            @RequestParam(required = false) String telefon,
+            @RequestParam(required = false) String email,
+            Model model) {
+
+        model.addAttribute("clients", clientService.buscar(document, nom, tipus, telefon, email));
+        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
+
+        model.addAttribute("document", document);
+        model.addAttribute("nom", nom);
+        model.addAttribute("tipus", tipus);
+        model.addAttribute("telefon", telefon);
+        model.addAttribute("email", email);
+
         model.addAttribute("currentPath", "/web/clients");
+
         return "clients/llistar-clients";
     }
 
     @GetMapping("/crear")
-    public String mostrarFormulariCrearClient(Model model) {
-        model.addAttribute("client", new ClientDto());
-        model.addAttribute("tipusClients", TipusClient.values());
+    public String crear(Model model) {
+        model.addAttribute("client", new Client());
+        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
+        model.addAttribute("currentPath", "/web/clients");
+
         return "clients/crear-clients";
     }
 
     @PostMapping("/guardar")
-    public String guardarClient(@Valid @ModelAttribute("client") ClientDto clientDto,
-            BindingResult result,
-            Model model,
+    public String guardar(Client client,
             RedirectAttributes redirectAttributes,
-            Locale locale) {
+            Locale locale,
+            Model model) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("tipusClients", TipusClient.values());
+        if (client.getNif() == null || client.getNif().isBlank()) {
+            model.addAttribute("errorNegoci", missatge("clients.nif.obligatori", locale));
+            model.addAttribute("client", client);
+            model.addAttribute("tipusClients", clientService.obtenirTipusClients());
             return "clients/crear-clients";
         }
 
-        String errorNegoci = clientService.validarClient(clientDto, null);
-        if (errorNegoci != null) {
-            model.addAttribute("tipusClients", TipusClient.values());
-            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
+        if (clientService.existsById(client.getNif().trim().toUpperCase().replace(" ", ""))) {
+            model.addAttribute("errorNegoci", missatge("clients.error.duplicat", locale));
+            model.addAttribute("client", client);
+            model.addAttribute("tipusClients", clientService.obtenirTipusClients());
             return "clients/crear-clients";
         }
 
-        Client client = clientService.convertirDtoAEntity(clientDto);
         clientService.save(client);
-
-        redirectAttributes.addFlashAttribute(
-                "missatgeExit",
-                messageSource.getMessage("clients.flash.creat", null, locale)
-        );
+        redirectAttributes.addFlashAttribute("missatgeExit", missatge("clients.flash.creat", locale));
 
         return "redirect:/web/clients";
     }
 
     @GetMapping("/editar/{nif}")
-    public String mostrarFormulariEditarClient(@PathVariable String nif,
+    public String editar(@PathVariable String nif,
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
-        Optional<Client> client = clientService.findById(nif);
+        Client client = clientService.findById(nif).orElse(null);
 
-        if (client.isPresent()) {
-            model.addAttribute("client", clientService.convertirEntityADto(client.get()));
-            model.addAttribute("tipusClients", TipusClient.values());
-            return "clients/editar-clients";
-        } else {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("clients.flash.no.trobat", null, locale)
-            );
+        if (client == null) {
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("clients.flash.no.trobat", locale));
             return "redirect:/web/clients";
         }
+
+        model.addAttribute("client", client);
+        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
+        model.addAttribute("currentPath", "/web/clients");
+
+        return "clients/editar-clients";
     }
 
     @PostMapping("/actualitzar/{nif}")
-    public String actualitzarClient(@PathVariable String nif,
-            @Valid @ModelAttribute("client") ClientDto clientDto,
-            BindingResult result,
-            Model model,
+    public String actualitzar(@PathVariable String nif,
+            Client client,
             RedirectAttributes redirectAttributes,
-            Locale locale) {
+            Locale locale,
+            Model model) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("tipusClients", TipusClient.values());
-            return "clients/editar-clients";
+        Client actualitzat = clientService.update(nif, client);
+
+        if (actualitzat == null) {
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("clients.flash.no.trobat", locale));
+            return "redirect:/web/clients";
         }
 
-        String errorNegoci = clientService.validarClient(clientDto, nif);
-        if (errorNegoci != null) {
-            model.addAttribute("tipusClients", TipusClient.values());
-            model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
-            return "clients/editar-clients";
-        }
-
-        Client client = clientService.convertirDtoAEntity(clientDto);
-        clientService.update(nif, client);
-
-        redirectAttributes.addFlashAttribute(
-                "missatgeExit",
-                messageSource.getMessage("clients.flash.actualitzat", null, locale)
-        );
-
+        redirectAttributes.addFlashAttribute("missatgeExit", missatge("clients.flash.actualitzat", locale));
         return "redirect:/web/clients";
     }
 
     @GetMapping("/eliminar/{nif}")
-    public String eliminarClient(@PathVariable String nif,
+    public String eliminar(@PathVariable String nif,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
         try {
             clientService.deleteById(nif);
-            redirectAttributes.addFlashAttribute(
-                    "missatgeExit",
-                    messageSource.getMessage("clients.flash.eliminat", null, locale)
-            );
+            redirectAttributes.addFlashAttribute("missatgeExit", missatge("clients.flash.eliminat", locale));
         } catch (DataIntegrityViolationException ex) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("clients.error.eliminar.relacions", null, locale)
-            );
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("clients.error.eliminar.relacions", locale));
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("clients.error.eliminar.generic", null, locale)
-            );
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("clients.error.eliminar.generic", locale));
         }
 
         return "redirect:/web/clients";
+    }
+
+    private String missatge(String codi, Locale locale) {
+        return messageSource.getMessage(codi, null, codi, locale);
     }
 }
