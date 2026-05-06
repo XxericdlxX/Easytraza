@@ -8,7 +8,11 @@ public class MobileAlbaraSaveRequestDto {
     private String dataRecepcio;
     private String proveidorCif;
     private String proveidorNom;
+    private boolean crearProveidorSiNoExisteix;
     private List<MobileLotSaveRequestDto> lots = new ArrayList<>();
+
+    public MobileAlbaraSaveRequestDto() {
+    }
 
     public String getDataRecepcio() {
         return dataRecepcio;
@@ -32,6 +36,14 @@ public class MobileAlbaraSaveRequestDto {
 
     public void setProveidorNom(String proveidorNom) {
         this.proveidorNom = proveidorNom;
+    }
+
+    public boolean isCrearProveidorSiNoExisteix() {
+        return crearProveidorSiNoExisteix;
+    }
+
+    public void setCrearProveidorSiNoExisteix(boolean crearProveidorSiNoExisteix) {
+        this.crearProveidorSiNoExisteix = crearProveidorSiNoExisteix;
     }
 
     public List<MobileLotSaveRequestDto> getLots() {

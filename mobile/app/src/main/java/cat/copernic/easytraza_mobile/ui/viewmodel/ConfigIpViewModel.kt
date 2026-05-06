@@ -5,14 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
+import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
 import cat.copernic.easytraza_mobile.network.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 class ConfigIpViewModel(
     application: Application,
@@ -80,21 +78,11 @@ class ConfigIpViewModel(
                         response.code()
                     )
                 }
-            } catch (_: UnknownHostException) {
-                _status.value = getApplication<Application>()
-                    .getString(R.string.connection_error_host)
-            } catch (_: ConnectException) {
-                _status.value = getApplication<Application>()
-                    .getString(R.string.connection_error_connect)
-            } catch (_: SocketTimeoutException) {
-                _status.value = getApplication<Application>()
-                    .getString(R.string.connection_error_timeout)
-            } catch (_: IllegalArgumentException) {
-                _status.value = getApplication<Application>()
-                    .getString(R.string.connection_error_invalid_ip)
-            } catch (_: Exception) {
-                _status.value = getApplication<Application>()
-                    .getString(R.string.connection_error_generic)
+            } catch (ex: Exception) {
+                _status.value = NetworkErrorMapper.connectionError(
+                    getApplication(),
+                    ex
+                )
             }
         }
     }
@@ -109,7 +97,9 @@ class ConfigIpViewModel(
     }
 
     private fun isValidServerHost(host: String): Boolean {
-        if (host.isBlank()) return false
+        if (host.isBlank()) {
+            return false
+        }
 
         val ipv4Regex = Regex(
             """^((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$"""
