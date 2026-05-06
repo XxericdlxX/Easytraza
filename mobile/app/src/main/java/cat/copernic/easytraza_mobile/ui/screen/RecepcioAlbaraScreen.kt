@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -34,6 +35,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -56,6 +58,7 @@ fun RecepcioAlbaraScreen(
     val dataRecepcio by viewModel.dataRecepcio.collectAsState()
     val proveidorCif by viewModel.proveidorCif.collectAsState()
     val proveidorNom by viewModel.proveidorNom.collectAsState()
+    val crearProveidorSiNoExisteix by viewModel.crearProveidorSiNoExisteix.collectAsState()
     val textOcr by viewModel.textOcr.collectAsState()
     val status by viewModel.status.collectAsState()
     val lotsEditables by viewModel.lotsEditables.collectAsState()
@@ -144,7 +147,7 @@ fun RecepcioAlbaraScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "📦",
+                    text = "🧾",
                     style = MaterialTheme.typography.displaySmall
                 )
 
@@ -311,6 +314,32 @@ fun RecepcioAlbaraScreen(
                     shape = RoundedCornerShape(16.dp)
                 )
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = crearProveidorSiNoExisteix,
+                        onCheckedChange = viewModel::onCrearProveidorSiNoExisteixChange
+                    )
+
+                    Column(
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.recepcio_create_supplier_checkbox),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Text(
+                            text = stringResource(R.string.recepcio_create_supplier_help),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
                 Text(
                     text = "Lotes del albarán",
                     style = MaterialTheme.typography.titleSmall,
@@ -325,6 +354,7 @@ fun RecepcioAlbaraScreen(
                         onCodiChange = { viewModel.onLotCodiChange(index, it) },
                         onQuantitatChange = { viewModel.onLotQuantitatChange(index, it) },
                         onMateriaChange = { viewModel.onLotMateriaPrimaChange(index, it) },
+                        onCrearMateriaChange = { viewModel.onLotCrearMateriaPrimaChange(index, it) },
                         onDelete = { viewModel.eliminarLot(index) }
                     )
                 }
@@ -366,6 +396,7 @@ private fun LotEditableCard(
     onCodiChange: (String) -> Unit,
     onQuantitatChange: (String) -> Unit,
     onMateriaChange: (String) -> Unit,
+    onCrearMateriaChange: (Boolean) -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
@@ -426,9 +457,36 @@ private fun LotEditableCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
             )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = lot.crearMateriaPrimaSiNoExisteix,
+                    onCheckedChange = onCrearMateriaChange
+                )
+
+                Column(
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.recepcio_create_material_checkbox),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Text(
+                        text = stringResource(R.string.recepcio_create_material_help),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
     }
 }
+
 private enum class RecepcioMode {
     Manual,
     Ocr
