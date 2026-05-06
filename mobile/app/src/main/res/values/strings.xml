@@ -20,7 +20,7 @@
 
     <string name="user_selector_emoji">👥</string>
     <string name="user_selector_title">Selecciona un usuario</string>
-    <string name="user_selector_subtitle">Escoge un perfil demo para entrar en el panel principal del módulo móvil.</string>
+    <string name="user_selector_subtitle">Escoge un perfil demo para entrar en el módulo móvil.</string>
     <string name="user_selector_section_title">Usuarios disponibles</string>
     <string name="user_selector_open_profile">Entrar</string>
     <string name="user_selector_config_button">Configuración de conexión</string>
@@ -28,9 +28,6 @@
     <string name="dashboard_welcome_label">Hola 👋</string>
     <string name="dashboard_config_short_button">IP</string>
     <string name="dashboard_change_user_button">Cambiar usuario</string>
-    <string name="dashboard_hero_emoji">📦</string>
-    <string name="dashboard_hero_title">Panel principal de EasyTraza</string>
-    <string name="dashboard_hero_subtitle">Accede rápidamente a la recepción de albaranes del sprint actual.</string>
     <string name="dashboard_actions_section_title">Acción principal</string>
     <string name="dashboard_action_open">Abrir</string>
     <string name="dashboard_action_receive_title">Recepcionar albarán</string>
@@ -45,12 +42,14 @@
     <string name="recepcio_screen_subtitle">Usuario activo: %1$s</string>
     <string name="recepcio_mode_manual">Manual</string>
     <string name="recepcio_mode_ocr">OCR</string>
+
     <string name="recepcio_ocr_block_title">Entrada asistida por OCR</string>
     <string name="recepcio_ocr_block_subtitle">Selecciona una imagen, haz una foto o escoge un PDF del albarán y revisa los datos detectados antes de guardar.</string>
     <string name="recepcio_ocr_camera_button">Cámara</string>
     <string name="recepcio_ocr_image_button">Imagen / foto</string>
     <string name="recepcio_ocr_pdf_button">PDF</string>
     <string name="recepcio_ocr_text_label">Texto OCR detectado</string>
+
     <string name="recepcio_form_title">Datos del albarán</string>
     <string name="recepcio_field_date">Fecha de recepción</string>
     <string name="recepcio_field_supplier_cif">CIF del proveedor</string>
@@ -60,16 +59,31 @@
     <string name="recepcio_field_material">Materia prima</string>
     <string name="recepcio_save_button">Guardar albarán</string>
 
+    <string name="recepcio_create_supplier_checkbox">Crear proveedor automáticamente si no existe</string>
+    <string name="recepcio_create_material_checkbox">Crear materia prima automáticamente si no existe</string>
+    <string name="recepcio_create_supplier_help">Marca esta opción si el proveedor detectado por OCR no existe todavía en el sistema.</string>
+    <string name="recepcio_create_material_help">Marca esta opción si la materia prima detectada por OCR no existe todavía en el sistema.</string>
+
+    <string name="network_error_no_ip">Primero debes guardar una IP válida del backend.</string>
+    <string name="network_error_invalid_ip">La IP configurada no es válida. Revisa la configuración de conexión.</string>
+    <string name="network_error_no_connection">No se ha podido conectar con el servidor. Revisa la IP y que el backend esté iniciado.</string>
+    <string name="network_error_timeout">La conexión ha tardado demasiado. Comprueba la red e inténtalo de nuevo.</string>
+    <string name="network_error_unknown_host">No se ha encontrado el servidor indicado. Revisa la IP configurada.</string>
+    <string name="network_error_server">El servidor ha devuelto un error. Inténtalo de nuevo más tarde.</string>
+    <string name="network_error_generic">No se ha podido completar la operación. Revisa la conexión e inténtalo de nuevo.</string>
+
     <string name="ocr_error_no_ip">Primero debes guardar una IP válida del backend.</string>
-    <string name="ocr_error_backend">El backend ha devuelto un error en el OCR.</string>
-    <string name="ocr_error_file">No se ha podido preparar el archivo para el OCR.</string>
+    <string name="ocr_error_backend">No se ha podido procesar el OCR. El servidor ha devuelto un error.</string>
+    <string name="ocr_error_file">No se ha podido preparar el archivo para el OCR. Revisa el formato del documento.</string>
+    <string name="ocr_error_connection">No se ha podido conectar con el servidor para procesar el OCR. Revisa la IP y que el backend esté iniciado.</string>
+    <string name="ocr_error_timeout">El OCR ha tardado demasiado en responder. Prueba con otra imagen o inténtalo de nuevo.</string>
     <string name="ocr_success">OCR completado correctamente.</string>
     <string name="ocr_saving">Guardando albarán…</string>
     <string name="ocr_saved">Albarán guardado correctamente.</string>
-    <string name="ocr_save_error">No se ha podido guardar el albarán.</string>
+    <string name="ocr_save_error">No se ha podido guardar el albarán. Revisa los datos e inténtalo de nuevo.</string>
     <string name="ocr_processing_document">Analizando documento…</string>
     <string name="ocr_processing_photo">Analizando fotografía…</string>
-    <string name="ocr_processing_error">Error analizando el documento.</string>
+    <string name="ocr_processing_error">No se ha podido analizar el documento. Revisa la imagen o prueba con otra foto.</string>
 
     <string name="recepcio_save_success_toast">Albarán guardado correctamente</string>
 </resources>
