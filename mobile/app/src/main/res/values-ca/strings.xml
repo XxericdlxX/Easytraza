@@ -52,7 +52,7 @@
 
     <string name="recepcio_form_title">Dades de l’albarà</string>
     <string name="recepcio_field_date">Data de recepció</string>
-    <string name="recepcio_field_supplier_cif">CIF del proveïdor</string>
+    <string name="recepcio_field_supplier_cif">CIF/NIF/NIE del proveïdor</string>
     <string name="recepcio_field_supplier_name">Nom del proveïdor</string>
     <string name="recepcio_field_lot">Codi de lot</string>
     <string name="recepcio_field_quantity">Quantitat</string>

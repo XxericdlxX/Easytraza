@@ -52,7 +52,7 @@
 
     <string name="recepcio_form_title">Datos del albarán</string>
     <string name="recepcio_field_date">Fecha de recepción</string>
-    <string name="recepcio_field_supplier_cif">CIF del proveedor</string>
+    <string name="recepcio_field_supplier_cif">CIF/NIF/NIE del proveedor</string>
     <string name="recepcio_field_supplier_name">Nombre del proveedor</string>
     <string name="recepcio_field_lot">Código de lote</string>
     <string name="recepcio_field_quantity">Cantidad</string>
