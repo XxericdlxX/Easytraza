@@ -74,14 +74,14 @@ image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Vaig acabar de millorar el ocr i vaig crear la següent task per afegir els filtres de Cruds restants | Començaré a fer els filtres dels Cruds que quedan | - | 0h + 
+| Eric Delgado López | Vaig acabar de millorar el ocr i vaig crear la següent task per afegir els filtres de Cruds restants | Començaré a fer els filtres dels Cruds que quedan i també seguiré corregint  | - | 0h + 4h
 |===
 
 === DIA 10 Dijous - 07/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  |
+| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. |  | - | 4h + 
 |===
 
 
