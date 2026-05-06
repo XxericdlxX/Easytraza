@@ -7,9 +7,7 @@ import cat.copernic.easytraza_backend.dto.mobile.MobileAlbaraSaveRequestDto;
 import cat.copernic.easytraza_backend.dto.mobile.MobileLotSaveRequestDto;
 import cat.copernic.easytraza_backend.model.AlbaraProveidor;
 import cat.copernic.easytraza_backend.model.MateriaPrima;
-import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
-import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.service.AlbaraProveidorService;
 import cat.copernic.easytraza_backend.service.OcrAlbaraService;
 import java.time.LocalDate;
@@ -33,9 +31,6 @@ public class OcrAlbaraMobileApiController {
     private AlbaraProveidorService albaraProveidorService;
 
     @Autowired
-    private ProveidorRepository proveidorRepository;
-
-    @Autowired
     private MateriaPrimaRepository materiaPrimaRepository;
 
     @PostMapping(
@@ -55,8 +50,11 @@ public class OcrAlbaraMobileApiController {
     public ResponseEntity<?> guardarAlbara(@RequestBody MobileAlbaraSaveRequestDto request) {
         try {
             AlbaraProveidorDto dto = new AlbaraProveidorDto();
+
             dto.setDataRecepcio(parseData(request.getDataRecepcio()));
-            dto.setProveidorCif(resoldreOCrearProveidor(request.getProveidorCif(), request.getProveidorNom()));
+            dto.setProveidorCif(normalitzarDocument(request.getProveidorCif()));
+            dto.setProveidorNomDetectat(netejarNomProveidor(request.getProveidorNom()));
+            dto.setCrearProveidorSiNoExisteix(request.isCrearProveidorSiNoExisteix());
             dto.setLots(convertirLots(request.getLots()));
 
             String errorNegoci = albaraProveidorService.validarAlbara(dto, null);
@@ -98,17 +96,29 @@ public class OcrAlbaraMobileApiController {
                     continue;
                 }
 
-                String codiLot = lotRequest.getCodiLot() != null ? lotRequest.getCodiLot().trim() : "";
-                String materiaNom = lotRequest.getMateriaPrimaNom() != null ? lotRequest.getMateriaPrimaNom().trim() : "";
+                String codiLot = netejar(lotRequest.getCodiLot());
+                String materiaNom = netejar(lotRequest.getMateriaPrimaNom());
 
-                if (codiLot.isBlank() && materiaNom.isBlank() && lotRequest.getQuantitat() == null) {
+                if ((codiLot == null || codiLot.isBlank())
+                        && (materiaNom == null || materiaNom.isBlank())
+                        && lotRequest.getQuantitat() == null) {
                     continue;
                 }
 
                 LotProveidorDto lot = new LotProveidorDto();
                 lot.setCodiLot(codiLot);
                 lot.setQuantitat(lotRequest.getQuantitat());
-                lot.setMateriaPrimaId(resoldreOCrearMateriaPrima(materiaNom));
+                lot.setCrearMateriaPrimaSiNoExisteix(lotRequest.isCrearMateriaPrimaSiNoExisteix());
+
+                Optional<MateriaPrima> materiaExistent = buscarMateriaPrima(materiaNom);
+
+                if (materiaExistent.isPresent()) {
+                    lot.setMateriaPrimaId(materiaExistent.get().getId());
+                    lot.setMateriaPrimaNomDetectada(materiaExistent.get().getNom());
+                } else {
+                    lot.setMateriaPrimaNomDetectada(materiaNom);
+                }
+
                 lots.add(lot);
             }
         }
@@ -116,68 +126,44 @@ public class OcrAlbaraMobileApiController {
         return lots;
     }
 
-    private String resoldreOCrearProveidor(String proveidorCif, String proveidorNom) {
-        String cif = normalitzar(proveidorCif);
-        String nom = netejar(proveidorNom);
-
-        if (cif != null && !cif.isBlank()) {
-            Optional<Proveidor> existent = proveidorRepository.findById(cif);
-            if (existent.isPresent()) {
-                return existent.get().getCif();
-            }
-
-            Proveidor nou = new Proveidor();
-            nou.setCif(cif);
-            nou.setNom((nom != null && !nom.isBlank()) ? nom : "Proveïdor OCR " + cif);
-            nou.setAdreca("Pendent OCR");
-            nou.setNotes("Creat automàticament des del client mobile / OCR");
-            nou.setTelefon(null);
-            nou.setEmail(null);
-
-            proveidorRepository.save(nou);
-            return nou.getCif();
+    private Optional<MateriaPrima> buscarMateriaPrima(String materiaNom) {
+        if (materiaNom == null || materiaNom.isBlank()) {
+            return Optional.empty();
         }
 
-        if (nom != null && !nom.isBlank()) {
-            Optional<Proveidor> existentNom = proveidorRepository.findByNomIgnoreCase(nom);
-            if (existentNom.isPresent()) {
-                return existentNom.get().getCif();
-            }
-        }
-
-        return null;
+        return materiaPrimaRepository.findByNomIgnoreCase(materiaNom);
     }
 
-    private Long resoldreOCrearMateriaPrima(String materiaPrimaNom) {
-        String nom = netejar(materiaPrimaNom);
-        if (nom == null || nom.isBlank()) {
-            return null;
-        }
-
-        Optional<MateriaPrima> existent = materiaPrimaRepository.findByNomIgnoreCase(nom);
-        if (existent.isPresent()) {
-            return existent.get().getId();
-        }
-
-        MateriaPrima nova = new MateriaPrima();
-        nova.setNom(nom);
-        nova.setDescripcio("Creada automàticament des del client mobile / OCR");
-
-        materiaPrimaRepository.save(nova);
-        return nova.getId();
-    }
-
-    private String normalitzar(String value) {
+    private String normalitzarDocument(String value) {
         if (value == null) {
             return null;
         }
-        return value.trim().toUpperCase().replace(" ", "");
+
+        String normalitzat = value.trim().toUpperCase().replace(" ", "");
+        return normalitzat.isBlank() ? null : normalitzat;
+    }
+
+    private String netejarNomProveidor(String value) {
+        String net = netejar(value);
+
+        if (net == null || net.isBlank()) {
+            return null;
+        }
+
+        net = net.replaceFirst("(?i)^PROVEIDOR\\s+DETECTAT\\s+OCR\\s*:\\s*", "");
+        net = net.replaceFirst("(?i)^PROVEEDOR\\s+DETECTADO\\s+POR\\s+OCR\\s*:\\s*", "");
+        net = net.replaceFirst("(?i)^PROVEÏDOR\\s+DETECTAT\\s+PER\\s+OCR\\s*:\\s*", "");
+        net = net.replaceAll("\\s{2,}", " ").trim();
+
+        return net.isBlank() ? null : net;
     }
 
     private String netejar(String value) {
         if (value == null) {
             return null;
         }
-        return value.trim().replaceAll("\\s{2,}", " ");
+
+        String net = value.trim().replaceAll("\\s{2,}", " ");
+        return net.isBlank() ? null : net;
     }
 }
