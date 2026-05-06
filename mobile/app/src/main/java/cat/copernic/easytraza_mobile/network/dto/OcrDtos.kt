@@ -16,13 +16,15 @@ data class OcrAlbaraResponseDto(
 
 data class MobileLotSaveRequestDto(
     val codiLot: String,
-    val quantitat: Int?,
-    val materiaPrimaNom: String
+    val quantitat: Double?,
+    val materiaPrimaNom: String,
+    val crearMateriaPrimaSiNoExisteix: Boolean
 )
 
 data class MobileAlbaraSaveRequestDto(
     val dataRecepcio: String,
     val proveidorCif: String?,
     val proveidorNom: String,
+    val crearProveidorSiNoExisteix: Boolean,
     val lots: List<MobileLotSaveRequestDto>
 )
