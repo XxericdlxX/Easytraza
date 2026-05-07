@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{productes.produccio.lots.titol}">Producción y lotes del producto</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+
+                        <div>
+                            <h1 th:text="#{productes.produccio.lots.titol}">
+                                Producción y lotes del producto
+                            </h1>
+
+                            <p>
+                                <span th:text="#{productes.nom}">Producto</span>:
+                                <strong th:text="${producte.nom}">Producto</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/productes}"
+                       class="btn btn-secondary"
+                       th:text="#{accio.tornar}">
+                        Volver
+                    </a>
+                </div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <p th:text="#{productes.produccio.lots.ajuda}">
+                        Se muestran las líneas de albaranes de cliente donde aparece este producto y los lotes abiertos asociados al día de producción.
+                    </p>
+                </div>
+
+                <div class="table-wrapper"
+                     th:if="${liniesProduccio != null && !#lists.isEmpty(liniesProduccio)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{productes.produccio.quantitat}">
+                                    Cantidad fabricada
+                                </th>
+
+                                <th th:text="#{productes.produccio.client}">
+                                    Cliente
+                                </th>
+
+                                <th th:text="#{productes.produccio.albara.client}">
+                                    Albarán cliente
+                                </th>
+
+                                <th th:text="#{productes.produccio.data}">
+                                    Fecha de producción
+                                </th>
+
+                                <th th:text="#{productes.produccio.lots.associats}">
+                                    Lotes abiertos asociados
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="linia : ${liniesProduccio}">
+                                <td th:text="${linia.quantitat}">
+                                    10
+                                </td>
+
+                                <td>
+                                    <span th:if="${linia.albaraClient != null && linia.albaraClient.client != null}"
+                                          th:text="${linia.albaraClient.client.nom + ' (' + linia.albaraClient.client.nif + ')'}">
+                                        Cliente
+                                    </span>
+
+                                    <span th:if="${linia.albaraClient == null || linia.albaraClient.client == null}">
+                                        -
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a th:if="${linia.albaraClient != null}"
+                                       th:href="@{/web/albarans-client/veure/{id}(id=${linia.albaraClient.id})}"
+                                       class="btn btn-accent"
+                                       th:text="${linia.albaraClient.id}">
+                                        1
+                                    </a>
+
+                                    <span th:if="${linia.albaraClient == null}">
+                                        -
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span th:if="${linia.albaraClient != null}"
+                                          th:text="${linia.albaraClient.dataProduccio}">
+                                        2026-05-07
+                                    </span>
+
+                                    <span th:if="${linia.albaraClient == null}">
+                                        -
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div th:if="${linia.lotsAssociats != null && !#lists.isEmpty(linia.lotsAssociats)}"
+                                         class="actions">
+                                        <span th:each="lot : ${linia.lotsAssociats}" class="badge">
+                                            <span th:text="${lot.codiLot}">LOT-001</span>
+                                            <span> - </span>
+                                            <span th:text="${lot.materiaPrima != null ? lot.materiaPrima.nom : '-'}">
+                                                Materia
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <span th:if="${linia.lotsAssociats == null || #lists.isEmpty(linia.lotsAssociats)}">
+                                        -
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message"
+                     th:if="${liniesProduccio == null || #lists.isEmpty(liniesProduccio)}"
+                     th:text="#{productes.produccio.lots.buit}">
+                    No hay producción registrada para este producto.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
