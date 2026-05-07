@@ -20,7 +20,7 @@ image::Sprint4/BoardInicial/BoardInicialSprint4.5.png[Board inicial 5]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | Ahir vaig fer el filtre de productes i vaig avançar en el daily stand-up per acabar el projecte del Sprint 3. També vaig actualitzar la icona principal de l’aplicació mobile perquè fos més coherent amb EasyTraza i vaig acabar d’organitzar la documentació en AsciiDoc. |  | - | 6h
 |===
 
 === DIA 2 Dilluns - 11/05/2026
