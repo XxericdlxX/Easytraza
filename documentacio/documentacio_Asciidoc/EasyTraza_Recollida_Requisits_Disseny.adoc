@@ -1,6 +1,11 @@
 = Projecte 4 - EasyTraza
 Eric Delgado López
 :doctype: article
+:toc: left
+:toclevels: 3
+:toc-title: Índex
+:sectanchors:
+:sectlinks:
 :sectnums:
 :icons: font
 :lang: ca
@@ -18,58 +23,12 @@ Nicolau Copernic
 
 image::01_portada/portada_logo_easytraza.png[Logo EasyTraza, align="center", width=300]
 
-
-[discrete]
-== Índex
-
-* <<introduccio,1. Introducció>>
-** <<contextualitzacio,1.1. Contextualització>>
-** <<problematica-actual,1.2. Problemàtica actual>>
-** <<objectius-projecte,1.3. Objectius del projecte>>
-** <<abast,1.4. Abast>>
-* <<acta-reunio-client,2. Acta de reunió amb el client>>
-** <<assistents,2.1. Assistents>>
-** <<desenvolupament-reunio,2.2. Desenvolupament de la reunió>>
-** <<necessitats-requisits-identificats,2.3. Necessitats i requisits identificats>>
-** <<conclusions-reunio,2.4. Conclusions de la reunió>>
-* <<fase-analisi-requisits,3. Fase d'anàlisi de requisits>>
-** <<requisits-no-funcionals,3.1. Requisits no funcionals>>
-** <<requisits-funcionals,3.2. Requisits funcionals>>
-** <<definicions-nomenclatura,3.3. Definicions i nomenclatura>>
-** <<especificacions-negoci,3.4. Especificacions de negoci>>
-*** <<flux-1-recepcio-lot,3.4.1. Flux 1. Recepció d'un lot>>
-*** <<flux-2-activacio-consum-lot,3.4.2. Flux 2. Activació del consum d'un lot>>
-*** <<flux-3-registre-elaboracio,3.4.3. Flux 3. Registre d'elaboració>>
-*** <<flux-4-tracabilitat-incidencies,3.4.4. Flux 4. Traçabilitat i incidències>>
-*** <<flux-5-alertes-operatives,3.4.5. Flux 5. Alertes operatives>>
-*** <<flux-6-cerca-consulta-informacio,3.4.6. Flux 6. Cerca i consulta d'informació>>
-*** <<flux-7-alertes-caducitat,3.4.7. Flux 7. Alertes de caducitat>>
-*** <<flux-8-control-ph,3.4.8. Flux 8. Control periòdic del pH>>
-*** <<flux-9-registre-usuaris-tracabilitat,3.4.9. Flux 9. Registre d'usuaris i traçabilitat interna>>
-*** <<flux-10-informes-documentacio,3.4.10. Flux 10. Informes i documentació>>
-** <<guions-actors,3.5. Guions per actors>>
-* <<fase-disseny,4. Fase de disseny>>
-** <<diagrama-casos-us,4.1. Diagrama de casos d'ús>>
-** <<diagrama-er,4.2. Diagrama E-R>>
-*** <<taula-1-taules-camps,4.2.1. Taula 1. Taules i camps principals>>
-*** <<taula-2-relacions-taules,4.2.2. Taula 2. Relacions principals entre taules>>
-*** <<taula-3-relacions-conceptuals,4.2.3. Taula 3. Relacions conceptuals del negoci>>
-*** <<justificacio-model,4.2.4. Justificació del model>>
-** <<disseny-interficies-navegacio,4.3. Disseny d'interfícies d'usuari i navegació>>
-** <<disseny-vistes,4.4. Disseny de Vistes>>
-*** <<pc,4.4.1. PC>>
-*** <<mobil,4.4.2. Mòbil>>
-** <<fotos-client-negoci,4.5. Fotos que el client ha enviat del negoci>>
-
-[[introduccio]]
 == Introducció
 
-[[contextualitzacio]]
 === Contextualització
 
 EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar la traçabilitat d'un obrador artesà. L'objectiu és substituir el control manual en paper de lots, albarans i ús d'ingredients per un sistema més ràpid, consultable i preparat per respondre davant inspeccions o incidències alimentàries.
 
-[[problematica-actual]]
 === Problemàtica actual
 
 * El registre de lots es fa manualment, amb un cost diari elevat de temps i amb risc d'errors humans.
@@ -78,7 +37,6 @@ EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar
 * Hi ha matèries primeres amb caducitats curtes que requereixen seguiment i avisos.
 * El client vol una eina usable a l'obrador, des de mòbil, tauleta i ordinador, sense costos de llicència elevats.
 
-[[objectius-projecte]]
 === Objectius del projecte
 
 * Registrar digitalment l'entrada de matèries primeres i els seus lots.
@@ -87,7 +45,6 @@ EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar
 * Facilitar la consulta històrica per lots, proveïdors, clients i períodes.
 * Millorar l'operativa diària amb una interfície simple i preparada per a un entorn d'obrador.
 
-[[abast]]
 === Abast
 
 * Inclou recepció de lots, consulta de traçabilitat, registre d'elaboracions, alertes i informes.
@@ -95,7 +52,6 @@ EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar
 * L'OCR s'utilitzarà per accelerar la captura de dades, però sempre amb revisió manual.
 * Les fórmules internes de producció només es registraran al nivell estrictament necessari per relacionar ingredients i productes, evitant exposar informació sensible.
 
-[[acta-reunio-client]]
 == Acta de reunió amb el client
 
 [cols="1,3", options="header"]
@@ -111,7 +67,6 @@ EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar
 | Redactor | Eric Delgado López
 |===
 
-[[assistents]]
 === Assistents
 
 * Rafa Morante, responsable de producció i representant del client.
@@ -119,7 +74,6 @@ EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar
 * Alumnat de DAM2 Matí.
 * Eric Delgado López, alumne redactor de l'acta.
 
-[[desenvolupament-reunio]]
 === Desenvolupament de la reunió
 
 La reunió es va iniciar amb la presentació del context del projecte. El client va explicar que la necessitat principal és disposar d'un sistema digital que permeti fer la traçabilitat de les matèries primeres i relacionar cada lot rebut amb els productes finals elaborats i amb els clients als quals s'han subministrat.
@@ -138,7 +92,6 @@ En relació amb els avisos, el client va indicar que l'aplicació hauria d'alert
 
 Finalment, es van comentar altres necessitats complementàries: disposar de cerca per lots, clients i proveïdors; filtrar la informació per dia, setmana o mes; generar documents en PDF o imprimir-los; consultar a final de mes quantes unitats s'han elaborat, quants lots s'han utilitzat i quina despesa s'ha generat; i oferir una solució usable tant des de PC com des de dispositius mòbils.
 
-[[necessitats-requisits-identificats]]
 === Necessitats i requisits identificats
 
 * Registrar lots amb data, proveïdor, número de lot i documentació associada.
@@ -151,17 +104,14 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * Generar informes i sortides en PDF o en format imprimible.
 * Disposar d'una interfície adaptable a PC i mòbil.
 
-[[conclusions-reunio]]
 === Conclusions de la reunió
 
 * La reunió va permetre delimitar amb claredat el problema principal del client: la necessitat de millorar la traçabilitat dels lots i reduir el treball manual actual.
 * Es va confirmar que el projecte s'ha d'orientar a una aplicació capaç de relacionar lots, productes i clients, amb especial atenció a la seguretat alimentària i a la rapidesa d'actuació davant incidències.
 * No es van tancar decisions tècniques definitives, però sí que es van recollir els requisits inicials necessaris per continuar amb la fase d'anàlisi i disseny del projecte.
 
-[[fase-analisi-requisits]]
 == Fase d'anàlisi de requisits
 
-[[requisits-no-funcionals]]
 === Requisits no funcionals
 
 [cols="1,5", options="header"]
@@ -199,7 +149,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 | RNF-30 | Cada requeriment funcional implementat ha de poder relacionar-se amb la seva planificació i seguiment dins del repositori i del sistema de gestió del projecte.
 |===
 
-[[requisits-funcionals]]
 === Requisits funcionals
 
 [cols="1,5,2", options="header"]
@@ -253,7 +202,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 | RF-46 | Permetre continuar operant amb connectivitat limitada i sincronitzar la informació posteriorment si cal. | Automàtica / Mòbil / PC
 |===
 
-[[definicions-nomenclatura]]
 === Definicions i nomenclatura
 
 [cols="2,5", options="header"]
@@ -271,10 +219,8 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 | Alerta | Tipus, element afectat, nivell, data de generació, estat
 |===
 
-[[especificacions-negoci]]
 === Especificacions de negoci
 
-[[flux-1-recepcio-lot]]
 ==== Flux 1. Recepció d'un lot
 
 * L'usuari fa una foto de l'albarà o introdueix les dades manualment.
@@ -284,7 +230,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * La fotografia de l'albarà queda guardada com a evidència associada al lot.
 * El lot queda registrat, però no necessàriament actiu per al consum.
 
-[[flux-2-activacio-consum-lot]]
 ==== Flux 2. Activació del consum d'un lot
 
 * Quan es comença a utilitzar un ingredient, l'usuari marca el lot corresponent com a actiu.
@@ -292,7 +237,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * El lot anterior queda tancat, esgotat o substituït segons correspongui.
 * Aquesta activació és la que determina quin lot queda vinculat a les elaboracions posteriors.
 
-[[flux-3-registre-elaboracio]]
 ==== Flux 3. Registre d'elaboració
 
 * L'usuari selecciona el producte final elaborat.
@@ -301,7 +245,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * Si cal, l'usuari pot revisar o confirmar els lots relacionats.
 * L'elaboració queda guardada amb usuari, data i lots associats.
 
-[[flux-4-tracabilitat-incidencies]]
 ==== Flux 4. Traçabilitat i incidències
 
 * Si un proveïdor comunica una incidència o un lot defectuós, l'usuari cerca el número de lot.
@@ -310,7 +253,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * El sistema mostra a quins clients s'ha subministrat.
 * Es genera un llistat d'afectats i es pot exportar o imprimir per actuar ràpidament.
 
-[[flux-5-alertes-operatives]]
 ==== Flux 5. Alertes operatives
 
 * L'usuari selecciona un producte elaborat.
@@ -318,7 +260,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * L'usuari pot consultar aquesta informació per data, client o període de temps.
 * Aquesta funcionalitat permet reconstruir la traçabilitat directa del producte.
 
-[[flux-6-cerca-consulta-informacio]]
 ==== Flux 6. Cerca i consulta d'informació
 
 * L'usuari pot cercar per número de lot, proveïdor, producte, ingredient o client.
@@ -326,7 +267,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * L'usuari pot consultar l'històric recent de lots, elaboracions i moviments.
 * Les consultes s'han de poder fer tant des de PC com des de dispositius mòbils.
 
-[[flux-7-alertes-caducitat]]
 ==== Flux 7. Alertes de caducitat
 
 * El sistema revisa les dates de caducitat o consum preferent dels lots registrats.
@@ -334,7 +274,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * L'usuari pot consultar quin lot està afectat i revisar-ne la informació.
 * L'alerta pot quedar registrada com a revisada o resolta.
 
-[[flux-8-control-ph]]
 ==== Flux 8. Control periòdic del pH
 
 * El sistema recorda periòdicament que s'ha de fer el control manual del pH de l'aigua.
@@ -342,7 +281,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * El sistema guarda la data del control, el valor registrat i l'usuari que l'ha fet.
 * L'històric de controls de pH es pot consultar posteriorment.
 
-[[flux-9-registre-usuaris-tracabilitat]]
 ==== Flux 9. Registre d'usuaris i traçabilitat interna
 
 * Cada usuari s'identifica abans de fer operacions al sistema.
@@ -350,7 +288,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * Això permet saber qui ha registrat, activat, modificat o tancat un lot.
 * L'historial intern es pot consultar en cas d'error, incidència o revisió.
 
-[[flux-10-informes-documentacio]]
 ==== Flux 10. Informes i documentació
 
 * L'usuari pot generar informes de lots, traçabilitat, moviments i activitat mensual.
@@ -358,7 +295,6 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 * Els informes poden utilitzar-se per a control intern o per a inspeccions sanitàries.
 * La documentació d'un lot ha d'estar disponible de forma ràpida quan sigui necessària.
 
-[[guions-actors]]
 === Guions per actors
 
 [cols="2,5", options="header"]
@@ -370,24 +306,20 @@ Finalment, es van comentar altres necessitats complementàries: disposar de cerc
 | Sistema automàtic | RF-07, RF-14, RF-18, RF-22, RF-29, RF-34, RF-38, RF-39, RF-46
 |===
 
-[[fase-disseny]]
 == Fase de disseny
 
-[[diagrama-casos-us]]
 === Diagrama de casos d'ús
 
 link:https://drive.google.com/file/d/1dzIOJxaTcLXFce-qh0BHYnnAOQcnHphc/view?usp=sharing[Enllaç al diagrama de casos d’ús]
 
 image::02_diagrames/diagrama_casos_us.png[Diagrama de casos d'ús, align="center", width=700]
 
-[[diagrama-er]]
 === Diagrama E-R
 
 link:https://drive.google.com/file/d/1XurzMzwH24HNiD8VHvs0rrjTCiawT2jJ/view?usp=sharing[Enllaç al diagrama E-R]
 
 image::02_diagrames/diagrama_er.png[Diagrama E-R, align="center", width=700]
 
-[[taula-1-taules-camps]]
 ==== Taula 1. Taules i camps principals
 
 [cols="2,5", options="header"]
@@ -408,7 +340,6 @@ image::02_diagrames/diagrama_er.png[Diagrama E-R, align="center", width=700]
 | historial_accions | id, usuari_id, entitat, entitat_id, accio, detall, data_accio
 |===
 
-[[taula-2-relacions-taules]]
 ==== Taula 2. Relacions principals entre taules
 
 [cols="2,2,2,1,4", options="header"]
@@ -431,7 +362,6 @@ image::02_diagrames/diagrama_er.png[Diagrama E-R, align="center", width=700]
 | historial_accions | usuari_id | usuaris | N:1 | Cada acció registrada al sistema pot estar associada a un usuari.
 |===
 
-[[taula-3-relacions-conceptuals]]
 ==== Taula 3. Relacions conceptuals del negoci
 
 [cols="2,5", options="header"]
@@ -447,26 +377,22 @@ image::02_diagrames/diagrama_er.png[Diagrama E-R, align="center", width=700]
 | Les alertes poden estar associades a lots o controls operatius | Per exemple, alertes de caducitat o recordatoris de pH.
 |===
 
-[[justificacio-model]]
 ==== Justificació del model
 
 Aquest model de dades s'ha definit a partir de les entitats identificades en la fase d'anàlisi i dels fluxos principals del negoci: recepció de lots, activació del consum, elaboració de productes, traçabilitat, subministrament a clients i control operatiu. L'objectiu és garantir que el sistema pugui relacionar correctament lots, ingredients, elaboracions i clients servits, mantenint també evidències documentals, historial d'accions i alertes del sistema.
 
-[[disseny-interficies-navegacio]]
 === Disseny d'interfícies d'usuari i navegació
 
 link:https://drive.google.com/file/d/1ciciAbDtamH1tAUg5lB81adW78WY6yYZ/view?usp=drive_link[Enllaç al disseny d’interfícies i navegació]
 
 image::02_diagrames/diagrama_arquitectura_interficies.png[Disseny d'interfícies d'usuari i navegació, align="center", width=700]
 
-[[disseny-vistes]]
 === Disseny de Vistes
 
 link:https://www.figma.com/design/QZnTvMj1KdUqyUbIq0B7DM/EasyTraza?node-id=0-1&t=yXFzMwYwWP9plCPG-1[Enllaç a les vistes de Figma]
 
 link:https://www.figma.com/design/JKs7kffc8tXGSDMRhGMP4I/EasyTraza--Copia-?node-id=0-1&t=yXFzMwYwWP9plCPG-1[Enllaç a les direccions de Figma]
 
-[[pc]]
 ==== PC
 
 .Pantalla principal PC
@@ -535,7 +461,6 @@ image::03_vistes_pc/pc_editar_usuari.png[Editar usuari PC, align="center", width
 .Historial d'accions
 image::03_vistes_pc/pc_historial_accions.png[Historial d'accions PC, align="center", width=650]
 
-[[mobil]]
 ==== Mòbil
 
 .Pantalla principal mòbil
@@ -562,7 +487,6 @@ image::04_vistes_mobil/mobil_altres_1.png[Altres pantalles mòbil 1, align="cent
 .Altres pantalles mòbil 2
 image::04_vistes_mobil/mobil_altres_2.png[Altres pantalles mòbil 2, align="center", width=320]
 
-[[fotos-client-negoci]]
 === Fotos que el client ha enviat del negoci
 
 .Foto del negoci pàgina 37
