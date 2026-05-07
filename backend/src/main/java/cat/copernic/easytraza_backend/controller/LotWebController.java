@@ -37,9 +37,15 @@ public class LotWebController {
             @RequestParam(required = false) Long materiaPrimaId,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataRecepcio,
+            @RequestParam(required = false, defaultValue = "dataRecepcio") String sortField,
+            @RequestParam(required = false, defaultValue = "desc") String sortDir,
             Model model) {
 
-        model.addAttribute("lots", lotProveidorService.cercar(codiLot, estat, materiaPrimaId, dataRecepcio));
+        model.addAttribute(
+                "lots",
+                lotProveidorService.cercar(codiLot, estat, materiaPrimaId, dataRecepcio, sortField, sortDir)
+        );
+
         model.addAttribute("materiesPrimeres", materiaPrimaRepository.findAll());
         model.addAttribute("estatsLot", EstatLot.values());
 
@@ -47,6 +53,9 @@ public class LotWebController {
         model.addAttribute("estat", estat);
         model.addAttribute("materiaPrimaId", materiaPrimaId);
         model.addAttribute("dataRecepcio", dataRecepcio);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", "asc".equalsIgnoreCase(sortDir) ? "desc" : "asc");
 
         model.addAttribute("currentPath", "/web/lots");
 
