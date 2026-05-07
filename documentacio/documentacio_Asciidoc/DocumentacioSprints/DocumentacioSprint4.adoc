@@ -1,7 +1,7 @@
 = SPRINT - 4
 :toc:
 :toc-title: Índex de continguts
-:imagesdir: ../images
+:imagesdir: ../../images
 
 == 1. Planificació Inicial
 
