@@ -34,6 +34,9 @@
 
                 <div class="form-card" style="margin-bottom: 24px;">
                     <form th:action="@{/web/lots}" method="get" class="lots-filter-grid">
+                        <input type="hidden" name="sortField" th:value="${sortField}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+
                         <div class="form-group">
                             <label for="codiLot" th:text="#{lots.codi}">
                                 Código de lote
@@ -53,25 +56,25 @@
 
                             <select id="estat" name="estat">
                                 <option value=""
-                                        th:selected="${estat == null || estat == ''}"
+                                        th:selected="${estat == null}"
                                         th:text="#{lots.cerca.estat.tots}">
                                     Todos los estados
                                 </option>
 
                                 <option value="EN_ESTOC"
-                                        th:selected="${estat == 'EN_ESTOC'}"
+                                        th:selected="${estat != null && estat.name() == 'EN_ESTOC'}"
                                         th:text="#{estat.lot.EN_ESTOC}">
                                     En stock
                                 </option>
 
                                 <option value="OBERT"
-                                        th:selected="${estat == 'OBERT'}"
+                                        th:selected="${estat != null && estat.name() == 'OBERT'}"
                                         th:text="#{estat.lot.OBERT}">
                                     Abierto
                                 </option>
 
                                 <option value="ACABAT"
-                                        th:selected="${estat == 'ACABAT'}"
+                                        th:selected="${estat != null && estat.name() == 'ACABAT'}"
                                         th:text="#{estat.lot.ACABAT}">
                                     Acabado
                                 </option>
@@ -124,16 +127,81 @@
                     <table class="lots-table">
                         <thead>
                             <tr>
-                                <th class="lot-col-codi" th:text="#{lots.codi}">Código de lote</th>
-                                <th class="lot-col-materia" th:text="#{lots.materia}">Materia prima</th>
-                                <th class="lot-col-proveidor" th:text="#{lots.proveidor}">Proveedor</th>
-                                <th class="lot-col-quantitat" th:text="#{lots.quantitat}">Cantidad</th>
-                                <th class="lot-col-data" th:text="#{lots.data.recepcio}">Fecha de recepción</th>
-                                <th class="lot-col-data" th:text="#{lots.data.obertura}">Fecha de apertura</th>
-                                <th class="lot-col-data" th:text="#{lots.data.acabament}">Fecha de finalización</th>
-                                <th class="lot-col-estat" th:text="#{lots.estat}">Estado</th>
-                                <th class="lot-col-albara" th:text="#{lots.albara.assignat}">Albarán asignado</th>
-                                <th class="lot-col-accions" th:text="#{lots.accions}">Acciones</th>
+                                <th class="lot-col-codi">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='codiLot', sortDir=${sortField == 'codiLot' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.codi}">
+                                        Código de lote
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-materia">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='materiaPrima', sortDir=${sortField == 'materiaPrima' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.materia}">
+                                        Materia prima
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-proveidor">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='proveidor', sortDir=${sortField == 'proveidor' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.proveidor}">
+                                        Proveedor
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-quantitat">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='quantitat', sortDir=${sortField == 'quantitat' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.quantitat}">
+                                        Cantidad
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-data">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='dataRecepcio', sortDir=${sortField == 'dataRecepcio' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.data.recepcio}">
+                                        Fecha de recepción
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-data">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='dataObertura', sortDir=${sortField == 'dataObertura' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.data.obertura}">
+                                        Fecha de apertura
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-data">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='dataAcabament', sortDir=${sortField == 'dataAcabament' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.data.acabament}">
+                                        Fecha de finalización
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-estat">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='estat', sortDir=${sortField == 'estat' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.estat}">
+                                        Estado
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-albara">
+                                    <a class="sort-link"
+                                       th:href="@{/web/lots(codiLot=${codiLot}, estat=${estat}, materiaPrimaId=${materiaPrimaId}, dataRecepcio=${dataRecepcio}, sortField='albara', sortDir=${sortField == 'albara' ? reverseSortDir : 'asc'})}"
+                                       th:text="#{lots.albara.assignat}">
+                                        Albarán asignado
+                                    </a>
+                                </th>
+
+                                <th class="lot-col-accions" th:text="#{lots.accions}">
+                                    Acciones
+                                </th>
                             </tr>
                         </thead>
 
@@ -149,7 +217,9 @@
                                         Materia prima
                                     </span>
 
-                                    <span th:if="${lot.materiaPrima == null}">-</span>
+                                    <span th:if="${lot.materiaPrima == null}">
+                                        -
+                                    </span>
                                 </td>
 
                                 <td class="lot-col-proveidor">
@@ -158,7 +228,9 @@
                                         Proveedor
                                     </span>
 
-                                    <span th:if="${lot.proveidor == null}">-</span>
+                                    <span th:if="${lot.proveidor == null}">
+                                        -
+                                    </span>
                                 </td>
 
                                 <td class="lot-col-quantitat" th:text="${lot.quantitat}">
@@ -171,7 +243,9 @@
                                         2026-04-24
                                     </span>
 
-                                    <span th:if="${lot.albaraProveidor == null}">-</span>
+                                    <span th:if="${lot.albaraProveidor == null}">
+                                        -
+                                    </span>
                                 </td>
 
                                 <td class="lot-col-data">
@@ -180,7 +254,9 @@
                                         2026-04-24
                                     </span>
 
-                                    <span th:if="${lot.dataObertura == null}">-</span>
+                                    <span th:if="${lot.dataObertura == null}">
+                                        -
+                                    </span>
                                 </td>
 
                                 <td class="lot-col-data">
@@ -189,17 +265,36 @@
                                         2026-04-24
                                     </span>
 
-                                    <span th:if="${lot.dataAcabament == null}">-</span>
+                                    <span th:if="${lot.dataAcabament == null}">
+                                        -
+                                    </span>
                                 </td>
 
                                 <td class="lot-col-estat">
                                     <span th:switch="${lot.estat != null ? lot.estat.name() : ''}">
-                                        <span th:case="'EN_ESTOC'" th:text="#{estat.lot.EN_ESTOC}">En stock</span>
-                                        <span th:case="'OBERT'" th:text="#{estat.lot.OBERT}">Abierto</span>
-                                        <span th:case="'ACABAT'" th:text="#{estat.lot.ACABAT}">Acabado</span>
-                                        <span th:case="'INICIAT'" th:text="#{estat.lot.INICIAT}">Iniciado</span>
-                                        <span th:case="'TANCAT'" th:text="#{estat.lot.TANCAT}">Cerrado</span>
-                                        <span th:case="*" th:text="${lot.estat != null ? lot.estat : '-'}">-</span>
+                                        <span th:case="'EN_ESTOC'" th:text="#{estat.lot.EN_ESTOC}">
+                                            En stock
+                                        </span>
+
+                                        <span th:case="'OBERT'" th:text="#{estat.lot.OBERT}">
+                                            Abierto
+                                        </span>
+
+                                        <span th:case="'ACABAT'" th:text="#{estat.lot.ACABAT}">
+                                            Acabado
+                                        </span>
+
+                                        <span th:case="'INICIAT'" th:text="#{estat.lot.INICIAT}">
+                                            Iniciado
+                                        </span>
+
+                                        <span th:case="'TANCAT'" th:text="#{estat.lot.TANCAT}">
+                                            Cerrado
+                                        </span>
+
+                                        <span th:case="*" th:text="${lot.estat != null ? lot.estat : '-'}">
+                                            -
+                                        </span>
                                     </span>
                                 </td>
 
@@ -211,7 +306,9 @@
                                         Ver albarán
                                     </a>
 
-                                    <span th:if="${lot.albaraProveidor == null}">-</span>
+                                    <span th:if="${lot.albaraProveidor == null}">
+                                        -
+                                    </span>
                                 </td>
 
                                 <td class="lot-col-accions">
