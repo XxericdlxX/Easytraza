@@ -94,6 +94,12 @@
 
                                 <td>
                                     <div class="actions-table">
+                                        <a th:href="@{/web/productes/{id}/produccio-lots(id=${producte.id})}"
+                                           class="btn btn-accent"
+                                           th:text="#{productes.veure.lots}">
+                                            Ver lotes
+                                        </a>
+
                                         <a th:href="@{/web/productes/editar/{id}(id=${producte.id})}"
                                            class="btn btn-secondary"
                                            th:text="#{productes.editar}">

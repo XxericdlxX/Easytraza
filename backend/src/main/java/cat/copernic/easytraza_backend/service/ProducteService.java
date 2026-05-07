@@ -1,19 +1,23 @@
 package cat.copernic.easytraza_backend.service;
 
 import cat.copernic.easytraza_backend.dto.ProducteDto;
+import cat.copernic.easytraza_backend.model.LiniaClient;
 import cat.copernic.easytraza_backend.model.Producte;
+import cat.copernic.easytraza_backend.repository.AlbaraClientRepository;
 import cat.copernic.easytraza_backend.repository.ProducteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ProducteService {
 
     @Autowired
     private ProducteRepository producteRepository;
+
+    @Autowired
+    private AlbaraClientRepository albaraClientRepository;
 
     public List<Producte> findAll() {
         return producteRepository.findAll();
@@ -35,9 +39,9 @@ public class ProducteService {
             producte.setNom(producteActualitzat.getNom());
             producte.setDescripcio(producteActualitzat.getDescripcio());
             return producteRepository.save(producte);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public void deleteById(Long id) {
@@ -56,6 +60,14 @@ public class ProducteService {
                 nomNormalitzat,
                 descripcioNormalitzada
         );
+    }
+
+    public List<LiniaClient> cercarProduccioLotsPerProducte(Long producteId) {
+        if (producteId == null) {
+            return List.of();
+        }
+
+        return albaraClientRepository.findLiniesProduccioByProducteId(producteId);
     }
 
     public String validarProducte(ProducteDto producteDto, Long idActual) {
