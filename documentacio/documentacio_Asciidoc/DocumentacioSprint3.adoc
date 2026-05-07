@@ -81,7 +81,7 @@ image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. |  | - | 4h + 
+| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. | Avui faré el filtre de productes i faré el daily Stand up per acabar el projecte del sprint3 | - | 4h 
 |===
 
 
