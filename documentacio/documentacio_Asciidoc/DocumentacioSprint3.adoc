@@ -81,7 +81,7 @@ image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. |  | - | 4h + 
+| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. | Avui faré el filtre de productes i faré el daily Stand up per acabar el projecte del sprint3 | - | 4h 
 |===
 
 
@@ -100,9 +100,10 @@ image::Sprint3/BoardFinal/BoardFinalSprint3.5.png[Board final 5]
 [cols="1,4", options="header"]
 |===
 | Apartat | Contingut
-| Aspectes positius |
 
-| Aspectes a millorar |
+| Aspectes positius | Durant aquest tercer sprint m’he organitzat millor des del principi. Tenia més clar quines tasques havia de fer i això m’ha permès avançar amb més ordre. També he pogut adelantar força feina del projecte i afegir algunes millores que no estaven previstes inicialment al sprint, però que ajudaven a deixar l’aplicació més completa.
 
-| Accions concretes per al següent sprint |
+| Aspectes a millorar | Tot i que l’organització ha estat millor, hi ha hagut un parell de dies en què no he avançat gaire en el projecte. Això ha fet que després hagués de recuperar part de la feina en altres moments. De cara als següents sprints, hauria d’intentar mantenir un ritme més constant durant tots els dies i no deixar que algunes tasques s’acumulin.
+
+| Accions concretes per al següent sprint | Per al següent sprint vull continuar treballant amb una planificació clara des de l’inici, però controlant millor el temps que dedico a cada tasca. També intentaré deixar més marge per revisar errors, fer proves i acabar de polir les funcionalitats abans de l’entrega. D’aquesta manera podré arribar al final del sprint amb el projecte més estable i millor preparat.
 |===
