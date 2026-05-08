@@ -15,12 +15,11 @@ image::Sprint4/BoardInicial/BoardInicialSprint4.4.png[Board inicial 4]
 image::Sprint4/BoardInicial/BoardInicialSprint4.5.png[Board inicial 5]
 
 == 2. Daily Stand Ups
-
 === DIA 1 Divendres - 08/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Ahir vaig fer el filtre de productes i vaig avançar en el daily stand-up per acabar el projecte del Sprint 3. També vaig actualitzar la icona principal de l’aplicació mobile perquè fos més coherent amb EasyTraza i vaig acabar d’organitzar la documentació en AsciiDoc. |  | - | 6h
+| Eric Delgado López | Ahir vaig fer el filtre de productes, vaig avançar en el daily stand-up del Sprint 3, vaig actualitzar la icona de l’app mobile i vaig acabar d’organitzar la documentació en AsciiDoc. | Avui començaré el Sprint 4, revisaré l' Sprint 3 amb el profe i començaré a organitzar la millora perquè els fitxers OCR es guardin en crear l’albarà. | - | 6h
 |===
 
 === DIA 2 Dilluns - 11/05/2026
