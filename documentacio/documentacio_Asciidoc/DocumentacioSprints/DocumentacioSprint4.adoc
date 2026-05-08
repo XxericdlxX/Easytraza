@@ -11,8 +11,6 @@
 image::Sprint4/BoardInicial/BoardInicialSprint4.1.png[Board inicial 1]
 image::Sprint4/BoardInicial/BoardInicialSprint4.2.png[Board inicial 2]
 image::Sprint4/BoardInicial/BoardInicialSprint4.3.png[Board inicial 3]
-image::Sprint4/BoardInicial/BoardInicialSprint4.4.png[Board inicial 4]
-image::Sprint4/BoardInicial/BoardInicialSprint4.5.png[Board inicial 5]
 
 == 2. Daily Stand Ups
 === DIA 1 Divendres - 08/05/2026
