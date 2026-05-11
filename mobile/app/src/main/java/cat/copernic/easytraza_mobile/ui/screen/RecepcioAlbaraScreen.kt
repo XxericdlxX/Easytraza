@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +35,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -56,6 +58,7 @@ fun RecepcioAlbaraScreen(
     val dataRecepcio by viewModel.dataRecepcio.collectAsState()
     val proveidorCif by viewModel.proveidorCif.collectAsState()
     val proveidorNom by viewModel.proveidorNom.collectAsState()
+    val crearProveidorSiNoExisteix by viewModel.crearProveidorSiNoExisteix.collectAsState()
     val textOcr by viewModel.textOcr.collectAsState()
     val status by viewModel.status.collectAsState()
     val lotsEditables by viewModel.lotsEditables.collectAsState()
@@ -144,7 +147,7 @@ fun RecepcioAlbaraScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "📦",
+                    text = "📋",
                     style = MaterialTheme.typography.displaySmall
                 )
 
@@ -311,8 +314,15 @@ fun RecepcioAlbaraScreen(
                     shape = RoundedCornerShape(16.dp)
                 )
 
+                OptionSwitchRow(
+                    title = stringResource(R.string.recepcio_create_supplier_option),
+                    subtitle = stringResource(R.string.recepcio_create_supplier_help),
+                    checked = crearProveidorSiNoExisteix,
+                    onCheckedChange = viewModel::onCrearProveidorSiNoExisteixChange
+                )
+
                 Text(
-                    text = "Lotes del albarán",
+                    text = stringResource(R.string.recepcio_lots_title),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -325,6 +335,7 @@ fun RecepcioAlbaraScreen(
                         onCodiChange = { viewModel.onLotCodiChange(index, it) },
                         onQuantitatChange = { viewModel.onLotQuantitatChange(index, it) },
                         onMateriaChange = { viewModel.onLotMateriaPrimaChange(index, it) },
+                        onCrearMateriaChange = { viewModel.onLotCrearMateriaPrimaChange(index, it) },
                         onDelete = { viewModel.eliminarLot(index) }
                     )
                 }
@@ -335,7 +346,7 @@ fun RecepcioAlbaraScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Añadir lote")
+                        Text(stringResource(R.string.recepcio_add_lot_button))
                     }
                 }
 
@@ -366,6 +377,7 @@ private fun LotEditableCard(
     onCodiChange: (String) -> Unit,
     onQuantitatChange: (String) -> Unit,
     onMateriaChange: (String) -> Unit,
+    onCrearMateriaChange: (Boolean) -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
@@ -384,7 +396,7 @@ private fun LotEditableCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Lote ${index + 1}",
+                    text = stringResource(R.string.recepcio_lot_title, index + 1),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -396,7 +408,7 @@ private fun LotEditableCard(
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "Eliminar",
+                            text = stringResource(R.string.recepcio_delete_lot_button),
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -426,9 +438,64 @@ private fun LotEditableCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
             )
+
+            OptionSwitchRow(
+                title = stringResource(R.string.recepcio_create_material_option),
+                subtitle = stringResource(R.string.recepcio_create_material_help),
+                checked = lot.crearMateriaPrimaSiNoExisteix,
+                onCheckedChange = onCrearMateriaChange
+            )
         }
     }
 }
+
+@Composable
+private fun OptionSwitchRow(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange
+            )
+        }
+    }
+}
+
 private enum class RecepcioMode {
     Manual,
     Ocr
