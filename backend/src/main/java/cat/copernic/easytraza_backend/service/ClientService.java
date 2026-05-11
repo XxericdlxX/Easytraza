@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClientService {
@@ -48,8 +49,10 @@ public class ClientService {
         return clientRepository.save(clientExistent);
     }
 
+    @Transactional
     public void deleteById(String nif) {
         clientRepository.deleteById(nif);
+        clientRepository.flush();
     }
 
     public boolean existsById(String nif) {
