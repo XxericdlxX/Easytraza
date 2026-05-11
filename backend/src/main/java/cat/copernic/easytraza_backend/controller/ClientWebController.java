@@ -1,5 +1,6 @@
 package cat.copernic.easytraza_backend.controller;
 
+import cat.copernic.easytraza_backend.config.IdentificadorFiscalValidator;
 import cat.copernic.easytraza_backend.model.Client;
 import cat.copernic.easytraza_backend.service.ClientService;
 import java.util.Locale;
@@ -62,18 +63,20 @@ public class ClientWebController {
             Locale locale,
             Model model) {
 
-        if (client.getNif() == null || client.getNif().isBlank()) {
-            model.addAttribute("errorNegoci", missatge("clients.nif.obligatori", locale));
-            model.addAttribute("client", client);
-            model.addAttribute("tipusClients", clientService.obtenirTipusClients());
-            return "clients/crear-clients";
+        String documentNormalitzat = IdentificadorFiscalValidator.normalitzar(client.getNif());
+
+        if (documentNormalitzat == null) {
+            return tornarCrearAmbError(client, model, locale, "clients.nif.obligatori");
         }
 
-        if (clientService.existsById(client.getNif().trim().toUpperCase().replace(" ", ""))) {
-            model.addAttribute("errorNegoci", missatge("clients.error.duplicat", locale));
-            model.addAttribute("client", client);
-            model.addAttribute("tipusClients", clientService.obtenirTipusClients());
-            return "clients/crear-clients";
+        if (!IdentificadorFiscalValidator.esDocumentFiscalValid(documentNormalitzat)) {
+            return tornarCrearAmbError(client, model, locale, "clients.nif.invalid");
+        }
+
+        client.setNif(documentNormalitzat);
+
+        if (clientService.existsById(documentNormalitzat)) {
+            return tornarCrearAmbError(client, model, locale, "clients.error.duplicat");
         }
 
         clientService.save(client);
@@ -106,10 +109,18 @@ public class ClientWebController {
     public String actualitzar(@PathVariable String nif,
             Client client,
             RedirectAttributes redirectAttributes,
-            Locale locale,
-            Model model) {
+            Locale locale) {
 
-        Client actualitzat = clientService.update(nif, client);
+        String documentNormalitzat = IdentificadorFiscalValidator.normalitzar(nif);
+
+        if (documentNormalitzat == null || !IdentificadorFiscalValidator.esDocumentFiscalValid(documentNormalitzat)) {
+            redirectAttributes.addFlashAttribute("missatgeError", missatge("clients.nif.invalid", locale));
+            return "redirect:/web/clients";
+        }
+
+        client.setNif(documentNormalitzat);
+
+        Client actualitzat = clientService.update(documentNormalitzat, client);
 
         if (actualitzat == null) {
             redirectAttributes.addFlashAttribute("missatgeError", missatge("clients.flash.no.trobat", locale));
@@ -135,6 +146,14 @@ public class ClientWebController {
         }
 
         return "redirect:/web/clients";
+    }
+
+    private String tornarCrearAmbError(Client client, Model model, Locale locale, String codiMissatge) {
+        model.addAttribute("errorNegoci", missatge(codiMissatge, locale));
+        model.addAttribute("client", client);
+        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
+        model.addAttribute("currentPath", "/web/clients");
+        return "clients/crear-clients";
     }
 
     private String missatge(String codi, Locale locale) {
