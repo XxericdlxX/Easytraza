@@ -53,6 +53,16 @@
                         <div class="field-error" th:if="${#fields.hasErrors('tipusClient')}" th:errors="*{tipusClient}"></div>
                     </div>
 
+                    <div class="form-group" id="tipusClientAltresGroup"
+                         th:style="*{tipusClient != null and tipusClient.name() == 'ALTRES'} ? 'display:block;' : 'display:none;'">
+                        <label for="tipusClientAltres">
+                            <span th:text="#{clients.tipus.altres.manual}">Tipo personalizado</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" id="tipusClientAltres" th:field="*{tipusClientAltres}"
+                               th:placeholder="#{clients.tipus.altres.placeholder}">
+                    </div>
+
                     <div class="form-group">
                         <label for="adreca"><span th:text="#{clients.adreca}">Dirección</span> <span class="required">*</span></label>
                         <input type="text" id="adreca" th:field="*{adreca}">
@@ -84,5 +94,25 @@
                 </form>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const tipusSelect = document.getElementById('tipusClient');
+                const altresGroup = document.getElementById('tipusClientAltresGroup');
+                const altresInput = document.getElementById('tipusClientAltres');
+
+                function actualitzarCampAltres() {
+                    const mostrar = tipusSelect.value === 'ALTRES';
+                    altresGroup.style.display = mostrar ? 'block' : 'none';
+
+                    if (!mostrar && altresInput) {
+                        altresInput.value = '';
+                    }
+                }
+
+                tipusSelect.addEventListener('change', actualitzarCampAltres);
+                actualitzarCampAltres();
+            });
+        </script>
     </body>
 </html>
