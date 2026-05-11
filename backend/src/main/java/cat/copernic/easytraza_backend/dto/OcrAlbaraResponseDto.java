@@ -9,6 +9,10 @@ public class OcrAlbaraResponseDto {
     private String numeroAlbara;
     private String dataAlbara;
     private String textDetectat;
+    private String documentOcrNomOriginal;
+    private String documentOcrNomGuardat;
+    private String documentOcrContentType;
+    private String documentOcrRuta;
     private List<OcrLotRespostaDto> lots = new ArrayList<>();
 
     public String getProveidorCif() {
@@ -41,6 +45,38 @@ public class OcrAlbaraResponseDto {
 
     public void setTextDetectat(String textDetectat) {
         this.textDetectat = textDetectat;
+    }
+
+    public String getDocumentOcrNomOriginal() {
+        return documentOcrNomOriginal;
+    }
+
+    public void setDocumentOcrNomOriginal(String documentOcrNomOriginal) {
+        this.documentOcrNomOriginal = documentOcrNomOriginal;
+    }
+
+    public String getDocumentOcrNomGuardat() {
+        return documentOcrNomGuardat;
+    }
+
+    public void setDocumentOcrNomGuardat(String documentOcrNomGuardat) {
+        this.documentOcrNomGuardat = documentOcrNomGuardat;
+    }
+
+    public String getDocumentOcrContentType() {
+        return documentOcrContentType;
+    }
+
+    public void setDocumentOcrContentType(String documentOcrContentType) {
+        this.documentOcrContentType = documentOcrContentType;
+    }
+
+    public String getDocumentOcrRuta() {
+        return documentOcrRuta;
+    }
+
+    public void setDocumentOcrRuta(String documentOcrRuta) {
+        this.documentOcrRuta = documentOcrRuta;
     }
 
     public List<OcrLotRespostaDto> getLots() {
