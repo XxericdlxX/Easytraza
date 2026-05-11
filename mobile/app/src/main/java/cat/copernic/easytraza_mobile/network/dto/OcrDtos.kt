@@ -36,3 +36,17 @@ data class MobileAlbaraSaveRequestDto(
     val documentOcrRuta: String? = null,
     val lots: List<MobileLotSaveRequestDto>
 )
+
+data class MobileLotDto(
+    val id: Long,
+    val codiLot: String? = null,
+    val quantitat: Double? = null,
+    val estat: String? = null,
+    val materiaPrimaNom: String? = null,
+    val proveidorNom: String? = null,
+    val proveidorCif: String? = null,
+    val dataRecepcio: String? = null,
+    val dataObertura: String? = null,
+    val dataAcabament: String? = null,
+    val albaraProveidorId: Long? = null
+)
