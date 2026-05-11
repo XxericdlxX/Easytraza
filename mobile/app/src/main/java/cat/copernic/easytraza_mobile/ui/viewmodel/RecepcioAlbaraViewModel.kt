@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
+import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
 import cat.copernic.easytraza_mobile.network.RetrofitClient
 import cat.copernic.easytraza_mobile.network.dto.MobileAlbaraSaveRequestDto
 import cat.copernic.easytraza_mobile.network.dto.MobileLotSaveRequestDto
@@ -28,7 +29,8 @@ import java.util.Locale
 data class EditableLotUi(
     val codiLot: String = "",
     val quantitat: String = "",
-    val materiaPrimaNom: String = ""
+    val materiaPrimaNom: String = "",
+    val crearMateriaPrimaSiNoExisteix: Boolean = false
 )
 
 class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(application) {
@@ -44,6 +46,9 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private val _proveidorNom = MutableStateFlow("")
     val proveidorNom: StateFlow<String> = _proveidorNom
 
+    private val _crearProveidorSiNoExisteix = MutableStateFlow(false)
+    val crearProveidorSiNoExisteix: StateFlow<Boolean> = _crearProveidorSiNoExisteix
+
     private val _textOcr = MutableStateFlow("")
     val textOcr: StateFlow<String> = _textOcr
 
@@ -56,6 +61,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private val _saveCompleted = MutableStateFlow(false)
     val saveCompleted: StateFlow<Boolean> = _saveCompleted
 
+    private var documentOcrNomOriginal: String? = null
+    private var documentOcrNomGuardat: String? = null
+    private var documentOcrContentType: String? = null
+    private var documentOcrRuta: String? = null
+
     fun onDataRecepcioChange(value: String) {
         _dataRecepcio.value = value
     }
@@ -65,7 +75,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun onProveidorNomChange(value: String) {
-        _proveidorNom.value = value
+        _proveidorNom.value = netejarNomProveidorDetectat(value)
+    }
+
+    fun onCrearProveidorSiNoExisteixChange(value: Boolean) {
+        _crearProveidorSiNoExisteix.value = value
     }
 
     fun onLotCodiChange(index: Int, value: String) {
@@ -80,17 +94,23 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         updateLot(index) { it.copy(materiaPrimaNom = value) }
     }
 
+    fun onLotCrearMateriaPrimaChange(index: Int, value: Boolean) {
+        updateLot(index) { it.copy(crearMateriaPrimaSiNoExisteix = value) }
+    }
+
     fun afegirLotBuit() {
         _lotsEditables.value += EditableLotUi()
     }
 
     fun eliminarLot(index: Int) {
         val actuals = _lotsEditables.value.toMutableList()
+
         if (actuals.size <= 1) {
             actuals[0] = EditableLotUi()
         } else if (index in actuals.indices) {
             actuals.removeAt(index)
         }
+
         _lotsEditables.value = actuals
     }
 
@@ -102,6 +122,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         _textOcr.value = ""
         _status.value = ""
         _dataRecepcio.value = todayIso()
+
         if (_lotsEditables.value.isEmpty()) {
             _lotsEditables.value = listOf(EditableLotUi())
         }
@@ -114,12 +135,14 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 _status.value = getApplication<Application>().getString(R.string.ocr_processing_document)
 
                 val savedIp = repository.serverIpFlow.first().trim()
+
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
                     return@launch
                 }
 
                 val mimeType = contentResolver.getType(uri) ?: inferMimeTypeFromName(fileName)
+
                 val extension = when {
                     mimeType.contains("pdf", ignoreCase = true) -> ".pdf"
                     mimeType.contains("png", ignoreCase = true) -> ".png"
@@ -132,6 +155,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 )
 
                 val copied = copyUriToFile(contentResolver, uri, tempFile)
+
                 if (!copied || !tempFile.exists() || tempFile.length() <= 0L) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_file)
                     return@launch
@@ -142,12 +166,16 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 val part = MultipartBody.Part.createFormData("fitxer", tempFile.name, requestBody)
 
                 val resposta = api.analitzarAlbara(part)
+
                 omplirDesDeResposta(resposta)
 
                 _status.value = getApplication<Application>().getString(R.string.ocr_success)
+
             } catch (ex: Exception) {
-                _status.value = ex.message
-                    ?: getApplication<Application>().getString(R.string.ocr_processing_error)
+                _status.value = NetworkErrorMapper.ocrError(
+                    getApplication(),
+                    ex
+                )
             }
         }
     }
@@ -159,6 +187,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 _status.value = getApplication<Application>().getString(R.string.ocr_processing_photo)
 
                 val savedIp = repository.serverIpFlow.first().trim()
+
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
                     return@launch
@@ -184,12 +213,16 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 val part = MultipartBody.Part.createFormData("fitxer", tempFile.name, requestBody)
 
                 val resposta = api.analitzarAlbara(part)
+
                 omplirDesDeResposta(resposta)
 
                 _status.value = getApplication<Application>().getString(R.string.ocr_success)
+
             } catch (ex: Exception) {
-                _status.value = ex.message
-                    ?: getApplication<Application>().getString(R.string.ocr_processing_error)
+                _status.value = NetworkErrorMapper.ocrError(
+                    getApplication(),
+                    ex
+                )
             }
         }
     }
@@ -201,6 +234,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 _status.value = getApplication<Application>().getString(R.string.ocr_saving)
 
                 val savedIp = repository.serverIpFlow.first().trim()
+
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
                     return@launch
@@ -211,19 +245,30 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 val request = MobileAlbaraSaveRequestDto(
                     dataRecepcio = _dataRecepcio.value.ifBlank { todayIso() },
                     proveidorCif = _proveidorCif.value.ifBlank { null },
-                    proveidorNom = _proveidorNom.value.ifBlank { "Proveïdor OCR" },
+                    proveidorNom = netejarNomProveidorDetectat(_proveidorNom.value)
+                        .ifBlank { "Proveïdor OCR" },
+                    crearProveidorSiNoExisteix = _crearProveidorSiNoExisteix.value,
+                    documentOcrNomOriginal = documentOcrNomOriginal,
+                    documentOcrNomGuardat = documentOcrNomGuardat,
+                    documentOcrContentType = documentOcrContentType,
+                    documentOcrRuta = documentOcrRuta,
                     lots = buildLotsPerGuardar()
                 )
 
                 val response = api.guardarAlbara(request)
+
                 if (response.isSuccessful) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_saved)
                     _saveCompleted.value = true
                 } else {
                     _status.value = getApplication<Application>().getString(R.string.ocr_save_error)
                 }
-            } catch (_: Exception) {
-                _status.value = getApplication<Application>().getString(R.string.ocr_save_error)
+
+            } catch (ex: Exception) {
+                _status.value = NetworkErrorMapper.saveAlbaraError(
+                    getApplication(),
+                    ex
+                )
             }
         }
     }
@@ -232,7 +277,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         return _lotsEditables.value.mapNotNull { lot ->
             val codi = lot.codiLot.trim()
             val materia = lot.materiaPrimaNom.trim()
-            val quantitat = lot.quantitat.trim().toIntOrNull()
+            val quantitat = lot.quantitat.trim().replace(",", ".").toDoubleOrNull()
 
             if (codi.isBlank() && materia.isBlank() && quantitat == null) {
                 null
@@ -240,7 +285,8 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 MobileLotSaveRequestDto(
                     codiLot = codi,
                     quantitat = quantitat,
-                    materiaPrimaNom = materia
+                    materiaPrimaNom = materia,
+                    crearMateriaPrimaSiNoExisteix = lot.crearMateriaPrimaSiNoExisteix
                 )
             }
         }.ifEmpty {
@@ -248,7 +294,8 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 MobileLotSaveRequestDto(
                     codiLot = "",
                     quantitat = null,
-                    materiaPrimaNom = ""
+                    materiaPrimaNom = "",
+                    crearMateriaPrimaSiNoExisteix = false
                 )
             )
         }
@@ -256,17 +303,19 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
     private fun omplirDesDeResposta(resposta: OcrAlbaraResponseDto) {
         _proveidorCif.value = resposta.proveidorCif.orEmpty()
-
-        val dataFinal = resoldreDataRecepcio(resposta.dataAlbara)
-        _dataRecepcio.value = dataFinal
-
+        _dataRecepcio.value = resoldreDataRecepcio(resposta.dataAlbara)
         _textOcr.value = resposta.textDetectat.orEmpty()
+        documentOcrNomOriginal = resposta.documentOcrNomOriginal
+        documentOcrNomGuardat = resposta.documentOcrNomGuardat
+        documentOcrContentType = resposta.documentOcrContentType
+        documentOcrRuta = resposta.documentOcrRuta
 
         val lotsMapejats = resposta.lots.map { lot ->
             EditableLotUi(
                 codiLot = lot.codiLot.orEmpty(),
-                quantitat = lot.quantitat?.toInt()?.toString().orEmpty(),
-                materiaPrimaNom = lot.materiaPrima.orEmpty()
+                quantitat = lot.quantitat?.toString().orEmpty(),
+                materiaPrimaNom = lot.materiaPrima.orEmpty(),
+                crearMateriaPrimaSiNoExisteix = false
             )
         }
 
@@ -274,33 +323,58 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             listOf(EditableLotUi())
         }
 
-        if (_proveidorNom.value.isBlank()) {
-            _proveidorNom.value = extraurePossibleNomProveidor(_textOcr.value)
-        }
+        _proveidorNom.value = extraurePossibleNomProveidor(_textOcr.value)
     }
 
     private fun resoldreDataRecepcio(dataOcr: String?): String {
         val avui = todayIso()
-        val dataOcrNormalitzada = dataOcr?.let { normalitzarData(it) }?.takeIf { it.isNotBlank() } ?: return avui
-        return if (dataOcrNormalitzada <= avui) dataOcrNormalitzada else avui
+        val dataOcrNormalitzada = dataOcr
+            ?.let { normalitzarData(it) }
+            ?.takeIf { it.isNotBlank() }
+            ?: return avui
+
+        return if (dataOcrNormalitzada <= avui) {
+            dataOcrNormalitzada
+        } else {
+            avui
+        }
     }
 
     private fun extraurePossibleNomProveidor(text: String): String {
         return text.lineSequence()
-            .map { it.trim() }
+            .map { netejarNomProveidorDetectat(it) }
             .filter { it.isNotBlank() }
             .firstOrNull { line ->
                 !line.matches(Regex("""[A-Z]\d{7,8}""")) &&
                         !line.matches(Regex("""\d{2}/\d{2}/\d{4}""")) &&
                         !line.matches(Regex("""\d{4}-\d{2}-\d{2}""")) &&
-                        !line.matches(Regex(""".*\d+\s?(KG|G|L|ML|UD|UDS).*""", RegexOption.IGNORE_CASE))
+                        !line.matches(
+                            Regex(
+                                """.*\d+\s?(KG|G|L|ML|UD|UDS).*""",
+                                RegexOption.IGNORE_CASE
+                            )
+                        )
             }
             .orEmpty()
+    }
+
+    private fun netejarNomProveidorDetectat(text: String?): String {
+        if (text.isNullOrBlank()) {
+            return ""
+        }
+
+        return text.trim()
+            .replace(Regex("""(?i)^PROVEIDOR\s+DETECTAT\s+OCR\s*:\s*"""), "")
+            .replace(Regex("""(?i)^PROVEEDOR\s+DETECTADO\s+POR\s+OCR\s*:\s*"""), "")
+            .replace(Regex("""(?i)^PROVEÏDOR\s+DETECTAT\s+PER\s+OCR\s*:\s*"""), "")
+            .replace(Regex("""\s{2,}"""), " ")
+            .trim()
     }
 
     private fun normalitzarData(value: String): String {
         val clean = value.trim().replace("/", "-")
         val parts = clean.split("-")
+
         return when (parts.size) {
             3 if parts[0].length == 2 -> "${parts[2]}-${parts[1]}-${parts[0]}"
             3 if parts[0].length == 4 -> clean
@@ -311,13 +385,18 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private fun copyUriToFile(contentResolver: ContentResolver, uri: Uri, file: File): Boolean {
         return try {
             contentResolver.openInputStream(uri).use { input ->
-                if (input == null) return false
+                if (input == null) {
+                    return false
+                }
+
                 FileOutputStream(file).use { output ->
                     input.copyTo(output)
                     output.flush()
                 }
             }
+
             true
+
         } catch (_: Exception) {
             false
         }
@@ -325,6 +404,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
     private fun inferMimeTypeFromName(fileName: String): String {
         val lower = fileName.lowercase(Locale.ROOT)
+
         return when {
             lower.endsWith(".pdf") -> "application/pdf"
             lower.endsWith(".png") -> "image/png"
@@ -338,6 +418,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
     private fun updateLot(index: Int, transform: (EditableLotUi) -> EditableLotUi) {
         val actuals = _lotsEditables.value.toMutableList()
+
         if (index in actuals.indices) {
             actuals[index] = transform(actuals[index])
             _lotsEditables.value = actuals
