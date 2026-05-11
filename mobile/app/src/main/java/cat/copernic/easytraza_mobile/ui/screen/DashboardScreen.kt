@@ -38,7 +38,8 @@ fun DashboardScreen(
     currentUserEmoji: String,
     onBackToUsers: () -> Unit,
     onOpenConfig: () -> Unit,
-    onOpenRecepcio: () -> Unit
+    onOpenRecepcio: () -> Unit,
+    onOpenLots: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -122,38 +123,6 @@ fun DashboardScreen(
             }
         }
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(22.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.dashboard_hero_emoji),
-                    style = MaterialTheme.typography.displaySmall
-                )
-
-                Text(
-                    text = stringResource(R.string.dashboard_hero_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-
-                Text(
-                    text = stringResource(R.string.dashboard_hero_subtitle),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }
-
         Text(
             text = stringResource(R.string.dashboard_actions_section_title),
             style = MaterialTheme.typography.titleLarge,
@@ -178,7 +147,7 @@ fun DashboardScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "📦",
+                    text = "📋",
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -191,6 +160,49 @@ fun DashboardScreen(
 
                 Text(
                     text = stringResource(R.string.dashboard_action_receive_subtitle),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Text(
+                    text = stringResource(R.string.dashboard_action_open),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onOpenLots() },
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.dashboard_action_lots_emoji),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                Text(
+                    text = stringResource(R.string.dashboard_action_lots_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Text(
+                    text = stringResource(R.string.dashboard_action_lots_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
