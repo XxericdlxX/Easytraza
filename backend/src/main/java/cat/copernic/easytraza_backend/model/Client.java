@@ -23,6 +23,9 @@ public class Client {
     @Column(nullable = false, length = 30)
     private TipusClient tipusClient;
 
+    @Column(length = 100)
+    private String tipusClientAltres;
+
     @Column(nullable = false)
     private String adreca;
 
@@ -71,6 +74,14 @@ public class Client {
 
     public void setTipusClient(TipusClient tipusClient) {
         this.tipusClient = tipusClient;
+    }
+
+    public String getTipusClientAltres() {
+        return tipusClientAltres;
+    }
+
+    public void setTipusClientAltres(String tipusClientAltres) {
+        this.tipusClientAltres = tipusClientAltres;
     }
 
     public String getAdreca() {
