@@ -7,10 +7,16 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
@@ -33,6 +39,9 @@ public class OcrAlbaraService {
     @Value("${ocr.tesseract.language}")
     private String tesseractLanguage;
 
+    @Value("${ocr.documents.path:uploads/ocr-albarans}")
+    private String documentsPath;
+
     private static final Pattern PATRON_DATA = Pattern.compile(
             "\\b(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|\\d{4}[/-]\\d{1,2}[/-]\\d{1,2})\\b"
     );
@@ -51,11 +60,96 @@ public class OcrAlbaraService {
                 .orElse("")
                 .toLowerCase(Locale.ROOT);
 
+        DocumentOcrInfo documentOcr = guardarDocumentOcr(fitxer);
+
         String textDetectat = nomFitxer.endsWith(".pdf")
                 ? extreureTextPdf(fitxer)
                 : extreureTextImatge(fitxer);
 
-        return parsejarTextOcr(normalitzarText(textDetectat));
+        OcrAlbaraResponseDto resposta = parsejarTextOcr(normalitzarText(textDetectat));
+        resposta.setDocumentOcrNomOriginal(documentOcr.nomOriginal());
+        resposta.setDocumentOcrNomGuardat(documentOcr.nomGuardat());
+        resposta.setDocumentOcrContentType(documentOcr.contentType());
+        resposta.setDocumentOcrRuta(documentOcr.ruta());
+
+        return resposta;
+    }
+
+    private DocumentOcrInfo guardarDocumentOcr(MultipartFile fitxer) {
+        String nomOriginal = Optional.ofNullable(fitxer.getOriginalFilename())
+                .filter(nom -> !nom.isBlank())
+                .orElse("document-ocr");
+
+        String extensio = obtenirExtensio(nomOriginal);
+        String nomGuardat = UUID.randomUUID() + extensio;
+
+        try {
+            Path directori = Paths.get(documentsPath).toAbsolutePath().normalize();
+            Files.createDirectories(directori);
+
+            Path desti = directori.resolve(nomGuardat).normalize();
+
+            if (!desti.startsWith(directori)) {
+                throw new IllegalStateException("Ruta de document OCR no vàlida.");
+            }
+
+            try (InputStream input = fitxer.getInputStream()) {
+                Files.copy(input, desti, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            String contentType = Optional.ofNullable(fitxer.getContentType())
+                    .filter(valor -> !valor.isBlank())
+                    .orElse(inferirContentType(nomOriginal));
+
+            return new DocumentOcrInfo(
+                    nomOriginal,
+                    nomGuardat,
+                    contentType,
+                    desti.toString()
+            );
+
+        } catch (IOException ex) {
+            throw new IllegalStateException("No s'ha pogut guardar el document OCR.", ex);
+        }
+    }
+
+    private String obtenirExtensio(String nomFitxer) {
+        String nom = nomFitxer == null ? "" : nomFitxer.trim();
+        int index = nom.lastIndexOf('.');
+
+        if (index < 0 || index == nom.length() - 1) {
+            return ".bin";
+        }
+
+        String extensio = nom.substring(index).toLowerCase(Locale.ROOT);
+        return extensio.matches("\\.[a-z0-9]{1,8}") ? extensio : ".bin";
+    }
+
+    private String inferirContentType(String nomFitxer) {
+        String nom = nomFitxer == null ? "" : nomFitxer.toLowerCase(Locale.ROOT);
+
+        if (nom.endsWith(".pdf")) {
+            return "application/pdf";
+        }
+
+        if (nom.endsWith(".png")) {
+            return "image/png";
+        }
+
+        if (nom.endsWith(".jpg") || nom.endsWith(".jpeg")) {
+            return "image/jpeg";
+        }
+
+        return "application/octet-stream";
+    }
+
+    private record DocumentOcrInfo(
+            String nomOriginal,
+            String nomGuardat,
+            String contentType,
+            String ruta
+            ) {
+
     }
 
     private String extreureTextImatge(MultipartFile fitxer) {
