@@ -89,6 +89,10 @@ public class AlbaraProveidorService {
         AlbaraProveidor existent = existentOpt.get();
         existent.setDataRecepcio(albaraActualitzat.getDataRecepcio());
         existent.setProveidor(albaraActualitzat.getProveidor());
+        existent.setDocumentOcrNomOriginal(albaraActualitzat.getDocumentOcrNomOriginal());
+        existent.setDocumentOcrNomGuardat(albaraActualitzat.getDocumentOcrNomGuardat());
+        existent.setDocumentOcrContentType(albaraActualitzat.getDocumentOcrContentType());
+        existent.setDocumentOcrRuta(albaraActualitzat.getDocumentOcrRuta());
 
         if (albaraActualitzat.getUsuariReceptor() != null) {
             existent.setUsuariReceptor(albaraActualitzat.getUsuariReceptor());
@@ -169,6 +173,10 @@ public class AlbaraProveidorService {
         albara.setDataRecepcio(dto.getDataRecepcio());
         albara.setProveidor(proveidor);
         albara.setUsuariReceptor(usuariLoguejat);
+        albara.setDocumentOcrNomOriginal(dto.getDocumentOcrNomOriginal());
+        albara.setDocumentOcrNomGuardat(dto.getDocumentOcrNomGuardat());
+        albara.setDocumentOcrContentType(dto.getDocumentOcrContentType());
+        albara.setDocumentOcrRuta(dto.getDocumentOcrRuta());
 
         List<LotProveidor> lots = new ArrayList<>();
 
@@ -197,6 +205,10 @@ public class AlbaraProveidorService {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
         dto.setId(entity.getId());
         dto.setDataRecepcio(entity.getDataRecepcio());
+        dto.setDocumentOcrNomOriginal(entity.getDocumentOcrNomOriginal());
+        dto.setDocumentOcrNomGuardat(entity.getDocumentOcrNomGuardat());
+        dto.setDocumentOcrContentType(entity.getDocumentOcrContentType());
+        dto.setDocumentOcrRuta(entity.getDocumentOcrRuta());
 
         if (entity.getProveidor() != null) {
             dto.setProveidorCif(entity.getProveidor().getCif());
