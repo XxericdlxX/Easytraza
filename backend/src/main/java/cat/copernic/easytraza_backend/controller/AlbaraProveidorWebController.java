@@ -263,6 +263,10 @@ public class AlbaraProveidorWebController {
         dto.setProveidorCif(ocrResposta.getProveidorCif());
         dto.setProveidorNomDetectat(extreureNomProveidorDetectat(ocrResposta.getTextDetectat()));
         dto.setCrearProveidorSiNoExisteix(false);
+        dto.setDocumentOcrNomOriginal(ocrResposta.getDocumentOcrNomOriginal());
+        dto.setDocumentOcrNomGuardat(ocrResposta.getDocumentOcrNomGuardat());
+        dto.setDocumentOcrContentType(ocrResposta.getDocumentOcrContentType());
+        dto.setDocumentOcrRuta(ocrResposta.getDocumentOcrRuta());
 
         List<LotProveidorDto> lots = new ArrayList<>();
 
