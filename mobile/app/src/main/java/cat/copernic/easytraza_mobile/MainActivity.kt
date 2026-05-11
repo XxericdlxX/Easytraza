@@ -16,10 +16,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
 import cat.copernic.easytraza_mobile.ui.screen.ConfigScreen
 import cat.copernic.easytraza_mobile.ui.screen.DashboardScreen
+import cat.copernic.easytraza_mobile.ui.screen.GestioLotsScreen
 import cat.copernic.easytraza_mobile.ui.screen.RecepcioAlbaraScreen
 import cat.copernic.easytraza_mobile.ui.screen.UserSelectionScreen
 import cat.copernic.easytraza_mobile.ui.theme.Projecte4_EasyTraza_EricTheme
 import cat.copernic.easytraza_mobile.ui.viewmodel.ConfigIpViewModel
+import cat.copernic.easytraza_mobile.ui.viewmodel.GestioLotsViewModel
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 
 class MainActivity : ComponentActivity() {
@@ -69,6 +71,20 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onOpenRecepcio = {
                                     currentScreen.value = AppScreen.Recepcio
+                                },
+                                onOpenLots = {
+                                    currentScreen.value = AppScreen.Lots
+                                }
+                            )
+                        }
+
+                        AppScreen.Lots -> {
+                            val gestioLotsViewModel: GestioLotsViewModel = viewModel()
+
+                            GestioLotsScreen(
+                                viewModel = gestioLotsViewModel,
+                                onBack = {
+                                    currentScreen.value = AppScreen.Dashboard
                                 }
                             )
                         }
@@ -121,7 +137,8 @@ private enum class AppScreen {
     UserSelection,
     Dashboard,
     Config,
-    Recepcio
+    Recepcio,
+    Lots
 }
 
 data class DemoUser(
