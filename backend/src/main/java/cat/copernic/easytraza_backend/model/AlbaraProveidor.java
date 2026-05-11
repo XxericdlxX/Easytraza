@@ -27,6 +27,18 @@ public class AlbaraProveidor {
     @OneToMany(mappedBy = "albaraProveidor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LotProveidor> lots = new ArrayList<>();
 
+    @Column(name = "document_ocr_nom_original")
+    private String documentOcrNomOriginal;
+
+    @Column(name = "document_ocr_nom_guardat")
+    private String documentOcrNomGuardat;
+
+    @Column(name = "document_ocr_content_type")
+    private String documentOcrContentType;
+
+    @Column(name = "document_ocr_ruta")
+    private String documentOcrRuta;
+
     public AlbaraProveidor() {
     }
 
@@ -68,5 +80,37 @@ public class AlbaraProveidor {
 
     public void setLots(List<LotProveidor> lots) {
         this.lots = lots;
+    }
+
+    public String getDocumentOcrNomOriginal() {
+        return documentOcrNomOriginal;
+    }
+
+    public void setDocumentOcrNomOriginal(String documentOcrNomOriginal) {
+        this.documentOcrNomOriginal = documentOcrNomOriginal;
+    }
+
+    public String getDocumentOcrNomGuardat() {
+        return documentOcrNomGuardat;
+    }
+
+    public void setDocumentOcrNomGuardat(String documentOcrNomGuardat) {
+        this.documentOcrNomGuardat = documentOcrNomGuardat;
+    }
+
+    public String getDocumentOcrContentType() {
+        return documentOcrContentType;
+    }
+
+    public void setDocumentOcrContentType(String documentOcrContentType) {
+        this.documentOcrContentType = documentOcrContentType;
+    }
+
+    public String getDocumentOcrRuta() {
+        return documentOcrRuta;
+    }
+
+    public void setDocumentOcrRuta(String documentOcrRuta) {
+        this.documentOcrRuta = documentOcrRuta;
     }
 }
