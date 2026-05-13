@@ -20,25 +20,25 @@ image::Sprint4/BoardInicial/BoardInicialSprint4.3.png[Board inicial 3]
 | Eric Delgado López | Ahir vaig fer el filtre de productes, vaig avançar en el daily stand-up del Sprint 3, vaig actualitzar la icona de l’app mobile i vaig acabar d’organitzar la documentació en AsciiDoc. | Avui començaré el Sprint 4, revisaré l' Sprint 3 amb el profe i començaré a organitzar la millora perquè els fitxers OCR es guardin en crear l’albarà. | - | 6h
 |===
 
-=== DIA 2 Dilluns - 11/05/2026
+== DIA 2 Dilluns - 11/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | Divendres vaig començar a organitzar el Sprint 4, vaig revisar les correccions pendents del Sprint 3 i vaig preparar les issues relacionades amb les noves tasques i bugfixs. També vaig començar a treballar en la correcció perquè els fitxers OCR quedin guardats en crear l’albarà. | Avui continuaré amb els bugfixs del Sprint 3, especialment el guardat dels fitxers OCR, i començaré a aplicar les correccions indicades pel professor. | - | 6h
 |===
 
 === DIA 3 Dimarts - 12/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  | | | 
+| Eric Delgado López | Ahir vaig avançar en els bugfixs del Sprint 3: vaig treballar en el guardat dels fitxers OCR, en la validació de DNI, NIE i CIF, en el control de l’eliminació de clients amb albarans associats i en l’opció “Altres” del tipus de client. | - | - | 0h 
 |===
 
 === DIA 4 Dimecres - 13/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | - |  |  | 
 |===
 
 === DIA 5 Dijous - 14/05/2026
