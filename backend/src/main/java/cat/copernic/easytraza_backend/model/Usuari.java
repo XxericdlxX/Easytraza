@@ -1,6 +1,7 @@
 package cat.copernic.easytraza_backend.model;
 
 import cat.copernic.easytraza_backend.model.enums.Rol;
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,6 +27,12 @@ public class Usuari {
 
     @Column(nullable = true)
     private String contrasenya;
+
+    @Column(name = "token_recuperacio_contrasenya", length = 120)
+    private String tokenRecuperacioContrasenya;
+
+    @Column(name = "token_recuperacio_expiracio")
+    private LocalDateTime tokenRecuperacioExpiracio;
 
     public Usuari() {
     }
@@ -85,5 +92,21 @@ public class Usuari {
 
     public void setContrasenya(String contrasenya) {
         this.contrasenya = contrasenya;
+    }
+
+    public String getTokenRecuperacioContrasenya() {
+        return tokenRecuperacioContrasenya;
+    }
+
+    public void setTokenRecuperacioContrasenya(String tokenRecuperacioContrasenya) {
+        this.tokenRecuperacioContrasenya = tokenRecuperacioContrasenya;
+    }
+
+    public LocalDateTime getTokenRecuperacioExpiracio() {
+        return tokenRecuperacioExpiracio;
+    }
+
+    public void setTokenRecuperacioExpiracio(LocalDateTime tokenRecuperacioExpiracio) {
+        this.tokenRecuperacioExpiracio = tokenRecuperacioExpiracio;
     }
 }
