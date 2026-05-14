@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{perfil.titol}">Editar perfil</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav profile-page">
+            <div class="container">
+                <div class="header-actions">
+                    <div class="logo-title">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                        <div>
+                            <h1 th:text="#{perfil.titol}">Editar perfil</h1>
+                            <p class="page-subtitle" th:text="#{perfil.subtitol}">
+                                Actualiza las dades visibles del teu usuari.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card profile-form-card">
+                    <form th:action="@{/web/perfil/actualitzar}" th:object="${perfil}" method="post" novalidate>
+                        <input type="hidden" th:field="*{id}">
+
+                        <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                        <div class="form-group">
+                            <label for="nom">
+                                <span th:text="#{perfil.nom}">Nom</span> <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nom" th:field="*{nom}">
+                            <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cognoms">
+                                <span th:text="#{perfil.cognoms}">Cognoms</span> <span class="required">*</span>
+                            </label>
+                            <input type="text" id="cognoms" th:field="*{cognoms}">
+                            <div class="field-error" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">
+                                <span th:text="#{perfil.email}">Correu electrònic</span> <span class="required">*</span>
+                            </label>
+                            <input type="email" id="email" th:field="*{email}" th:readonly="${perfilEmailBloquejat}">
+                            <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            <p class="form-help"
+                               th:if="${!perfilEmailBloquejat}"
+                               th:text="#{perfil.email.ajuda}">
+                                Si canvies el correu, continuaràs identificat amb la nova adreça.
+                            </p>
+                            <p class="form-help"
+                               th:if="${perfilEmailBloquejat}"
+                               th:text="#{perfil.email.superadmin.bloquejat}">
+                                El correu del superadmin està protegit.
+                            </p>
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit" class="btn btn-primary" th:text="#{perfil.guardar}">Guardar canvis</button>
+                            <a th:href="@{/}" class="btn btn-secondary" th:text="#{accio.tornar}">Tornar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
