@@ -34,7 +34,7 @@
                         <div class="home-card-title" th:text="#{nav.productes}">Productos</div>
                     </a>
 
-                    <a th:href="@{/web/usuaris}" class="home-card users-card">
+                    <a th:if="${navUserAdmin}" th:href="@{/web/usuaris}" class="home-card users-card">
                         <div class="home-card-image">👤</div>
                         <div class="home-card-title" th:text="#{nav.usuaris}">Usuarios</div>
                     </a>
