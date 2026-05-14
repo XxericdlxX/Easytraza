@@ -38,14 +38,14 @@ image::Sprint4/BoardInicial/BoardInicialSprint4.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | - |  |  | 
+| Eric Delgado López | Ahir vaig avançar en els bugfixs del Sprint 3: vaig treballar en el guardat dels fitxers OCR, en la validació de DNI, NIE i CIF, en el control de l’eliminació de clients amb albarans associats i en l’opció “Altres” del tipus de client. | Avui organitzaré una mica més el projecte, revisaré l’estat de les issues i dedicaré part del temps a estudiar per als tests de recuperació. | He de compaginar l’avanç del projecte amb la preparació dels tests de recuperació. | 3h
 |===
 
 === DIA 5 Dijous - 14/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | Ahir vaig organitzar una mica més el projecte, vaig revisar les tasques pendents del Sprint 4 i vaig dedicar temps a estudiar per als tests de recuperació. | Avui reprendré el treball tècnic del projecte i continuaré amb les correccions pendents del Sprint 3, especialment les relacionades amb el mobile i la gestió dels lots. | Poc temps que em queda per acabar l'Sprint 4 | 4h
 |===
 
 == 3. Planificació Final
