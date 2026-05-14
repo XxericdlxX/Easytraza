@@ -2,6 +2,7 @@ package cat.copernic.easytraza_backend.controller;
 
 import cat.copernic.easytraza_backend.dto.ProducteDto;
 import cat.copernic.easytraza_backend.model.Producte;
+import cat.copernic.easytraza_backend.service.LotProveidorService;
 import cat.copernic.easytraza_backend.service.ProducteService;
 import jakarta.validation.Valid;
 import java.util.Locale;
@@ -23,21 +24,60 @@ public class ProducteWebController {
     private ProducteService producteService;
 
     @Autowired
+    private LotProveidorService lotProveidorService;
+
+    @Autowired
     private MessageSource messageSource;
 
     @GetMapping
     public String llistarProductes(@RequestParam(required = false) String nom,
             @RequestParam(required = false) String descripcio,
             Model model) {
+
         model.addAttribute("productes", producteService.buscar(nom, descripcio));
         model.addAttribute("nom", nom);
         model.addAttribute("descripcio", descripcio);
         model.addAttribute("currentPath", "/web/productes");
+
         return "productes/llistar-productes";
     }
 
+    @GetMapping("/{id}/produccio-lots")
+    public String veureProduccioLotsProducte(@PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        Optional<Producte> producte = producteService.findById(id);
+
+        if (producte.isEmpty()) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("productes.flash.no.trobat", null, locale)
+            );
+            return "redirect:/web/productes";
+        }
+
+        model.addAttribute("producte", producte.get());
+        model.addAttribute("liniesProduccio", producteService.cercarProduccioLotsPerProducte(id));
+        model.addAttribute("currentPath", "/web/productes");
+
+        return "productes/produccio-lots-producte";
+    }
+
     @GetMapping("/crear")
-    public String mostrarFormulariCrearProducte(Model model) {
+    public String mostrarFormulariCrearProducte(Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        if (!lotProveidorService.existeixLotObert()) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("productes.error.crear.sense.lots.oberts", null, locale)
+            );
+            return "redirect:/web/productes";
+        }
+
         model.addAttribute("producte", new ProducteDto());
         return "productes/crear-productes";
     }
@@ -48,6 +88,14 @@ public class ProducteWebController {
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
+
+        if (!lotProveidorService.existeixLotObert()) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage("productes.error.crear.sense.lots.oberts", null, locale)
+            );
+            return "redirect:/web/productes";
+        }
 
         if (result.hasErrors()) {
             return "productes/crear-productes";
@@ -75,6 +123,7 @@ public class ProducteWebController {
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
+
         Optional<Producte> producte = producteService.findById(id);
 
         if (producte.isPresent()) {
@@ -122,6 +171,7 @@ public class ProducteWebController {
     public String eliminarProducte(@PathVariable Long id,
             RedirectAttributes redirectAttributes,
             Locale locale) {
+
         try {
             producteService.deleteById(id);
             redirectAttributes.addFlashAttribute(
