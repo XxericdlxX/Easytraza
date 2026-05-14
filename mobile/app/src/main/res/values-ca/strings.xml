@@ -57,7 +57,7 @@
 
     <string name="recepcio_form_title">Dades de l’albarà</string>
     <string name="recepcio_field_date">Data de recepció</string>
-    <string name="recepcio_field_supplier_cif">CIF del proveïdor</string>
+    <string name="recepcio_field_supplier_cif">CIF/NIF/NIE del proveïdor</string>
     <string name="recepcio_field_supplier_name">Nom del proveïdor</string>
     <string name="recepcio_field_lot">Codi de lot</string>
     <string name="recepcio_field_quantity">Quantitat</string>
@@ -74,16 +74,31 @@
     <string name="recepcio_add_lot_button">Afegir lot</string>
     <string name="recepcio_delete_lot_button">Eliminar</string>
 
+    <string name="recepcio_create_supplier_checkbox">Crear proveïdor automàticament si no existeix</string>
+    <string name="recepcio_create_material_checkbox">Crear matèria primera automàticament si no existeix</string>
+    <string name="recepcio_create_supplier_help">Marca aquesta opció si el proveïdor detectat per OCR encara no existeix al sistema.</string>
+    <string name="recepcio_create_material_help">Marca aquesta opció si la matèria primera detectada per OCR encara no existeix al sistema.</string>
+
+    <string name="network_error_no_ip">Primer has de desar una IP vàlida del backend.</string>
+    <string name="network_error_invalid_ip">La IP configurada no és vàlida. Revisa la configuració de connexió.</string>
+    <string name="network_error_no_connection">No s’ha pogut connectar amb el servidor. Revisa la IP i que el backend estigui iniciat.</string>
+    <string name="network_error_timeout">La connexió ha trigat massa. Comprova la xarxa i torna-ho a intentar.</string>
+    <string name="network_error_unknown_host">No s’ha trobat el servidor indicat. Revisa la IP configurada.</string>
+    <string name="network_error_server">El servidor ha retornat un error. Torna-ho a intentar més tard.</string>
+    <string name="network_error_generic">No s’ha pogut completar l’operació. Revisa la connexió i torna-ho a intentar.</string>
+
     <string name="ocr_error_no_ip">Primer has de desar una IP vàlida del backend.</string>
-    <string name="ocr_error_backend">El backend ha retornat un error a l’OCR.</string>
-    <string name="ocr_error_file">No s’ha pogut preparar el fitxer per a l’OCR.</string>
+    <string name="ocr_error_backend">No s’ha pogut processar l’OCR. El servidor ha retornat un error.</string>
+    <string name="ocr_error_file">No s’ha pogut preparar el fitxer per a l’OCR. Revisa el format del document.</string>
+    <string name="ocr_error_connection">No s’ha pogut connectar amb el servidor per processar l’OCR. Revisa la IP i que el backend estigui iniciat.</string>
+    <string name="ocr_error_timeout">L’OCR ha trigat massa a respondre. Prova amb una altra imatge o torna-ho a intentar.</string>
     <string name="ocr_success">OCR completat correctament.</string>
     <string name="ocr_saving">Desant albarà…</string>
     <string name="ocr_saved">Albarà desat correctament.</string>
-    <string name="ocr_save_error">No s’ha pogut desar l’albarà.</string>
+    <string name="ocr_save_error">No s’ha pogut desar l’albarà. Revisa les dades i torna-ho a intentar.</string>
     <string name="ocr_processing_document">Analitzant document…</string>
     <string name="ocr_processing_photo">Analitzant fotografia…</string>
-    <string name="ocr_processing_error">Error analitzant el document.</string>
+    <string name="ocr_processing_error">No s’ha pogut analitzar el document. Revisa la imatge o prova amb una altra foto.</string>
 
     <string name="lots_mobile_title">Gestionar lots</string>
     <string name="lots_mobile_subtitle">Consulta els lots registrats i inicia o finalitza el lot actiu des del mòbil.</string>

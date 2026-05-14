@@ -16,15 +16,6 @@ El projecte està format per:
 * un *client web* desenvolupat amb *HTML, CSS i Thymeleaf*
 * un *client mobile* desenvolupat amb *Kotlin i Jetpack Compose*
 
-== Funcionalitats implementades
-
-=== Sprint 1
-
-* RF03: CRUD d'usuaris
-* RF04: CRUD de matèries primeres
-* RF08: CRUD de proveïdors
-* RF15: Configuració persistent de la IP i connexió entre mobile i backend
-
 == Tecnologies utilitzades
 
 === Backend
@@ -34,7 +25,7 @@ El projecte està format per:
 * JPA / Hibernate
 
 === Frontend web
-* HTML
+* HTML + javascript
 * CSS
 * Thymeleaf
 

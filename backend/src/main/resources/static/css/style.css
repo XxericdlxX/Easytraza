@@ -1353,3 +1353,20 @@ body.camera-open {
         justify-content: center;
     }
 }
+
+/* ===============================
+   Enllaços ordenació taula lots
+   =============================== */
+
+.lots-table thead th a.sort-link,
+.lots-table thead th a.sort-link:visited,
+.lots-table thead th a.sort-link:active {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+    font-weight: 800;
+}
+
+.lots-table thead th a.sort-link:hover {
+    color: #FFFFFF !important;
+    text-decoration: underline !important;
+}
