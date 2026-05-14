@@ -11,7 +11,12 @@ data class OcrAlbaraResponseDto(
     val numeroAlbara: String? = null,
     val dataAlbara: String? = null,
     val textDetectat: String? = null,
-    val lots: List<OcrLotRespostaDto> = emptyList()
+    val lots: List<OcrLotRespostaDto> = emptyList(),
+
+    val documentOcrNomOriginal: String? = null,
+    val documentOcrNomGuardat: String? = null,
+    val documentOcrContentType: String? = null,
+    val documentOcrRuta: String? = null
 )
 
 data class MobileLotSaveRequestDto(
@@ -26,5 +31,20 @@ data class MobileAlbaraSaveRequestDto(
     val proveidorCif: String?,
     val proveidorNom: String,
     val crearProveidorSiNoExisteix: Boolean,
-    val lots: List<MobileLotSaveRequestDto>
+    val lots: List<MobileLotSaveRequestDto>,
+
+    val documentOcrNomOriginal: String? = null,
+    val documentOcrNomGuardat: String? = null,
+    val documentOcrContentType: String? = null,
+    val documentOcrRuta: String? = null
+)
+
+data class MobileLotDto(
+    val id: Long,
+    val codiLot: String? = null,
+    val materiaPrimaNom: String? = null,
+    val proveidorNom: String? = null,
+    val quantitat: Double? = null,
+    val estat: String? = null,
+    val dataRecepcio: String? = null
 )
