@@ -2,6 +2,7 @@ package cat.copernic.easytraza_mobile.network
 
 import cat.copernic.easytraza_mobile.network.dto.MobileAlbaraSaveRequestDto
 import cat.copernic.easytraza_mobile.network.dto.MobileLotDto
+import cat.copernic.easytraza_mobile.network.dto.MobileUsuariDto
 import cat.copernic.easytraza_mobile.network.dto.OcrAlbaraResponseDto
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -21,6 +22,9 @@ interface BackendApiService {
     @GET("/api/test-connection")
     suspend fun checkConnection(): Response<ConnectionResponse>
 
+
+    @GET("/mobile-api/usuaris")
+    suspend fun llistarUsuaris(): List<MobileUsuariDto>
 
     @GET("/mobile-api/lots")
     suspend fun llistarLots(): List<MobileLotDto>
