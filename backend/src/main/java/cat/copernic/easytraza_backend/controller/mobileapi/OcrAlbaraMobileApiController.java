@@ -7,7 +7,9 @@ import cat.copernic.easytraza_backend.dto.mobile.MobileAlbaraSaveRequestDto;
 import cat.copernic.easytraza_backend.dto.mobile.MobileLotSaveRequestDto;
 import cat.copernic.easytraza_backend.model.AlbaraProveidor;
 import cat.copernic.easytraza_backend.model.MateriaPrima;
+import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.repository.MateriaPrimaRepository;
+import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import cat.copernic.easytraza_backend.service.AlbaraProveidorService;
 import cat.copernic.easytraza_backend.service.OcrAlbaraService;
 import java.time.LocalDate;
@@ -32,6 +34,9 @@ public class OcrAlbaraMobileApiController {
 
     @Autowired
     private MateriaPrimaRepository materiaPrimaRepository;
+
+    @Autowired
+    private UsuariRepository usuariRepository;
 
     @PostMapping(
             value = "/analitzar",
@@ -62,7 +67,13 @@ public class OcrAlbaraMobileApiController {
                 return ResponseEntity.badRequest().body(errorNegoci);
             }
 
+            Optional<Usuari> usuariReceptor = obtenirUsuariReceptor(request.getUsuariReceptorId());
+            if (usuariReceptor.isEmpty()) {
+                return ResponseEntity.badRequest().body("mobile.usuari.no.trobat");
+            }
+
             AlbaraProveidor entity = albaraProveidorService.convertirDtoAEntity(dto);
+            entity.setUsuariReceptor(usuariReceptor.get());
             albaraProveidorService.save(entity);
 
             return ResponseEntity.ok().build();
@@ -70,6 +81,14 @@ public class OcrAlbaraMobileApiController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("No s'ha pogut desar l'albarà des del client mobile.");
         }
+    }
+
+    private Optional<Usuari> obtenirUsuariReceptor(Long usuariReceptorId) {
+        if (usuariReceptorId == null) {
+            return Optional.empty();
+        }
+
+        return usuariRepository.findById(usuariReceptorId);
     }
 
     private LocalDate parseData(String value) {
