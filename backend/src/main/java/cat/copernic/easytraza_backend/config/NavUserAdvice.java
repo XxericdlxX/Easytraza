@@ -1,6 +1,6 @@
+package cat.copernic.easytraza_backend.config;
 
 import cat.copernic.easytraza_backend.model.Usuari;
-import cat.copernic.easytraza_backend.model.enums.Rol;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class NavUserAdvice {
     public String navUserName() {
         return obtenirUsuariAutenticat()
                 .map(this::construirNomVisible)
-                .orElse("");
+                .orElseGet(this::obtenirPrincipalVisible);
     }
 
     @ModelAttribute("navUserInitials")
@@ -32,7 +32,8 @@ public class NavUserAdvice {
     public String navUserEmail() {
         return obtenirUsuariAutenticat()
                 .map(Usuari::getEmail)
-                .orElse("");
+                .filter(email -> email != null && !email.isBlank())
+                .orElseGet(this::obtenirPrincipalVisible);
     }
 
     @ModelAttribute("navUserRole")
@@ -40,23 +41,27 @@ public class NavUserAdvice {
         return obtenirUsuariAutenticat()
                 .map(Usuari::getRol)
                 .map(Enum::name)
-                .orElse("");
+                .orElseGet(() -> esAdminAutenticat() ? "ADMIN" : "");
     }
 
     @ModelAttribute("navUserAuthenticated")
     public boolean navUserAuthenticated() {
-        return obtenirUsuariAutenticat().isPresent();
+        return obtenirAutenticacioValida().isPresent();
     }
 
     @ModelAttribute("navUserAdmin")
     public boolean navUserAdmin() {
-        return obtenirUsuariAutenticat()
-                .map(Usuari::getRol)
-                .map(rol -> rol == Rol.ADMIN)
-                .orElse(false);
+        return esAdminAutenticat();
     }
 
     private Optional<Usuari> obtenirUsuariAutenticat() {
+        return obtenirAutenticacioValida()
+                .map(Authentication::getName)
+                .filter(principalName -> principalName != null && !principalName.isBlank())
+                .flatMap(usuariRepository::findByEmailIgnoreCase);
+    }
+
+    private Optional<Authentication> obtenirAutenticacioValida() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null
@@ -65,12 +70,22 @@ public class NavUserAdvice {
             return Optional.empty();
         }
 
-        String principalName = authentication.getName();
-        if (principalName == null || principalName.isBlank()) {
-            return Optional.empty();
-        }
+        return Optional.of(authentication);
+    }
 
-        return usuariRepository.findByEmailIgnoreCase(principalName);
+    private boolean esAdminAutenticat() {
+        return obtenirAutenticacioValida()
+                .map(Authentication::getAuthorities)
+                .stream()
+                .flatMap(authorities -> authorities.stream())
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+    }
+
+    private String obtenirPrincipalVisible() {
+        return obtenirAutenticacioValida()
+                .map(Authentication::getName)
+                .filter(principalName -> principalName != null && !principalName.isBlank())
+                .orElse("");
     }
 
     private String construirNomVisible(Usuari usuari) {
