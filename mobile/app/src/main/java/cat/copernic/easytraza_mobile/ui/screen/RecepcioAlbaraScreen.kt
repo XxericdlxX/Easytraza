@@ -47,6 +47,7 @@ import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 
 @Composable
 fun RecepcioAlbaraScreen(
+    currentUserId: Long?,
     currentUserName: String,
     viewModel: RecepcioAlbaraViewModel,
     onBack: () -> Unit,
@@ -63,6 +64,10 @@ fun RecepcioAlbaraScreen(
     val status by viewModel.status.collectAsState()
     val lotsEditables by viewModel.lotsEditables.collectAsState()
     val saveCompleted by viewModel.saveCompleted.collectAsState()
+
+    LaunchedEffect(currentUserId) {
+        viewModel.onUsuariReceptorSeleccionat(currentUserId)
+    }
 
     LaunchedEffect(saveCompleted) {
         if (saveCompleted) {
