@@ -9,6 +9,7 @@ import cat.copernic.easytraza_backend.repository.UsuariRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,9 @@ public class UsuariService {
 
     @Autowired
     private ProveidorRepository proveidorRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<Usuari> findAll() {
         return usuariRepository.findAll();
@@ -52,6 +56,7 @@ public class UsuariService {
     }
 
     public Usuari save(Usuari usuari) {
+        codificarContrasenyaSiCal(usuari);
         return usuariRepository.save(usuari);
     }
 
@@ -63,7 +68,7 @@ public class UsuariService {
 
             if (isProtectedUser(usuari)) {
                 if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
-                    usuari.setContrasenya(usuariActualitzat.getContrasenya());
+                    usuari.setContrasenya(passwordEncoder.encode(usuariActualitzat.getContrasenya()));
                 }
                 return usuariRepository.save(usuari);
             }
@@ -74,7 +79,7 @@ public class UsuariService {
             usuari.setEmail(usuari.getEmail());
 
             if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
-                usuari.setContrasenya(usuariActualitzat.getContrasenya());
+                usuari.setContrasenya(passwordEncoder.encode(usuariActualitzat.getContrasenya()));
             }
 
             return usuariRepository.save(usuari);
@@ -166,6 +171,12 @@ public class UsuariService {
         usuariDto.setEmail(usuari.getEmail());
         usuariDto.setContrasenya("");
         return usuariDto;
+    }
+
+    private void codificarContrasenyaSiCal(Usuari usuari) {
+        if (usuari.getContrasenya() != null && !usuari.getContrasenya().isBlank()) {
+            usuari.setContrasenya(passwordEncoder.encode(usuari.getContrasenya()));
+        }
     }
 
     private String normalitzarEmail(String email) {

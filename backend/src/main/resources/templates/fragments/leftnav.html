@@ -19,7 +19,7 @@
                     <span th:text="#{nav.productes}">Productos</span>
                 </a>
 
-                <a th:href="@{/web/usuaris}">
+                <a th:if="${navUserAdmin}" th:href="@{/web/usuaris}">
                     <span class="leftnav-icon">👤</span>
                     <span th:text="#{nav.usuaris}">Usuarios</span>
                 </a>
@@ -78,6 +78,23 @@
                     <a class="btn btn-secondary js-lang-link"
                        href="#"
                        data-lang="ca">CA</a>
+                </div>
+
+                <div class="leftnav-user-panel" th:if="${navUserAuthenticated}">
+                    <div class="leftnav-user">
+                        <div class="leftnav-user-avatar" th:text="${navUserInitials}">ET</div>
+                        <div class="leftnav-user-copy">
+                            <div class="leftnav-user-name" th:text="${navUserName}">Eric Delgado</div>
+                            <div class="leftnav-user-role" th:text="#{${'rol.' + navUserRole}}">Administrador</div>
+                            <div class="leftnav-user-email" th:text="${navUserEmail}">usuari@easytraza.local</div>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/logout}" method="post" class="leftnav-logout-form">
+                        <button type="submit" class="btn btn-danger leftnav-logout-btn" th:text="#{auth.logout.boto}">
+                            Cerrar sesión
+                        </button>
+                    </form>
                 </div>
             </div>
 
