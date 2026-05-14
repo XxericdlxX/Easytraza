@@ -85,4 +85,23 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
            ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
            """)
     List<LiniaClient> findLiniesProduccioByLotId(@Param("lotId") Long lotId);
+
+    @Query("""
+           SELECT FUNCTION('DAY', albara.dataProduccio), COALESCE(SUM(linia.quantitat), 0)
+           FROM LiniaClient linia
+           JOIN linia.albaraClient albara
+           WHERE albara.estat = :estat
+             AND albara.dataProduccio >= :dataInici
+             AND albara.dataProduccio <= :dataFi
+             AND (:producteId IS NULL OR linia.producte.id = :producteId)
+           GROUP BY FUNCTION('DAY', albara.dataProduccio)
+           ORDER BY FUNCTION('DAY', albara.dataProduccio)
+           """)
+    List<Object[]> findQuantitatsVenudesAgrupadesPerDia(
+            @Param("estat") EstatAlbaraClient estat,
+            @Param("dataInici") LocalDate dataInici,
+            @Param("dataFi") LocalDate dataFi,
+            @Param("producteId") Long producteId
+    );
+
 }
