@@ -9,6 +9,7 @@ public class MobileAlbaraSaveRequestDto {
     private String proveidorCif;
     private String proveidorNom;
     private boolean crearProveidorSiNoExisteix;
+    private Long usuariReceptorId;
     private List<MobileLotSaveRequestDto> lots = new ArrayList<>();
 
     public MobileAlbaraSaveRequestDto() {
@@ -44,6 +45,14 @@ public class MobileAlbaraSaveRequestDto {
 
     public void setCrearProveidorSiNoExisteix(boolean crearProveidorSiNoExisteix) {
         this.crearProveidorSiNoExisteix = crearProveidorSiNoExisteix;
+    }
+
+    public Long getUsuariReceptorId() {
+        return usuariReceptorId;
+    }
+
+    public void setUsuariReceptorId(Long usuariReceptorId) {
+        this.usuariReceptorId = usuariReceptorId;
     }
 
     public List<MobileLotSaveRequestDto> getLots() {
