@@ -1817,25 +1817,18 @@ body.camera-open {
     line-height: 1.4;
 }
 
-/* ===============================
-   RF26 - Recuperació de contrasenya
-   =============================== */
-.login-recovery-link {
+.profile-password-panel {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #D8C8B8;
+}
+
+.profile-password-panel h2 {
+    margin: 0 0 6px;
+    color: #4A2E1F;
+    font-size: 1.15rem;
+}
+
+.profile-password-panel .form-group:first-of-type {
     margin-top: 18px;
-    text-align: center;
 }
-
-.login-recovery-link a {
-    color: #7A4B2A;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.login-recovery-link a:hover {
-    text-decoration: underline;
-}
-
-.recovery-card {
-    max-width: 610px;
-}
-
