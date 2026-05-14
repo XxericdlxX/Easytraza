@@ -14,6 +14,7 @@
                     <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
                     <h1 th:text="#{usuaris.crear}">Crear usuario</h1>
                 </div>
+
                 <div class="actions">
                     <a th:href="@{/web/usuaris/crear(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
                     <a th:href="@{/web/usuaris/crear(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
@@ -65,7 +66,10 @@
                         <label for="contrasenya">
                             <span th:text="#{usuaris.contrasenya}">Contraseña</span> <span class="required">*</span>
                         </label>
-                        <input type="text" id="contrasenya" th:field="*{contrasenya}">
+                        <input type="password"
+                               id="contrasenya"
+                               th:field="*{contrasenya}"
+                               autocomplete="new-password">
                         <div class="field-error" th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}"></div>
                     </div>
 

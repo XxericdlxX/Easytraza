@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{recuperacio.restablir.titol}">Restablecer contraseña</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body class="login-body">
+        <div class="login-locale-switch" aria-label="Selector de idioma">
+            <a class="locale-pill" th:href="@{/restablir-contrasenya(token=${restablirContrasenyaDto.token}, lang='es')}" th:text="#{lang.es}">ES</a>
+            <a class="locale-pill" th:href="@{/restablir-contrasenya(token=${restablirContrasenyaDto.token}, lang='ca')}" th:text="#{lang.ca}">CA</a>
+        </div>
+
+        <main class="login-page">
+            <section class="login-card recovery-card">
+                <div class="login-brand">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="login-logo">
+                    <div>
+                        <h1 th:text="#{recuperacio.restablir.titol}">Restablecer contraseña</h1>
+                        <p th:text="#{recuperacio.restablir.subtitol}">Introduce la nueva contraseña de acceso.</p>
+                    </div>
+                </div>
+
+                <div class="error-message" th:if="${!tokenValid}" th:text="#{recuperacio.error.token.invalid}">
+                    El enlace de recuperación no es válido o ha caducado.
+                </div>
+
+                <div class="error-message" th:if="${recuperacioError != null}" th:text="${#messages.msg(recuperacioError)}">
+                    Error en la recuperación.
+                </div>
+
+                <form th:if="${tokenValid}"
+                      th:action="@{/restablir-contrasenya}"
+                      th:object="${restablirContrasenyaDto}"
+                      method="post"
+                      class="login-form">
+                    <input type="hidden" th:field="*{token}">
+
+                    <div class="form-group">
+                        <label for="novaContrasenya" th:text="#{recuperacio.contrasenya.nova}">Nueva contraseña</label>
+                        <input type="password"
+                               id="novaContrasenya"
+                               th:field="*{novaContrasenya}"
+                               autocomplete="new-password"
+                               th:placeholder="#{recuperacio.contrasenya.nova.placeholder}"
+                               required>
+                        <p class="field-error" th:if="${#fields.hasErrors('novaContrasenya')}" th:errors="*{novaContrasenya}">Error</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmarContrasenya" th:text="#{recuperacio.contrasenya.confirmar}">Confirmar contraseña</label>
+                        <input type="password"
+                               id="confirmarContrasenya"
+                               th:field="*{confirmarContrasenya}"
+                               autocomplete="new-password"
+                               th:placeholder="#{recuperacio.contrasenya.confirmar.placeholder}"
+                               required>
+                        <p class="field-error" th:if="${#fields.hasErrors('confirmarContrasenya')}" th:errors="*{confirmarContrasenya}">Error</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary login-submit" th:text="#{recuperacio.restablir.boto}">
+                        Guardar nueva contraseña
+                    </button>
+                </form>
+
+                <div class="login-recovery-link">
+                    <a th:href="@{/recuperar-contrasenya}" th:text="#{recuperacio.tornar.sollicitud}">Solicitar otro enlace</a>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

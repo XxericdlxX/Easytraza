@@ -128,7 +128,16 @@ public class UsuariService {
             return "perfil.error.email.proveidor";
         }
 
-        return null;
+        if (idActual == null) {
+            return "perfil.error.no.trobat";
+        }
+
+        Optional<Usuari> usuariActual = usuariRepository.findById(idActual);
+        if (usuariActual.isEmpty()) {
+            return "perfil.error.no.trobat";
+        }
+
+        return validarCanviContrasenyaPerfil(perfilUsuariDto, usuariActual.get());
     }
 
     public String validarUsuari(UsuariDto usuariDto, Long idActual) {
@@ -187,7 +196,51 @@ public class UsuariService {
             usuari.setEmail(normalitzarEmail(perfilUsuariDto.getEmail()));
         }
 
+        if (hiHaCanviContrasenyaPerfil(perfilUsuariDto)) {
+            usuari.setContrasenya(passwordEncoder.encode(perfilUsuariDto.getNovaContrasenya()));
+        }
+
         return usuariRepository.save(usuari);
+    }
+
+    private String validarCanviContrasenyaPerfil(PerfilUsuariDto perfilUsuariDto, Usuari usuariActual) {
+        if (!hiHaCanviContrasenyaPerfil(perfilUsuariDto)) {
+            return null;
+        }
+
+        if (esBuit(perfilUsuariDto.getContrasenyaActual())) {
+            return "perfil.contrasenya.actual.obligatoria";
+        }
+
+        if (esBuit(perfilUsuariDto.getNovaContrasenya())) {
+            return "perfil.contrasenya.nova.obligatoria";
+        }
+
+        if (esBuit(perfilUsuariDto.getConfirmarContrasenya())) {
+            return "perfil.contrasenya.confirmar.obligatoria";
+        }
+
+        if (!perfilUsuariDto.getNovaContrasenya().equals(perfilUsuariDto.getConfirmarContrasenya())) {
+            return "perfil.error.contrasenyes.no.coincideixen";
+        }
+
+        if (usuariActual.getContrasenya() == null
+                || usuariActual.getContrasenya().isBlank()
+                || !passwordEncoder.matches(perfilUsuariDto.getContrasenyaActual(), usuariActual.getContrasenya())) {
+            return "perfil.error.contrasenya.actual.incorrecta";
+        }
+
+        return null;
+    }
+
+    private boolean hiHaCanviContrasenyaPerfil(PerfilUsuariDto perfilUsuariDto) {
+        return !esBuit(perfilUsuariDto.getContrasenyaActual())
+                || !esBuit(perfilUsuariDto.getNovaContrasenya())
+                || !esBuit(perfilUsuariDto.getConfirmarContrasenya());
+    }
+
+    private boolean esBuit(String valor) {
+        return valor == null || valor.isBlank();
     }
 
     public PerfilUsuariDto convertirEntityAPerfilDto(Usuari usuari) {

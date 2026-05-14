@@ -67,6 +67,31 @@
                             </p>
                         </div>
 
+                        <div class="profile-password-panel">
+                            <h2 th:text="#{perfil.contrasenya.titol}">Canviar contrasenya</h2>
+                            <p class="form-help" th:text="#{perfil.contrasenya.ajuda}">
+                                Omple aquests camps només si vols actualitzar la contrasenya.
+                            </p>
+
+                            <div class="form-group">
+                                <label for="contrasenyaActual" th:text="#{perfil.contrasenya.actual}">Contrasenya actual</label>
+                                <input type="password" id="contrasenyaActual" th:field="*{contrasenyaActual}" autocomplete="current-password">
+                                <div class="field-error" th:if="${#fields.hasErrors('contrasenyaActual')}" th:errors="*{contrasenyaActual}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="novaContrasenya" th:text="#{perfil.contrasenya.nova}">Nova contrasenya</label>
+                                <input type="password" id="novaContrasenya" th:field="*{novaContrasenya}" autocomplete="new-password">
+                                <div class="field-error" th:if="${#fields.hasErrors('novaContrasenya')}" th:errors="*{novaContrasenya}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmarContrasenya" th:text="#{perfil.contrasenya.confirmar}">Confirmar contrasenya</label>
+                                <input type="password" id="confirmarContrasenya" th:field="*{confirmarContrasenya}" autocomplete="new-password">
+                                <div class="field-error" th:if="${#fields.hasErrors('confirmarContrasenya')}" th:errors="*{confirmarContrasenya}"></div>
+                            </div>
+                        </div>
+
                         <div class="actions">
                             <button type="submit" class="btn btn-primary" th:text="#{perfil.guardar}">Guardar canvis</button>
                             <a th:href="@{/}" class="btn btn-secondary" th:text="#{accio.tornar}">Tornar</a>

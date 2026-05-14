@@ -72,7 +72,11 @@
 
                     <div class="form-group">
                         <label for="contrasenya" th:text="#{usuaris.contrasenya}">Contraseña</label>
-                        <input type="text" id="contrasenya" th:field="*{contrasenya}">
+                        <input type="password"
+                               id="contrasenya"
+                               th:field="*{contrasenya}"
+                               autocomplete="new-password"
+                               th:placeholder="#{usuaris.contrasenya.buida.mantinguda}">
                         <div class="field-error" th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}"></div>
                     </div>
 

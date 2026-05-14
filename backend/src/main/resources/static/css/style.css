@@ -1787,7 +1787,7 @@ body.camera-open {
 }
 
 /* ===============================
-   Perfil d'usuari autenticat
+   RF27 - Perfil d'usuari autenticat
    =============================== */
 
 .leftnav-profile-btn {
@@ -1815,4 +1815,20 @@ body.camera-open {
     color: #7B5A43;
     font-size: 0.92rem;
     line-height: 1.4;
+}
+
+.profile-password-panel {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #D8C8B8;
+}
+
+.profile-password-panel h2 {
+    margin: 0 0 6px;
+    color: #4A2E1F;
+    font-size: 1.15rem;
+}
+
+.profile-password-panel .form-group:first-of-type {
+    margin-top: 18px;
 }
