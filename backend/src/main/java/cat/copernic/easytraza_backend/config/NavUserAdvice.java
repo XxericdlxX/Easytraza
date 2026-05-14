@@ -1,7 +1,8 @@
-package cat.copernic.easytraza_backend.config;
 
 import cat.copernic.easytraza_backend.model.Usuari;
+import cat.copernic.easytraza_backend.model.enums.Rol;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,52 +10,67 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.util.Optional;
-
 @ControllerAdvice
 public class NavUserAdvice {
-
-    private static final String SUPERADMIN_EMAIL = "superadmin@easytraza.local";
 
     @Autowired
     private UsuariRepository usuariRepository;
 
     @ModelAttribute("navUserName")
     public String navUserName() {
-        return obtenirNomVisible();
+        return obtenirUsuariAutenticat()
+                .map(this::construirNomVisible)
+                .orElse("");
     }
 
     @ModelAttribute("navUserInitials")
     public String navUserInitials() {
-        return obtenirInicials(obtenirNomVisible());
+        return obtenirInicials(navUserName());
     }
 
-    private String obtenirNomVisible() {
+    @ModelAttribute("navUserEmail")
+    public String navUserEmail() {
+        return obtenirUsuariAutenticat()
+                .map(Usuari::getEmail)
+                .orElse("");
+    }
+
+    @ModelAttribute("navUserRole")
+    public String navUserRole() {
+        return obtenirUsuariAutenticat()
+                .map(Usuari::getRol)
+                .map(Enum::name)
+                .orElse("");
+    }
+
+    @ModelAttribute("navUserAuthenticated")
+    public boolean navUserAuthenticated() {
+        return obtenirUsuariAutenticat().isPresent();
+    }
+
+    @ModelAttribute("navUserAdmin")
+    public boolean navUserAdmin() {
+        return obtenirUsuariAutenticat()
+                .map(Usuari::getRol)
+                .map(rol -> rol == Rol.ADMIN)
+                .orElse(false);
+    }
+
+    private Optional<Usuari> obtenirUsuariAutenticat() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null
-                && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)) {
-
-            String principalName = authentication.getName();
-
-            Optional<Usuari> usuariAutenticat = usuariRepository.findByEmailIgnoreCase(principalName);
-            if (usuariAutenticat.isPresent()) {
-                Usuari usuari = usuariAutenticat.get();
-                return construirNomVisible(usuari);
-            }
-
-            if (principalName != null && !principalName.isBlank()) {
-                return principalName;
-            }
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
         }
 
-        Optional<Usuari> superadmin = usuariRepository.findByEmailIgnoreCase(SUPERADMIN_EMAIL);
-        if (superadmin.isPresent()) {
-            return construirNomVisible(superadmin.get());
+        String principalName = authentication.getName();
+        if (principalName == null || principalName.isBlank()) {
+            return Optional.empty();
         }
 
-        return "Usuari web";
+        return usuariRepository.findByEmailIgnoreCase(principalName);
     }
 
     private String construirNomVisible(Usuari usuari) {
@@ -66,12 +82,12 @@ public class NavUserAdvice {
             return complet;
         }
 
-        return usuari.getEmail() != null ? usuari.getEmail() : "Usuari web";
+        return usuari.getEmail() != null ? usuari.getEmail() : "";
     }
 
     private String obtenirInicials(String nomVisible) {
         if (nomVisible == null || nomVisible.isBlank()) {
-            return "UW";
+            return "ET";
         }
 
         String[] parts = nomVisible.trim().split("\\s+");
