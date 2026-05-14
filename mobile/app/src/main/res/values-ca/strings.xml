@@ -20,8 +20,7 @@
 
     <string name="user_selector_emoji">👥</string>
     <string name="user_selector_title">Selecciona un usuari</string>
-    <string name="user_selector_subtitle">Escull un perfil demo per entrar al mòdul mòbil.</string>
-    <string name="user_selector_section_title">Usuaris disponibles</string>
+    <string name="user_selector_subtitle">Selecciona un usuari real registrat a EasyTraza per identificar-te al mòdul mòbil.</string>    <string name="user_selector_section_title">Usuaris disponibles</string>
     <string name="user_selector_open_profile">Entrar</string>
     <string name="user_selector_config_button">Configuració de connexió</string>
 
@@ -130,4 +129,11 @@
     <string name="lots_mobile_started">Lot iniciat correctament.</string>
     <string name="lots_mobile_finished">Lot finalitzat correctament.</string>
     <string name="lots_mobile_action_error">No s’ha pogut completar l’operació sobre el lot.</string>
+
+    <string name="mobile_user_loading">Carregant usuaris…</string>
+    <string name="mobile_user_empty">No hi ha usuaris disponibles.</string>
+    <string name="mobile_user_error_no_ip">Primer has de desar una IP vàlida del backend.</string>
+    <string name="mobile_user_refresh_button">Actualitzar usuaris</string>
+    <string name="mobile_user_role_admin">Administrador</string>
+    <string name="mobile_user_role_operari">Operari</string>
 </resources>
