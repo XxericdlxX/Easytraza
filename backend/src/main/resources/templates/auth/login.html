@@ -8,15 +8,6 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body class="login-body">
-        <div class="login-language">
-            <a th:href="@{/login(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">
-                ES
-            </a>
-            <a th:href="@{/login(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">
-                CA
-            </a>
-        </div>
-
         <main class="login-page">
             <section class="login-card">
                 <div class="login-brand">
@@ -31,6 +22,12 @@
                      th:if="${param.logout}"
                      th:text="#{auth.logout.exit}">
                     Sesión cerrada correctamente.
+                </div>
+
+                <div class="success-message"
+                     th:if="${param.resetOk}"
+                     th:text="#{recuperacio.login.contrasenya.actualitzada}">
+                    Contraseña actualizada correctamente.
                 </div>
 
                 <div class="error-message"
@@ -64,6 +61,12 @@
                         Iniciar sesión
                     </button>
                 </form>
+
+                <div class="login-recovery-link">
+                    <a th:href="@{/recuperar-contrasenya}" th:text="#{recuperacio.enllac}">
+                        ¿Has olvidado tu contraseña?
+                    </a>
+                </div>
             </section>
         </main>
     </body>
