@@ -12,8 +12,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
+import cat.copernic.easytraza_mobile.network.dto.MobileUsuariDto
 import cat.copernic.easytraza_mobile.ui.screen.ConfigScreen
 import cat.copernic.easytraza_mobile.ui.screen.DashboardScreen
 import cat.copernic.easytraza_mobile.ui.screen.GestioLotsScreen
@@ -23,6 +25,7 @@ import cat.copernic.easytraza_mobile.ui.theme.Projecte4_EasyTraza_EricTheme
 import cat.copernic.easytraza_mobile.ui.viewmodel.ConfigIpViewModel
 import cat.copernic.easytraza_mobile.ui.viewmodel.GestioLotsViewModel
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
+import cat.copernic.easytraza_mobile.ui.viewmodel.UserSelectionViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -31,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
         val repository = IpPreferencesRepository(applicationContext)
         val configViewModel = ConfigIpViewModel(application, repository)
+        val userSelectionViewModel = UserSelectionViewModel(application, repository)
 
         setContent {
             Projecte4_EasyTraza_EricTheme {
@@ -40,15 +44,28 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val ip by configViewModel.ip.collectAsState()
                     val status by configViewModel.status.collectAsState()
+                    val users by userSelectionViewModel.users.collectAsState()
+                    val loadingUsers by userSelectionViewModel.loading.collectAsState()
+                    val userStatus by userSelectionViewModel.status.collectAsState()
 
                     val currentScreen = remember { mutableStateOf(AppScreen.UserSelection) }
-                    val currentUser = remember { mutableStateOf<DemoUser?>(null) }
+                    val currentUser = remember { mutableStateOf<MobileUsuariDto?>(null) }
+
+                    val currentUserName = construirNomVisible(currentUser.value)
+                    val currentUserRole = obtenirRolVisible(currentUser.value?.rol)
+                    val currentUserEmail = currentUser.value?.email.orEmpty()
+                    val currentUserInitials = obtenirInicials(currentUser.value)
 
                     when (currentScreen.value) {
                         AppScreen.UserSelection -> {
                             UserSelectionScreen(
-                                users = demoUsers(),
-                                onUserSelected = { user: DemoUser ->
+                                users = users,
+                                loading = loadingUsers,
+                                status = userStatus,
+                                onRefreshUsers = {
+                                    userSelectionViewModel.carregarUsuaris()
+                                },
+                                onUserSelected = { user: MobileUsuariDto ->
                                     currentUser.value = user
                                     currentScreen.value = AppScreen.Dashboard
                                 },
@@ -60,10 +77,13 @@ class MainActivity : ComponentActivity() {
 
                         AppScreen.Dashboard -> {
                             DashboardScreen(
-                                currentUserName = currentUser.value?.name ?: "Operari Demo",
-                                currentUserRole = currentUser.value?.role ?: "Operari",
-                                currentUserEmoji = currentUser.value?.emoji ?: "🧑‍🍳",
+                                currentUserName = currentUserName,
+                                currentUserRole = currentUserRole,
+                                currentUserEmail = currentUserEmail,
+                                currentUserInitials = currentUserInitials,
                                 onBackToUsers = {
+                                    currentUser.value = null
+                                    userSelectionViewModel.carregarUsuaris()
                                     currentScreen.value = AppScreen.UserSelection
                                 },
                                 onOpenConfig = {
@@ -102,6 +122,10 @@ class MainActivity : ComponentActivity() {
                                     currentScreen.value =
                                         if (currentUser.value != null) AppScreen.Dashboard
                                         else AppScreen.UserSelection
+
+                                    if (currentUser.value == null) {
+                                        userSelectionViewModel.carregarUsuaris()
+                                    }
                                 }
                             )
                         }
@@ -110,7 +134,8 @@ class MainActivity : ComponentActivity() {
                             val recepcioViewModel: RecepcioAlbaraViewModel = viewModel()
 
                             RecepcioAlbaraScreen(
-                                currentUserName = currentUser.value?.name ?: "Operari Demo",
+                                currentUserId = currentUser.value?.id,
+                                currentUserName = currentUserName,
                                 viewModel = recepcioViewModel,
                                 onBack = {
                                     currentScreen.value = AppScreen.Dashboard
@@ -118,7 +143,7 @@ class MainActivity : ComponentActivity() {
                                 onSaveSuccess = {
                                     Toast.makeText(
                                         this@MainActivity,
-                                        "Albarán guardado correctamente",
+                                        getString(R.string.recepcio_save_success_toast),
                                         Toast.LENGTH_SHORT
                                     ).show()
 
@@ -141,17 +166,36 @@ private enum class AppScreen {
     Lots
 }
 
-data class DemoUser(
-    val name: String,
-    val role: String,
-    val emoji: String
-)
+private fun construirNomVisible(user: MobileUsuariDto?): String {
+    if (user == null) {
+        return ""
+    }
 
-private fun demoUsers(): List<DemoUser> {
-    return listOf(
-        DemoUser("Eric Delgado López", "Operari", "🧑‍🍳"),
-        DemoUser("Anna Serra Puig", "Operari", "👩‍🍳"),
-        DemoUser("Marc Soler Vila", "Operari", "🧑‍🔧"),
-        DemoUser("Laia Costa Roca", "Operari", "👩‍🔧")
-    )
+    val complet = "${user.nom.orEmpty().trim()} ${user.cognoms.orEmpty().trim()}".trim()
+    return complet.ifBlank { user.email.orEmpty() }
+}
+
+@androidx.compose.runtime.Composable
+private fun obtenirRolVisible(rol: String?): String {
+    return when (rol?.uppercase()) {
+        "ADMIN" -> stringResource(R.string.mobile_user_role_admin)
+        "OPERARI" -> stringResource(R.string.mobile_user_role_operari)
+        else -> rol.orEmpty()
+    }
+}
+
+private fun obtenirInicials(user: MobileUsuariDto?): String {
+    val nomVisible = construirNomVisible(user)
+
+    if (nomVisible.isBlank()) {
+        return "ET"
+    }
+
+    val parts = nomVisible.trim().split(Regex("\\s+"))
+
+    if (parts.size == 1) {
+        return parts[0].take(2).uppercase()
+    }
+
+    return "${parts[0].take(1)}${parts[1].take(1)}".uppercase()
 }
