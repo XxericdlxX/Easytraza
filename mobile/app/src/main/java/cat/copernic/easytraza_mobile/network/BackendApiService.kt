@@ -1,6 +1,7 @@
 package cat.copernic.easytraza_mobile.network
 
 import cat.copernic.easytraza_mobile.network.dto.MobileAlbaraSaveRequestDto
+import cat.copernic.easytraza_mobile.network.dto.MobileLotDto
 import cat.copernic.easytraza_mobile.network.dto.OcrAlbaraResponseDto
 import okhttp3.MultipartBody
 import retrofit2.Response
