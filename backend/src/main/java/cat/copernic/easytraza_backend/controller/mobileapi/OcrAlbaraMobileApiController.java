@@ -55,10 +55,6 @@ public class OcrAlbaraMobileApiController {
             dto.setProveidorCif(normalitzarDocument(request.getProveidorCif()));
             dto.setProveidorNomDetectat(netejarNomProveidor(request.getProveidorNom()));
             dto.setCrearProveidorSiNoExisteix(request.isCrearProveidorSiNoExisteix());
-            dto.setDocumentOcrNomOriginal(request.getDocumentOcrNomOriginal());
-            dto.setDocumentOcrNomGuardat(request.getDocumentOcrNomGuardat());
-            dto.setDocumentOcrContentType(request.getDocumentOcrContentType());
-            dto.setDocumentOcrRuta(request.getDocumentOcrRuta());
             dto.setLots(convertirLots(request.getLots()));
 
             String errorNegoci = albaraProveidorService.validarAlbara(dto, null);
