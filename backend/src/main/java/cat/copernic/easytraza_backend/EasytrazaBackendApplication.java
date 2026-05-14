@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class EasytrazaBackendApplication {
@@ -16,7 +17,8 @@ public class EasytrazaBackendApplication {
     }
 
     @Bean
-    CommandLineRunner crearSuperAdminInicial(UsuariRepository usuariRepository) {
+    CommandLineRunner crearSuperAdminInicial(UsuariRepository usuariRepository,
+            PasswordEncoder passwordEncoder) {
         return args -> {
             String emailSuperAdmin = "superadmin@easytraza.local";
 
@@ -26,7 +28,7 @@ public class EasytrazaBackendApplication {
                 superAdmin.setCognoms("Sistema");
                 superAdmin.setRol(Rol.ADMIN);
                 superAdmin.setEmail(emailSuperAdmin);
-                superAdmin.setContrasenya("superadmin");
+                superAdmin.setContrasenya(passwordEncoder.encode("superadmin"));
 
                 usuariRepository.save(superAdmin);
             }
