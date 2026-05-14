@@ -31,6 +31,7 @@ data class MobileAlbaraSaveRequestDto(
     val proveidorCif: String?,
     val proveidorNom: String,
     val crearProveidorSiNoExisteix: Boolean,
+    val usuariReceptorId: Long?,
     val lots: List<MobileLotSaveRequestDto>,
 
     val documentOcrNomOriginal: String? = null,

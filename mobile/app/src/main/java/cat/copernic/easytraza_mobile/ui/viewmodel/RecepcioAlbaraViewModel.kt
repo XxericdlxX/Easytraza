@@ -65,6 +65,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private var documentOcrNomGuardat: String? = null
     private var documentOcrContentType: String? = null
     private var documentOcrRuta: String? = null
+    private var usuariReceptorId: Long? = null
+
+    fun onUsuariReceptorSeleccionat(id: Long?) {
+        usuariReceptorId = id
+    }
 
     fun onDataRecepcioChange(value: String) {
         _dataRecepcio.value = value
@@ -248,6 +253,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                     proveidorNom = netejarNomProveidorDetectat(_proveidorNom.value)
                         .ifBlank { "Proveïdor OCR" },
                     crearProveidorSiNoExisteix = _crearProveidorSiNoExisteix.value,
+                    usuariReceptorId = usuariReceptorId,
                     documentOcrNomOriginal = documentOcrNomOriginal,
                     documentOcrNomGuardat = documentOcrNomGuardat,
                     documentOcrContentType = documentOcrContentType,

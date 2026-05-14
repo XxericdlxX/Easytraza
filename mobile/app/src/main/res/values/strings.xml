@@ -20,8 +20,7 @@
 
     <string name="user_selector_emoji">👥</string>
     <string name="user_selector_title">Selecciona un usuario</string>
-    <string name="user_selector_subtitle">Escoge un perfil demo para entrar en el módulo móvil.</string>
-    <string name="user_selector_section_title">Usuarios disponibles</string>
+    <string name="user_selector_subtitle">Selecciona un usuario real registrado en EasyTraza para identificarte en el módulo móvil.</string>    <string name="user_selector_section_title">Usuarios disponibles</string>
     <string name="user_selector_open_profile">Entrar</string>
     <string name="user_selector_config_button">Configuración de conexión</string>
 
@@ -130,4 +129,11 @@
     <string name="lots_mobile_started">Lote iniciado correctamente.</string>
     <string name="lots_mobile_finished">Lote finalizado correctamente.</string>
     <string name="lots_mobile_action_error">No se ha podido completar la operación sobre el lote.</string>
+
+    <string name="mobile_user_loading">Cargando usuarios…</string>
+    <string name="mobile_user_empty">No hay usuarios disponibles.</string>
+    <string name="mobile_user_error_no_ip">Primero debes guardar una IP válida del backend.</string>
+    <string name="mobile_user_refresh_button">Actualizar usuarios</string>
+    <string name="mobile_user_role_admin">Administrador</string>
+    <string name="mobile_user_role_operari">Operario</string>
 </resources>
