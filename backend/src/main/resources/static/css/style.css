@@ -666,6 +666,27 @@ tbody tr:hover {
     color: #8B5E3C;
 }
 
+.lot-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.lot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 10px;
+    border-radius: 12px;
+    background-color: #EFE5D8;
+    border: 1px solid #D8C8B8;
+    color: #4A2E1F;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
 .logo-title {
     display: flex;
     align-items: center;
