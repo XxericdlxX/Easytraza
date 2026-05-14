@@ -84,6 +84,10 @@
                                     Cantidad fabricada
                                 </th>
 
+                                <th th:text="#{productes.produccio.producte}">
+                                    Producto
+                                </th>
+
                                 <th th:text="#{productes.produccio.client}">
                                     Cliente
                                 </th>
@@ -106,6 +110,14 @@
                             <tr th:each="linia : ${liniesProduccio}">
                                 <td th:text="${linia.quantitat}">
                                     10
+                                </td>
+
+                                <td>
+                                    <span th:if="${linia.producte != null}"
+                                          th:text="${linia.producte.nom}">
+                                        Producto
+                                    </span>
+                                    <span th:if="${linia.producte == null}">-</span>
                                 </td>
 
                                 <td>
