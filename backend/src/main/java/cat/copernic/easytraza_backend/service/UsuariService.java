@@ -1,5 +1,6 @@
 package cat.copernic.easytraza_backend.service;
 
+import cat.copernic.easytraza_backend.dto.PerfilUsuariDto;
 import cat.copernic.easytraza_backend.dto.UsuariDto;
 import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.model.Usuari;
@@ -32,6 +33,10 @@ public class UsuariService {
 
     public Optional<Usuari> findById(Long id) {
         return usuariRepository.findById(id);
+    }
+
+    public Optional<Usuari> findByEmailIgnoreCase(String email) {
+        return usuariRepository.findByEmailIgnoreCase(normalitzarEmail(email));
     }
 
     public List<Usuari> buscar(String nom, String cognoms, String email, Rol rol) {
@@ -109,6 +114,23 @@ public class UsuariService {
                 .orElse(false);
     }
 
+    public String validarPerfilUsuari(PerfilUsuariDto perfilUsuariDto, Long idActual) {
+        String emailNormalitzat = normalitzarEmail(perfilUsuariDto.getEmail());
+
+        Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
+        if (usuariAmbMateixEmail.isPresent()
+                && (idActual == null || !usuariAmbMateixEmail.get().getId().equals(idActual))) {
+            return "perfil.error.email.duplicat";
+        }
+
+        Optional<Proveidor> proveidorAmbMateixEmail = proveidorRepository.findByEmailIgnoreCase(emailNormalitzat);
+        if (proveidorAmbMateixEmail.isPresent()) {
+            return "perfil.error.email.proveidor";
+        }
+
+        return null;
+    }
+
     public String validarUsuari(UsuariDto usuariDto, Long idActual) {
         String emailNormalitzat = normalitzarEmail(usuariDto.getEmail());
 
@@ -149,6 +171,32 @@ public class UsuariService {
         }
 
         return null;
+    }
+
+    public Usuari actualitzarPerfil(Long id, PerfilUsuariDto perfilUsuariDto) {
+        Optional<Usuari> usuariExistent = usuariRepository.findById(id);
+        if (usuariExistent.isEmpty()) {
+            return null;
+        }
+
+        Usuari usuari = usuariExistent.get();
+        usuari.setNom(normalitzarText(perfilUsuariDto.getNom()));
+        usuari.setCognoms(normalitzarText(perfilUsuariDto.getCognoms()));
+
+        if (!isProtectedUser(usuari)) {
+            usuari.setEmail(normalitzarEmail(perfilUsuariDto.getEmail()));
+        }
+
+        return usuariRepository.save(usuari);
+    }
+
+    public PerfilUsuariDto convertirEntityAPerfilDto(Usuari usuari) {
+        PerfilUsuariDto perfilUsuariDto = new PerfilUsuariDto();
+        perfilUsuariDto.setId(usuari.getId());
+        perfilUsuariDto.setNom(usuari.getNom());
+        perfilUsuariDto.setCognoms(usuari.getCognoms());
+        perfilUsuariDto.setEmail(usuari.getEmail());
+        return perfilUsuariDto;
     }
 
     public Usuari convertirDtoAEntity(UsuariDto usuariDto) {
