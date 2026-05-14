@@ -53,7 +53,6 @@ class MainActivity : ComponentActivity() {
 
                     val currentUserName = construirNomVisible(currentUser.value)
                     val currentUserRole = obtenirRolVisible(currentUser.value?.rol)
-                    val currentUserEmail = currentUser.value?.email.orEmpty()
                     val currentUserInitials = obtenirInicials(currentUser.value)
 
                     when (currentScreen.value) {
@@ -79,7 +78,6 @@ class MainActivity : ComponentActivity() {
                             DashboardScreen(
                                 currentUserName = currentUserName,
                                 currentUserRole = currentUserRole,
-                                currentUserEmail = currentUserEmail,
                                 currentUserInitials = currentUserInitials,
                                 onBackToUsers = {
                                     currentUser.value = null
