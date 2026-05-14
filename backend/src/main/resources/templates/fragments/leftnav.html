@@ -90,6 +90,10 @@
                         </div>
                     </div>
 
+                    <a th:href="@{/web/perfil}" class="btn btn-secondary leftnav-profile-btn" th:text="#{perfil.enllac}">
+                        Editar perfil
+                    </a>
+
                     <form th:action="@{/logout}" method="post" class="leftnav-logout-form">
                         <button type="submit" class="btn btn-danger leftnav-logout-btn" th:text="#{auth.logout.boto}">
                             Cerrar sesión
