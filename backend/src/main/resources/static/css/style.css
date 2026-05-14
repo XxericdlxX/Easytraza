@@ -1397,19 +1397,73 @@ body.camera-open {
 
 .table-wrapper {
     width: 100%;
-    overflow-x: visible;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 14px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .table-wrapper table {
     width: 100%;
-    table-layout: fixed;
+    min-width: 1050px;
+    table-layout: auto;
 }
 
 .table-wrapper th,
 .table-wrapper td {
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow-wrap: normal;
     word-break: normal;
+}
+
+.table-wrapper .actions-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.table-wrapper .actions-table .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.lots-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(74, 46, 31, 0.12);
+    border: 1px solid #D8C8B8;
+    -webkit-overflow-scrolling: touch;
+}
+
+.lots-table {
+    width: 100%;
+    min-width: 1450px;
+    table-layout: auto !important;
+    border-collapse: collapse;
+}
+
+.lots-table .lot-col-accions {
+    min-width: 300px;
+}
+
+.lots-table .actions-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.lots-table .actions-table .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .lot-badges-list {
