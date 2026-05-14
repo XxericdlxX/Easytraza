@@ -178,16 +178,6 @@ fun UserSelectionScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
 
-                            user.email
-                                ?.takeIf { it.isNotBlank() }
-                                ?.let { email ->
-                                    Text(
-                                        text = email,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-
                             Text(
                                 text = stringResource(R.string.user_selector_open_profile),
                                 style = MaterialTheme.typography.labelLarge,
@@ -238,8 +228,7 @@ private fun obtenirRolVisible(user: MobileUsuariDto): String {
 }
 
 private fun obtenirNomVisible(user: MobileUsuariDto): String {
-    val complet = "${user.nom.orEmpty().trim()} ${user.cognoms.orEmpty().trim()}".trim()
-    return complet.ifBlank { user.email.orEmpty() }
+    return "${user.nom.orEmpty().trim()} ${user.cognoms.orEmpty().trim()}".trim()
 }
 
 private fun obtenirInicials(user: MobileUsuariDto): String {
