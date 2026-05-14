@@ -66,9 +66,7 @@
     <string name="recepcio_save_success_toast">Albarà desat correctament</string>
 
     <string name="recepcio_create_supplier_option">Crear proveïdor si no existeix</string>
-    <string name="recepcio_create_supplier_help">Activa-ho només si has revisat que el proveïdor detectat és correcte.</string>
     <string name="recepcio_create_material_option">Crear matèria primera si no existeix</string>
-    <string name="recepcio_create_material_help">Activa-ho només si has revisat que la matèria primera detectada és correcta.</string>
     <string name="recepcio_lots_title">Lots de l’albarà</string>
     <string name="recepcio_lot_title">Lot %1$d</string>
     <string name="recepcio_add_lot_button">Afegir lot</string>

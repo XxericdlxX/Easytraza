@@ -666,6 +666,27 @@ tbody tr:hover {
     color: #8B5E3C;
 }
 
+.lot-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.lot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 10px;
+    border-radius: 12px;
+    background-color: #EFE5D8;
+    border: 1px solid #D8C8B8;
+    color: #4A2E1F;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
 .logo-title {
     display: flex;
     align-items: center;
@@ -1369,4 +1390,66 @@ body.camera-open {
 .lots-table thead th a.sort-link:hover {
     color: #FFFFFF !important;
     text-decoration: underline !important;
+}
+/* ===============================
+   Ajustos generals taules i lots associats
+   =============================== */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: visible;
+}
+
+.table-wrapper table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.lot-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.lot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #D8C8B8;
+    border-radius: 10px;
+    background-color: #F4EBDD;
+    color: #4A2E1F;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.leftnav {
+    overflow-x: hidden;
+}
+
+.leftnav-menu a {
+    overflow-wrap: anywhere;
+}
+
+.home-modules-operations {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+@media (max-width: 1400px) {
+    .table-wrapper th,
+    .table-wrapper td {
+        font-size: 0.9rem;
+        padding: 12px 10px;
+    }
 }

@@ -64,10 +64,14 @@ public class ProducteService {
 
     public List<LiniaClient> cercarProduccioLotsPerProducte(Long producteId) {
         if (producteId == null) {
-            return List.of();
+            return cercarTotaProduccioLots();
         }
 
         return albaraClientRepository.findLiniesProduccioByProducteId(producteId);
+    }
+
+    public List<LiniaClient> cercarTotaProduccioLots() {
+        return albaraClientRepository.findTotesLiniesProduccioAmbLots();
     }
 
     public String validarProducte(ProducteDto producteDto, Long idActual) {

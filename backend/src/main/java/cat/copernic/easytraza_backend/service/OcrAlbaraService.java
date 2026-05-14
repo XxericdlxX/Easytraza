@@ -277,7 +277,7 @@ public class OcrAlbaraService {
         }
 
         if ("ARTIPAS".equals(proveidor)) {
-            return "B61951172";
+            return "B61551172";
         }
 
         if ("JOSE NOVAU DIL".equals(proveidor)) {
@@ -285,7 +285,7 @@ public class OcrAlbaraService {
         }
 
         if ("TAL COM PINTA".equals(proveidor)) {
-            return "B60869311";
+            return "B60859311";
         }
 
         if ("LA META".equals(proveidor)) {

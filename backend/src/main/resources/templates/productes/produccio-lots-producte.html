@@ -22,14 +22,18 @@
                                 Producción y lotes del producto
                             </h1>
 
-                            <p>
+                            <p th:if="${producte != null}">
                                 <span th:text="#{productes.nom}">Producto</span>:
                                 <strong th:text="${producte.nom}">Producto</strong>
+                            </p>
+                            <p th:if="${producte == null}"
+                               th:text="#{productes.produccio.lots.tots}">
+                                Producción registrada de todos los productos.
                             </p>
                         </div>
                     </div>
 
-                    <a th:href="@{/web/productes}"
+                    <a th:href="@{/}"
                        class="btn btn-secondary"
                        th:text="#{accio.tornar}">
                         Volver
@@ -42,6 +46,35 @@
                     </p>
                 </div>
 
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/produccio-lots}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 260px; margin-bottom: 0;">
+                            <label for="producteId" th:text="#{productes.produccio.filtre.producte}">
+                                Filtrar por producto
+                            </label>
+                            <select id="producteId" name="producteId">
+                                <option value="" th:text="#{productes.produccio.filtre.tots}">
+                                    Todos los productos
+                                </option>
+                                <option th:each="prod : ${productes}"
+                                        th:value="${prod.id}"
+                                        th:selected="${producteId != null and prod.id == producteId}"
+                                        th:text="${prod.nom}">
+                                    Producto
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit"
+                                    class="btn btn-secondary"
+                                    th:text="#{accio.buscar}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="table-wrapper"
                      th:if="${liniesProduccio != null && !#lists.isEmpty(liniesProduccio)}">
                     <table>
@@ -49,6 +82,10 @@
                             <tr>
                                 <th th:text="#{productes.produccio.quantitat}">
                                     Cantidad fabricada
+                                </th>
+
+                                <th th:text="#{productes.produccio.producte}">
+                                    Producto
                                 </th>
 
                                 <th th:text="#{productes.produccio.client}">
@@ -73,6 +110,14 @@
                             <tr th:each="linia : ${liniesProduccio}">
                                 <td th:text="${linia.quantitat}">
                                     10
+                                </td>
+
+                                <td>
+                                    <span th:if="${linia.producte != null}"
+                                          th:text="${linia.producte.nom}">
+                                        Producto
+                                    </span>
+                                    <span th:if="${linia.producte == null}">-</span>
                                 </td>
 
                                 <td>
@@ -112,12 +157,11 @@
 
                                 <td>
                                     <div th:if="${linia.lotsAssociats != null && !#lists.isEmpty(linia.lotsAssociats)}"
-                                         class="actions">
-                                        <span th:each="lot : ${linia.lotsAssociats}" class="badge">
-                                            <span th:text="${lot.codiLot}">LOT-001</span>
-                                            <span> - </span>
-                                            <span th:text="${lot.materiaPrima != null ? lot.materiaPrima.nom : '-'}">
-                                                Materia
+                                         class="lot-badges-list">
+                                        <span th:each="lot : ${linia.lotsAssociats}" class="lot-badge">
+                                            <strong th:text="${lot.codiLot}">LOT-001</strong>
+                                            <span th:if="${lot.materiaPrima != null}">
+                                                · <span th:text="${lot.materiaPrima.nom}">Materia</span>
                                             </span>
                                         </span>
                                     </div>

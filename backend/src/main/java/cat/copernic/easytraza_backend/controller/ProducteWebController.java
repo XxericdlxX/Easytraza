@@ -42,29 +42,6 @@ public class ProducteWebController {
         return "productes/llistar-productes";
     }
 
-    @GetMapping("/{id}/produccio-lots")
-    public String veureProduccioLotsProducte(@PathVariable Long id,
-            Model model,
-            RedirectAttributes redirectAttributes,
-            Locale locale) {
-
-        Optional<Producte> producte = producteService.findById(id);
-
-        if (producte.isEmpty()) {
-            redirectAttributes.addFlashAttribute(
-                    "missatgeError",
-                    messageSource.getMessage("productes.flash.no.trobat", null, locale)
-            );
-            return "redirect:/web/productes";
-        }
-
-        model.addAttribute("producte", producte.get());
-        model.addAttribute("liniesProduccio", producteService.cercarProduccioLotsPerProducte(id));
-        model.addAttribute("currentPath", "/web/productes");
-
-        return "productes/produccio-lots-producte";
-    }
-
     @GetMapping("/crear")
     public String mostrarFormulariCrearProducte(Model model,
             RedirectAttributes redirectAttributes,

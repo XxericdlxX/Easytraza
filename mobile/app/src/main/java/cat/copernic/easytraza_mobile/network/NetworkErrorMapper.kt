@@ -8,6 +8,10 @@ import java.net.UnknownHostException
 
 object NetworkErrorMapper {
 
+    fun connectionError(context: Context, exception: Exception): String {
+        return genericConnectionError(context, exception)
+    }
+
     fun genericConnectionError(context: Context, exception: Exception): String {
         return when (exception) {
             is UnknownHostException -> context.getString(R.string.connection_error_host)

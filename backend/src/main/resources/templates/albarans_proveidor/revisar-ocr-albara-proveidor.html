@@ -11,242 +11,249 @@
     </head>
 
     <body>
-        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+        <div class="container">
 
-        <div class="page-with-nav">
-            <div class="container">
+            <div class="list-header">
+                <div class="list-title-block">
+                    <img th:src="@{/img/logo-easytraza.png}"
+                         alt="Logo EasyTraza"
+                         class="list-page-logo">
 
-                <div class="list-header">
-                    <div class="list-title-block">
-                        <img th:src="@{/img/logo-easytraza.png}"
-                             alt="Logo EasyTraza"
-                             class="list-page-logo">
-
-                        <div>
-                            <h1 th:text="#{albara.proveidor.ocr.revisar.titol}">
-                                Revisar datos detectados por OCR
-                            </h1>
-                            <p th:text="#{albara.proveidor.ocr.text.ajuda}">
-                                Revisa y corrige los datos antes de guardar el albarán.
-                            </p>
-                        </div>
+                    <div>
+                        <h1 th:text="#{albara.proveidor.ocr.revisar.titol}">
+                            Revisar datos detectados por OCR
+                        </h1>
+                        <p th:text="#{albara.proveidor.ocr.text.ajuda}">
+                            Revisa y corrige los datos antes de guardar el albarán.
+                        </p>
                     </div>
+                </div>
 
+                <div class="actions revisar-ocr-lang-actions">
+                    <a th:href="@{/web/albarans-proveidor/ocr/revisar(lang='es')}"
+                       class="btn btn-secondary"
+                       th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/albarans-proveidor/ocr/revisar(lang='ca')}"
+                       class="btn btn-secondary"
+                       th:text="#{lang.ca}">CA</a>
                     <a th:href="@{/web/albarans-proveidor/ocr}"
                        class="btn btn-secondary"
                        th:text="#{albara.proveidor.ocr.tornar.processar}">
                         Volver a procesar
                     </a>
                 </div>
+            </div>
 
-                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
-                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
-                <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+            <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+            <div th:if="${missatgeError != null or errorNegoci != null}"
+                 class="error-message"
+                 th:text="${missatgeError != null ? missatgeError : errorNegoci}"></div>
 
-                <div class="form-card ocr-text-card"
-                     style="margin-bottom: 24px;"
-                     th:if="${ocrResposta != null}">
-                    <h2 th:text="#{albara.proveidor.ocr.text.detectat}">
-                        Texto detectado por OCR
-                    </h2>
+            <div class="form-card ocr-text-card"
+                 style="margin-bottom: 24px;"
+                 th:if="${ocrResposta != null}">
+                <h2 th:text="#{albara.proveidor.ocr.text.detectat}">
+                    Texto detectado por OCR
+                </h2>
 
-                    <textarea readonly
-                              rows="10"
-                              th:text="${ocrResposta.textDetectat}">
-                    </textarea>
+                <textarea readonly
+                          rows="10"
+                          th:text="${ocrResposta.textDetectat}">
+                </textarea>
+            </div>
+
+            <form th:action="@{/web/albarans-proveidor/ocr/guardar}"
+                  th:object="${albara}"
+                  method="post"
+                  class="form-card">
+
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{documentOcrNomOriginal}">
+                <input type="hidden" th:field="*{documentOcrNomGuardat}">
+                <input type="hidden" th:field="*{documentOcrContentType}">
+                <input type="hidden" th:field="*{documentOcrRuta}">
+
+                <div class="form-group"
+                     th:if="${albara.documentOcrNomOriginal != null and !#strings.isEmpty(albara.documentOcrNomOriginal)}">
+                    <label th:text="#{albara.proveidor.ocr.document.guardat}">
+                        Documento OCR guardado
+                    </label>
+                    <input type="text" readonly th:value="${albara.documentOcrNomOriginal}">
                 </div>
 
-                <form th:action="@{/web/albarans-proveidor/ocr/guardar}"
-                      th:object="${albara}"
-                      method="post"
-                      class="form-card">
+                <div class="form-group">
+                    <label for="dataRecepcio">
+                        <span th:text="#{albara.proveidor.data}">Fecha de recepción</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="date"
+                           id="dataRecepcio"
+                           th:field="*{dataRecepcio}">
+                </div>
 
-                    <input type="hidden" th:field="*{id}">
-                    <input type="hidden" th:field="*{documentOcrNomOriginal}">
-                    <input type="hidden" th:field="*{documentOcrNomGuardat}">
-                    <input type="hidden" th:field="*{documentOcrContentType}">
-                    <input type="hidden" th:field="*{documentOcrRuta}">
+                <div class="form-group">
+                    <label for="proveidorSelect">
+                        <span th:text="#{albara.proveidor.proveidor}">Proveedor</span>
+                        <span class="required">*</span>
+                    </label>
 
-                    <div class="form-group"
-                         th:if="${albara.documentOcrNomOriginal != null and !#strings.isEmpty(albara.documentOcrNomOriginal)}">
-                        <label th:text="#{albara.proveidor.ocr.document.guardat}">Documento OCR guardado</label>
-                        <input type="text" readonly th:value="${albara.documentOcrNomOriginal}">
+                    <select id="proveidorSelect">
+                        <option value="">--</option>
+
+                        <option th:each="proveidor : ${proveidors}"
+                                th:value="${proveidor.cif}"
+                                th:selected="${proveidor.cif == albara.proveidorCif}"
+                                th:text="${proveidor.cif + ' - ' + proveidor.nom}">
+                            Proveedor
+                        </option>
+                    </select>
+
+                    <small class="field-help"
+                           th:text="#{albara.proveidor.ocr.proveidor.ajuda}">
+                        Si el proveedor ya existe, selecciónalo aquí. Si OCR no detecta el CIF/NIF/NIE, escríbelo abajo.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="proveidorCifManual">
+                        <span th:text="#{proveidors.cif}">CIF/NIF/NIE</span>
+                        <span class="required">*</span>
+                    </label>
+
+                    <input type="text"
+                           id="proveidorCifManual"
+                           th:field="*{proveidorCif}"
+                           th:placeholder="#{albara.proveidor.ocr.cif.placeholder}">
+                </div>
+
+                <div class="form-group"
+                     th:if="${albara.proveidorNomDetectat != null and !#strings.isEmpty(albara.proveidorNomDetectat)}">
+                    <label for="proveidorNomDetectat"
+                           th:text="#{albara.proveidor.ocr.proveidor.detectat}">
+                        Proveedor detectado por OCR
+                    </label>
+
+                    <input type="text"
+                           id="proveidorNomDetectat"
+                           th:field="*{proveidorNomDetectat}"
+                           th:placeholder="#{albara.proveidor.ocr.proveidor.detectat.placeholder}">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox"
+                               th:field="*{crearProveidorSiNoExisteix}">
+                        <span th:text="#{albara.proveidor.ocr.crear.proveidor}">
+                            Crear proveedor automáticamente si no existe
+                        </span>
+                    </label>
+                </div>
+
+                <h2 th:text="#{albara.proveidor.lots}">
+                    Lotes
+                </h2>
+
+                <div th:if="${#lists.isEmpty(albara.lots)}"
+                     class="empty-message"
+                     th:text="#{albara.proveidor.lots.buit}">
+                    Este albarán no tiene lotes.
+                </div>
+
+                <div th:each="lot, iterStat : *{lots}"
+                     class="form-card"
+                     style="margin-bottom: 18px; box-shadow: none; border: 1px solid #D8C8B8;">
+
+                    <div class="header-actions">
+                        <h3>
+                            <span th:text="#{lot.proveidor.titol}">Lote</span>
+                            <span th:text="${iterStat.index + 1}">1</span>
+                        </h3>
+                    </div>
+
+                    <input type="hidden"
+                           th:field="*{lots[__${iterStat.index}__].id}">
+
+                    <div class="form-group">
+                        <label th:for="${'codiLot-' + iterStat.index}">
+                            <span th:text="#{lot.proveidor.codi}">Código/identificador de lote</span>
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               th:id="${'codiLot-' + iterStat.index}"
+                               th:field="*{lots[__${iterStat.index}__].codiLot}">
                     </div>
 
                     <div class="form-group">
-                        <label for="dataRecepcio">
-                            <span th:text="#{albara.proveidor.data}">Fecha de recepción</span>
+                        <label th:for="${'quantitat-' + iterStat.index}">
+                            <span th:text="#{lot.proveidor.quantitat}">Cantidad</span>
                             <span class="required">*</span>
                         </label>
-                        <input type="date"
-                               id="dataRecepcio"
-                               th:field="*{dataRecepcio}">
+
+                        <input type="number"
+                               step="0.01"
+                               min="0.01"
+                               th:id="${'quantitat-' + iterStat.index}"
+                               th:field="*{lots[__${iterStat.index}__].quantitat}">
                     </div>
 
                     <div class="form-group">
-                        <label for="proveidorSelect">
-                            <span th:text="#{albara.proveidor.proveidor}">Proveedor</span>
+                        <label th:for="${'materiaPrimaId-' + iterStat.index}">
+                            <span th:text="#{lot.proveidor.materia}">Materia prima</span>
                             <span class="required">*</span>
                         </label>
 
-                        <select id="proveidorSelect">
+                        <select th:id="${'materiaPrimaId-' + iterStat.index}"
+                                th:field="*{lots[__${iterStat.index}__].materiaPrimaId}">
                             <option value="">--</option>
 
-                            <option th:each="proveidor : ${proveidors}"
-                                    th:value="${proveidor.cif}"
-                                    th:selected="${proveidor.cif == albara.proveidorCif}"
-                                    th:text="${proveidor.cif + ' - ' + proveidor.nom}">
-                                Proveedor
+                            <option th:each="materia : ${materiesPrimeres}"
+                                    th:value="${materia.id}"
+                                    th:selected="${materia.id == lot.materiaPrimaId}"
+                                    th:text="${materia.nom}">
+                                Materia prima
                             </option>
                         </select>
-
-                        <small class="field-help"
-                               th:text="#{albara.proveidor.ocr.proveidor.ajuda}">
-                            Si el proveedor ya existe, selecciónalo aquí. Si OCR no detecta el CIF/NIF/NIE, escríbelo abajo.
-                        </small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="proveidorCifManual">
-                            <span th:text="#{proveidors.cif}">CIF/NIF/NIE</span>
-                            <span class="required">*</span>
-                        </label>
-
-                        <input type="text"
-                               id="proveidorCifManual"
-                               th:field="*{proveidorCif}"
-                               th:placeholder="#{albara.proveidor.ocr.cif.placeholder}">
                     </div>
 
                     <div class="form-group"
-                         th:if="${albara.proveidorNomDetectat != null and !#strings.isEmpty(albara.proveidorNomDetectat)}">
-                        <label for="proveidorNomDetectat"
-                               th:text="#{albara.proveidor.ocr.proveidor.detectat}">
-                            Proveedor detectado por OCR
+                         th:if="${lot.materiaPrimaNomDetectada != null and !#strings.isEmpty(lot.materiaPrimaNomDetectada)}">
+                        <label th:for="${'materiaDetectada-' + iterStat.index}"
+                               th:text="#{albara.proveidor.ocr.materia.detectada}">
+                            Materia prima detectada por OCR
                         </label>
 
                         <input type="text"
-                               id="proveidorNomDetectat"
-                               th:field="*{proveidorNomDetectat}"
-                               th:placeholder="#{albara.proveidor.ocr.proveidor.detectat.placeholder}">
+                               th:id="${'materiaDetectada-' + iterStat.index}"
+                               th:field="*{lots[__${iterStat.index}__].materiaPrimaNomDetectada}"
+                               th:placeholder="#{albara.proveidor.ocr.materia.detectada.placeholder}">
                     </div>
 
                     <div class="form-group">
                         <label class="checkbox-label">
                             <input type="checkbox"
-                                   th:field="*{crearProveidorSiNoExisteix}">
-                            <span th:text="#{albara.proveidor.ocr.crear.proveidor}">
-                                Crear proveedor automáticamente si no existe
+                                   th:field="*{lots[__${iterStat.index}__].crearMateriaPrimaSiNoExisteix}">
+                            <span th:text="#{albara.proveidor.ocr.crear.materia}">
+                                Crear materia prima automáticamente si no existe
                             </span>
                         </label>
                     </div>
+                </div>
 
-                    <h2 th:text="#{albara.proveidor.lots}">
-                        Lotes
-                    </h2>
+                <div class="actions" style="margin-top: 24px;">
+                    <button type="submit"
+                            class="btn btn-primary"
+                            th:text="#{albara.proveidor.ocr.guardar}">
+                        Guardar albarán detectado
+                    </button>
 
-                    <div th:if="${#lists.isEmpty(albara.lots)}"
-                         class="empty-message"
-                         th:text="#{albara.proveidor.lots.buit}">
-                        Este albarán no tiene lotes.
-                    </div>
-
-                    <div th:each="lot, iterStat : *{lots}"
-                         class="form-card"
-                         style="margin-bottom: 18px; box-shadow: none; border: 1px solid #D8C8B8;">
-
-                        <div class="header-actions">
-                            <h3>
-                                <span th:text="#{lot.proveidor.titol}">Lote</span>
-                                <span th:text="${iterStat.index + 1}">1</span>
-                            </h3>
-                        </div>
-
-                        <input type="hidden"
-                               th:field="*{lots[__${iterStat.index}__].id}">
-
-                        <div class="form-group">
-                            <label th:for="${'codiLot-' + iterStat.index}">
-                                <span th:text="#{lot.proveidor.codi}">Código/identificador de lote</span>
-                                <span class="required">*</span>
-                            </label>
-
-                            <input type="text"
-                                   th:id="${'codiLot-' + iterStat.index}"
-                                   th:field="*{lots[__${iterStat.index}__].codiLot}">
-                        </div>
-
-                        <div class="form-group">
-                            <label th:for="${'quantitat-' + iterStat.index}">
-                                <span th:text="#{lot.proveidor.quantitat}">Cantidad</span>
-                                <span class="required">*</span>
-                            </label>
-
-                            <input type="number"
-                                   step="0.01"
-                                   min="0.01"
-                                   th:id="${'quantitat-' + iterStat.index}"
-                                   th:field="*{lots[__${iterStat.index}__].quantitat}">
-                        </div>
-
-                        <div class="form-group">
-                            <label th:for="${'materiaPrimaId-' + iterStat.index}">
-                                <span th:text="#{lot.proveidor.materia}">Materia prima</span>
-                                <span class="required">*</span>
-                            </label>
-
-                            <select th:id="${'materiaPrimaId-' + iterStat.index}"
-                                    th:field="*{lots[__${iterStat.index}__].materiaPrimaId}">
-                                <option value="">--</option>
-
-                                <option th:each="materia : ${materiesPrimeres}"
-                                        th:value="${materia.id}"
-                                        th:selected="${materia.id == lot.materiaPrimaId}"
-                                        th:text="${materia.nom}">
-                                    Materia prima
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group"
-                             th:if="${lot.materiaPrimaNomDetectada != null and !#strings.isEmpty(lot.materiaPrimaNomDetectada)}">
-                            <label th:for="${'materiaDetectada-' + iterStat.index}"
-                                   th:text="#{albara.proveidor.ocr.materia.detectada}">
-                                Materia prima detectada por OCR
-                            </label>
-
-                            <input type="text"
-                                   th:id="${'materiaDetectada-' + iterStat.index}"
-                                   th:field="*{lots[__${iterStat.index}__].materiaPrimaNomDetectada}"
-                                   th:placeholder="#{albara.proveidor.ocr.materia.detectada.placeholder}">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox"
-                                       th:field="*{lots[__${iterStat.index}__].crearMateriaPrimaSiNoExisteix}">
-                                <span th:text="#{albara.proveidor.ocr.crear.materia}">
-                                    Crear materia prima automáticamente si no existe
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="actions" style="margin-top: 24px;">
-                        <button type="submit"
-                                class="btn btn-primary"
-                                th:text="#{albara.proveidor.ocr.guardar}">
-                            Guardar albarán detectado
-                        </button>
-
-                        <a th:href="@{/web/albarans-proveidor}"
-                           class="btn btn-secondary"
-                           th:text="#{albara.proveidor.tornar}">
-                            Volver
-                        </a>
-                    </div>
-                </form>
-            </div>
+                    <a th:href="@{/web/albarans-proveidor}"
+                       class="btn btn-secondary"
+                       th:text="#{albara.proveidor.tornar}">
+                        Volver
+                    </a>
+                </div>
+            </form>
         </div>
 
         <script>
