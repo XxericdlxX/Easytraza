@@ -313,6 +313,12 @@
 
                                 <td class="lot-col-accions">
                                     <div class="actions-table">
+                                        <a th:href="@{/web/lots/{id}/produccio(id=${lot.id})}"
+                                           class="btn btn-accent"
+                                           th:text="#{lots.veure.produccio}">
+                                            Ver producción
+                                        </a>
+
                                         <a th:if="${lot.estat != null && lot.estat.name() == 'EN_ESTOC'}"
                                            th:href="@{/web/lots/iniciar/{id}(id=${lot.id})}"
                                            class="btn btn-primary js-confirm-action"
