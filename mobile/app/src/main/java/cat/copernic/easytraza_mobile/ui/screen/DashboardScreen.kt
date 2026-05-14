@@ -38,8 +38,7 @@ fun DashboardScreen(
     currentUserEmoji: String,
     onBackToUsers: () -> Unit,
     onOpenConfig: () -> Unit,
-    onOpenRecepcio: () -> Unit,
-    onOpenLots: () -> Unit
+    onOpenRecepcio: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -50,77 +49,75 @@ fun DashboardScreen(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(58.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = currentUserEmoji,
-                            style = MaterialTheme.typography.headlineMedium
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier.padding(start = 12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.dashboard_welcome_label),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = currentUserName,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = currentUserRole,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-
-                OutlinedButton(
-                    onClick = onOpenConfig,
-                    shape = RoundedCornerShape(16.dp),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)
+                Box(
+                    modifier = Modifier
+                        .size(58.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.dashboard_config_short_button),
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold
+                        text = currentUserEmoji,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.padding(start = 12.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.dashboard_welcome_label),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        text = currentUserName,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+
+                    Text(
+                        text = currentUserRole,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
             OutlinedButton(
-                onClick = onBackToUsers,
-                modifier = Modifier.fillMaxWidth(),
+                onClick = onOpenConfig,
                 shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(vertical = 12.dp)
+                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.dashboard_change_user_button),
+                    text = stringResource(R.string.dashboard_config_short_button),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
                 )
             }
+        }
+
+        OutlinedButton(
+            onClick = onBackToUsers,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            contentPadding = PaddingValues(vertical = 12.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.dashboard_change_user_button),
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold
+            )
         }
 
         Text(
@@ -147,7 +144,7 @@ fun DashboardScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "📋",
+                    text = "🧾",
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -160,49 +157,6 @@ fun DashboardScreen(
 
                 Text(
                     text = stringResource(R.string.dashboard_action_receive_subtitle),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Text(
-                    text = stringResource(R.string.dashboard_action_open),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onOpenLots() },
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.dashboard_action_lots_emoji),
-                    style = MaterialTheme.typography.headlineMedium
-                )
-
-                Text(
-                    text = stringResource(R.string.dashboard_action_lots_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Text(
-                    text = stringResource(R.string.dashboard_action_lots_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
