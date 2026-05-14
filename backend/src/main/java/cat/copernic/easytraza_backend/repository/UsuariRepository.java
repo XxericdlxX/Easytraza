@@ -14,6 +14,8 @@ public interface UsuariRepository extends JpaRepository<Usuari, Long> {
 
     Optional<Usuari> findByEmailIgnoreCase(String email);
 
+    Optional<Usuari> findByTokenRecuperacioContrasenya(String tokenRecuperacioContrasenya);
+
     boolean existsByEmail(String email);
 
     boolean existsByEmailIgnoreCase(String email);
