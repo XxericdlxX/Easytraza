@@ -122,7 +122,8 @@
 
                                     <span th:if="${linia.lotsAssociats != null && !#sets.isEmpty(linia.lotsAssociats)}"
                                           th:each="lot, iterStat : ${linia.lotsAssociats}">
-                                        <span th:text="${lot.codiLot}">LOT-PROV-01</span><span th:if="${!iterStat.last}">, </span>
+                                        <span th:text="${lot.codiLot
+                                              + (lot.materiaPrima != null ? ' - ' + lot.materiaPrima.nom : '')}">LOT-PROV-01 - Farina</span><span th:if="${!iterStat.last}">, </span>
                                     </span>
                                 </td>
                             </tr>

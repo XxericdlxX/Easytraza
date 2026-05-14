@@ -61,6 +61,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private val _saveCompleted = MutableStateFlow(false)
     val saveCompleted: StateFlow<Boolean> = _saveCompleted
 
+    private var documentOcrNomOriginal: String? = null
+    private var documentOcrNomGuardat: String? = null
+    private var documentOcrContentType: String? = null
+    private var documentOcrRuta: String? = null
+
     fun onDataRecepcioChange(value: String) {
         _dataRecepcio.value = value
     }
@@ -243,6 +248,10 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                     proveidorNom = netejarNomProveidorDetectat(_proveidorNom.value)
                         .ifBlank { "Proveïdor OCR" },
                     crearProveidorSiNoExisteix = _crearProveidorSiNoExisteix.value,
+                    documentOcrNomOriginal = documentOcrNomOriginal,
+                    documentOcrNomGuardat = documentOcrNomGuardat,
+                    documentOcrContentType = documentOcrContentType,
+                    documentOcrRuta = documentOcrRuta,
                     lots = buildLotsPerGuardar()
                 )
 
@@ -296,6 +305,10 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         _proveidorCif.value = resposta.proveidorCif.orEmpty()
         _dataRecepcio.value = resoldreDataRecepcio(resposta.dataAlbara)
         _textOcr.value = resposta.textDetectat.orEmpty()
+        documentOcrNomOriginal = resposta.documentOcrNomOriginal
+        documentOcrNomGuardat = resposta.documentOcrNomGuardat
+        documentOcrContentType = resposta.documentOcrContentType
+        documentOcrRuta = resposta.documentOcrRuta
 
         val lotsMapejats = resposta.lots.map { lot ->
             EditableLotUi(

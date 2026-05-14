@@ -30,8 +30,13 @@
     <string name="dashboard_change_user_button">Cambiar usuario</string>
     <string name="dashboard_actions_section_title">Acción principal</string>
     <string name="dashboard_action_open">Abrir</string>
+
     <string name="dashboard_action_receive_title">Recepcionar albarán</string>
     <string name="dashboard_action_receive_subtitle">Crea el albarán desde móvil manualmente o mediante OCR usando cámara, imagen o PDF.</string>
+
+    <string name="dashboard_action_lots_emoji">🔁</string>
+    <string name="dashboard_action_lots_title">Gestionar lotes</string>
+    <string name="dashboard_action_lots_subtitle">Consulta los lotes registrados e inicia o finaliza el lote activo desde el móvil.</string>
 
     <string name="dashboard_config_section_title">Configuración de conexión</string>
     <string name="dashboard_config_section_subtitle">Mantén accesible la IP del backend desde esta pantalla independiente.</string>
@@ -58,6 +63,16 @@
     <string name="recepcio_field_quantity">Cantidad</string>
     <string name="recepcio_field_material">Materia prima</string>
     <string name="recepcio_save_button">Guardar albarán</string>
+    <string name="recepcio_save_success_toast">Albarán guardado correctamente</string>
+
+    <string name="recepcio_create_supplier_option">Crear proveedor si no existe</string>
+    <string name="recepcio_create_supplier_help">Actívalo solo si has revisado que el proveedor detectado es correcto.</string>
+    <string name="recepcio_create_material_option">Crear materia prima si no existe</string>
+    <string name="recepcio_create_material_help">Actívalo solo si has revisado que la materia prima detectada es correcta.</string>
+    <string name="recepcio_lots_title">Lotes del albarán</string>
+    <string name="recepcio_lot_title">Lote %1$d</string>
+    <string name="recepcio_add_lot_button">Añadir lote</string>
+    <string name="recepcio_delete_lot_button">Eliminar</string>
 
     <string name="recepcio_create_supplier_checkbox">Crear proveedor automáticamente si no existe</string>
     <string name="recepcio_create_material_checkbox">Crear materia prima automáticamente si no existe</string>
@@ -85,5 +100,36 @@
     <string name="ocr_processing_photo">Analizando fotografía…</string>
     <string name="ocr_processing_error">No se ha podido analizar el documento. Revisa la imagen o prueba con otra foto.</string>
 
-    <string name="recepcio_save_success_toast">Albarán guardado correctamente</string>
+    <string name="lots_mobile_title">Gestionar lotes</string>
+    <string name="lots_mobile_subtitle">Consulta los lotes registrados e inicia o finaliza el lote activo desde el móvil.</string>
+    <string name="lots_mobile_refresh">Actualizar</string>
+    <string name="lots_mobile_loading">Cargando lotes…</string>
+    <string name="lots_mobile_empty">No hay lotes registrados.</string>
+    <string name="lots_mobile_supplier">Proveedor: %1$s</string>
+    <string name="lots_mobile_material">Materia prima: %1$s</string>
+    <string name="lots_mobile_quantity">Cantidad: %1$s</string>
+    <string name="lots_mobile_reception_date">Fecha de recepción: %1$s</string>
+    <string name="lots_mobile_reception_date_value">%1$s</string>
+    <string name="lots_mobile_start_button">Iniciar lote</string>
+    <string name="lots_mobile_finish_button">Finalizar lote</string>
+    <string name="lots_mobile_no_actions">Sin acciones disponibles</string>
+    <string name="lots_mobile_start_confirm_title">Iniciar lote</string>
+    <string name="lots_mobile_start_confirm_text">¿Seguro que quieres iniciar este lote?</string>
+    <string name="lots_mobile_finish_confirm_title">Finalizar lote</string>
+    <string name="lots_mobile_finish_confirm_text">¿Seguro que quieres finalizar este lote?</string>
+    <string name="lots_mobile_confirm">Confirmar</string>
+    <string name="lots_mobile_cancel">Cancelar</string>
+    <string name="lots_mobile_status_stock">En stock</string>
+    <string name="lots_mobile_status_open">Abierto</string>
+    <string name="lots_mobile_status_finished">Acabado</string>
+    <string name="lots_mobile_status_unknown">Estado desconocido</string>
+    <string name="lots_mobile_start_success">Lote iniciado correctamente.</string>
+    <string name="lots_mobile_finish_success">Lote finalizado correctamente.</string>
+    <string name="lots_mobile_error_loading">No se han podido cargar los lotes.</string>
+    <string name="lots_mobile_error_start">No se ha podido iniciar el lote.</string>
+    <string name="lots_mobile_error_finish">No se ha podido finalizar el lote.</string>
+
+    <string name="lots_mobile_started">Lote iniciado correctamente.</string>
+    <string name="lots_mobile_finished">Lote finalizado correctamente.</string>
+    <string name="lots_mobile_action_error">No se ha podido completar la operación sobre el lote.</string>
 </resources>

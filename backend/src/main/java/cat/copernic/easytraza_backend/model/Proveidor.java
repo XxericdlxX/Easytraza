@@ -4,27 +4,42 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "proveidors")
 public class Proveidor {
 
     @Id
+    @NotBlank(message = "{proveidors.cif.obligatori}")
+    @Size(max = 20, message = "{proveidors.cif.max}")
     @Column(nullable = false, unique = true, length = 20)
     private String cif;
 
-    @Column(nullable = false)
+    @NotBlank(message = "{proveidors.nom.obligatori}")
+    @Size(max = 100, message = "{proveidors.nom.max}")
+    @Column(nullable = false, length = 100)
     private String nom;
 
-    @Column(nullable = false)
+    @NotBlank(message = "{proveidors.adreca.obligatoria}")
+    @Size(max = 255, message = "{proveidors.adreca.max}")
+    @Column(nullable = false, length = 255)
     private String adreca;
 
+    @Size(max = 255, message = "{proveidors.notes.max}")
     @Column(length = 255)
     private String notes;
 
+    @Size(max = 20, message = "{proveidors.telefon.max}")
+    @Pattern(regexp = "^$|^[+0-9 ()-]{7,20}$", message = "{proveidors.telefon.invalid}")
     @Column(length = 20)
     private String telefon;
 
+    @Size(max = 100, message = "{proveidors.email.max}")
+    @Email(message = "{proveidors.email.invalid}")
     @Column(length = 100)
     private String email;
 

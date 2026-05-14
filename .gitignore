@@ -46,3 +46,6 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+# Fitxers pujats per l'aplicació
+uploads/
+backend/uploads/

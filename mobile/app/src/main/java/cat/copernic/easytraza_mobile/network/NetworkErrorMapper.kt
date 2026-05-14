@@ -8,32 +8,29 @@ import java.net.UnknownHostException
 
 object NetworkErrorMapper {
 
-    fun connectionError(context: Context, throwable: Throwable): String {
-        return when (throwable) {
-            is UnknownHostException -> context.getString(R.string.network_error_unknown_host)
-            is ConnectException -> context.getString(R.string.network_error_no_connection)
-            is SocketTimeoutException -> context.getString(R.string.network_error_timeout)
-            is IllegalArgumentException -> context.getString(R.string.network_error_invalid_ip)
-            else -> context.getString(R.string.network_error_generic)
+    fun genericConnectionError(context: Context, exception: Exception): String {
+        return when (exception) {
+            is UnknownHostException -> context.getString(R.string.connection_error_host)
+            is ConnectException -> context.getString(R.string.connection_error_connect)
+            is SocketTimeoutException -> context.getString(R.string.connection_error_timeout)
+            else -> context.getString(R.string.connection_error_generic)
         }
     }
 
-    fun ocrError(context: Context, throwable: Throwable): String {
-        return when (throwable) {
-            is UnknownHostException -> context.getString(R.string.network_error_unknown_host)
-            is ConnectException -> context.getString(R.string.ocr_error_connection)
-            is SocketTimeoutException -> context.getString(R.string.ocr_error_timeout)
-            is IllegalArgumentException -> context.getString(R.string.network_error_invalid_ip)
+    fun ocrError(context: Context, exception: Exception): String {
+        return when (exception) {
+            is UnknownHostException -> context.getString(R.string.connection_error_host)
+            is ConnectException -> context.getString(R.string.connection_error_connect)
+            is SocketTimeoutException -> context.getString(R.string.connection_error_timeout)
             else -> context.getString(R.string.ocr_processing_error)
         }
     }
 
-    fun saveAlbaraError(context: Context, throwable: Throwable): String {
-        return when (throwable) {
-            is UnknownHostException -> context.getString(R.string.network_error_unknown_host)
-            is ConnectException -> context.getString(R.string.network_error_no_connection)
-            is SocketTimeoutException -> context.getString(R.string.network_error_timeout)
-            is IllegalArgumentException -> context.getString(R.string.network_error_invalid_ip)
+    fun saveAlbaraError(context: Context, exception: Exception): String {
+        return when (exception) {
+            is UnknownHostException -> context.getString(R.string.connection_error_host)
+            is ConnectException -> context.getString(R.string.connection_error_connect)
+            is SocketTimeoutException -> context.getString(R.string.connection_error_timeout)
             else -> context.getString(R.string.ocr_save_error)
         }
     }

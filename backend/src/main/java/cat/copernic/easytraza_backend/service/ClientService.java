@@ -3,6 +3,7 @@ package cat.copernic.easytraza_backend.service;
 import cat.copernic.easytraza_backend.model.Client;
 import cat.copernic.easytraza_backend.model.enums.TipusClient;
 import cat.copernic.easytraza_backend.repository.ClientRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class ClientService {
 
         clientExistent.setNom(clientActualitzat.getNom());
         clientExistent.setTipusClient(clientActualitzat.getTipusClient());
+        clientExistent.setTipusClientAltres(clientActualitzat.getTipusClientAltres());
         clientExistent.setAdreca(clientActualitzat.getAdreca());
         clientExistent.setTelefon(clientActualitzat.getTelefon());
         clientExistent.setEmail(clientActualitzat.getEmail());
@@ -48,8 +50,10 @@ public class ClientService {
         return clientRepository.save(clientExistent);
     }
 
+    @Transactional
     public void deleteById(String nif) {
         clientRepository.deleteById(nif);
+        clientRepository.flush();
     }
 
     public boolean existsById(String nif) {
@@ -76,6 +80,20 @@ public class ClientService {
         return List.of(TipusClient.values());
     }
 
+    public String obtenirTextTipusClient(Client client) {
+        if (client == null || client.getTipusClient() == null) {
+            return "-";
+        }
+
+        if (client.getTipusClient() == TipusClient.ALTRES
+                && client.getTipusClientAltres() != null
+                && !client.getTipusClientAltres().isBlank()) {
+            return client.getTipusClientAltres();
+        }
+
+        return client.getTipusClient().name();
+    }
+
     private boolean tipusCoincideix(Client client, String tipus) {
         if (tipus.isBlank()) {
             return true;
@@ -85,7 +103,8 @@ public class ClientService {
             return false;
         }
 
-        return client.getTipusClient().name().equalsIgnoreCase(tipus);
+        return client.getTipusClient().name().equalsIgnoreCase(tipus)
+                || conte(client.getTipusClientAltres(), tipus);
     }
 
     private boolean conte(String valor, String filtre) {
@@ -107,10 +126,15 @@ public class ClientService {
         client.setTelefon(normalitzarOpcional(client.getTelefon()));
         client.setEmail(normalitzarOpcional(client.getEmail()));
         client.setNotes(normalitzarOpcional(client.getNotes()));
+        client.setTipusClientAltres(normalitzarOpcional(client.getTipusClientAltres()));
+
+        if (client.getTipusClient() != TipusClient.ALTRES) {
+            client.setTipusClientAltres(null);
+        }
     }
 
     private String normalitzarDocument(String document) {
-        return document == null ? null : document.trim().toUpperCase().replace(" ", "");
+        return document == null ? null : document.trim().toUpperCase().replace(" ", "").replace("-", "");
     }
 
     private String normalitzar(String text) {

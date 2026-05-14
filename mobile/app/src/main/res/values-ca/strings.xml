@@ -30,8 +30,13 @@
     <string name="dashboard_change_user_button">Canviar usuari</string>
     <string name="dashboard_actions_section_title">Acció principal</string>
     <string name="dashboard_action_open">Obrir</string>
+
     <string name="dashboard_action_receive_title">Recepcionar albarà</string>
     <string name="dashboard_action_receive_subtitle">Crea l’albarà des del mòbil manualment o mitjançant OCR usant càmera, imatge o PDF.</string>
+
+    <string name="dashboard_action_lots_emoji">🔁</string>
+    <string name="dashboard_action_lots_title">Gestionar lots</string>
+    <string name="dashboard_action_lots_subtitle">Consulta els lots registrats i inicia o finalitza el lot actiu des del mòbil.</string>
 
     <string name="dashboard_config_section_title">Configuració de connexió</string>
     <string name="dashboard_config_section_subtitle">Mantén accessible la IP del backend des d’aquesta pantalla independent.</string>
@@ -58,6 +63,16 @@
     <string name="recepcio_field_quantity">Quantitat</string>
     <string name="recepcio_field_material">Matèria primera</string>
     <string name="recepcio_save_button">Desar albarà</string>
+    <string name="recepcio_save_success_toast">Albarà desat correctament</string>
+
+    <string name="recepcio_create_supplier_option">Crear proveïdor si no existeix</string>
+    <string name="recepcio_create_supplier_help">Activa-ho només si has revisat que el proveïdor detectat és correcte.</string>
+    <string name="recepcio_create_material_option">Crear matèria primera si no existeix</string>
+    <string name="recepcio_create_material_help">Activa-ho només si has revisat que la matèria primera detectada és correcta.</string>
+    <string name="recepcio_lots_title">Lots de l’albarà</string>
+    <string name="recepcio_lot_title">Lot %1$d</string>
+    <string name="recepcio_add_lot_button">Afegir lot</string>
+    <string name="recepcio_delete_lot_button">Eliminar</string>
 
     <string name="recepcio_create_supplier_checkbox">Crear proveïdor automàticament si no existeix</string>
     <string name="recepcio_create_material_checkbox">Crear matèria primera automàticament si no existeix</string>
@@ -85,5 +100,36 @@
     <string name="ocr_processing_photo">Analitzant fotografia…</string>
     <string name="ocr_processing_error">No s’ha pogut analitzar el document. Revisa la imatge o prova amb una altra foto.</string>
 
-    <string name="recepcio_save_success_toast">Albarà desat correctament</string>
+    <string name="lots_mobile_title">Gestionar lots</string>
+    <string name="lots_mobile_subtitle">Consulta els lots registrats i inicia o finalitza el lot actiu des del mòbil.</string>
+    <string name="lots_mobile_refresh">Actualitzar</string>
+    <string name="lots_mobile_loading">Carregant lots…</string>
+    <string name="lots_mobile_empty">No hi ha lots registrats.</string>
+    <string name="lots_mobile_supplier">Proveïdor: %1$s</string>
+    <string name="lots_mobile_material">Matèria primera: %1$s</string>
+    <string name="lots_mobile_quantity">Quantitat: %1$s</string>
+    <string name="lots_mobile_reception_date">Data de recepció: %1$s</string>
+    <string name="lots_mobile_reception_date_value">%1$s</string>
+    <string name="lots_mobile_start_button">Iniciar lot</string>
+    <string name="lots_mobile_finish_button">Finalitzar lot</string>
+    <string name="lots_mobile_no_actions">Sense accions disponibles</string>
+    <string name="lots_mobile_start_confirm_title">Iniciar lot</string>
+    <string name="lots_mobile_start_confirm_text">Segur que vols iniciar aquest lot?</string>
+    <string name="lots_mobile_finish_confirm_title">Finalitzar lot</string>
+    <string name="lots_mobile_finish_confirm_text">Segur que vols finalitzar aquest lot?</string>
+    <string name="lots_mobile_confirm">Confirmar</string>
+    <string name="lots_mobile_cancel">Cancel·lar</string>
+    <string name="lots_mobile_status_stock">En estoc</string>
+    <string name="lots_mobile_status_open">Obert</string>
+    <string name="lots_mobile_status_finished">Acabat</string>
+    <string name="lots_mobile_status_unknown">Estat desconegut</string>
+    <string name="lots_mobile_start_success">Lot iniciat correctament.</string>
+    <string name="lots_mobile_finish_success">Lot finalitzat correctament.</string>
+    <string name="lots_mobile_error_loading">No s’han pogut carregar els lots.</string>
+    <string name="lots_mobile_error_start">No s’ha pogut iniciar el lot.</string>
+    <string name="lots_mobile_error_finish">No s’ha pogut finalitzar el lot.</string>
+
+    <string name="lots_mobile_started">Lot iniciat correctament.</string>
+    <string name="lots_mobile_finished">Lot finalitzat correctament.</string>
+    <string name="lots_mobile_action_error">No s’ha pogut completar l’operació sobre el lot.</string>
 </resources>

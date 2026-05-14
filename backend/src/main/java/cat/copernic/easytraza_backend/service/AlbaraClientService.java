@@ -173,6 +173,10 @@ public class AlbaraClientService {
             return "albara.client.error.client.no.trobat";
         }
 
+        if (!existeixLotObert()) {
+            return "albara.client.error.sense.lots.oberts";
+        }
+
         List<LiniaClientDto> liniesValides = obtenirLiniesValides(dto.getLinies());
         if (liniesValides.isEmpty()) {
             return "albara.client.linies.obligatories";
@@ -287,7 +291,7 @@ public class AlbaraClientService {
     }
 
     private void prepararLinies(AlbaraClient albara) {
-        List<LotProveidor> lotsOberts = lotProveidorRepository.findByEstat(EstatLot.OBERT);
+        List<LotProveidor> lotsOberts = obtenirLotsOberts();
         int numeroLotIntern = 1;
 
         for (LiniaClient linia : albara.getLinies()) {
@@ -304,6 +308,14 @@ public class AlbaraClientService {
 
             linia.setLotsAssociats(new LinkedHashSet<>(lotsOberts));
         }
+    }
+
+    private boolean existeixLotObert() {
+        return !obtenirLotsOberts().isEmpty();
+    }
+
+    private List<LotProveidor> obtenirLotsOberts() {
+        return lotProveidorRepository.findByEstat(EstatLot.OBERT);
     }
 
     private List<LiniaClientDto> obtenirLiniesValides(List<LiniaClientDto> linies) {

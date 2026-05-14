@@ -1,13 +1,17 @@
 package cat.copernic.easytraza_backend.controller;
 
+import cat.copernic.easytraza_backend.config.IdentificadorFiscalValidator;
 import cat.copernic.easytraza_backend.model.Client;
+import cat.copernic.easytraza_backend.model.enums.TipusClient;
 import cat.copernic.easytraza_backend.service.ClientService;
+import jakarta.validation.Valid;
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +39,7 @@ public class ClientWebController {
 
         model.addAttribute("clients", clientService.buscar(document, nom, tipus, telefon, email));
         model.addAttribute("tipusClients", clientService.obtenirTipusClients());
+        model.addAttribute("clientService", clientService);
 
         model.addAttribute("document", document);
         model.addAttribute("nom", nom);
@@ -50,32 +55,26 @@ public class ClientWebController {
     @GetMapping("/crear")
     public String crear(Model model) {
         model.addAttribute("client", new Client());
-        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
-        model.addAttribute("currentPath", "/web/clients");
+        prepararModelFormulari(model);
 
         return "clients/crear-clients";
     }
 
     @PostMapping("/guardar")
-    public String guardar(Client client,
+    public String guardar(@Valid Client client,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Locale locale,
             Model model) {
 
-        if (client.getNif() == null || client.getNif().isBlank()) {
-            model.addAttribute("errorNegoci", missatge("clients.nif.obligatori", locale));
-            model.addAttribute("client", client);
-            model.addAttribute("tipusClients", clientService.obtenirTipusClients());
-            return "clients/crear-clients";
+        validarDocumentFiscalClient(client, bindingResult, locale, true, null);
+        validarTipusClientAltres(client, bindingResult, locale);
+
+        if (bindingResult.hasErrors()) {
+            return tornarCrearAmbErrors(client, model, locale);
         }
 
-        if (clientService.existsById(client.getNif().trim().toUpperCase().replace(" ", ""))) {
-            model.addAttribute("errorNegoci", missatge("clients.error.duplicat", locale));
-            model.addAttribute("client", client);
-            model.addAttribute("tipusClients", clientService.obtenirTipusClients());
-            return "clients/crear-clients";
-        }
-
+        client.setNif(IdentificadorFiscalValidator.normalitzar(client.getNif()));
         clientService.save(client);
         redirectAttributes.addFlashAttribute("missatgeExit", missatge("clients.flash.creat", locale));
 
@@ -96,18 +95,26 @@ public class ClientWebController {
         }
 
         model.addAttribute("client", client);
-        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
-        model.addAttribute("currentPath", "/web/clients");
+        prepararModelFormulari(model);
 
         return "clients/editar-clients";
     }
 
     @PostMapping("/actualitzar/{nif}")
     public String actualitzar(@PathVariable String nif,
-            Client client,
+            @Valid Client client,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Locale locale,
             Model model) {
+
+        client.setNif(nif);
+        validarDocumentFiscalClient(client, bindingResult, locale, false, nif);
+        validarTipusClientAltres(client, bindingResult, locale);
+
+        if (bindingResult.hasErrors()) {
+            return tornarEditarAmbErrors(client, model, locale);
+        }
 
         Client actualitzat = clientService.update(nif, client);
 
@@ -135,6 +142,63 @@ public class ClientWebController {
         }
 
         return "redirect:/web/clients";
+    }
+
+    private void validarDocumentFiscalClient(Client client,
+            BindingResult bindingResult,
+            Locale locale,
+            boolean esCreacio,
+            String nifOriginal) {
+
+        String documentNormalitzat = esCreacio
+                ? IdentificadorFiscalValidator.normalitzar(client.getNif())
+                : IdentificadorFiscalValidator.normalitzar(nifOriginal);
+
+        if (documentNormalitzat == null) {
+            afegirErrorSiNoExisteix(bindingResult, "nif", "clients.nif.obligatori", locale);
+            return;
+        }
+
+        if (!IdentificadorFiscalValidator.esDocumentFiscalValid(documentNormalitzat)) {
+            afegirErrorSiNoExisteix(bindingResult, "nif", "clients.nif.invalid", locale);
+            return;
+        }
+
+        if (esCreacio && clientService.existsById(documentNormalitzat)) {
+            afegirErrorSiNoExisteix(bindingResult, "nif", "clients.error.duplicat", locale);
+        }
+    }
+
+    private void validarTipusClientAltres(Client client, BindingResult bindingResult, Locale locale) {
+        if (client.getTipusClient() == TipusClient.ALTRES
+                && (client.getTipusClientAltres() == null || client.getTipusClientAltres().isBlank())) {
+            afegirErrorSiNoExisteix(bindingResult, "tipusClientAltres", "clients.tipus.altres.obligatori", locale);
+        }
+    }
+
+    private void afegirErrorSiNoExisteix(BindingResult bindingResult, String camp, String codiMissatge, Locale locale) {
+        if (!bindingResult.hasFieldErrors(camp)) {
+            bindingResult.rejectValue(camp, codiMissatge, missatge(codiMissatge, locale));
+        }
+    }
+
+    private String tornarCrearAmbErrors(Client client, Model model, Locale locale) {
+        model.addAttribute("errorNegoci", missatge("error.validacio", locale));
+        model.addAttribute("client", client);
+        prepararModelFormulari(model);
+        return "clients/crear-clients";
+    }
+
+    private String tornarEditarAmbErrors(Client client, Model model, Locale locale) {
+        model.addAttribute("errorNegoci", missatge("error.validacio", locale));
+        model.addAttribute("client", client);
+        prepararModelFormulari(model);
+        return "clients/editar-clients";
+    }
+
+    private void prepararModelFormulari(Model model) {
+        model.addAttribute("tipusClients", clientService.obtenirTipusClients());
+        model.addAttribute("currentPath", "/web/clients");
     }
 
     private String missatge(String codi, Locale locale) {

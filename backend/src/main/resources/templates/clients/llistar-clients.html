@@ -130,6 +130,7 @@
                                 <th th:text="#{clients.telefon}">Teléfono</th>
                                 <th th:text="#{clients.email}">Email</th>
                                 <th th:text="#{clients.adreca}">Dirección</th>
+                                <th th:text="#{clients.notes}">Notas/observaciones</th>
                                 <th th:text="#{clients.accions}">Acciones</th>
                             </tr>
                         </thead>
@@ -141,7 +142,12 @@
                                 <td th:text="${client.nom}">Cliente</td>
 
                                 <td>
-                                    <span th:if="${client.tipusClient != null}"
+                                    <span th:if="${client.tipusClient != null and client.tipusClient.name() == 'ALTRES'}"
+                                          th:text="${client.tipusClientAltres != null && !client.tipusClientAltres.isBlank() ? client.tipusClientAltres : #messages.msg('clients.tipus.altres')}">
+                                        Altres
+                                    </span>
+
+                                    <span th:if="${client.tipusClient != null and client.tipusClient.name() != 'ALTRES'}"
                                           th:text="#{${'clients.tipus.' + client.tipusClient.name().toLowerCase()}}">
                                         RESTAURANT
                                     </span>
@@ -158,6 +164,10 @@
                                 </td>
 
                                 <td th:text="${client.adreca != null && !client.adreca.isBlank() ? client.adreca : '-'}">
+                                    -
+                                </td>
+
+                                <td th:text="${client.notes != null && !client.notes.isBlank() ? client.notes : '-'}">
                                     -
                                 </td>
 
