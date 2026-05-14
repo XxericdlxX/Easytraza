@@ -3,12 +3,14 @@ package cat.copernic.easytraza_backend.controller;
 import cat.copernic.easytraza_backend.config.IdentificadorFiscalValidator;
 import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.service.ProveidorService;
+import jakarta.validation.Valid;
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,27 +56,19 @@ public class ProveidorWebController {
     }
 
     @PostMapping("/guardar")
-    public String guardar(Proveidor proveidor,
+    public String guardar(@Valid Proveidor proveidor,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Locale locale,
             Model model) {
 
-        String documentNormalitzat = IdentificadorFiscalValidator.normalitzar(proveidor.getCif());
+        validarDocumentFiscalProveidor(proveidor, bindingResult, locale, true, null);
 
-        if (documentNormalitzat == null) {
-            return tornarCrearAmbError(proveidor, model, locale, "proveidors.cif.obligatori");
+        if (bindingResult.hasErrors()) {
+            return tornarCrearAmbErrors(proveidor, model, locale);
         }
 
-        if (!IdentificadorFiscalValidator.esDocumentFiscalValid(documentNormalitzat)) {
-            return tornarCrearAmbError(proveidor, model, locale, "proveidors.cif.invalid");
-        }
-
-        proveidor.setCif(documentNormalitzat);
-
-        if (proveidorService.existsById(documentNormalitzat)) {
-            return tornarCrearAmbError(proveidor, model, locale, "proveidors.error.duplicat");
-        }
-
+        proveidor.setCif(IdentificadorFiscalValidator.normalitzar(proveidor.getCif()));
         proveidorService.save(proveidor);
         redirectAttributes.addFlashAttribute("missatgeExit", missatge("proveidors.flash.creat", locale));
 
@@ -102,20 +96,20 @@ public class ProveidorWebController {
 
     @PostMapping("/actualitzar/{cif}")
     public String actualitzar(@PathVariable String cif,
-            Proveidor proveidor,
+            @Valid Proveidor proveidor,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
-            Locale locale) {
+            Locale locale,
+            Model model) {
 
-        String documentNormalitzat = IdentificadorFiscalValidator.normalitzar(cif);
+        proveidor.setCif(cif);
+        validarDocumentFiscalProveidor(proveidor, bindingResult, locale, false, cif);
 
-        if (documentNormalitzat == null || !IdentificadorFiscalValidator.esDocumentFiscalValid(documentNormalitzat)) {
-            redirectAttributes.addFlashAttribute("missatgeError", missatge("proveidors.cif.invalid", locale));
-            return "redirect:/web/proveidors";
+        if (bindingResult.hasErrors()) {
+            return tornarEditarAmbErrors(proveidor, model, locale);
         }
 
-        proveidor.setCif(documentNormalitzat);
-
-        Proveidor actualitzat = proveidorService.update(documentNormalitzat, proveidor);
+        Proveidor actualitzat = proveidorService.update(cif, proveidor);
 
         if (actualitzat == null) {
             redirectAttributes.addFlashAttribute("missatgeError", missatge("proveidors.flash.no.trobat", locale));
@@ -143,11 +137,49 @@ public class ProveidorWebController {
         return "redirect:/web/proveidors";
     }
 
-    private String tornarCrearAmbError(Proveidor proveidor, Model model, Locale locale, String codiMissatge) {
-        model.addAttribute("errorNegoci", missatge(codiMissatge, locale));
+    private void validarDocumentFiscalProveidor(Proveidor proveidor,
+            BindingResult bindingResult,
+            Locale locale,
+            boolean esCreacio,
+            String cifOriginal) {
+
+        String documentNormalitzat = esCreacio
+                ? IdentificadorFiscalValidator.normalitzar(proveidor.getCif())
+                : IdentificadorFiscalValidator.normalitzar(cifOriginal);
+
+        if (documentNormalitzat == null) {
+            afegirErrorSiNoExisteix(bindingResult, "cif", "proveidors.cif.obligatori", locale);
+            return;
+        }
+
+        if (!IdentificadorFiscalValidator.esDocumentFiscalValid(documentNormalitzat)) {
+            afegirErrorSiNoExisteix(bindingResult, "cif", "proveidors.cif.invalid", locale);
+            return;
+        }
+
+        if (esCreacio && proveidorService.existsById(documentNormalitzat)) {
+            afegirErrorSiNoExisteix(bindingResult, "cif", "proveidors.error.duplicat", locale);
+        }
+    }
+
+    private void afegirErrorSiNoExisteix(BindingResult bindingResult, String camp, String codiMissatge, Locale locale) {
+        if (!bindingResult.hasFieldErrors(camp)) {
+            bindingResult.rejectValue(camp, codiMissatge, missatge(codiMissatge, locale));
+        }
+    }
+
+    private String tornarCrearAmbErrors(Proveidor proveidor, Model model, Locale locale) {
+        model.addAttribute("errorNegoci", missatge("error.validacio", locale));
         model.addAttribute("proveidor", proveidor);
         model.addAttribute("currentPath", "/web/proveidors");
         return "proveidors/crear-proveidors";
+    }
+
+    private String tornarEditarAmbErrors(Proveidor proveidor, Model model, Locale locale) {
+        model.addAttribute("errorNegoci", missatge("error.validacio", locale));
+        model.addAttribute("proveidor", proveidor);
+        model.addAttribute("currentPath", "/web/proveidors");
+        return "proveidors/editar-proveidors";
     }
 
     private String missatge(String codi, Locale locale) {
