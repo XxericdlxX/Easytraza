@@ -7,6 +7,9 @@ public class MobileLotSaveRequestDto {
     private String materiaPrimaNom;
     private boolean crearMateriaPrimaSiNoExisteix;
 
+    public MobileLotSaveRequestDto() {
+    }
+
     public String getCodiLot() {
         return codiLot;
     }
