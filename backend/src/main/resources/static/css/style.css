@@ -1681,28 +1681,6 @@ body.camera-open {
     color: #4A2E1F;
 }
 
-
-.login-language {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    display: flex;
-    gap: 10px;
-    z-index: 20;
-}
-
-.login-language .btn {
-    min-width: 64px;
-    text-align: center;
-}
-
-@media (max-width: 700px) {
-    .login-language {
-        top: 16px;
-        right: 16px;
-    }
-}
-
 .login-page {
     min-height: 100vh;
     display: flex;
@@ -1806,4 +1784,35 @@ body.camera-open {
         width: 84px;
         height: 84px;
     }
+}
+
+/* ===============================
+   Perfil d'usuari autenticat
+   =============================== */
+
+.leftnav-profile-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.profile-page .container {
+    width: min(980px, 100%);
+}
+
+.profile-form-card {
+    max-width: 760px;
+}
+
+.profile-page .page-subtitle {
+    margin: 6px 0 0;
+    color: #7B5A43;
+    font-weight: 600;
+}
+
+.profile-page .form-help {
+    margin: 8px 0 0;
+    color: #7B5A43;
+    font-size: 0.92rem;
+    line-height: 1.4;
 }
