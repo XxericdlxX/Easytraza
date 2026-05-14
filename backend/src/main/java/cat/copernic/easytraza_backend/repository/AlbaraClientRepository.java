@@ -1,12 +1,15 @@
 package cat.copernic.easytraza_backend.repository;
 
 import cat.copernic.easytraza_backend.model.AlbaraClient;
+import cat.copernic.easytraza_backend.model.LiniaClient;
 import cat.copernic.easytraza_backend.model.enums.EstatAlbaraClient;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -44,4 +47,17 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
             LocalDate dataProduccio,
             EstatAlbaraClient estat
     );
+
+    @Query("""
+           SELECT DISTINCT linia
+           FROM LiniaClient linia
+           JOIN FETCH linia.albaraClient albara
+           JOIN FETCH albara.client client
+           JOIN FETCH linia.producte producte
+           LEFT JOIN FETCH linia.operari operari
+           LEFT JOIN FETCH linia.lotsAssociats lots
+           WHERE producte.id = :producteId
+           ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
+           """)
+    List<LiniaClient> findLiniesProduccioByProducteId(@Param("producteId") Long producteId);
 }
