@@ -9,10 +9,6 @@ public class MobileAlbaraSaveRequestDto {
     private String proveidorCif;
     private String proveidorNom;
     private boolean crearProveidorSiNoExisteix;
-    private String documentOcrNomOriginal;
-    private String documentOcrNomGuardat;
-    private String documentOcrContentType;
-    private String documentOcrRuta;
     private List<MobileLotSaveRequestDto> lots = new ArrayList<>();
 
     public MobileAlbaraSaveRequestDto() {
@@ -48,38 +44,6 @@ public class MobileAlbaraSaveRequestDto {
 
     public void setCrearProveidorSiNoExisteix(boolean crearProveidorSiNoExisteix) {
         this.crearProveidorSiNoExisteix = crearProveidorSiNoExisteix;
-    }
-
-    public String getDocumentOcrNomOriginal() {
-        return documentOcrNomOriginal;
-    }
-
-    public void setDocumentOcrNomOriginal(String documentOcrNomOriginal) {
-        this.documentOcrNomOriginal = documentOcrNomOriginal;
-    }
-
-    public String getDocumentOcrNomGuardat() {
-        return documentOcrNomGuardat;
-    }
-
-    public void setDocumentOcrNomGuardat(String documentOcrNomGuardat) {
-        this.documentOcrNomGuardat = documentOcrNomGuardat;
-    }
-
-    public String getDocumentOcrContentType() {
-        return documentOcrContentType;
-    }
-
-    public void setDocumentOcrContentType(String documentOcrContentType) {
-        this.documentOcrContentType = documentOcrContentType;
-    }
-
-    public String getDocumentOcrRuta() {
-        return documentOcrRuta;
-    }
-
-    public void setDocumentOcrRuta(String documentOcrRuta) {
-        this.documentOcrRuta = documentOcrRuta;
     }
 
     public List<MobileLotSaveRequestDto> getLots() {
