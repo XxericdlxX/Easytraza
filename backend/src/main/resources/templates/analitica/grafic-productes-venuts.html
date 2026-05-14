@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{grafic.productes.titol}">Gráfico mensual de productos vendidos</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+
+                        <div>
+                            <h1 th:text="#{grafic.productes.titol}">
+                                Gráfico mensual de productos vendidos
+                            </h1>
+                            <p th:text="#{grafic.productes.subtitol}">
+                                Consulta la evolución diaria de las unidades vendidas durante el mes seleccionado.
+                            </p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/}"
+                       class="btn btn-secondary"
+                       th:text="#{accio.tornar}">
+                        Volver
+                    </a>
+                </div>
+
+                <div class="form-card grafic-filtres-card">
+                    <form id="graficFiltresForm"
+                          th:action="@{/web/grafic-productes-venuts}"
+                          method="get"
+                          class="grafic-filtres-form">
+                        <div class="form-group">
+                            <label for="mes" th:text="#{grafic.productes.filtre.mes}">
+                                Mes
+                            </label>
+                            <select id="mes" name="mes" class="js-grafic-filter">
+                                <option th:each="mesDisponible : ${mesos}"
+                                        th:value="${mesDisponible.valor}"
+                                        th:selected="${mesDisponible.valor == mesSeleccionat}"
+                                        th:text="${mesDisponible.etiqueta}">
+                                    Mayo 2026
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="producteId" th:text="#{grafic.productes.filtre.producte}">
+                                Producto
+                            </label>
+                            <select id="producteId" name="producteId" class="js-grafic-filter">
+                                <option value="" th:text="#{grafic.productes.filtre.tots}">
+                                    Todos los productos
+                                </option>
+                                <option th:each="producte : ${productes}"
+                                        th:value="${producte.id}"
+                                        th:selected="${producteId != null and producte.id == producteId}"
+                                        th:text="${producte.nom}">
+                                    Producto
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group grafic-filtres-accio">
+                            <button type="submit"
+                                    class="btn btn-secondary"
+                                    th:text="#{accio.buscar}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <section class="grafic-resum-grid">
+                    <article class="grafic-resum-card">
+                        <span th:text="#{grafic.productes.total.label}">
+                            Total de unidades vendidas
+                        </span>
+                        <strong th:text="${totalUnitats}">0</strong>
+                    </article>
+                </section>
+
+                <div class="form-card grafic-canvas-card">
+                    <div class="grafic-canvas-header">
+                        <h2 th:text="#{grafic.productes.grafic.titol}">
+                            Evolución diaria
+                        </h2>
+                        <p th:text="#{grafic.productes.grafic.ajuda}">
+                            El gráfico se actualiza al cambiar el mes o el producto.
+                        </p>
+                    </div>
+
+                    <div class="grafic-canvas-wrapper">
+                        <canvas id="graficProductesVenuts"
+                                th:attr="aria-label=#{grafic.productes.canvas.aria}"
+                                role="img">
+                        </canvas>
+                    </div>
+                </div>
+
+                <div class="empty-message"
+                     th:if="${totalUnitats == 0}"
+                     th:text="#{grafic.productes.buit}">
+                    No hay unidades vendidas para los filtros seleccionados.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const formulari = document.getElementById('graficFiltresForm');
+                document.querySelectorAll('.js-grafic-filter').forEach(function (filtre) {
+                    filtre.addEventListener('change', function () {
+                        formulari.submit();
+                    });
+                });
+            });
+        </script>
+
+        <script th:inline="javascript">
+            (() => {
+                const dies = /*[[${dies}]]*/ [];
+                const quantitats = /*[[${quantitats}]]*/ [];
+                const canvas = document.getElementById('graficProductesVenuts');
+
+                if (!canvas) {
+                    return;
+                }
+
+                const context = canvas.getContext('2d');
+
+                function dibuixarGrafic() {
+                    const contenidor = canvas.parentElement;
+                    const ample = Math.max(contenidor.clientWidth, 320);
+                    const alt = 420;
+                    const densitat = window.devicePixelRatio || 1;
+
+                    canvas.width = ample * densitat;
+                    canvas.height = alt * densitat;
+                    canvas.style.width = ample + 'px';
+                    canvas.style.height = alt + 'px';
+                    context.setTransform(densitat, 0, 0, densitat, 0, 0);
+                    context.clearRect(0, 0, ample, alt);
+
+                    const marge = {
+                        superior: 28,
+                        dret: 24,
+                        inferior: 58,
+                        esquerre: 64
+                    };
+
+                    const ampleGrafic = ample - marge.esquerre - marge.dret;
+                    const altGrafic = alt - marge.superior - marge.inferior;
+                    const maxQuantitat = Math.max(...quantitats, 0);
+                    const maximEscala = Math.max(maxQuantitat, 5);
+                    const saltsEscala = 5;
+
+                    context.strokeStyle = '#D8C8B8';
+                    context.lineWidth = 1;
+                    context.font = '13px Arial, Helvetica, sans-serif';
+                    context.fillStyle = '#7A5A46';
+
+                    for (let i = 0; i <= saltsEscala; i++) {
+                        const valor = Math.round((maximEscala / saltsEscala) * i);
+                        const y = marge.superior + altGrafic - (altGrafic / saltsEscala) * i;
+
+                        context.beginPath();
+                        context.moveTo(marge.esquerre, y);
+                        context.lineTo(marge.esquerre + ampleGrafic, y);
+                        context.stroke();
+
+                        context.textAlign = 'right';
+                        context.textBaseline = 'middle';
+                        context.fillText(String(valor), marge.esquerre - 12, y);
+                    }
+
+                    context.strokeStyle = '#8B5E3C';
+                    context.lineWidth = 2;
+                    context.beginPath();
+                    context.moveTo(marge.esquerre, marge.superior);
+                    context.lineTo(marge.esquerre, marge.superior + altGrafic);
+                    context.lineTo(marge.esquerre + ampleGrafic, marge.superior + altGrafic);
+                    context.stroke();
+
+                    const nombreDies = Math.max(dies.length, 1);
+                    const separacioX = nombreDies > 1 ? ampleGrafic / (nombreDies - 1) : ampleGrafic;
+                    const pasEtiquetes = nombreDies > 20 ? 3 : (nombreDies > 12 ? 2 : 1);
+
+                    context.font = '12px Arial, Helvetica, sans-serif';
+                    context.fillStyle = '#7A5A46';
+                    context.textAlign = 'center';
+                    context.textBaseline = 'top';
+
+                    dies.forEach((dia, index) => {
+                        if (index % pasEtiquetes !== 0 && index !== dies.length - 1) {
+                            return;
+                        }
+
+                        const x = marge.esquerre + separacioX * index;
+                        context.fillText(String(dia), x, marge.superior + altGrafic + 12);
+                    });
+
+                    if (quantitats.length === 0) {
+                        return;
+                    }
+
+                    context.strokeStyle = '#B87333';
+                    context.lineWidth = 3;
+                    context.beginPath();
+
+                    quantitats.forEach((quantitat, index) => {
+                        const x = marge.esquerre + separacioX * index;
+                        const y = marge.superior + altGrafic - (Number(quantitat) / maximEscala) * altGrafic;
+
+                        if (index === 0) {
+                            context.moveTo(x, y);
+                        } else {
+                            context.lineTo(x, y);
+                        }
+                    });
+
+                    context.stroke();
+
+                    quantitats.forEach((quantitat, index) => {
+                        const x = marge.esquerre + separacioX * index;
+                        const y = marge.superior + altGrafic - (Number(quantitat) / maximEscala) * altGrafic;
+
+                        context.beginPath();
+                        context.fillStyle = '#8B5E3C';
+                        context.arc(x, y, 4, 0, Math.PI * 2);
+                        context.fill();
+                    });
+                }
+
+                dibuixarGrafic();
+                window.addEventListener('resize', dibuixarGrafic);
+            })();
+        </script>
+    </body>
+</html>
