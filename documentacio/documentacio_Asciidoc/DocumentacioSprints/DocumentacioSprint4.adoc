@@ -45,7 +45,7 @@ image::Sprint4/BoardInicial/BoardInicialSprint4.3.png[Board inicial 3]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Ahir vaig organitzar una mica més el projecte, vaig revisar les tasques pendents del Sprint 4 i vaig dedicar temps a estudiar per als tests de recuperació. | Avui reprendré el treball tècnic del projecte i continuaré amb les correccions pendents del Sprint 3, especialment les relacionades amb el mobile i la gestió dels lots. | Poc temps que em queda per acabar l'Sprint 4 | 4h
+| Eric Delgado López | Ahir vaig organitzar una mica més el projecte, vaig revisar les tasques pendents del Sprint 4 i vaig dedicar temps a estudiar per als tests de recuperació. | Avui reprendré el treball tècnic del projecte i continuaré amb les correccions pendents del Sprint 3, especialment les relacionades amb el mobile i la gestió dels lots. | Poc temps que em queda per acabar l'Sprint 4 | 4h + 5h
 |===
 
 == 3. Planificació Final
