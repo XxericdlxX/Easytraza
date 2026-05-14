@@ -72,4 +72,17 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
            ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
            """)
     List<LiniaClient> findTotesLiniesProduccioAmbLots();
+
+    @Query("""
+           SELECT DISTINCT linia
+           FROM LiniaClient linia
+           JOIN FETCH linia.albaraClient albara
+           JOIN FETCH albara.client client
+           JOIN FETCH linia.producte producte
+           LEFT JOIN FETCH linia.operari operari
+           JOIN linia.lotsAssociats lotAssociat
+           WHERE lotAssociat.id = :lotId
+           ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
+           """)
+    List<LiniaClient> findLiniesProduccioByLotId(@Param("lotId") Long lotId);
 }

@@ -1,7 +1,9 @@
 package cat.copernic.easytraza_backend.service;
 
+import cat.copernic.easytraza_backend.model.LiniaClient;
 import cat.copernic.easytraza_backend.model.LotProveidor;
 import cat.copernic.easytraza_backend.model.enums.EstatLot;
+import cat.copernic.easytraza_backend.repository.AlbaraClientRepository;
 import cat.copernic.easytraza_backend.repository.LotProveidorRepository;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -17,12 +19,19 @@ public class LotProveidorService {
     @Autowired
     private LotProveidorRepository lotProveidorRepository;
 
+    @Autowired
+    private AlbaraClientRepository albaraClientRepository;
+
     public List<LotProveidor> findAll() {
         return lotProveidorRepository.findAll();
     }
 
     public Optional<LotProveidor> findById(Long id) {
         return lotProveidorRepository.findById(id);
+    }
+
+    public List<LiniaClient> findProduccioAssociadaAlLot(Long lotId) {
+        return albaraClientRepository.findLiniesProduccioByLotId(lotId);
     }
 
     public boolean existeixLotObert() {
