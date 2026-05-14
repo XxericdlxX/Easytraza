@@ -61,6 +61,7 @@
                         </label>
                         <input type="text" id="tipusClientAltres" th:field="*{tipusClientAltres}"
                                th:placeholder="#{clients.tipus.altres.placeholder}">
+                        <div class="field-error" th:if="${#fields.hasErrors('tipusClientAltres')}" th:errors="*{tipusClientAltres}"></div>
                     </div>
 
                     <div class="form-group">
