@@ -62,6 +62,30 @@ public class LotWebController {
         return "lots/llistar-lots";
     }
 
+    @GetMapping("/{id}/produccio")
+    public String produccioAssociadaLot(
+            @PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            Locale locale) {
+
+        var lot = lotProveidorService.findById(id);
+
+        if (lot.isEmpty()) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    missatge("lots.error.no.trobat", locale)
+            );
+            return "redirect:/web/lots";
+        }
+
+        model.addAttribute("lot", lot.get());
+        model.addAttribute("liniesProduccio", lotProveidorService.findProduccioAssociadaAlLot(id));
+        model.addAttribute("currentPath", "/web/lots");
+
+        return "lots/produccio-lot";
+    }
+
     @GetMapping({"/{id}/iniciar", "/iniciar/{id}"})
     public String iniciarLotGet(
             @PathVariable Long id,
