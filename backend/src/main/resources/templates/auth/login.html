@@ -57,9 +57,16 @@
                                required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary login-submit" th:text="#{auth.login.boto}">
-                        Iniciar sesión
-                    </button>
+                    <div class="login-submit-row">
+                        <button type="submit" class="btn btn-primary login-submit" th:text="#{auth.login.boto}">
+                            Iniciar sesión
+                        </button>
+
+                        <div class="login-inline-locale" aria-label="Selector de idioma">
+                            <a class="locale-pill" th:href="@{/login(lang='es')}" th:text="#{lang.es}">ES</a>
+                            <a class="locale-pill" th:href="@{/login(lang='ca')}" th:text="#{lang.ca}">CA</a>
+                        </div>
+                    </div>
                 </form>
 
                 <div class="login-recovery-link">
