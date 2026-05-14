@@ -1832,3 +1832,40 @@ body.camera-open {
 .profile-password-panel .form-group:first-of-type {
     margin-top: 18px;
 }
+
+/* RF25/RF28 - Selector d'idioma integrat al botó de login */
+.login-submit-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.login-submit-row .login-submit {
+    flex: 1;
+    margin-top: 0;
+}
+
+.login-inline-locale {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.login-inline-locale .locale-pill {
+    min-width: 48px;
+    justify-content: center;
+}
+
+@media (max-width: 560px) {
+    .login-submit-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .login-inline-locale {
+        justify-content: center;
+    }
+}
+
