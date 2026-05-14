@@ -36,7 +36,6 @@ import cat.copernic.easytraza_mobile.R
 fun DashboardScreen(
     currentUserName: String,
     currentUserRole: String,
-    currentUserEmail: String,
     currentUserInitials: String,
     onBackToUsers: () -> Unit,
     onOpenRecepcio: () -> Unit,
@@ -104,13 +103,6 @@ fun DashboardScreen(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
 
-                    if (currentUserEmail.isNotBlank()) {
-                        Text(
-                            text = currentUserEmail,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
                 }
 
                 OutlinedButton(
