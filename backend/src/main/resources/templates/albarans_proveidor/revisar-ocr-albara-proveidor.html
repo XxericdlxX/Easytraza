@@ -69,7 +69,9 @@
 
                     <div class="form-group"
                          th:if="${albara.documentOcrNomOriginal != null and !#strings.isEmpty(albara.documentOcrNomOriginal)}">
-                        <label th:text="#{albara.proveidor.ocr.document.guardat}">Documento OCR guardado</label>
+                        <label th:text="#{albara.proveidor.ocr.document.guardat}">
+                            Documento OCR guardado
+                        </label>
                         <input type="text" readonly th:value="${albara.documentOcrNomOriginal}">
                     </div>
 
