@@ -1869,3 +1869,64 @@ body.camera-open {
     }
 }
 
+
+.locale-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #D8C8B8;
+    border-radius: 14px;
+    background-color: #F4EBDD;
+    color: #4A2E1F;
+    font-weight: 700;
+    text-decoration: none;
+    line-height: 1;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.locale-pill:hover {
+    background-color: #EAD9C6;
+    border-color: #C9AF98;
+    transform: translateY(-1px);
+}
+
+.login-locale-switch {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-recovery-link {
+    margin-top: 16px;
+}
+
+.login-recovery-link a {
+    color: #8B5E3C;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-recovery-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+    .login-locale-switch {
+        top: 14px;
+        right: 14px;
+    }
+
+    .locale-pill {
+        min-width: 48px;
+        min-height: 42px;
+        padding: 0 12px;
+    }
+}
+
