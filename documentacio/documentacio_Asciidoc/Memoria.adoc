@@ -822,3 +822,79 @@ image::Sprint3/BoardFinal/BoardFinalSprint3.5.png[Board final 5]
 
 | Accions concretes per al següent sprint | Per al següent sprint vull continuar treballant amb una planificació clara des de l’inici, però controlant millor el temps que dedico a cada tasca. També intentaré deixar més marge per revisar errors, fer proves i acabar de polir les funcionalitats abans de l’entrega. D’aquesta manera podré arribar al final del sprint amb el projecte més estable i millor preparat.
 |===
+
+=== Sprint 4
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+
+image::Sprint4/BoardInicial/BoardInicialSprint4.1.png[Board inicial 1]
+image::Sprint4/BoardInicial/BoardInicialSprint4.2.png[Board inicial 2]
+image::Sprint4/BoardInicial/BoardInicialSprint4.3.png[Board inicial 3]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 08/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig fer el filtre de productes, vaig avançar en el daily stand-up del Sprint 3, vaig actualitzar la icona de l’app mobile i vaig acabar d’organitzar la documentació en AsciiDoc. | Avui començaré el Sprint 4, revisaré l'Sprint 3 amb el professor i començaré a organitzar la millora perquè els fitxers OCR es guardin en crear l’albarà. | - | 6h
+|===
+
+===== DIA 2 Dilluns - 11/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Divendres vaig començar a organitzar el Sprint 4, vaig revisar les correccions pendents del Sprint 3 i vaig preparar les issues relacionades amb les noves tasques i bugfixs. També vaig començar a treballar en la correcció perquè els fitxers OCR quedin guardats en crear l’albarà. | Avui continuaré amb els bugfixs del Sprint 3, especialment el guardat dels fitxers OCR, i començaré a aplicar les correccions indicades pel professor. | - | 6h
+|===
+
+===== DIA 3 Dimarts - 12/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig avançar en els bugfixs del Sprint 3: vaig treballar en el guardat dels fitxers OCR, en la validació de DNI, NIE i CIF, en el control de l’eliminació de clients amb albarans associats i en l’opció “Altres” del tipus de client. | - | - | 0h
+|===
+
+===== DIA 4 Dimecres - 13/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig avançar en els bugfixs del Sprint 3: vaig treballar en el guardat dels fitxers OCR, en la validació de DNI, NIE i CIF, en el control de l’eliminació de clients amb albarans associats i en l’opció “Altres” del tipus de client. | Avui organitzaré una mica més el projecte, revisaré l’estat de les issues i dedicaré part del temps a estudiar per als tests de recuperació. | He de compaginar l’avanç del projecte amb la preparació dels tests de recuperació. | 3h
+|===
+
+===== DIA 5 Dijous - 14/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig organitzar una mica més el projecte, vaig revisar les tasques pendents del Sprint 4 i vaig dedicar temps a estudiar per als tests de recuperació. | Avui reprendré el treball tècnic del projecte i continuaré amb les correccions pendents del Sprint 3, especialment les relacionades amb el mobile i la gestió dels lots. | Poc temps per acabar l'Sprint 4. | 4h + 7h
+|===
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+
+image::Sprint4/BoardFinal/BoardFinalSprint4.1.png[Board final 1]
+image::Sprint4/BoardFinal/BoardFinalSprint4.2.png[Board final 2]
+image::Sprint4/BoardFinal/BoardFinalSprint4.3.png[Board final 3]
+image::Sprint4/BoardFinal/BoardFinalSprint4.4.png[Board final 4]
+image::Sprint4/BoardFinal/BoardFinalSprint4.5.png[Board final 5]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius | Durant aquest quart sprint he pogut avançar en millores importants del projecte i acabar de polir funcionalitats que ja estaven iniciades. He treballat especialment en la part mòbil, en la correcció de problemes relacionats amb l’OCR i en alguns ajustos d’idioma i d’interfície. També he mantingut una organització més clara de les tasques i he pogut reaccionar millor quan han aparegut errors visuals o de comportament.
+
+| Aspectes a millorar | Tot i l’avanç aconseguit, algunes correccions han requerit més temps del previst, sobretot les relacionades amb l’OCR i amb l’adaptació visual de certes pantalles. En alguns moments he hagut de revisar diverses vegades el mateix punt fins a trobar una solució correcta, fet que ha reduït el temps disponible per avançar en altres apartats del sprint.
+
+| Accions concretes per al següent sprint | De cara al següent sprint, vull dedicar més temps a provar les funcionalitats en diferents resolucions i contextos abans de donar-les per acabades. També intentaré separar millor les tasques de desenvolupament i les de correcció per controlar més el temps invertit en cada part. A més, continuaré revisant la coherència visual, les traduccions i els fluxos d’usuari per deixar l’aplicació més estable i preparada per a l’entrega final.
+|===
