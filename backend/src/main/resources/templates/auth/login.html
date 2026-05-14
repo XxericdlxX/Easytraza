@@ -8,6 +8,15 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body class="login-body">
+        <div class="login-language">
+            <a th:href="@{/login(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">
+                ES
+            </a>
+            <a th:href="@{/login(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">
+                CA
+            </a>
+        </div>
+
         <main class="login-page">
             <section class="login-card">
                 <div class="login-brand">
