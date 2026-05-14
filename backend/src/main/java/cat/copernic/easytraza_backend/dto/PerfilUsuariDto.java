@@ -26,6 +26,15 @@ public class PerfilUsuariDto {
     @Size(max = 100, message = "{perfil.email.max}")
     private String email;
 
+    @Size(max = 100, message = "{perfil.contrasenya.actual.max}")
+    private String contrasenyaActual;
+
+    @Size(max = 100, message = "{perfil.contrasenya.nova.max}")
+    private String novaContrasenya;
+
+    @Size(max = 100, message = "{perfil.contrasenya.confirmar.max}")
+    private String confirmarContrasenya;
+
     public PerfilUsuariDto() {
     }
 
@@ -66,5 +75,29 @@ public class PerfilUsuariDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getContrasenyaActual() {
+        return contrasenyaActual;
+    }
+
+    public void setContrasenyaActual(String contrasenyaActual) {
+        this.contrasenyaActual = contrasenyaActual;
+    }
+
+    public String getNovaContrasenya() {
+        return novaContrasenya;
+    }
+
+    public void setNovaContrasenya(String novaContrasenya) {
+        this.novaContrasenya = novaContrasenya;
+    }
+
+    public String getConfirmarContrasenya() {
+        return confirmarContrasenya;
+    }
+
+    public void setConfirmarContrasenya(String confirmarContrasenya) {
+        this.confirmarContrasenya = confirmarContrasenya;
     }
 }
