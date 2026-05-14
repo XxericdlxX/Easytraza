@@ -66,9 +66,7 @@
     <string name="recepcio_save_success_toast">Albarán guardado correctamente</string>
 
     <string name="recepcio_create_supplier_option">Crear proveedor si no existe</string>
-    <string name="recepcio_create_supplier_help">Actívalo solo si has revisado que el proveedor detectado es correcto.</string>
     <string name="recepcio_create_material_option">Crear materia prima si no existe</string>
-    <string name="recepcio_create_material_help">Actívalo solo si has revisado que la materia prima detectada es correcta.</string>
     <string name="recepcio_lots_title">Lotes del albarán</string>
     <string name="recepcio_lot_title">Lote %1$d</string>
     <string name="recepcio_add_lot_button">Añadir lote</string>
