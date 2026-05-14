@@ -63,6 +63,7 @@ public class RecuperacioContrasenyaService {
                 .fromUriString(baseUrl)
                 .path("/restablir-contrasenya")
                 .queryParam("token", token)
+                .queryParam("lang", locale.getLanguage())
                 .build()
                 .toUriString();
 
