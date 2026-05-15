@@ -2344,3 +2344,66 @@ button.btn {
         font-size: 16px;
     }
 }
+
+
+/* ===============================
+   Lots - ordenació visible i accions compactes
+   =============================== */
+.lots-table thead th a.sort-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.lots-table thead th .sort-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 12px;
+    font-size: 0.72rem;
+    line-height: 1;
+    opacity: 0.78;
+}
+
+.lots-table thead th .sort-link-active .sort-indicator {
+    opacity: 1;
+    font-weight: 900;
+}
+
+.lots-table .lot-col-albara {
+    min-width: 118px;
+}
+
+.lots-table .lot-col-accions {
+    min-width: 128px;
+    width: 128px;
+}
+
+.lots-table .actions-table {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+    align-items: stretch;
+    justify-items: stretch;
+}
+
+.lots-table .btn-lot-table-action,
+.lots-table .lot-col-albara .btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 7px 9px;
+    border-radius: 10px;
+    font-size: 0.76rem;
+    line-height: 1.12;
+    white-space: nowrap;
+}
+
+.lots-table th,
+.lots-table td {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+}
