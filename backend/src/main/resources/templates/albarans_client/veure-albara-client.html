@@ -8,23 +8,6 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body>
-        <div class="page-language-top">
-            <div class="page-language-switch">
-                <a class="btn btn-secondary js-page-lang-link"
-                   href="#"
-                   data-lang="es"
-                   th:text="#{lang.es}">
-                    ES
-                </a>
-                <a class="btn btn-secondary js-page-lang-link"
-                   href="#"
-                   data-lang="ca"
-                   th:text="#{lang.ca}">
-                    CA
-                </a>
-            </div>
-        </div>
-
         <div class="page-standalone">
             <div class="container">
                 <div class="list-header">
@@ -36,7 +19,21 @@
                         </div>
                     </div>
 
-                    <div class="actions">
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
                         <a th:href="@{/web/albarans-client}" class="btn btn-secondary" th:text="#{albara.client.tornar}">
                             Volver
                         </a>
