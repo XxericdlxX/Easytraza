@@ -66,6 +66,18 @@ p {
     min-height: auto;
 }
 
+.page-standalone {
+    min-height: 100vh;
+    padding: 28px 24px 36px 24px;
+}
+
+.page-standalone .container {
+    width: min(1180px, 100%);
+    max-width: 1180px;
+    min-height: auto;
+    margin: 0 auto;
+}
+
 /* ===============================
    Home
    =============================== */
