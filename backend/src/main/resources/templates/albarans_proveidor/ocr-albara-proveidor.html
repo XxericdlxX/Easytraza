@@ -9,23 +9,6 @@
     </head>
 
     <body>
-        <div class="page-language-top">
-            <div class="page-language-switch">
-                <a class="btn btn-secondary js-page-lang-link"
-                   href="#"
-                   data-lang="es"
-                   th:text="#{lang.es}">
-                    ES
-                </a>
-                <a class="btn btn-secondary js-page-lang-link"
-                   href="#"
-                   data-lang="ca"
-                   th:text="#{lang.ca}">
-                    CA
-                </a>
-            </div>
-        </div>
-
         <div class="page-standalone">
             <div class="container">
                 <div class="list-header">
@@ -43,11 +26,28 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/web/albarans-proveidor/crear}"
-                       class="btn btn-secondary"
-                       th:text="#{albara.proveidor.tornar.manual}">
-                        Volver al modo manual
-                    </a>
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+
+                        <a th:href="@{/web/albarans-proveidor/crear}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar.manual}">
+                            Volver al modo manual
+                        </a>
+                    </div>
                 </div>
 
                 <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
