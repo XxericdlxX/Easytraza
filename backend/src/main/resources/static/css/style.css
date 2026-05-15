@@ -486,7 +486,29 @@ textarea {
 }
 
 input[type="checkbox"] {
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    flex: 0 0 18px;
+    accent-color: #D9A441;
+    cursor: pointer;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
     width: auto;
+    max-width: 100%;
+    margin: 0;
+    line-height: 1.35;
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    display: inline-block;
 }
 
 .inline-form {
@@ -1080,7 +1102,7 @@ body.camera-open {
 
 @media (max-width: 1100px) {
     .page-with-nav {
-        padding: 16px 16px 16px 262px;
+        padding: 16px 16px 16px 238px;
     }
 
     .list-title-block h1 {
@@ -1411,21 +1433,74 @@ body.camera-open {
    Ajustos generals taules i lots associats
    =============================== */
 
-.table-wrapper {
+.table-wrapper,
+.lots-table-wrapper {
     width: 100%;
-    overflow-x: visible;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 14px;
+    -webkit-overflow-scrolling: touch;
 }
 
-.table-wrapper table {
+.table-wrapper table,
+.lots-table {
     width: 100%;
-    table-layout: fixed;
+    min-width: 0;
+    table-layout: auto;
+    border-collapse: collapse;
 }
 
 .table-wrapper th,
-.table-wrapper td {
+.table-wrapper td,
+.lots-table th,
+.lots-table td {
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: normal;
+    vertical-align: middle;
+}
+
+.lots-table th,
+.lots-table td {
+    padding: 10px 10px !important;
+    font-size: 0.88rem;
+    line-height: 1.25;
+}
+
+.lots-table .lot-col-codi {
+    min-width: 130px;
+}
+
+.lots-table .lot-col-materia,
+.lots-table .lot-col-proveidor {
+    min-width: 150px;
+    max-width: none;
+}
+
+.lots-table .lot-col-quantitat,
+.lots-table .lot-col-estat,
+.lots-table .lot-col-data {
+    min-width: 100px;
+}
+
+.lots-table .lot-col-accions {
+    min-width: 190px;
+}
+
+.table-wrapper .actions-table,
+.lots-table .actions-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.table-wrapper .actions-table .btn,
+.lots-table .actions-table .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .lot-badges-list {
@@ -1464,119 +1539,12 @@ body.camera-open {
 
 @media (max-width: 1400px) {
     .table-wrapper th,
-    .table-wrapper td {
-        font-size: 0.9rem;
-        padding: 12px 10px;
+    .table-wrapper td,
+    .lots-table th,
+    .lots-table td {
+        font-size: 0.84rem;
+        padding: 9px 8px !important;
     }
-}
-
-/* ===============================
-   Ajustos generals taules i lots associats
-   =============================== */
-
-.table-wrapper {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    border-radius: 14px;
-    -webkit-overflow-scrolling: touch;
-}
-
-.table-wrapper table {
-    width: 100%;
-    min-width: 1050px;
-    table-layout: auto;
-}
-
-.table-wrapper th,
-.table-wrapper td {
-    white-space: nowrap;
-    overflow-wrap: normal;
-    word-break: normal;
-}
-
-.table-wrapper .actions-table {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 8px;
-    align-items: center;
-}
-
-.table-wrapper .actions-table .btn {
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.lots-table-wrapper {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto !important;
-    overflow-y: hidden;
-    background-color: #FFFFFF;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(74, 46, 31, 0.12);
-    border: 1px solid #D8C8B8;
-    -webkit-overflow-scrolling: touch;
-}
-
-.lots-table {
-    width: 100%;
-    min-width: 1500px;
-    table-layout: auto !important;
-    border-collapse: collapse;
-}
-
-.lots-table .lot-col-accions {
-    min-width: 360px;
-}
-
-.lots-table .actions-table {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 8px;
-    align-items: center;
-}
-
-.lots-table .actions-table .btn {
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.lot-badges-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: flex-start;
-}
-
-.lot-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    max-width: 100%;
-    padding: 6px 10px;
-    border: 1px solid #D8C8B8;
-    border-radius: 10px;
-    background-color: #F4EBDD;
-    color: #4A2E1F;
-    font-size: 0.9rem;
-    line-height: 1.25;
-    overflow-wrap: anywhere;
-}
-
-.leftnav {
-    overflow-x: hidden;
-}
-
-.leftnav-menu a {
-    overflow-wrap: anywhere;
-}
-
-.home-modules-operations {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 /* ===============================
@@ -1647,7 +1615,7 @@ body.camera-open {
 .grafic-canvas-wrapper {
     width: 100%;
     min-height: 420px;
-    overflow-x: auto;
+    overflow-x: hidden;
     border: 1px solid #E6D8C8;
     border-radius: 14px;
     background-color: #FFFDF9;
@@ -1656,7 +1624,8 @@ body.camera-open {
 
 #graficProductesVenuts {
     display: block;
-    min-width: 720px;
+    width: 100%;
+    min-width: 0;
 }
 
 @media (max-width: 1400px) {
@@ -1945,26 +1914,309 @@ body.camera-open {
 
 
 /* ===============================
-   Selector d'idioma en pantalles sense leftnav
+   Selector d'idioma dins les capçaleres sense leftnav
    =============================== */
 
-.page-language-top {
-    width: min(100%, 1220px);
-    margin: 18px auto 12px;
-    padding: 0 8px;
+.header-top-actions {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    box-sizing: border-box;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .page-language-switch {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .page-language-switch .btn {
-    min-width: 58px;
+    min-width: 52px;
+    padding: 9px 12px;
+    font-size: 13px;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    .header-top-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .page-language-switch {
+        width: 100%;
+    }
+
+    .page-language-switch .btn {
+        width: auto;
+    }
+}
+
+
+/* ===============================
+   Sprint 4 - Ajust final de densitat visual a 100 %
+   =============================== */
+
+.container {
+    width: min(1120px, calc(100% - 32px));
+    max-width: 1120px;
+    margin: 16px auto;
+    padding: 18px 20px;
+}
+
+.page-standalone {
+    padding: 16px 16px 24px;
+}
+
+.page-standalone .container {
+    width: min(1120px, 100%);
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 18px 20px;
+}
+
+.page-with-nav {
+    padding: 16px 16px 16px 238px;
+}
+
+.page-with-nav .container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 18px 20px;
+}
+
+.leftnav {
+    width: 222px;
+    padding: 16px 12px;
+    gap: 12px;
+}
+
+.leftnav-top {
+    padding-bottom: 4px;
+}
+
+.leftnav-brand {
+    gap: 9px;
+    font-size: 16px;
+}
+
+.leftnav-brand img {
+    height: 34px;
+}
+
+.leftnav-menu {
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.leftnav-section-title {
+    margin: 8px 0 0 4px;
+    font-size: 10px;
+}
+
+.leftnav-menu a {
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 13px;
+    font-size: 14px;
+    line-height: 1.18;
+}
+
+.leftnav-icon {
+    font-size: 16px;
+    width: 18px;
+}
+
+.leftnav-bottom {
+    gap: 9px;
+    padding-top: 4px;
+}
+
+.leftnav-lang {
+    gap: 8px;
+}
+
+.leftnav-lang .btn,
+.leftnav-profile-btn,
+.leftnav-logout-btn {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 13px;
+}
+
+.leftnav-lang .btn {
+    min-width: 56px;
+}
+
+.leftnav-user {
+    gap: 10px;
+    padding: 9px 8px;
+    border-radius: 14px;
+}
+
+.leftnav-user-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+}
+
+.leftnav-user-name {
+    font-size: 13px;
+}
+
+.leftnav-user-role,
+.leftnav-user-email {
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.header-actions,
+.list-header {
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.header-actions .logo-title {
+    margin-bottom: 0;
+}
+
+.logo-title {
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.logo-title img,
+.list-page-logo {
+    height: 40px;
+}
+
+.logo-title h1,
+.list-title-block h1 {
+    margin-bottom: 4px;
+    font-size: 30px;
+    line-height: 1.08;
+}
+
+.list-title-block p {
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.form-card {
+    padding: 18px 20px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+label,
+.form-group label {
+    margin-bottom: 5px;
+}
+
+input,
+select,
+textarea {
+    padding: 9px 11px;
+    min-height: 38px;
+    font-size: 14px;
+}
+
+textarea {
+    min-height: 108px;
+}
+
+.btn,
+button.btn {
+    min-height: 36px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.success-message,
+.error-message,
+.empty-message {
+    padding: 12px 14px;
+    margin-bottom: 14px;
+}
+
+.grafic-filtres-card,
+.grafic-canvas-card,
+.grafic-resum-grid {
+    margin-bottom: 16px;
+}
+
+.grafic-filtres-form {
+    gap: 12px;
+}
+
+.grafic-resum-card {
+    gap: 6px;
+    padding: 16px;
+}
+
+.grafic-resum-card strong {
+    font-size: 2rem;
+}
+
+.grafic-canvas-header p {
+    margin-bottom: 12px;
+}
+
+.grafic-canvas-wrapper {
+    min-height: 340px;
+    padding: 10px;
+}
+
+.table-wrapper,
+.lots-table-wrapper {
+    overflow-x: auto;
+}
+
+.table-wrapper th,
+.table-wrapper td,
+.lots-table th,
+.lots-table td {
+    padding: 8px 8px !important;
+    font-size: 0.82rem;
+    line-height: 1.2;
+}
+
+.lot-badge {
+    padding: 5px 8px;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 1180px) {
+    .page-with-nav {
+        padding-left: 226px;
+    }
+
+    .container,
+    .page-standalone .container {
+        width: calc(100% - 24px);
+        padding: 16px;
+    }
+}
+
+@media (max-height: 900px) and (min-width: 900px) {
+    .leftnav {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        gap: 10px;
+    }
+
+    .leftnav-menu a {
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .leftnav-user {
+        padding: 8px;
+    }
 }
