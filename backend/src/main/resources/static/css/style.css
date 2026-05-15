@@ -2220,3 +2220,127 @@ button.btn {
         padding: 8px;
     }
 }
+
+
+/* ===============================
+   Home - ajust compacte a 100% de zoom
+   =============================== */
+.home-body {
+    padding: 10px 18px 16px 18px;
+}
+
+.home-language {
+    gap: 4px;
+    margin: 0 auto 2px auto;
+}
+
+.home-language .btn {
+    min-width: 46px;
+    padding: 7px 11px;
+}
+
+.home-hero {
+    margin: 0 auto 10px auto;
+    padding: 0 18px 4px 18px;
+}
+
+.home-logo {
+    width: 220px;
+    margin-bottom: 4px;
+}
+
+.home-hero p {
+    font-size: 15px;
+}
+
+.home-content {
+    display: grid;
+    gap: 12px;
+}
+
+.home-section {
+    margin-bottom: 0;
+}
+
+.home-section-title {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.home-modules {
+    gap: 12px;
+}
+
+.home-modules-admin,
+.home-modules-operations {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.home-card {
+    min-height: 112px;
+    padding: 14px 14px;
+    border-radius: 16px;
+}
+
+.home-card-image {
+    top: 14px;
+    left: 14px;
+    font-size: 36px;
+}
+
+.home-card-title {
+    font-size: 17px;
+    line-height: 1.12;
+}
+
+@media (max-width: 1200px) {
+    .home-modules-admin {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+    }
+
+    .home-modules-operations {
+        grid-template-columns: repeat(3, minmax(170px, 1fr));
+    }
+}
+
+@media (min-width: 1201px) and (max-height: 900px) {
+    .home-body {
+        padding-top: 8px;
+        padding-bottom: 10px;
+    }
+
+    .home-logo {
+        width: 180px;
+    }
+
+    .home-hero {
+        margin-bottom: 6px;
+    }
+
+    .home-content {
+        gap: 8px;
+    }
+
+    .home-section-title {
+        margin-bottom: 6px;
+    }
+
+    .home-modules {
+        gap: 10px;
+    }
+
+    .home-card {
+        min-height: 92px;
+        padding: 12px;
+    }
+
+    .home-card-image {
+        top: 12px;
+        left: 12px;
+        font-size: 32px;
+    }
+
+    .home-card-title {
+        font-size: 16px;
+    }
+}
