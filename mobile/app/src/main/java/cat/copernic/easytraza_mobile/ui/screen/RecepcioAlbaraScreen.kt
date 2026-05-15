@@ -1,7 +1,8 @@
 package cat.copernic.easytraza_mobile.ui.screen
 
 import android.Manifest
-import android.graphics.Bitmap
+import android.content.Context
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,9 +47,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.ui.viewmodel.EditableLotUi
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
+import java.io.File
 
 @Composable
 fun RecepcioAlbaraScreen(
@@ -81,12 +84,22 @@ fun RecepcioAlbaraScreen(
         }
     }
 
+    val cameraPhotoUri = remember { mutableStateOf<Uri?>(null) }
+    val cameraPhotoName = remember { mutableStateOf("") }
+
     val takePictureLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview()
-    ) { bitmap: Bitmap? ->
-        if (bitmap != null) {
+        contract = ActivityResultContracts.TakePicture()
+    ) { captured: Boolean ->
+        val uri = cameraPhotoUri.value
+        val fileName = cameraPhotoName.value
+
+        if (captured && uri != null && fileName.isNotBlank()) {
             mode.value = RecepcioMode.Ocr
-            viewModel.analitzarBitmap(bitmap)
+            viewModel.analitzarUri(
+                context.contentResolver,
+                uri,
+                fileName
+            )
         }
     }
 
@@ -94,7 +107,16 @@ fun RecepcioAlbaraScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted: Boolean ->
         if (granted) {
-            takePictureLauncher.launch(null)
+            val cameraFile = crearFitxerFotoOcr(context)
+            val uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                cameraFile
+            )
+
+            cameraPhotoUri.value = uri
+            cameraPhotoName.value = cameraFile.name
+            takePictureLauncher.launch(uri)
         }
     }
 
@@ -369,6 +391,12 @@ fun RecepcioAlbaraScreen(
             }
         }
     }
+}
+
+
+private fun crearFitxerFotoOcr(context: Context): File {
+    val directori = File(context.cacheDir, "ocr-camera").apply { mkdirs() }
+    return File(directori, "ocr_camera_${System.currentTimeMillis()}.jpg")
 }
 
 @Composable
