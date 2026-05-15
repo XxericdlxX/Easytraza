@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "cat.copernic.easytraza_mobile"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "cat.copernic.easytraza_mobile"
@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.exifinterface)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
