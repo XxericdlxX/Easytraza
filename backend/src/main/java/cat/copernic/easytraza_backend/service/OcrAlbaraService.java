@@ -252,7 +252,17 @@ public class OcrAlbaraService {
             return "ARTIPAS";
         }
 
-        if (conteAlguna(text, "JOSE NOVAU DIL", "NOVAU DIL")) {
+        if (conteAlguna(
+                text,
+                "JOSE NOVAU DIL",
+                "JOSE NOVAU DIT",
+                "JOSE NOVAU DI",
+                "NOVAU DIL",
+                "NOVAU DIT",
+                "JOSENOVAUDIL",
+                "WWW JOSENOVAUDIL",
+                "47183180"
+        )) {
             return "JOSE NOVAU DIL";
         }
 
