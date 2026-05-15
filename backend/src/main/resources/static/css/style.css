@@ -1942,3 +1942,29 @@ body.camera-open {
     }
 }
 
+
+
+/* ===============================
+   Selector d'idioma en pantalles sense leftnav
+   =============================== */
+
+.page-language-top {
+    width: min(100%, 1220px);
+    margin: 18px auto 12px;
+    padding: 0 8px;
+    display: flex;
+    justify-content: flex-end;
+    box-sizing: border-box;
+}
+
+.page-language-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.page-language-switch .btn {
+    min-width: 58px;
+    text-align: center;
+}
