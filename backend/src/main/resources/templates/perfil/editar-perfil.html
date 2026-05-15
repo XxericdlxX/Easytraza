@@ -8,23 +8,6 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body>
-        <div class="page-language-top">
-            <div class="page-language-switch">
-                <a class="btn btn-secondary js-page-lang-link"
-                   href="#"
-                   data-lang="es"
-                   th:text="#{lang.es}">
-                    ES
-                </a>
-                <a class="btn btn-secondary js-page-lang-link"
-                   href="#"
-                   data-lang="ca"
-                   th:text="#{lang.ca}">
-                    CA
-                </a>
-            </div>
-        </div>
-
         <div class="page-standalone profile-page">
             <div class="container">
                 <div class="header-actions">
@@ -35,6 +18,23 @@
                             <p class="page-subtitle" th:text="#{perfil.subtitol}">
                                 Actualiza las dades visibles del teu usuari.
                             </p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
                         </div>
                     </div>
                 </div>
