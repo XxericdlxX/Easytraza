@@ -5,20 +5,29 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
+import cat.copernic.easytraza_mobile.domain.usecase.config.GetServerIpUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.config.SaveServerIpUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.config.TestConnectionUseCase
 import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
-import cat.copernic.easytraza_mobile.network.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla o component d’interfície `ConfigIpViewModel` de l'aplicació mobile d'EasyTraza.
+ * ViewModel de la pantalla de configuració de connexió.
+ *
+ * Gestiona la IP del servidor backend, permet guardar-la de forma persistent i
+ * comprova la connexió amb el backend abans d'utilitzar la resta de
+ * funcionalitats mobile.
  */
 class ConfigIpViewModel(
     application: Application,
-    private val repository: IpPreferencesRepository
+    repository: IpPreferencesRepository
 ) : AndroidViewModel(application) {
+
+    private val getServerIpUseCase = GetServerIpUseCase(repository)
+    private val saveServerIpUseCase = SaveServerIpUseCase(repository)
+    private val testConnectionUseCase = TestConnectionUseCase()
 
     private val _ip = MutableStateFlow("")
     val ip: StateFlow<String> = _ip
@@ -28,7 +37,7 @@ class ConfigIpViewModel(
 
     init {
         viewModelScope.launch {
-            val savedIp = repository.serverIpFlow.first()
+            val savedIp = getServerIpUseCase()
             _ip.value = savedIp
             _status.value = getApplication<Application>()
                 .getString(R.string.connection_status_not_tested)
@@ -36,15 +45,16 @@ class ConfigIpViewModel(
     }
 
     /**
-     * Executa l'operació `onIpChange`.
-     * @param newIp paràmetre necessari per a l'operació.
+     * Actualitza el valor de la IP introduïda per l'usuari.
+     *
+     * @param newIp nou valor escrit al camp de configuració.
      */
     fun onIpChange(newIp: String) {
         _ip.value = newIp
     }
 
     /**
-     * Executa l'operació `saveIp`.
+     * Desa la IP del servidor després de normalitzar-la i validar-la.
      */
     fun saveIp() {
         viewModelScope.launch {
@@ -56,7 +66,7 @@ class ConfigIpViewModel(
                 return@launch
             }
 
-            repository.saveServerIp(normalizedIp)
+            saveServerIpUseCase(normalizedIp)
             _ip.value = normalizedIp
             _status.value = getApplication<Application>()
                 .getString(R.string.connection_status_ip_saved)
@@ -64,7 +74,7 @@ class ConfigIpViewModel(
     }
 
     /**
-     * Executa l'operació `testConnection`.
+     * Comprova si el backend és accessible amb la IP configurada.
      */
     fun testConnection() {
         viewModelScope.launch {
@@ -77,9 +87,7 @@ class ConfigIpViewModel(
             }
 
             try {
-                val baseUrl = RetrofitClient.buildBaseUrl(normalizedIp)
-                val api = RetrofitClient.create(baseUrl)
-                val response = api.checkConnection()
+                val response = testConnectionUseCase(normalizedIp)
 
                 _status.value = if (response.isSuccessful && response.body() != null) {
                     response.body()?.message
@@ -101,9 +109,10 @@ class ConfigIpViewModel(
     }
 
     /**
-     * Executa l'operació `normalizeServerHost`.
-     * @param rawValue paràmetre necessari per a l'operació.
-     * @return resultat obtingut després d'executar l'operació.
+     * Normalitza el valor introduït perquè només quedi el host del servidor.
+     *
+     * @param rawValue valor escrit per l'usuari.
+     * @return host normalitzat sense protocol, port ni barra final.
      */
     private fun normalizeServerHost(rawValue: String): String {
         return rawValue
@@ -115,9 +124,10 @@ class ConfigIpViewModel(
     }
 
     /**
-     * Executa l'operació `isValidServerHost`.
-     * @param host paràmetre necessari per a l'operació.
-     * @return resultat obtingut després d'executar l'operació.
+     * Vàlida si el host indicat és una IPv4 o un alias local acceptat.
+     *
+     * @param host host normalitzat.
+     * @return `true` si el host és vàlid; `false` en cas contrari.
      */
     private fun isValidServerHost(host: String): Boolean {
         if (host.isBlank()) {
