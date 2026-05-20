@@ -38,7 +38,7 @@ image::Sprint5/BoardInicial/BoardInicialSprint5.1.png[Board inicial 1]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | - | Avui continuaré corregint els bugfixs relacionats amb l’OCR d’albarans de proveïdor, revisant l’extracció de codis de matèria, lots i línies detectades. També ajustaré algunes taules web que encara retallen informació o no es visualitzen correctament. | - | 3h
+| Eric Delgado López | - | Avui continuaré corregint els bugfixs relacionats amb l’OCR d’albarans de proveïdor, revisant l’extracció de codis de matèria, lots i línies detectades. També ajustaré algunes taules web que encara retallen informació o no es visualitzen correctament. | - | 3h + 5h
 |===
 
 === DIA 5 Dijous - 21/05/2026
