@@ -2055,6 +2055,19 @@ body.camera-open {
     display: block;
 }
 
+.leftnav-user-avatar-logo {
+    overflow: hidden;
+    background-color: #FFF8EC;
+    border: 1px solid rgba(139, 94, 60, 0.18);
+}
+
+.leftnav-user-avatar-logo img {
+    width: 82%;
+    height: 82%;
+    border-radius: 0;
+    object-fit: contain;
+}
+
 .profile-photo-preview {
     margin-top: 12px;
     width: 112px;
