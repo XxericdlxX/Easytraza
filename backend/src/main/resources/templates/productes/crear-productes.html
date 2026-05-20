@@ -35,7 +35,7 @@
 
                     <div class="form-group">
                         <label for="descripcio">
-                            <span th:text="#{productes.descripcio}">Notas/observaciones</span> <span class="required">*</span>
+                            <span th:text="#{productes.descripcio}">Notas/observaciones</span>
                         </label>
                         <textarea id="descripcio" th:field="*{descripcio}" rows="4"></textarea>
                         <div class="field-error" th:if="${#fields.hasErrors('descripcio')}" th:errors="*{descripcio}"></div>
