@@ -1101,7 +1101,7 @@ public class OcrAlbaraService {
             return null;
         }
 
-        String neta = materia
+        String neta = corregirMateriaJoseNovau(materia)
                 .replaceAll("\\bARTICULO\\b", " ")
                 .replaceAll("\\bARTICLE\\b", " ")
                 .replaceAll("\\bDESCRIPCION\\b", " ")
@@ -1114,10 +1114,30 @@ public class OcrAlbaraService {
                 .replaceAll("\\bCÓDIGO\\b", " ")
                 .replaceAll("\\bLOT\\b", " ")
                 .replaceAll("\\bLOTE\\b", " ")
+                .replaceAll("[\\]\\[\\{\\}\\|]+$", "")
+                .replaceAll("\\s*[,;:]+$", "")
                 .replaceAll("\\s{2,}", " ")
                 .trim();
 
         return neta.length() < 3 ? null : neta;
+    }
+
+    private String corregirMateriaJoseNovau(String materia) {
+        if (materia == null || materia.isBlank()) {
+            return materia;
+        }
+
+        String neta = materia;
+
+        // Correcció dirigida a una lectura OCR observada en el producte
+        // "ENSAIMADA 409 SIN CARGO III", que Tesseract pot retornar com "II}", "II]" o "II".
+        // No altera la resta de línies ni el parser general del proveïdor.
+        neta = neta.replaceAll(
+                "(?i)\\bENSAIMADA\\s+409\\s+SIN\\s+CARGO\\s+II(?:[\\]\\}\\|!]+)?(?=\\s|$)",
+                "ENSAIMADA 409 SIN CARGO III"
+        );
+
+        return neta;
     }
 
     private String normalitzarText(String valor) {
