@@ -61,8 +61,8 @@ public class PerfilWebController {
 
     @PostMapping("/actualitzar")
     public String actualitzarPerfil(@Valid @ModelAttribute("perfil") PerfilUsuariDto perfilUsuariDto,
-            @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil,
             BindingResult result,
+            @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil,
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
