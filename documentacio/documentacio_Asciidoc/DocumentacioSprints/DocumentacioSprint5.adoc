@@ -31,14 +31,14 @@ image::Sprint5/BoardInicial/BoardInicialSprint5.1.png[Board inicial 1]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López | Ahir vaig continuar corregint els bugfixs pendents del Sprint 4. Vaig treballar en la millora de l’OCR mobile, especialment en la detecció d’un proveïdor concret, vaig ajustar la visualització del menú lateral i de les taules web, i vaig revisar la gestió de lots per fer-la més clara i compacta. També vaig deixar preparades les bases per continuar amb el desenvolupament del Sprint 5. |  |  | 
+| Eric Delgado López | Ahir vaig continuar corregint els bugfixs pendents del Sprint 4. Vaig treballar en la millora de l’OCR mobile, especialment en la detecció d’un proveïdor concret, vaig ajustar la visualització del menú lateral i de les taules web, i vaig revisar la gestió de lots per fer-la més clara i compacta. També vaig deixar preparades les bases per continuar amb el desenvolupament del Sprint 5. | - | - | 0h
 |===
 
 === DIA 4 Dimecres - 20/05/2026
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | - | Avui continuaré corregint els bugfixs relacionats amb l’OCR d’albarans de proveïdor, revisant l’extracció de codis de matèria, lots i línies detectades. També ajustaré algunes taules web que encara retallen informació o no es visualitzen correctament. | - | 3h
 |===
 
 === DIA 5 Dijous - 21/05/2026
