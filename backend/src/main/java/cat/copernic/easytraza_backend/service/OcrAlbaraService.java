@@ -526,49 +526,118 @@ public class OcrAlbaraService {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String base = normalitzarPartCodi(numeroAlbara != null ? numeroAlbara : "012436");
         List<String> linies = obtenirLiniesNormalitzades(textOcr);
+        int ordinalSenseCodi = 1;
 
         for (int i = 0; i < linies.size(); i++) {
             String linia = linies.get(i);
 
-            if (esLiniaSoroll(linia)) {
+            if (esLiniaSoroll(linia) || !conteQuantitatDecimal(linia)) {
                 continue;
             }
 
             String bloc = construirBlocArticle(linies, i);
+            OcrLotRespostaDto lot = crearLotJoseNovauDesDeBloc(bloc, base, ordinalSenseCodi);
 
-            Matcher ambLot = Pattern.compile(
-                    "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s*LOT\\s*([A-Z0-9\\-\\/]{4,})\\s+(\\d+[\\.,]\\d+|\\d+)\\b.*$",
-                    Pattern.CASE_INSENSITIVE
-            ).matcher(bloc);
-
-            if (ambLot.find()) {
-                afegirSiValid(lots, crearLot(
-                        normalitzarLot(ambLot.group(3)),
-                        normalitzarCodiMateriaNullable(ambLot.group(1)),
-                        netejarMateria(ambLot.group(2)),
-                        convertirNumero(ambLot.group(4))
-                ));
+            if (lot == null) {
                 continue;
             }
 
-            Matcher senseLot = Pattern.compile(
-                    "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s+(\\d+[\\.,]\\d+)\\s+\\d+[\\.,]\\d+\\s+\\d+[\\.,]\\d+.*$",
-                    Pattern.CASE_INSENSITIVE
-            ).matcher(bloc);
-
-            if (senseLot.find()) {
-                String codiMateria = normalitzarCodiMateriaNullable(senseLot.group(1));
-
-                afegirSiValid(lots, crearLot(
-                        unirCodiLotFallback(base, codiMateria),
-                        codiMateria,
-                        netejarMateria(senseLot.group(2)),
-                        convertirNumero(senseLot.group(3))
-                ));
+            if (lot.getCodiMateriaPrimaOcr() == null || lot.getCodiMateriaPrimaOcr().isBlank()) {
+                ordinalSenseCodi++;
             }
+
+            afegirSiValid(lots, lot);
         }
 
         return lots;
+    }
+
+    private OcrLotRespostaDto crearLotJoseNovauDesDeBloc(String bloc, String base, int ordinalSenseCodi) {
+        if (bloc == null || bloc.isBlank()) {
+            return null;
+        }
+
+        String valor = normalitzarPerComparar(bloc);
+        Matcher quantitatMatcher = Pattern.compile("\\b(\\d+[\\.,]\\d+)\\b").matcher(valor);
+
+        if (!quantitatMatcher.find()) {
+            return null;
+        }
+
+        Double quantitat = convertirNumero(quantitatMatcher.group(1));
+
+        if (quantitat == null || quantitat <= 0) {
+            return null;
+        }
+
+        String capcaleraLinia = valor.substring(0, quantitatMatcher.start()).trim();
+
+        if (capcaleraLinia.isBlank()) {
+            return null;
+        }
+
+        String lotDocument = extreureLotJoseNovau(capcaleraLinia);
+        capcaleraLinia = eliminarLotJoseNovau(capcaleraLinia);
+
+        String codiMateria = extreureCodiMateriaIniciLinia(capcaleraLinia);
+        String materia = eliminarCodiMateriaInicial(capcaleraLinia, codiMateria);
+        materia = netejarMateria(materia);
+
+        if (materia == null || materia.isBlank()) {
+            return null;
+        }
+
+        String codiLot = lotDocument != null
+                ? normalitzarLot(lotDocument)
+                : crearCodiLotFallbackJoseNovau(base, codiMateria, ordinalSenseCodi);
+
+        return crearLot(codiLot, codiMateria, materia, quantitat);
+    }
+
+    private boolean conteQuantitatDecimal(String linia) {
+        return linia != null && Pattern.compile("\\b\\d+[\\.,]\\d+\\b").matcher(linia).find();
+    }
+
+    private String extreureLotJoseNovau(String linia) {
+        Matcher matcher = Pattern.compile(
+                "\\bLOT\\s*([A-Z0-9\\-\\/]{4,})\\b",
+                Pattern.CASE_INSENSITIVE
+        ).matcher(linia);
+
+        if (!matcher.find()) {
+            return null;
+        }
+
+        return normalitzarLot(matcher.group(1));
+    }
+
+    private String eliminarLotJoseNovau(String linia) {
+        if (linia == null || linia.isBlank()) {
+            return linia;
+        }
+
+        return linia.replaceAll("(?i)\\bLOT\\s*[A-Z0-9\\-\\/]{4,}\\b", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    private String eliminarCodiMateriaInicial(String linia, String codiMateria) {
+        if (linia == null || linia.isBlank() || codiMateria == null || codiMateria.isBlank()) {
+            return linia;
+        }
+
+        return linia.replaceFirst("^\\s*[A-Z0-9][A-Z0-9\\.\\-]{1,20}\\s+", "")
+                .trim();
+    }
+
+    private String crearCodiLotFallbackJoseNovau(String base, String codiMateria, int ordinalSenseCodi) {
+        String codiNormalitzat = normalitzarCodiMateriaNullable(codiMateria);
+
+        if (codiNormalitzat != null && !codiNormalitzat.isBlank()) {
+            return unirCodiLotFallback(base, codiNormalitzat);
+        }
+
+        return normalitzarPartCodi(base) + "-" + ordinalSenseCodi;
     }
 
     private List<OcrLotRespostaDto> extreureLotsTalComPinta(String textOcr) {
@@ -776,7 +845,9 @@ public class OcrAlbaraService {
     }
 
     private boolean semblaIniciArticle(String linia) {
-        return linia != null && linia.matches("^[A-Z0-9\\-\\[\\]]{2,}\\s+.*");
+        return linia != null
+                && (linia.matches("^[A-Z0-9\\-\\[\\]]{2,}\\s+.*")
+                || conteQuantitatDecimal(linia));
     }
 
     private String extreureCodiMateriaProducte(String linia) {
