@@ -7,11 +7,15 @@ import cat.copernic.easytraza_backend.repository.AlbaraClientRepository;
 import cat.copernic.easytraza_backend.repository.ProducteRepository;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProducteService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.productes");
 
     @Autowired
     private ProducteRepository producteRepository;
@@ -28,7 +32,14 @@ public class ProducteService {
     }
 
     public Producte save(Producte producte) {
-        return producteRepository.save(producte);
+        try {
+            Producte producteDesat = producteRepository.save(producte);
+            LOGGER.info("Producte desat correctament.");
+            return producteDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un producte.", ex);
+            throw ex;
+        }
     }
 
     public Producte update(Long id, Producte producteActualitzat) {
@@ -38,14 +49,28 @@ public class ProducteService {
             Producte producte = producteExistent.get();
             producte.setNom(producteActualitzat.getNom());
             producte.setDescripcio(producteActualitzat.getDescripcio());
-            return producteRepository.save(producte);
+            try {
+                Producte producteDesat = producteRepository.save(producte);
+                LOGGER.info("Producte actualitzat correctament.");
+                return producteDesat;
+            } catch (RuntimeException ex) {
+                LOGGER.error("Error en actualitzar un producte.", ex);
+                throw ex;
+            }
         }
 
+        LOGGER.warn("No s'ha pogut actualitzar el producte perquè no existeix.");
         return null;
     }
 
     public void deleteById(Long id) {
-        producteRepository.deleteById(id);
+        try {
+            producteRepository.deleteById(id);
+            LOGGER.info("Producte eliminat correctament.");
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar un producte.", ex);
+            throw ex;
+        }
     }
 
     public List<Producte> buscar(String nom, String descripcio) {
@@ -77,6 +102,7 @@ public class ProducteService {
 
         if (producteAmbMateixNom.isPresent()) {
             if (idActual == null || !producteAmbMateixNom.get().getId().equals(idActual)) {
+                LOGGER.warn("Validació de producte rebutjada per nom duplicat.");
                 return "productes.error.nom.duplicat";
             }
         }
