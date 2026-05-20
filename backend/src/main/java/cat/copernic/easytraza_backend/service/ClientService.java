@@ -7,11 +7,15 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ClientService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.clients");
 
     @Autowired
     private ClientRepository clientRepository;
@@ -25,14 +29,22 @@ public class ClientService {
     }
 
     public Client save(Client client) {
-        normalitzarClient(client);
-        return clientRepository.save(client);
+        try {
+            normalitzarClient(client);
+            Client clientDesat = clientRepository.save(client);
+            LOGGER.info("Client desat correctament.");
+            return clientDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un client.", ex);
+            throw ex;
+        }
     }
 
     public Client update(String nif, Client clientActualitzat) {
         Optional<Client> clientExistentOpt = clientRepository.findById(nif);
 
         if (clientExistentOpt.isEmpty()) {
+            LOGGER.warn("No s'ha pogut actualitzar el client perquè no existeix.");
             return null;
         }
 
@@ -46,14 +58,27 @@ public class ClientService {
         clientExistent.setEmail(clientActualitzat.getEmail());
         clientExistent.setNotes(clientActualitzat.getNotes());
 
-        normalitzarClient(clientExistent);
-        return clientRepository.save(clientExistent);
+        try {
+            normalitzarClient(clientExistent);
+            Client clientDesat = clientRepository.save(clientExistent);
+            LOGGER.info("Client actualitzat correctament.");
+            return clientDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en actualitzar un client.", ex);
+            throw ex;
+        }
     }
 
     @Transactional
     public void deleteById(String nif) {
-        clientRepository.deleteById(nif);
-        clientRepository.flush();
+        try {
+            clientRepository.deleteById(nif);
+            clientRepository.flush();
+            LOGGER.info("Client eliminat correctament.");
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar un client.", ex);
+            throw ex;
+        }
     }
 
     public boolean existsById(String nif) {
