@@ -26,12 +26,16 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class OcrAlbaraService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.albarans.proveidor");
 
     @Value("${ocr.tessdata.path}")
     private String tessdataPath;
@@ -53,6 +57,7 @@ public class OcrAlbaraService {
 
     public OcrAlbaraResponseDto processarImatgeAlbara(MultipartFile fitxer) {
         if (fitxer == null || fitxer.isEmpty()) {
+            LOGGER.warn("S'ha rebut una sol·licitud OCR sense document.");
             throw new IllegalArgumentException("El document és obligatori.");
         }
 
@@ -109,6 +114,7 @@ public class OcrAlbaraService {
             );
 
         } catch (IOException ex) {
+            LOGGER.error("Error en guardar el document original de l'OCR.", ex);
             throw new IllegalStateException("No s'ha pogut guardar el document OCR.", ex);
         }
     }
@@ -163,8 +169,10 @@ public class OcrAlbaraService {
             return crearTesseract().doOCR(prepararImatgePerOcr(imatgeOriginal));
 
         } catch (IOException ex) {
+            LOGGER.error("Error en llegir una imatge d'albarà per OCR.", ex);
             throw new IllegalStateException("Error llegint la imatge per OCR.", ex);
         } catch (TesseractException ex) {
+            LOGGER.error("Error en executar Tesseract sobre una imatge d'albarà.", ex);
             throw new IllegalStateException("Error executant Tesseract OCR.", ex);
         }
     }
@@ -191,6 +199,7 @@ public class OcrAlbaraService {
             return text.toString();
 
         } catch (Exception ex) {
+            LOGGER.error("Error en processar un PDF d'albarà per OCR.", ex);
             throw new IllegalStateException("Error processant el PDF per OCR.", ex);
         } finally {
             if (tempFile != null && tempFile.exists()) {
