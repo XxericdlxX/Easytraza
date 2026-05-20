@@ -74,19 +74,46 @@ p {
     min-height: 100vh;
     background-color: #F8F4EE;
     padding: 14px 24px 22px 24px;
+    position: relative;
+}
+
+.home-toolbar {
+    position: absolute;
+    top: 14px;
+    right: 24px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .home-language {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    max-width: 1280px;
-    margin: 0 auto 6px auto;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
 }
 
-.home-language .btn {
+.home-language .btn,
+.home-logout-btn {
     padding: 8px 14px;
     font-size: 13px;
+    line-height: 1.1;
+}
+
+.home-logout-form {
+    margin: 0;
+}
+
+
+@media (max-width: 900px) {
+    .home-toolbar {
+        position: static;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        margin: 0 auto 10px auto;
+        max-width: 1280px;
+    }
 }
 
 .home-hero {
