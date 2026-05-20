@@ -12,13 +12,14 @@ import androidx.lifecycle.viewModelScope
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
 import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
-import cat.copernic.easytraza_mobile.network.RetrofitClient
+import cat.copernic.easytraza_mobile.domain.usecase.config.GetServerIpUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.ocr.AnalitzarAlbaraUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.ocr.GuardarAlbaraUseCase
 import cat.copernic.easytraza_mobile.network.dto.MobileAlbaraSaveRequestDto
 import cat.copernic.easytraza_mobile.network.dto.MobileLotSaveRequestDto
 import cat.copernic.easytraza_mobile.network.dto.OcrAlbaraResponseDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -46,6 +47,9 @@ data class EditableLotUi(
 class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = IpPreferencesRepository(application.applicationContext)
+    private val getServerIpUseCase = GetServerIpUseCase(repository)
+    private val analitzarAlbaraUseCase = AnalitzarAlbaraUseCase()
+    private val guardarAlbaraUseCase = GuardarAlbaraUseCase()
 
     private val _dataRecepcio = MutableStateFlow("")
     val dataRecepcio: StateFlow<String> = _dataRecepcio
@@ -208,7 +212,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 _saveCompleted.value = false
                 _status.value = getApplication<Application>().getString(R.string.ocr_processing_document)
 
-                val savedIp = repository.serverIpFlow.first().trim()
+                val savedIp = getServerIpUseCase()
 
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
@@ -237,7 +241,6 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
 
                 val fitxerPreparat = prepararFitxerPerOcr(tempFile, mimeType)
 
-                val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
                 val requestBody = fitxerPreparat.file.asRequestBody(
                     fitxerPreparat.mimeType.toMediaTypeOrNull()
                 )
@@ -247,7 +250,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                     requestBody
                 )
 
-                val resposta = api.analitzarAlbara(part)
+                val resposta = analitzarAlbaraUseCase(savedIp, part)
 
                 omplirDesDeResposta(resposta)
 
@@ -271,14 +274,12 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                 _saveCompleted.value = false
                 _status.value = getApplication<Application>().getString(R.string.ocr_saving)
 
-                val savedIp = repository.serverIpFlow.first().trim()
+                val savedIp = getServerIpUseCase()
 
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
                     return@launch
                 }
-
-                val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
 
                 val request = MobileAlbaraSaveRequestDto(
                     dataRecepcio = _dataRecepcio.value.ifBlank { todayIso() },
@@ -294,7 +295,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                     lots = buildLotsPerGuardar()
                 )
 
-                val response = api.guardarAlbara(request)
+                val response = guardarAlbaraUseCase(savedIp, request)
 
                 if (response.isSuccessful) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_saved)
