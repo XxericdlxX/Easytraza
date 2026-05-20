@@ -7,16 +7,18 @@ public class MobileUsuariDto {
     private String cognoms;
     private String email;
     private String rol;
+    private String fotoPerfilUrl;
 
     public MobileUsuariDto() {
     }
 
-    public MobileUsuariDto(Long id, String nom, String cognoms, String email, String rol) {
+    public MobileUsuariDto(Long id, String nom, String cognoms, String email, String rol, String fotoPerfilUrl) {
         this.id = id;
         this.nom = nom;
         this.cognoms = cognoms;
         this.email = email;
         this.rol = rol;
+        this.fotoPerfilUrl = fotoPerfilUrl;
     }
 
     public Long getId() {
@@ -57,5 +59,13 @@ public class MobileUsuariDto {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public String getFotoPerfilUrl() {
+        return fotoPerfilUrl;
+    }
+
+    public void setFotoPerfilUrl(String fotoPerfilUrl) {
+        this.fotoPerfilUrl = fotoPerfilUrl;
     }
 }
