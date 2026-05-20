@@ -31,6 +31,7 @@ import java.util.Locale
 
 data class EditableLotUi(
     val codiLot: String = "",
+    val codiMateriaPrimaOcr: String = "",
     val quantitat: String = "",
     val materiaPrimaNom: String = "",
     val crearMateriaPrimaSiNoExisteix: Boolean = false
@@ -254,6 +255,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             } else {
                 MobileLotSaveRequestDto(
                     codiLot = codi,
+                    codiMateriaPrimaOcr = lot.codiMateriaPrimaOcr.trim().ifBlank { null },
                     quantitat = quantitat,
                     materiaPrimaNom = materia,
                     crearMateriaPrimaSiNoExisteix = lot.crearMateriaPrimaSiNoExisteix
@@ -263,6 +265,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             listOf(
                 MobileLotSaveRequestDto(
                     codiLot = "",
+                    codiMateriaPrimaOcr = null,
                     quantitat = null,
                     materiaPrimaNom = "",
                     crearMateriaPrimaSiNoExisteix = false
@@ -283,6 +286,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         val lotsMapejats = resposta.lots.map { lot ->
             EditableLotUi(
                 codiLot = lot.codiLot.orEmpty(),
+                codiMateriaPrimaOcr = lot.codiMateriaPrimaOcr.orEmpty(),
                 quantitat = lot.quantitat?.toString().orEmpty(),
                 materiaPrimaNom = lot.materiaPrima.orEmpty(),
                 crearMateriaPrimaSiNoExisteix = false
