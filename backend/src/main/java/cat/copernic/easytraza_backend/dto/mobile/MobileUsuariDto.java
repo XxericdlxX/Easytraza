@@ -5,18 +5,16 @@ public class MobileUsuariDto {
     private Long id;
     private String nom;
     private String cognoms;
-    private String email;
     private String rol;
     private String fotoPerfilUrl;
 
     public MobileUsuariDto() {
     }
 
-    public MobileUsuariDto(Long id, String nom, String cognoms, String email, String rol, String fotoPerfilUrl) {
+    public MobileUsuariDto(Long id, String nom, String cognoms, String rol, String fotoPerfilUrl) {
         this.id = id;
         this.nom = nom;
         this.cognoms = cognoms;
-        this.email = email;
         this.rol = rol;
         this.fotoPerfilUrl = fotoPerfilUrl;
     }
@@ -43,14 +41,6 @@ public class MobileUsuariDto {
 
     public void setCognoms(String cognoms) {
         this.cognoms = cognoms;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getRol() {
