@@ -11,7 +11,6 @@ public class ProducteDto {
     @Size(max = 100, message = "{productes.nom.max}")
     private String nom;
 
-    @NotBlank(message = "{productes.descripcio.obligatoria}")
     @Size(max = 255, message = "{productes.descripcio.max}")
     private String descripcio;
 
