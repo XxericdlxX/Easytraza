@@ -1130,11 +1130,12 @@ public class OcrAlbaraService {
         String neta = materia;
 
         // Correcció dirigida a una lectura OCR observada en el producte
-        // "ENSAIMADA 409 SIN CARGO III", que Tesseract pot retornar com "II}", "II]" o "II".
+        // "ENSAIMADA 409 SIN CARGO III". Per la revisió d'albarans només es conserva
+        // el nom de matèria útil i s'elimina la cua "SIN CARGO III" o les seves variants OCR.
         // No altera la resta de línies ni el parser general del proveïdor.
         neta = neta.replaceAll(
-                "(?i)\\bENSAIMADA\\s+409\\s+SIN\\s+CARGO\\s+II(?:[\\]\\}\\|!]+)?(?=\\s|$)",
-                "ENSAIMADA 409 SIN CARGO III"
+                "(?i)\\bENSAIMADA\\s+409\\s+SIN\\s+CARGO\\s+(?:III|II(?:[\\]\\}\\|!]+)?)(?=\\s|$)",
+                "ENSAIMADA 409"
         );
 
         return neta;
