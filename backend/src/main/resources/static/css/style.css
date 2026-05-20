@@ -66,18 +66,6 @@ p {
     min-height: auto;
 }
 
-.page-standalone {
-    min-height: 100vh;
-    padding: 28px 24px 36px 24px;
-}
-
-.page-standalone .container {
-    width: min(1180px, 100%);
-    max-width: 1180px;
-    min-height: auto;
-    margin: 0 auto;
-}
-
 /* ===============================
    Home
    =============================== */
@@ -486,29 +474,7 @@ textarea {
 }
 
 input[type="checkbox"] {
-    width: 18px;
-    min-width: 18px;
-    height: 18px;
-    margin: 0;
-    padding: 0;
-    flex: 0 0 18px;
-    accent-color: #D9A441;
-    cursor: pointer;
-}
-
-.checkbox-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
     width: auto;
-    max-width: 100%;
-    margin: 0;
-    line-height: 1.35;
-    cursor: pointer;
-}
-
-.checkbox-label span {
-    display: inline-block;
 }
 
 .inline-form {
@@ -1102,7 +1068,7 @@ body.camera-open {
 
 @media (max-width: 1100px) {
     .page-with-nav {
-        padding: 16px 16px 16px 238px;
+        padding: 16px 16px 16px 262px;
     }
 
     .list-title-block h1 {
@@ -1433,74 +1399,21 @@ body.camera-open {
    Ajustos generals taules i lots associats
    =============================== */
 
-.table-wrapper,
-.lots-table-wrapper {
+.table-wrapper {
     width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    border-radius: 14px;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible;
 }
 
-.table-wrapper table,
-.lots-table {
+.table-wrapper table {
     width: 100%;
-    min-width: 0;
-    table-layout: auto;
-    border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .table-wrapper th,
-.table-wrapper td,
-.lots-table th,
-.lots-table td {
+.table-wrapper td {
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: normal;
-    vertical-align: middle;
-}
-
-.lots-table th,
-.lots-table td {
-    padding: 10px 10px !important;
-    font-size: 0.88rem;
-    line-height: 1.25;
-}
-
-.lots-table .lot-col-codi {
-    min-width: 130px;
-}
-
-.lots-table .lot-col-materia,
-.lots-table .lot-col-proveidor {
-    min-width: 150px;
-    max-width: none;
-}
-
-.lots-table .lot-col-quantitat,
-.lots-table .lot-col-estat,
-.lots-table .lot-col-data {
-    min-width: 100px;
-}
-
-.lots-table .lot-col-accions {
-    min-width: 190px;
-}
-
-.table-wrapper .actions-table,
-.lots-table .actions-table {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-}
-
-.table-wrapper .actions-table .btn,
-.lots-table .actions-table .btn {
-    white-space: nowrap;
-    flex-shrink: 0;
 }
 
 .lot-badges-list {
@@ -1539,12 +1452,119 @@ body.camera-open {
 
 @media (max-width: 1400px) {
     .table-wrapper th,
-    .table-wrapper td,
-    .lots-table th,
-    .lots-table td {
-        font-size: 0.84rem;
-        padding: 9px 8px !important;
+    .table-wrapper td {
+        font-size: 0.9rem;
+        padding: 12px 10px;
     }
+}
+
+/* ===============================
+   Ajustos generals taules i lots associats
+   =============================== */
+
+.table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 14px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper table {
+    width: 100%;
+    min-width: 1050px;
+    table-layout: auto;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.table-wrapper .actions-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.table-wrapper .actions-table .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.lots-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(74, 46, 31, 0.12);
+    border: 1px solid #D8C8B8;
+    -webkit-overflow-scrolling: touch;
+}
+
+.lots-table {
+    width: 100%;
+    min-width: 1500px;
+    table-layout: auto !important;
+    border-collapse: collapse;
+}
+
+.lots-table .lot-col-accions {
+    min-width: 360px;
+}
+
+.lots-table .actions-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.lots-table .actions-table .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.lot-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.lot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #D8C8B8;
+    border-radius: 10px;
+    background-color: #F4EBDD;
+    color: #4A2E1F;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.leftnav {
+    overflow-x: hidden;
+}
+
+.leftnav-menu a {
+    overflow-wrap: anywhere;
+}
+
+.home-modules-operations {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 /* ===============================
@@ -1615,7 +1635,7 @@ body.camera-open {
 .grafic-canvas-wrapper {
     width: 100%;
     min-height: 420px;
-    overflow-x: hidden;
+    overflow-x: auto;
     border: 1px solid #E6D8C8;
     border-radius: 14px;
     background-color: #FFFDF9;
@@ -1624,8 +1644,7 @@ body.camera-open {
 
 #graficProductesVenuts {
     display: block;
-    width: 100%;
-    min-width: 0;
+    min-width: 720px;
 }
 
 @media (max-width: 1400px) {
@@ -1914,496 +1933,258 @@ body.camera-open {
 
 
 /* ===============================
-   Selector d'idioma dins les capçaleres sense leftnav
+   Ajust compacte d'escriptori
+   - Evita scrolls innecessaris al leftnav
+   - Redueix densitat de taules a 100% de zoom
+   - Manté les cel·les en una sola línia quan és possible
    =============================== */
-
-.header-top-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.page-language-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.page-language-switch .btn {
-    min-width: 52px;
-    padding: 9px 12px;
-    font-size: 13px;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .header-top-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .page-language-switch {
-        width: 100%;
-    }
-
-    .page-language-switch .btn {
-        width: auto;
-    }
-}
-
-
-/* ===============================
-   Sprint 4 - Ajust final de densitat visual a 100 %
-   =============================== */
-
-.container {
-    width: min(1120px, calc(100% - 32px));
-    max-width: 1120px;
-    margin: 16px auto;
-    padding: 18px 20px;
-}
-
-.page-standalone {
-    padding: 16px 16px 24px;
-}
-
-.page-standalone .container {
-    width: min(1120px, 100%);
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 18px 20px;
-}
-
-.page-with-nav {
-    padding: 16px 16px 16px 238px;
-}
-
-.page-with-nav .container {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 18px 20px;
-}
-
-.leftnav {
-    width: 222px;
-    padding: 16px 12px;
-    gap: 12px;
-}
-
-.leftnav-top {
-    padding-bottom: 4px;
-}
-
-.leftnav-brand {
-    gap: 9px;
-    font-size: 16px;
-}
-
-.leftnav-brand img {
-    height: 34px;
-}
-
-.leftnav-menu {
-    gap: 4px;
-    margin-top: 2px;
-}
-
-.leftnav-section-title {
-    margin: 8px 0 0 4px;
-    font-size: 10px;
-}
-
-.leftnav-menu a {
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 13px;
-    font-size: 14px;
-    line-height: 1.18;
-}
-
-.leftnav-icon {
-    font-size: 16px;
-    width: 18px;
-}
-
-.leftnav-bottom {
-    gap: 9px;
-    padding-top: 4px;
-}
-
-.leftnav-lang {
-    gap: 8px;
-}
-
-.leftnav-lang .btn,
-.leftnav-profile-btn,
-.leftnav-logout-btn {
-    min-height: 34px;
-    padding: 7px 10px;
-    font-size: 13px;
-}
-
-.leftnav-lang .btn {
-    min-width: 56px;
-}
-
-.leftnav-user {
-    gap: 10px;
-    padding: 9px 8px;
-    border-radius: 14px;
-}
-
-.leftnav-user-avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 14px;
-}
-
-.leftnav-user-name {
-    font-size: 13px;
-}
-
-.leftnav-user-role,
-.leftnav-user-email {
-    font-size: 11px;
-    line-height: 1.2;
-}
-
-.header-actions,
-.list-header {
-    gap: 14px;
-    margin-bottom: 16px;
-}
-
-.header-actions .logo-title {
-    margin-bottom: 0;
-}
-
-.logo-title {
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.logo-title img,
-.list-page-logo {
-    height: 40px;
-}
-
-.logo-title h1,
-.list-title-block h1 {
-    margin-bottom: 4px;
-    font-size: 30px;
-    line-height: 1.08;
-}
-
-.list-title-block p {
-    font-size: 14px;
-    line-height: 1.35;
-}
-
-.form-card {
-    padding: 18px 20px;
-}
-
-.form-group {
-    margin-bottom: 12px;
-}
-
-label,
-.form-group label {
-    margin-bottom: 5px;
-}
-
-input,
-select,
-textarea {
-    padding: 9px 11px;
-    min-height: 38px;
-    font-size: 14px;
-}
-
-textarea {
-    min-height: 108px;
-}
-
-.btn,
-button.btn {
-    min-height: 36px;
-    padding: 8px 14px;
-    border-radius: 9px;
-    font-size: 13px;
-}
-
-.success-message,
-.error-message,
-.empty-message {
-    padding: 12px 14px;
-    margin-bottom: 14px;
-}
-
-.grafic-filtres-card,
-.grafic-canvas-card,
-.grafic-resum-grid {
-    margin-bottom: 16px;
-}
-
-.grafic-filtres-form {
-    gap: 12px;
-}
-
-.grafic-resum-card {
-    gap: 6px;
-    padding: 16px;
-}
-
-.grafic-resum-card strong {
-    font-size: 2rem;
-}
-
-.grafic-canvas-header p {
-    margin-bottom: 12px;
-}
-
-.grafic-canvas-wrapper {
-    min-height: 340px;
-    padding: 10px;
-}
-
-.table-wrapper,
-.lots-table-wrapper {
-    overflow-x: auto;
-}
-
-.table-wrapper th,
-.table-wrapper td,
-.lots-table th,
-.lots-table td {
-    padding: 8px 8px !important;
-    font-size: 0.82rem;
-    line-height: 1.2;
-}
-
-.lot-badge {
-    padding: 5px 8px;
-    font-size: 0.78rem;
-}
-
-@media (max-width: 1180px) {
-    .page-with-nav {
-        padding-left: 226px;
-    }
-
-    .container,
-    .page-standalone .container {
-        width: calc(100% - 24px);
-        padding: 16px;
-    }
-}
-
-@media (max-height: 900px) and (min-width: 900px) {
+@media (min-width: 1100px) {
     .leftnav {
-        padding-top: 12px;
-        padding-bottom: 12px;
+        width: 220px;
+        padding: 14px 12px;
         gap: 10px;
+        overflow-x: hidden;
+    }
+
+    .leftnav-top {
+        padding-bottom: 4px;
+    }
+
+    .leftnav-brand {
+        gap: 8px;
+        font-size: 16px;
+    }
+
+    .leftnav-brand img {
+        height: 30px;
+    }
+
+    .leftnav-menu {
+        gap: 4px;
+        margin-top: 2px;
+    }
+
+    .leftnav-section-title {
+        margin: 8px 0 2px 4px;
+        font-size: 10px;
+        letter-spacing: 0.55px;
     }
 
     .leftnav-menu a {
-        padding-top: 7px;
-        padding-bottom: 7px;
+        gap: 9px;
+        padding: 8px 9px;
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.12;
     }
 
-    .leftnav-user {
-        padding: 8px;
-    }
-}
-
-
-/* ===============================
-   Home - ajust compacte a 100% de zoom
-   =============================== */
-.home-body {
-    padding: 10px 18px 16px 18px;
-}
-
-.home-language {
-    gap: 4px;
-    margin: 0 auto 2px auto;
-}
-
-.home-language .btn {
-    min-width: 46px;
-    padding: 7px 11px;
-}
-
-.home-hero {
-    margin: 0 auto 10px auto;
-    padding: 0 18px 4px 18px;
-}
-
-.home-logo {
-    width: 220px;
-    margin-bottom: 4px;
-}
-
-.home-hero p {
-    font-size: 15px;
-}
-
-.home-content {
-    display: grid;
-    gap: 12px;
-}
-
-.home-section {
-    margin-bottom: 0;
-}
-
-.home-section-title {
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.home-modules {
-    gap: 12px;
-}
-
-.home-modules-admin,
-.home-modules-operations {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-
-.home-card {
-    min-height: 112px;
-    padding: 14px 14px;
-    border-radius: 16px;
-}
-
-.home-card-image {
-    top: 14px;
-    left: 14px;
-    font-size: 36px;
-}
-
-.home-card-title {
-    font-size: 17px;
-    line-height: 1.12;
-}
-
-@media (max-width: 1200px) {
-    .home-modules-admin {
-        grid-template-columns: repeat(3, minmax(150px, 1fr));
+    .leftnav-icon {
+        width: 18px;
+        font-size: 16px;
     }
 
-    .home-modules-operations {
-        grid-template-columns: repeat(3, minmax(170px, 1fr));
-    }
-}
-
-@media (min-width: 1201px) and (max-height: 900px) {
-    .home-body {
-        padding-top: 8px;
-        padding-bottom: 10px;
+    .leftnav-bottom {
+        gap: 8px;
+        padding-top: 6px;
     }
 
-    .home-logo {
-        width: 180px;
+    .leftnav-lang {
+        gap: 6px;
     }
 
-    .home-hero {
-        margin-bottom: 6px;
+    .leftnav-lang .btn {
+        min-width: 52px;
+        min-height: 34px;
+        padding: 7px 10px;
+        font-size: 12px;
     }
 
-    .home-content {
+    .leftnav-user-panel {
         gap: 8px;
     }
 
-    .home-section-title {
-        margin-bottom: 6px;
+    .leftnav-user {
+        gap: 8px;
+        padding: 8px;
+        border-radius: 13px;
     }
 
-    .home-modules {
-        gap: 10px;
+    .leftnav-user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
     }
 
-    .home-card {
-        min-height: 92px;
-        padding: 12px;
+    .leftnav-user-name {
+        font-size: 12px;
+        line-height: 1.08;
     }
 
-    .home-card-image {
-        top: 12px;
-        left: 12px;
-        font-size: 32px;
+    .leftnav-user-role,
+    .leftnav-user-email {
+        font-size: 10.5px;
+        line-height: 1.14;
     }
 
-    .home-card-title {
-        font-size: 16px;
+    .leftnav-profile-btn,
+    .leftnav-logout-btn {
+        min-height: 34px;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .page-with-nav {
+        padding: 14px 14px 14px 234px;
+    }
+
+    .page-with-nav .container,
+    .container {
+        padding: 18px;
+    }
+
+    .header-actions,
+    .list-header {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .table-wrapper,
+    .lots-table-wrapper {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .table-wrapper table,
+    .lots-table {
+        width: 100%;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+    }
+
+    .table-wrapper th,
+    .table-wrapper td,
+    .lots-table th,
+    .lots-table td {
+        padding: 8px 8px;
+        font-size: 0.78rem;
+        line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+
+    .table-wrapper th,
+    .lots-table th {
+        font-size: 0.77rem;
+    }
+
+    .table-wrapper .actions-table,
+    .lots-table .actions-table {
+        gap: 4px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+
+    .table-wrapper .actions-table .btn,
+    .lots-table .actions-table .btn,
+    .table-wrapper td .btn,
+    .lots-table td .btn {
+        min-height: 30px;
+        padding: 6px 9px;
+        border-radius: 9px;
+        font-size: 11px;
+    }
+
+    .lots-table .lot-col-accions {
+        min-width: 0;
+        width: 175px;
+    }
+
+    .proveidors-table td,
+    .clients-table td,
+    .productes-table td,
+    .materies-table td,
+    .usuaris-table td,
+    .albarans-table td {
+        white-space: nowrap;
+    }
+}
+
+/* Pantalles d'alçada reduïda: prioritzar leftnav sense scrollbar en escriptori */
+@media (min-width: 1100px) and (max-height: 900px) {
+    .leftnav {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        gap: 7px;
+    }
+
+    .leftnav-menu {
+        gap: 2px;
+    }
+
+    .leftnav-menu a {
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    .leftnav-section-title {
+        margin-top: 6px;
+    }
+
+    .leftnav-bottom {
+        gap: 6px;
+        padding-top: 4px;
+    }
+
+    .leftnav-user {
+        padding: 6px 7px;
+    }
+
+    .leftnav-profile-btn,
+    .leftnav-logout-btn {
+        min-height: 30px;
+        padding-top: 5px;
+        padding-bottom: 5px;
     }
 }
 
 
 /* ===============================
-   Lots - ordenació visible i accions compactes
+   Sprint 5 #144 - Detall albarà proveïdor sense retalls de text
    =============================== */
-.lots-table thead th a.sort-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-}
-
-.lots-table thead th .sort-indicator {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 12px;
-    font-size: 0.72rem;
-    line-height: 1;
-    opacity: 0.78;
-}
-
-.lots-table thead th .sort-link-active .sort-indicator {
-    opacity: 1;
-    font-weight: 900;
-}
-
-.lots-table .lot-col-albara {
-    min-width: 118px;
-}
-
-.lots-table .lot-col-accions {
-    min-width: 128px;
-    width: 128px;
-}
-
-.lots-table .actions-table {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 5px;
-    align-items: stretch;
-    justify-items: stretch;
-}
-
-.lots-table .btn-lot-table-action,
-.lots-table .lot-col-albara .btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+.albara-proveidor-detail-table {
     width: 100%;
-    min-width: 0;
-    padding: 7px 9px;
-    border-radius: 10px;
-    font-size: 0.76rem;
-    line-height: 1.12;
-    white-space: nowrap;
+    min-width: 0 !important;
+    table-layout: auto !important;
 }
 
-.lots-table th,
-.lots-table td {
-    padding-left: 7px !important;
-    padding-right: 7px !important;
+.albara-proveidor-detail-table th,
+.albara-proveidor-detail-table td {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    vertical-align: middle;
+}
+
+.albara-proveidor-detail-table .lot-col-codi {
+    min-width: 150px;
+}
+
+.albara-proveidor-detail-table .lot-col-codi-materia-ocr {
+    min-width: 150px;
+}
+
+.albara-proveidor-detail-table .lot-col-materia {
+    min-width: 260px;
+}
+
+.albara-proveidor-detail-table .lot-col-data {
+    min-width: 145px;
+}
+
+.albara-proveidor-detail-table .lot-col-accions {
+    min-width: 120px;
 }
