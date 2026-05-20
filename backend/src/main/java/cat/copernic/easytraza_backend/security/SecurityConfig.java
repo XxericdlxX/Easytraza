@@ -23,7 +23,8 @@ public class SecurityConfig {
                         "/css/**",
                         "/img/**",
                         "/js/**",
-                        "/favicon.ico"
+                        "/favicon.ico",
+                        "/web/perfil/foto/**"
                 ).permitAll()
                 .requestMatchers("/api/test-connection", "/mobile-api/**").permitAll()
                 .requestMatchers(
