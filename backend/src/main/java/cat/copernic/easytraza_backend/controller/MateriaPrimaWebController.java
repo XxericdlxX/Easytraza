@@ -15,6 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `MateriaPrimaWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/materies-primeres")
 public class MateriaPrimaWebController {
@@ -25,6 +28,14 @@ public class MateriaPrimaWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistarMateriesPrimeres`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @param descripcio paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistarMateriesPrimeres(
             @RequestParam(required = false) String nom,
@@ -39,12 +50,28 @@ public class MateriaPrimaWebController {
         return "materiesprimeres/llistar-materies-primeres";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariCrearMateriaPrima`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String mostrarFormulariCrearMateriaPrima(Model model) {
         model.addAttribute("materiaPrima", new MateriaPrimaDto());
         return "materiesprimeres/crear-materies-primeres";
     }
 
+    /**
+     * Executa l'operació `guardarMateriaPrima`.
+     *
+     * @param materiaPrimaDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardarMateriaPrima(@Valid @ModelAttribute("materiaPrima") MateriaPrimaDto materiaPrimaDto,
             BindingResult result,
@@ -73,6 +100,15 @@ public class MateriaPrimaWebController {
         return "redirect:/web/materies-primeres";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariEditarMateriaPrima`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{id}")
     public String mostrarFormulariEditarMateriaPrima(@PathVariable Long id,
             Model model,
@@ -92,6 +128,17 @@ public class MateriaPrimaWebController {
         }
     }
 
+    /**
+     * Executa l'operació `actualitzarMateriaPrima`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param materiaPrimaDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{id}")
     public String actualitzarMateriaPrima(@PathVariable Long id,
             @Valid @ModelAttribute("materiaPrima") MateriaPrimaDto materiaPrimaDto,
@@ -121,6 +168,14 @@ public class MateriaPrimaWebController {
         return "redirect:/web/materies-primeres";
     }
 
+    /**
+     * Executa l'operació `eliminarMateriaPrima`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminarMateriaPrima(@PathVariable Long id,
             RedirectAttributes redirectAttributes,

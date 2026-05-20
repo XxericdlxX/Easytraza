@@ -20,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * Servei `RecuperacioContrasenyaService` del projecte EasyTraza.
+ */
 @Service
 public class RecuperacioContrasenyaService {
 
@@ -44,6 +47,13 @@ public class RecuperacioContrasenyaService {
     @Value("${spring.mail.username}")
     private String emailEmissor;
 
+    /**
+     * Executa l'operació `sollicitarRecuperacio`.
+     *
+     * @param email paràmetre necessari per a l'operació.
+     * @param baseUrl paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     */
     public void sollicitarRecuperacio(String email, String baseUrl, Locale locale) {
         String emailNormalitzat = normalitzarEmail(email);
         Optional<Usuari> usuariOpt = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
@@ -77,10 +87,22 @@ public class RecuperacioContrasenyaService {
         }
     }
 
+    /**
+     * Executa l'operació `tokenValid`.
+     *
+     * @param token paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean tokenValid(String token) {
         return obtenirUsuariPerTokenValid(token).isPresent();
     }
 
+    /**
+     * Executa l'operació `validarRestabliment`.
+     *
+     * @param restablirContrasenyaDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarRestabliment(RestablirContrasenyaDto restablirContrasenyaDto) {
         if (!tokenValid(restablirContrasenyaDto.getToken())) {
             return "recuperacio.error.token.invalid";
@@ -96,6 +118,12 @@ public class RecuperacioContrasenyaService {
         return null;
     }
 
+    /**
+     * Executa l'operació `restablirContrasenya`.
+     *
+     * @param restablirContrasenyaDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean restablirContrasenya(RestablirContrasenyaDto restablirContrasenyaDto) {
         Optional<Usuari> usuariOpt = obtenirUsuariPerTokenValid(restablirContrasenyaDto.getToken());
         if (usuariOpt.isEmpty()) {
@@ -110,6 +138,13 @@ public class RecuperacioContrasenyaService {
         return true;
     }
 
+    /**
+     * Executa l'operació `enviarCorreuRecuperacio`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @param urlRestabliment paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     */
     private void enviarCorreuRecuperacio(Usuari usuari, String urlRestabliment, Locale locale) {
         String nomVisible = obtenirNomVisible(usuari);
         String assumpte = messageSource.getMessage("recuperacio.email.assumpte", null, locale);
@@ -127,6 +162,12 @@ public class RecuperacioContrasenyaService {
         javaMailSender.send(missatge);
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariPerTokenValid`.
+     *
+     * @param token paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Optional<Usuari> obtenirUsuariPerTokenValid(String token) {
         if (token == null || token.isBlank()) {
             return Optional.empty();
@@ -149,16 +190,33 @@ public class RecuperacioContrasenyaService {
         return Optional.of(usuari);
     }
 
+    /**
+     * Executa l'operació `generarTokenSegur`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String generarTokenSegur() {
         byte[] bytes = new byte[TOKEN_BYTES];
         SECURE_RANDOM.nextBytes(bytes);
         return TOKEN_ENCODER.encodeToString(bytes);
     }
 
+    /**
+     * Executa l'operació `normalitzarEmail`.
+     *
+     * @param email paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarEmail(String email) {
         return email == null ? "" : email.trim().toLowerCase();
     }
 
+    /**
+     * Executa l'operació `obtenirNomVisible`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirNomVisible(Usuari usuari) {
         String nom = usuari.getNom() != null ? usuari.getNom().trim() : "";
         String cognoms = usuari.getCognoms() != null ? usuari.getCognoms().trim() : "";

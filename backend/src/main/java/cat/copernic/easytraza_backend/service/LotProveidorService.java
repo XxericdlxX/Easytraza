@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Servei `LotProveidorService` del projecte EasyTraza.
+ */
 @Service
 public class LotProveidorService {
 
@@ -26,26 +29,68 @@ public class LotProveidorService {
     @Autowired
     private AlbaraClientRepository albaraClientRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LotProveidor> findAll() {
         return lotProveidorRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<LotProveidor> findById(Long id) {
         return lotProveidorRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `findProduccioAssociadaAlLot`.
+     *
+     * @param lotId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LiniaClient> findProduccioAssociadaAlLot(Long lotId) {
         return albaraClientRepository.findLiniesProduccioByLotId(lotId);
     }
 
+    /**
+     * Executa l'operació `existeixLotObert`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean existeixLotObert() {
         return !lotProveidorRepository.findByEstat(EstatLot.OBERT).isEmpty();
     }
 
+    /**
+     * Executa l'operació `cercar`.
+     *
+     * @param codiLot paràmetre necessari per a l'operació.
+     * @param estat paràmetre necessari per a l'operació.
+     * @param materiaPrimaId paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LotProveidor> cercar(String codiLot, EstatLot estat, Long materiaPrimaId, LocalDate dataRecepcio) {
         return cercar(codiLot, estat, materiaPrimaId, dataRecepcio, "dataRecepcio", "desc");
     }
 
+    /**
+     * Executa l'operació `cercar`.
+     *
+     * @param codiLot paràmetre necessari per a l'operació.
+     * @param estat paràmetre necessari per a l'operació.
+     * @param materiaPrimaId paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @param sortField paràmetre necessari per a l'operació.
+     * @param sortDir paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LotProveidor> cercar(String codiLot,
             EstatLot estat,
             Long materiaPrimaId,
@@ -63,6 +108,12 @@ public class LotProveidorService {
         return ordenarLots(lots, sortField, sortDir);
     }
 
+    /**
+     * Executa l'operació `iniciarLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public LotProveidor iniciarLot(Long id) {
         LotProveidor lot = lotProveidorRepository.findById(id)
@@ -117,6 +168,12 @@ public class LotProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `finalitzarLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public LotProveidor finalitzarLot(Long id) {
         LotProveidor lot = lotProveidorRepository.findById(id)
@@ -148,6 +205,14 @@ public class LotProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `ordenarLots`.
+     *
+     * @param lots paràmetre necessari per a l'operació.
+     * @param sortField paràmetre necessari per a l'operació.
+     * @param sortDir paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<LotProveidor> ordenarLots(List<LotProveidor> lots, String sortField, String sortDir) {
         Comparator<LotProveidor> comparador = obtenirComparador(sortField);
 
@@ -160,6 +225,12 @@ public class LotProveidorService {
                 .toList();
     }
 
+    /**
+     * Executa l'operació `obtenirComparador`.
+     *
+     * @param sortField paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Comparator<LotProveidor> obtenirComparador(String sortField) {
         String camp = sortField == null || sortField.isBlank() ? "dataRecepcio" : sortField;
 
@@ -217,6 +288,12 @@ public class LotProveidorService {
         };
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         if (text == null || text.isBlank()) {
             return null;
@@ -225,6 +302,12 @@ public class LotProveidorService {
         return text.trim();
     }
 
+    /**
+     * Executa l'operació `text`.
+     *
+     * @param value paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String text(String value) {
         return value == null ? "" : value.trim();
     }

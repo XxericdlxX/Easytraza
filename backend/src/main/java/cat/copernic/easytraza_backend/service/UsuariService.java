@@ -30,6 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Servei `UsuariService` del projecte EasyTraza.
+ */
 @Service
 public class UsuariService {
 
@@ -51,18 +54,44 @@ public class UsuariService {
 
     private static final Set<String> EXTENSIONS_FOTO_PERMESES = Set.of("jpg", "jpeg", "png", "webp");
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<Usuari> findAll() {
         return usuariRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<Usuari> findById(Long id) {
         return usuariRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `findByEmailIgnoreCase`.
+     *
+     * @param email paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<Usuari> findByEmailIgnoreCase(String email) {
         return usuariRepository.findByEmailIgnoreCase(normalitzarEmail(email));
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @param cognoms paràmetre necessari per a l'operació.
+     * @param email paràmetre necessari per a l'operació.
+     * @param rol paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<Usuari> buscar(String nom, String cognoms, String email, Rol rol) {
         String nomNormalitzat = normalitzarTextCerca(nom);
         String cognomsNormalitzats = normalitzarTextCerca(cognoms);
@@ -84,6 +113,12 @@ public class UsuariService {
         );
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Usuari save(Usuari usuari) {
         try {
             codificarContrasenyaSiCal(usuari);
@@ -96,6 +131,13 @@ public class UsuariService {
         }
     }
 
+    /**
+     * Executa l'operació `crearUsuariAmbFoto`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @param fotoPerfil paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public Usuari crearUsuariAmbFoto(Usuari usuari, MultipartFile fotoPerfil) {
         Usuari usuariGuardat = save(usuari);
@@ -104,6 +146,13 @@ public class UsuariService {
         return usuariGuardat;
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param usuariActualitzat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Usuari update(Long id, Usuari usuariActualitzat) {
         Optional<Usuari> usuariExistent = usuariRepository.findById(id);
 
@@ -147,6 +196,12 @@ public class UsuariService {
         }
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean deleteById(Long id) {
         Optional<Usuari> usuari = usuariRepository.findById(id);
 
@@ -165,16 +220,35 @@ public class UsuariService {
         }
     }
 
+    /**
+     * Executa l'operació `isProtectedUser`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean isProtectedUser(Usuari usuari) {
         return usuari != null && SUPERADMIN_EMAIL.equalsIgnoreCase(usuari.getEmail());
     }
 
+    /**
+     * Executa l'operació `isProtectedUserById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean isProtectedUserById(Long id) {
         return usuariRepository.findById(id)
                 .map(this::isProtectedUser)
                 .orElse(false);
     }
 
+    /**
+     * Executa l'operació `validarPerfilUsuari`.
+     *
+     * @param perfilUsuariDto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarPerfilUsuari(PerfilUsuariDto perfilUsuariDto, Long idActual) {
         String nifNormalitzat = normalitzarDocument(perfilUsuariDto.getNif());
         if (!IdentificadorFiscalValidator.esDocumentFiscalValid(nifNormalitzat)) {
@@ -211,6 +285,13 @@ public class UsuariService {
         return validarCanviContrasenyaPerfil(perfilUsuariDto, usuariActual.get());
     }
 
+    /**
+     * Executa l'operació `validarUsuari`.
+     *
+     * @param usuariDto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarUsuari(UsuariDto usuariDto, Long idActual) {
         String emailNormalitzat = normalitzarEmail(usuariDto.getEmail());
 
@@ -258,6 +339,13 @@ public class UsuariService {
         return null;
     }
 
+    /**
+     * Executa l'operació `actualitzarPerfil`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param perfilUsuariDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Usuari actualitzarPerfil(Long id, PerfilUsuariDto perfilUsuariDto) {
         Optional<Usuari> usuariExistent = usuariRepository.findById(id);
         if (usuariExistent.isEmpty()) {
@@ -288,6 +376,12 @@ public class UsuariService {
         }
     }
 
+    /**
+     * Executa l'operació `validarFotoPerfil`.
+     *
+     * @param fotoPerfil paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarFotoPerfil(MultipartFile fotoPerfil) {
         if (fotoPerfil == null || fotoPerfil.isEmpty()) {
             return null;
@@ -308,6 +402,12 @@ public class UsuariService {
         return null;
     }
 
+    /**
+     * Executa l'operació `actualitzarFotoPerfil`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param fotoPerfil paràmetre necessari per a l'operació.
+     */
     public void actualitzarFotoPerfil(Long id, MultipartFile fotoPerfil) {
         if (fotoPerfil == null || fotoPerfil.isEmpty()) {
             return;
@@ -341,6 +441,12 @@ public class UsuariService {
         }
     }
 
+    /**
+     * Executa l'operació `carregarFotoPerfil`.
+     *
+     * @param nomFitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<Resource> carregarFotoPerfil(String nomFitxer) {
         if (nomFitxer == null || nomFitxer.isBlank()) {
             return Optional.empty();
@@ -361,6 +467,13 @@ public class UsuariService {
         }
     }
 
+    /**
+     * Executa l'operació `validarCanviContrasenyaPerfil`.
+     *
+     * @param perfilUsuariDto paràmetre necessari per a l'operació.
+     * @param usuariActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String validarCanviContrasenyaPerfil(PerfilUsuariDto perfilUsuariDto, Usuari usuariActual) {
         if (!hiHaCanviContrasenyaPerfil(perfilUsuariDto)) {
             return null;
@@ -391,16 +504,34 @@ public class UsuariService {
         return null;
     }
 
+    /**
+     * Executa l'operació `hiHaCanviContrasenyaPerfil`.
+     *
+     * @param perfilUsuariDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean hiHaCanviContrasenyaPerfil(PerfilUsuariDto perfilUsuariDto) {
         return !esBuit(perfilUsuariDto.getContrasenyaActual())
                 || !esBuit(perfilUsuariDto.getNovaContrasenya())
                 || !esBuit(perfilUsuariDto.getConfirmarContrasenya());
     }
 
+    /**
+     * Executa l'operació `esBuit`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean esBuit(String valor) {
         return valor == null || valor.isBlank();
     }
 
+    /**
+     * Executa l'operació `convertirEntityAPerfilDto`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public PerfilUsuariDto convertirEntityAPerfilDto(Usuari usuari) {
         PerfilUsuariDto perfilUsuariDto = new PerfilUsuariDto();
         perfilUsuariDto.setId(usuari.getId());
@@ -412,6 +543,12 @@ public class UsuariService {
         return perfilUsuariDto;
     }
 
+    /**
+     * Executa l'operació `convertirDtoAEntity`.
+     *
+     * @param usuariDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Usuari convertirDtoAEntity(UsuariDto usuariDto) {
         Usuari usuari = new Usuari();
         usuari.setId(usuariDto.getId());
@@ -423,6 +560,12 @@ public class UsuariService {
         return usuari;
     }
 
+    /**
+     * Executa l'operació `convertirEntityADto`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public UsuariDto convertirEntityADto(Usuari usuari) {
         UsuariDto usuariDto = new UsuariDto();
         usuariDto.setId(usuari.getId());
@@ -434,12 +577,23 @@ public class UsuariService {
         return usuariDto;
     }
 
+    /**
+     * Executa l'operació `codificarContrasenyaSiCal`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     */
     private void codificarContrasenyaSiCal(Usuari usuari) {
         if (usuari.getContrasenya() != null && !usuari.getContrasenya().isBlank()) {
             usuari.setContrasenya(passwordEncoder.encode(usuari.getContrasenya()));
         }
     }
 
+    /**
+     * Executa l'operació `obtenirExtensioFoto`.
+     *
+     * @param nomOriginal paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirExtensioFoto(String nomOriginal) {
         if (nomOriginal == null || !nomOriginal.contains(".")) {
             return "jpg";
@@ -450,18 +604,42 @@ public class UsuariService {
                 .toLowerCase(Locale.ROOT);
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String document) {
         return IdentificadorFiscalValidator.normalitzar(document);
     }
 
+    /**
+     * Executa l'operació `normalitzarEmail`.
+     *
+     * @param email paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarEmail(String email) {
         return email == null ? null : email.trim().toLowerCase();
     }
 
+    /**
+     * Executa l'operació `normalitzarText`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarText(String text) {
         return text == null ? null : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }

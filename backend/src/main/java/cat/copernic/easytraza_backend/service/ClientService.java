@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servei `ClientService` del projecte EasyTraza.
+ */
 @Service
 public class ClientService {
 
@@ -20,14 +23,31 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<Client> findAll() {
         return clientRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<Client> findById(String nif) {
         return clientRepository.findById(nif);
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Client save(Client client) {
         try {
             normalitzarClient(client);
@@ -40,6 +60,13 @@ public class ClientService {
         }
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     * @param clientActualitzat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Client update(String nif, Client clientActualitzat) {
         Optional<Client> clientExistentOpt = clientRepository.findById(nif);
 
@@ -69,6 +96,11 @@ public class ClientService {
         }
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     */
     @Transactional
     public void deleteById(String nif) {
         try {
@@ -81,10 +113,26 @@ public class ClientService {
         }
     }
 
+    /**
+     * Executa l'operació `existsById`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public boolean existsById(String nif) {
         return clientRepository.existsById(nif);
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @param nom paràmetre necessari per a l'operació.
+     * @param tipus paràmetre necessari per a l'operació.
+     * @param telefon paràmetre necessari per a l'operació.
+     * @param email paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<Client> buscar(String document, String nom, String tipus, String telefon, String email) {
         String documentNormalitzat = normalitzarTextCerca(document);
         String nomNormalitzat = normalitzarTextCerca(nom);
@@ -101,10 +149,21 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Executa l'operació `obtenirTipusClients`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<TipusClient> obtenirTipusClients() {
         return List.of(TipusClient.values());
     }
 
+    /**
+     * Executa l'operació `obtenirTextTipusClient`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String obtenirTextTipusClient(Client client) {
         if (client == null || client.getTipusClient() == null) {
             return "-";
@@ -119,6 +178,13 @@ public class ClientService {
         return client.getTipusClient().name();
     }
 
+    /**
+     * Executa l'operació `tipusCoincideix`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @param tipus paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean tipusCoincideix(Client client, String tipus) {
         if (tipus.isBlank()) {
             return true;
@@ -132,6 +198,13 @@ public class ClientService {
                 || conte(client.getTipusClientAltres(), tipus);
     }
 
+    /**
+     * Executa l'operació `conte`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @param filtre paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean conte(String valor, String filtre) {
         if (filtre.isBlank()) {
             return true;
@@ -140,6 +213,11 @@ public class ClientService {
         return valor != null && valor.toLowerCase().contains(filtre.toLowerCase());
     }
 
+    /**
+     * Executa l'operació `normalitzarClient`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     */
     private void normalitzarClient(Client client) {
         if (client == null) {
             return;
@@ -158,14 +236,32 @@ public class ClientService {
         }
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String document) {
         return document == null ? null : document.trim().toUpperCase().replace(" ", "").replace("-", "");
     }
 
+    /**
+     * Executa l'operació `normalitzar`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarOpcional`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarOpcional(String text) {
         if (text == null || text.isBlank()) {
             return null;
@@ -174,6 +270,12 @@ public class ClientService {
         return text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }

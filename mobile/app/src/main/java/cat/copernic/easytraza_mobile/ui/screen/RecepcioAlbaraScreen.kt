@@ -53,6 +53,13 @@ import cat.copernic.easytraza_mobile.ui.viewmodel.EditableLotUi
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 import java.io.File
 
+/**
+ * Executa l'operació `RecepcioAlbaraScreen`.
+ * @param currentUserId paràmetre necessari per a l'operació.
+ * @param currentUserName paràmetre necessari per a l'operació.
+ * @param viewModel paràmetre necessari per a l'operació.
+ * @param onBack paràmetre necessari per a l'operació.
+ */
 @Composable
 fun RecepcioAlbaraScreen(
     currentUserId: Long?,
@@ -394,11 +401,23 @@ fun RecepcioAlbaraScreen(
 }
 
 
+/**
+ * Executa l'operació `crearFitxerFotoOcr`.
+ * @param context paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 private fun crearFitxerFotoOcr(context: Context): File {
     val directori = File(context.cacheDir, "ocr-camera").apply { mkdirs() }
     return File(directori, "ocr_camera_${System.currentTimeMillis()}.jpg")
 }
 
+/**
+ * Executa l'operació `LotEditableCard`.
+ * @param index paràmetre necessari per a l'operació.
+ * @param lot paràmetre necessari per a l'operació.
+ * @param canDelete paràmetre necessari per a l'operació.
+ * @param onCodiChange paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun LotEditableCard(
     index: Int,
@@ -479,6 +498,13 @@ private fun LotEditableCard(
     }
 }
 
+/**
+ * Executa l'operació `OptionSwitchRow`.
+ * @param title paràmetre necessari per a l'operació.
+ * @param subtitle paràmetre necessari per a l'operació.
+ * @param checked paràmetre necessari per a l'operació.
+ * @param onCheckedChange paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun OptionSwitchRow(
     title: String,
@@ -526,6 +552,10 @@ private fun OptionSwitchRow(
     }
 }
 
+/**
+ * Executa l'operació `OcrDetectedTextCard`.
+ * @param textOcr paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun OcrDetectedTextCard(textOcr: String) {
     Card(
@@ -566,6 +596,9 @@ private fun OcrDetectedTextCard(textOcr: String) {
     }
 }
 
+/**
+ * Pantalla o component d’interfície `RecepcioMode` de l'aplicació mobile d'EasyTraza.
+ */
 private enum class RecepcioMode {
     Manual,
     Ocr

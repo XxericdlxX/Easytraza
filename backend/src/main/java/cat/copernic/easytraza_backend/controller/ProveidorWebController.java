@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `ProveidorWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/proveidors")
 public class ProveidorWebController {
@@ -28,6 +31,16 @@ public class ProveidorWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistar`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @param nom paràmetre necessari per a l'operació.
+     * @param telefon paràmetre necessari per a l'operació.
+     * @param email paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistar(@RequestParam(required = false) String document,
             @RequestParam(required = false) String nom,
@@ -47,6 +60,12 @@ public class ProveidorWebController {
         return "proveidors/llistar-proveidors";
     }
 
+    /**
+     * Executa l'operació `crear`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String crear(Model model) {
         model.addAttribute("proveidor", new Proveidor());
@@ -55,6 +74,16 @@ public class ProveidorWebController {
         return "proveidors/crear-proveidors";
     }
 
+    /**
+     * Executa l'operació `guardar`.
+     *
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardar(@Valid Proveidor proveidor,
             BindingResult bindingResult,
@@ -75,6 +104,15 @@ public class ProveidorWebController {
         return "redirect:/web/proveidors";
     }
 
+    /**
+     * Executa l'operació `editar`.
+     *
+     * @param cif paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{cif}")
     public String editar(@PathVariable String cif,
             Model model,
@@ -94,6 +132,17 @@ public class ProveidorWebController {
         return "proveidors/editar-proveidors";
     }
 
+    /**
+     * Executa l'operació `actualitzar`.
+     *
+     * @param cif paràmetre necessari per a l'operació.
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{cif}")
     public String actualitzar(@PathVariable String cif,
             @Valid Proveidor proveidor,
@@ -120,6 +169,14 @@ public class ProveidorWebController {
         return "redirect:/web/proveidors";
     }
 
+    /**
+     * Executa l'operació `eliminar`.
+     *
+     * @param cif paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{cif}")
     public String eliminar(@PathVariable String cif,
             RedirectAttributes redirectAttributes,
@@ -137,6 +194,15 @@ public class ProveidorWebController {
         return "redirect:/web/proveidors";
     }
 
+    /**
+     * Executa l'operació `validarDocumentFiscalProveidor`.
+     *
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param esCreacio paràmetre necessari per a l'operació.
+     * @param cifOriginal paràmetre necessari per a l'operació.
+     */
     private void validarDocumentFiscalProveidor(Proveidor proveidor,
             BindingResult bindingResult,
             Locale locale,
@@ -162,12 +228,28 @@ public class ProveidorWebController {
         }
     }
 
+    /**
+     * Executa l'operació `afegirErrorSiNoExisteix`.
+     *
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param camp paràmetre necessari per a l'operació.
+     * @param codiMissatge paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     */
     private void afegirErrorSiNoExisteix(BindingResult bindingResult, String camp, String codiMissatge, Locale locale) {
         if (!bindingResult.hasFieldErrors(camp)) {
             bindingResult.rejectValue(camp, codiMissatge, missatge(codiMissatge, locale));
         }
     }
 
+    /**
+     * Executa l'operació `tornarCrearAmbErrors`.
+     *
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String tornarCrearAmbErrors(Proveidor proveidor, Model model, Locale locale) {
         model.addAttribute("errorNegoci", missatge("error.validacio", locale));
         model.addAttribute("proveidor", proveidor);
@@ -175,6 +257,14 @@ public class ProveidorWebController {
         return "proveidors/crear-proveidors";
     }
 
+    /**
+     * Executa l'operació `tornarEditarAmbErrors`.
+     *
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String tornarEditarAmbErrors(Proveidor proveidor, Model model, Locale locale) {
         model.addAttribute("errorNegoci", missatge("error.validacio", locale));
         model.addAttribute("proveidor", proveidor);
@@ -182,6 +272,13 @@ public class ProveidorWebController {
         return "proveidors/editar-proveidors";
     }
 
+    /**
+     * Executa l'operació `missatge`.
+     *
+     * @param codi paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String missatge(String codi, Locale locale) {
         return messageSource.getMessage(codi, null, codi, locale);
     }

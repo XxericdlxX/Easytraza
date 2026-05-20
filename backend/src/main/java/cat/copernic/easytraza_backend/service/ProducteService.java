@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servei `ProducteService` del projecte EasyTraza.
+ */
 @Service
 public class ProducteService {
 
@@ -23,14 +26,31 @@ public class ProducteService {
     @Autowired
     private AlbaraClientRepository albaraClientRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<Producte> findAll() {
         return producteRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<Producte> findById(Long id) {
         return producteRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param producte paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Producte save(Producte producte) {
         try {
             Producte producteDesat = producteRepository.save(producte);
@@ -42,6 +62,13 @@ public class ProducteService {
         }
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param producteActualitzat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Producte update(Long id, Producte producteActualitzat) {
         Optional<Producte> producteExistent = producteRepository.findById(id);
 
@@ -63,6 +90,11 @@ public class ProducteService {
         return null;
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     */
     public void deleteById(Long id) {
         try {
             producteRepository.deleteById(id);
@@ -73,6 +105,13 @@ public class ProducteService {
         }
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @param descripcio paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<Producte> buscar(String nom, String descripcio) {
         String nomNormalitzat = normalitzarTextCerca(nom);
         String descripcioNormalitzada = normalitzarTextCerca(descripcio);
@@ -83,6 +122,12 @@ public class ProducteService {
                 .toList();
     }
 
+    /**
+     * Executa l'operació `cercarProduccioLotsPerProducte`.
+     *
+     * @param producteId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LiniaClient> cercarProduccioLotsPerProducte(Long producteId) {
         if (producteId == null) {
             return cercarTotaProduccioLots();
@@ -91,10 +136,22 @@ public class ProducteService {
         return albaraClientRepository.findLiniesProduccioByProducteId(producteId);
     }
 
+    /**
+     * Executa l'operació `cercarTotaProduccioLots`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LiniaClient> cercarTotaProduccioLots() {
         return albaraClientRepository.findTotesLiniesProduccioAmbLots();
     }
 
+    /**
+     * Executa l'operació `validarProducte`.
+     *
+     * @param producteDto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarProducte(ProducteDto producteDto, Long idActual) {
         String nomNormalitzat = normalitzar(producteDto.getNom());
 
@@ -110,6 +167,12 @@ public class ProducteService {
         return null;
     }
 
+    /**
+     * Executa l'operació `convertirDtoAEntity`.
+     *
+     * @param producteDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Producte convertirDtoAEntity(ProducteDto producteDto) {
         Producte producte = new Producte();
         producte.setId(producteDto.getId());
@@ -118,6 +181,12 @@ public class ProducteService {
         return producte;
     }
 
+    /**
+     * Executa l'operació `convertirEntityADto`.
+     *
+     * @param producte paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public ProducteDto convertirEntityADto(Producte producte) {
         ProducteDto producteDto = new ProducteDto();
         producteDto.setId(producte.getId());
@@ -126,10 +195,23 @@ public class ProducteService {
         return producteDto;
     }
 
+    /**
+     * Executa l'operació `normalitzar`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
     }
 
+    /**
+     * Executa l'operació `conte`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @param filtre paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean conte(String valor, String filtre) {
         if (filtre.isBlank()) {
             return true;
@@ -138,6 +220,12 @@ public class ProducteService {
         return valor != null && valor.toLowerCase().contains(filtre.toLowerCase());
     }
 
+    /**
+     * Executa l'operació `normalitzarOpcional`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarOpcional(String text) {
         if (text == null || text.isBlank()) {
             return null;
@@ -146,6 +234,12 @@ public class ProducteService {
         return text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }

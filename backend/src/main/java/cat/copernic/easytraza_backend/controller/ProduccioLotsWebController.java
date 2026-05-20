@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `ProduccioLotsWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/produccio-lots")
 public class ProduccioLotsWebController {
@@ -24,6 +27,15 @@ public class ProduccioLotsWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `veureProduccioLots`.
+     *
+     * @param producteId paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String veureProduccioLots(@RequestParam(required = false) Long producteId,
             Model model,

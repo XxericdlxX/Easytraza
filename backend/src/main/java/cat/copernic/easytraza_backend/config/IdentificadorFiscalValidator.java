@@ -9,6 +9,9 @@ public final class IdentificadorFiscalValidator {
     private static final String LLETRES_DNI = "TRWAGMYFPDXBNJZSQVHLCKE";
     private static final String LLETRES_CONTROL_CIF = "JABCDEFGHI";
 
+    /**
+     * Crea una nova instància del component.
+     */
     private IdentificadorFiscalValidator() {
     }
 

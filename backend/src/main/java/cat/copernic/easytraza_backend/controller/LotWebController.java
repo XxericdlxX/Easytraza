@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `LotWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/lots")
 public class LotWebController {
@@ -30,6 +33,18 @@ public class LotWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistarLots`.
+     *
+     * @param codiLot paràmetre necessari per a l'operació.
+     * @param estat paràmetre necessari per a l'operació.
+     * @param materiaPrimaId paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @param sortField paràmetre necessari per a l'operació.
+     * @param sortDir paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistarLots(
             @RequestParam(required = false) String codiLot,
@@ -62,6 +77,15 @@ public class LotWebController {
         return "lots/llistar-lots";
     }
 
+    /**
+     * Executa l'operació `produccioAssociadaLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/{id}/produccio")
     public String produccioAssociadaLot(
             @PathVariable Long id,
@@ -86,6 +110,16 @@ public class LotWebController {
         return "lots/produccio-lot";
     }
 
+    /**
+     * Executa l'operació `iniciarLotGet`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping({"/{id}/iniciar", "/iniciar/{id}"})
     public String iniciarLotGet(
             @PathVariable Long id,
@@ -97,6 +131,16 @@ public class LotWebController {
         return executarIniciLot(id, origen, albaraId, redirectAttributes, locale);
     }
 
+    /**
+     * Executa l'operació `iniciarLotPost`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping({"/{id}/iniciar", "/iniciar/{id}"})
     public String iniciarLotPost(
             @PathVariable Long id,
@@ -108,6 +152,16 @@ public class LotWebController {
         return executarIniciLot(id, origen, albaraId, redirectAttributes, locale);
     }
 
+    /**
+     * Executa l'operació `finalitzarLotGet`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping({"/{id}/finalitzar", "/finalitzar/{id}"})
     public String finalitzarLotGet(
             @PathVariable Long id,
@@ -119,6 +173,16 @@ public class LotWebController {
         return executarFinalitzacioLot(id, origen, albaraId, redirectAttributes, locale);
     }
 
+    /**
+     * Executa l'operació `finalitzarLotPost`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping({"/{id}/finalitzar", "/finalitzar/{id}"})
     public String finalitzarLotPost(
             @PathVariable Long id,
@@ -130,6 +194,16 @@ public class LotWebController {
         return executarFinalitzacioLot(id, origen, albaraId, redirectAttributes, locale);
     }
 
+    /**
+     * Executa l'operació `executarIniciLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String executarIniciLot(
             Long id,
             String origen,
@@ -158,6 +232,16 @@ public class LotWebController {
         return obtenirRedireccio(origen, albaraId);
     }
 
+    /**
+     * Executa l'operació `executarFinalitzacioLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String executarFinalitzacioLot(
             Long id,
             String origen,
@@ -186,6 +270,13 @@ public class LotWebController {
         return obtenirRedireccio(origen, albaraId);
     }
 
+    /**
+     * Executa l'operació `obtenirRedireccio`.
+     *
+     * @param origen paràmetre necessari per a l'operació.
+     * @param albaraId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirRedireccio(String origen, Long albaraId) {
         if ("albara".equalsIgnoreCase(origen) && albaraId != null) {
             return "redirect:/web/albarans-proveidor/veure/" + albaraId;
@@ -194,6 +285,13 @@ public class LotWebController {
         return "redirect:/web/lots";
     }
 
+    /**
+     * Executa l'operació `missatge`.
+     *
+     * @param codi paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String missatge(String codi, Locale locale) {
         return messageSource.getMessage(codi, null, codi, locale);
     }

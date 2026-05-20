@@ -13,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * Configuració `GlobalWebExceptionHandler` del projecte EasyTraza.
+ */
 @Order(Ordered.LOWEST_PRECEDENCE)
 @ControllerAdvice(annotations = Controller.class)
 public class GlobalWebExceptionHandler {
@@ -21,10 +24,24 @@ public class GlobalWebExceptionHandler {
 
     private final MessageSource messageSource;
 
+    /**
+     * Crea una nova instància del component.
+     *
+     * @param messageSource paràmetre necessari per a l'operació.
+     */
     public GlobalWebExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Executa l'operació `gestionarErrorWeb`.
+     *
+     * @param exception paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param response paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ExceptionHandler(Exception.class)
     public String gestionarErrorWeb(Exception exception, Locale locale, Model model, HttpServletResponse response) {
         LOGGER.error("Error no controlat en una petició web", exception);

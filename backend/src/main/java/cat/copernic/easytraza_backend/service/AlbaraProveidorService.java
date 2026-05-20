@@ -28,6 +28,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Servei `AlbaraProveidorService` del projecte EasyTraza.
+ */
 @Service
 public class AlbaraProveidorService {
 
@@ -48,14 +51,32 @@ public class AlbaraProveidorService {
     @Autowired
     private UsuariRepository usuariRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<AlbaraProveidor> findAll() {
         return albaraProveidorRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<AlbaraProveidor> findById(Long id) {
         return albaraProveidorRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param proveidorCif paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<AlbaraProveidor> buscar(String proveidorCif, LocalDate dataRecepcio) {
         String cifNormalitzat = normalitzarTextCerca(proveidorCif);
 
@@ -77,6 +98,12 @@ public class AlbaraProveidorService {
         return albaraProveidorRepository.findByDataRecepcio(dataRecepcio);
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param albaraProveidor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraProveidor save(AlbaraProveidor albaraProveidor) {
         try {
             prepararLots(albaraProveidor);
@@ -89,6 +116,13 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param albaraActualitzat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public AlbaraProveidor update(Long id, AlbaraProveidor albaraActualitzat) {
         Optional<AlbaraProveidor> existentOpt = albaraProveidorRepository.findById(id);
@@ -130,6 +164,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     */
     @Transactional
     public void deleteById(Long id) {
         AlbaraProveidor albara = albaraProveidorRepository.findById(id).orElse(null);
@@ -160,6 +199,13 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `validarAlbara`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarAlbara(AlbaraProveidorDto dto, Long idActual) {
         if (dto.getDataRecepcio() == null) {
             LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè falta la data de recepció.");
@@ -193,6 +239,12 @@ public class AlbaraProveidorService {
         return null;
     }
 
+    /**
+     * Executa l'operació `convertirDtoAEntity`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraProveidor convertirDtoAEntity(AlbaraProveidorDto dto) {
         completarReferenciesOcr(dto);
 
@@ -233,6 +285,12 @@ public class AlbaraProveidorService {
         return albara;
     }
 
+    /**
+     * Executa l'operació `convertirEntityADto`.
+     *
+     * @param entity paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraProveidorDto convertirEntityADto(AlbaraProveidor entity) {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
         dto.setId(entity.getId());
@@ -280,6 +338,11 @@ public class AlbaraProveidorService {
         return dto;
     }
 
+    /**
+     * Executa l'operació `assegurarMinimUnLot`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     */
     public void assegurarMinimUnLot(AlbaraProveidorDto dto) {
         if (dto.getLots() == null) {
             dto.setLots(new ArrayList<>());
@@ -290,6 +353,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `completarReferenciesOcr`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     */
     public void completarReferenciesOcr(AlbaraProveidorDto dto) {
         if (dto == null) {
             return;
@@ -310,6 +378,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `completarMateriaPrimaSiExisteix`.
+     *
+     * @param lotDto paràmetre necessari per a l'operació.
+     */
     private void completarMateriaPrimaSiExisteix(LotProveidorDto lotDto) {
         if (lotDto == null || lotDto.getMateriaPrimaId() != null) {
             return;
@@ -328,6 +401,16 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `validarLot`.
+     *
+     * @param lotDto paràmetre necessari per a l'operació.
+     * @param proveidorCif paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @param lotsRevisats paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String validarLot(LotProveidorDto lotDto, String proveidorCif, LocalDate dataRecepcio, Long idActual, Set<String> lotsRevisats) {
         String codiLot = normalitzar(lotDto.getCodiLot());
 
@@ -363,6 +446,12 @@ public class AlbaraProveidorService {
         return repetits > 0 ? "lot.proveidor.codi.duplicat.recepcio" : null;
     }
 
+    /**
+     * Executa l'operació `obtenirOCrearProveidor`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Proveidor obtenirOCrearProveidor(AlbaraProveidorDto dto) {
         String cif = normalitzarDocument(dto.getProveidorCif());
 
@@ -388,6 +477,12 @@ public class AlbaraProveidorService {
         return proveidorRepository.save(proveidor);
     }
 
+    /**
+     * Executa l'operació `obtenirOCrearMateriaPrima`.
+     *
+     * @param lotDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private MateriaPrima obtenirOCrearMateriaPrima(LotProveidorDto lotDto) {
         if (lotDto.getMateriaPrimaId() != null) {
             return materiaPrimaRepository.findById(lotDto.getMateriaPrimaId()).orElse(null);
@@ -418,6 +513,12 @@ public class AlbaraProveidorService {
         return creada;
     }
 
+    /**
+     * Executa l'operació `obtenirLotsValids`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<LotProveidorDto> obtenirLotsValids(AlbaraProveidorDto dto) {
         List<LotProveidorDto> valids = new ArrayList<>();
 
@@ -441,6 +542,11 @@ public class AlbaraProveidorService {
         return valids;
     }
 
+    /**
+     * Executa l'operació `prepararLots`.
+     *
+     * @param albara paràmetre necessari per a l'operació.
+     */
     private void prepararLots(AlbaraProveidor albara) {
         if (albara.getLots() == null) {
             return;
@@ -459,6 +565,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariLoguejat`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Usuari obtenirUsuariLoguejat() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -471,6 +582,12 @@ public class AlbaraProveidorService {
         return null;
     }
 
+    /**
+     * Executa l'operació `generarCifTemporal`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String generarCifTemporal(String nom) {
         String base = valorOTextPerDefecte(nom, "PROVEIDOR")
                 .toUpperCase()
@@ -493,23 +610,54 @@ public class AlbaraProveidorService {
         return candidat;
     }
 
+    /**
+     * Executa l'operació `valorOTextPerDefecte`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @param defecte paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String valorOTextPerDefecte(String valor, String defecte) {
         return valor == null || valor.isBlank() ? defecte : valor.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzar`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarNullable`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarNullable(String text) {
         String normalitzat = normalitzar(text);
         return normalitzat == null || normalitzat.isBlank() ? null : normalitzat;
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String document) {
         return document == null ? null : document.trim().toUpperCase().replace(" ", "");
     }

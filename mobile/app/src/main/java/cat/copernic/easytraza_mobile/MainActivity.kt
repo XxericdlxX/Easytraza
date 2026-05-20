@@ -27,6 +27,9 @@ import cat.copernic.easytraza_mobile.ui.viewmodel.GestioLotsViewModel
 import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
 import cat.copernic.easytraza_mobile.ui.viewmodel.UserSelectionViewModel
 
+/**
+ * Component mobile `MainActivity` de l'aplicació mobile d'EasyTraza.
+ */
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,6 +159,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Component mobile `AppScreen` de l'aplicació mobile d'EasyTraza.
+ */
 private enum class AppScreen {
     UserSelection,
     Dashboard,
@@ -164,6 +170,11 @@ private enum class AppScreen {
     Lots
 }
 
+/**
+ * Executa l'operació `construirNomVisible`.
+ * @param user paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 private fun construirNomVisible(user: MobileUsuariDto?): String {
     if (user == null) {
         return ""
@@ -173,6 +184,11 @@ private fun construirNomVisible(user: MobileUsuariDto?): String {
     return complet.ifBlank { "#${user.id}" }
 }
 
+/**
+ * Executa l'operació `obtenirRolVisible`.
+ * @param rol paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 @androidx.compose.runtime.Composable
 private fun obtenirRolVisible(rol: String?): String {
     return when (rol?.uppercase()) {
@@ -182,6 +198,11 @@ private fun obtenirRolVisible(rol: String?): String {
     }
 }
 
+/**
+ * Executa l'operació `obtenirInicials`.
+ * @param user paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 private fun obtenirInicials(user: MobileUsuariDto?): String {
     val nomVisible = construirNomVisible(user)
 

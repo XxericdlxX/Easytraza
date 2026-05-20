@@ -46,11 +46,19 @@ import cat.copernic.easytraza_mobile.ui.viewmodel.GestioLotsViewModel
 import java.util.Calendar
 import java.util.Locale
 
+/**
+ * Pantalla o component d’interfície `LotAction` de l'aplicació mobile d'EasyTraza.
+ */
 private enum class LotAction {
     Iniciar,
     Finalitzar
 }
 
+/**
+ * Executa l'operació `GestioLotsScreen`.
+ * @param viewModel paràmetre necessari per a l'operació.
+ * @param onBack paràmetre necessari per a l'operació.
+ */
 @Composable
 fun GestioLotsScreen(
     viewModel: GestioLotsViewModel,
@@ -71,6 +79,9 @@ fun GestioLotsScreen(
     val context = LocalContext.current
     val calendari = remember { Calendar.getInstance() }
 
+    /**
+     * Executa l'operació `obrirSelectorData`.
+     */
     fun obrirSelectorData() {
         DatePickerDialog(
             context,
@@ -354,6 +365,14 @@ fun GestioLotsScreen(
     }
 }
 
+/**
+ * Executa l'operació `FiltreDropdown`.
+ * @param label paràmetre necessari per a l'operació.
+ * @param selectedValue paràmetre necessari per a l'operació.
+ * @param emptyLabel paràmetre necessari per a l'operació.
+ * @param options paràmetre necessari per a l'operació.
+ * @param onSelected paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun FiltreDropdown(
     label: String,
@@ -405,6 +424,12 @@ private fun FiltreDropdown(
     }
 }
 
+/**
+ * Executa l'operació `EstatLotFilterChip`.
+ * @param text paràmetre necessari per a l'operació.
+ * @param selected paràmetre necessari per a l'operació.
+ * @param onClick paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun EstatLotFilterChip(
     text: String,
@@ -425,6 +450,11 @@ private fun EstatLotFilterChip(
     )
 }
 
+/**
+ * Executa l'operació `LotMobileCard`.
+ * @param lot paràmetre necessari per a l'operació.
+ * @param onIniciar paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun LotMobileCard(
     lot: MobileLotDto,
@@ -530,6 +560,11 @@ private fun LotMobileCard(
     }
 }
 
+/**
+ * Executa l'operació `traduirEstatLot`.
+ * @param estat paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 @Composable
 private fun traduirEstatLot(estat: String?): String {
     return when (estat) {

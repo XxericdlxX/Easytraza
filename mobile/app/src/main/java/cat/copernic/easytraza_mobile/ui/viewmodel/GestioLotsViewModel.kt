@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla o component d’interfície `GestioLotsViewModel` de l'aplicació mobile d'EasyTraza.
+ */
 class GestioLotsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = IpPreferencesRepository(application.applicationContext)
@@ -46,6 +49,9 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
+    /**
+     * Executa l'operació `carregarLots`.
+     */
     fun carregarLots() {
         viewModelScope.launch {
             try {
@@ -79,26 +85,45 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    /**
+     * Executa l'operació `actualitzarFiltreCodi`.
+     * @param valor paràmetre necessari per a l'operació.
+     */
     fun actualitzarFiltreCodi(valor: String) {
         _filtreCodi.value = valor
         aplicarFiltres()
     }
 
+    /**
+     * Executa l'operació `actualitzarFiltreMateria`.
+     * @param valor paràmetre necessari per a l'operació.
+     */
     fun actualitzarFiltreMateria(valor: String) {
         _filtreMateria.value = valor
         aplicarFiltres()
     }
 
+    /**
+     * Executa l'operació `actualitzarFiltreDataRecepcio`.
+     * @param valor paràmetre necessari per a l'operació.
+     */
     fun actualitzarFiltreDataRecepcio(valor: String) {
         _filtreDataRecepcio.value = valor
         aplicarFiltres()
     }
 
+    /**
+     * Executa l'operació `actualitzarFiltreEstat`.
+     * @param valor paràmetre necessari per a l'operació.
+     */
     fun actualitzarFiltreEstat(valor: String) {
         _filtreEstat.value = valor
         aplicarFiltres()
     }
 
+    /**
+     * Executa l'operació `netejarFiltres`.
+     */
     fun netejarFiltres() {
         _filtreCodi.value = ""
         _filtreMateria.value = ""
@@ -107,6 +132,9 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         aplicarFiltres()
     }
 
+    /**
+     * Executa l'operació `actualitzarOpcionsFiltres`.
+     */
     private fun actualitzarOpcionsFiltres() {
         _codisLotDisponibles.value = _lotsComplets.value
             .mapNotNull { it.codiLot?.trim()?.takeIf { valor -> valor.isNotBlank() } }
@@ -119,6 +147,9 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
             .sortedWith(String.CASE_INSENSITIVE_ORDER)
     }
 
+    /**
+     * Executa l'operació `aplicarFiltres`.
+     */
     private fun aplicarFiltres() {
         val codi = _filtreCodi.value.trim()
         val materia = _filtreMateria.value.trim()
@@ -135,6 +166,10 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    /**
+     * Executa l'operació `iniciarLot`.
+     * @param id paràmetre necessari per a l'operació.
+     */
     fun iniciarLot(id: Long) {
         executarAccioLot(
             id = id,
@@ -143,6 +178,10 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         )
     }
 
+    /**
+     * Executa l'operació `finalitzarLot`.
+     * @param id paràmetre necessari per a l'operació.
+     */
     fun finalitzarLot(id: Long) {
         executarAccioLot(
             id = id,
@@ -151,6 +190,12 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         )
     }
 
+    /**
+     * Executa l'operació `executarAccioLot`.
+     * @param id paràmetre necessari per a l'operació.
+     * @param missatgeExit paràmetre necessari per a l'operació.
+     * @param accio paràmetre necessari per a l'operació.
+     */
     private fun executarAccioLot(
         id: Long,
         missatgeExit: String,

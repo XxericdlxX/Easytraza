@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla o component d’interfície `ConfigIpViewModel` de l'aplicació mobile d'EasyTraza.
+ */
 class ConfigIpViewModel(
     application: Application,
     private val repository: IpPreferencesRepository
@@ -32,10 +35,17 @@ class ConfigIpViewModel(
         }
     }
 
+    /**
+     * Executa l'operació `onIpChange`.
+     * @param newIp paràmetre necessari per a l'operació.
+     */
     fun onIpChange(newIp: String) {
         _ip.value = newIp
     }
 
+    /**
+     * Executa l'operació `saveIp`.
+     */
     fun saveIp() {
         viewModelScope.launch {
             val normalizedIp = normalizeServerHost(_ip.value)
@@ -53,6 +63,9 @@ class ConfigIpViewModel(
         }
     }
 
+    /**
+     * Executa l'operació `testConnection`.
+     */
     fun testConnection() {
         viewModelScope.launch {
             val normalizedIp = normalizeServerHost(_ip.value)
@@ -87,6 +100,11 @@ class ConfigIpViewModel(
         }
     }
 
+    /**
+     * Executa l'operació `normalizeServerHost`.
+     * @param rawValue paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun normalizeServerHost(rawValue: String): String {
         return rawValue
             .trim()
@@ -96,6 +114,11 @@ class ConfigIpViewModel(
             .substringBefore(":")
     }
 
+    /**
+     * Executa l'operació `isValidServerHost`.
+     * @param host paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun isValidServerHost(host: String): Boolean {
         if (host.isBlank()) {
             return false

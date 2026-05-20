@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla o component d’interfície `UserSelectionViewModel` de l'aplicació mobile d'EasyTraza.
+ */
 class UserSelectionViewModel(
     application: Application,
     private val repository: IpPreferencesRepository
@@ -31,6 +34,9 @@ class UserSelectionViewModel(
         carregarUsuaris()
     }
 
+    /**
+     * Executa l'operació `carregarUsuaris`.
+     */
     fun carregarUsuaris() {
         viewModelScope.launch {
             _loading.value = true

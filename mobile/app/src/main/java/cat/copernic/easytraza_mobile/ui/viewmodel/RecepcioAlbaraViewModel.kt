@@ -29,6 +29,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Pantalla o component d’interfície `EditableLotUi` de l'aplicació mobile d'EasyTraza.
+ */
 data class EditableLotUi(
     val codiLot: String = "",
     val codiMateriaPrimaOcr: String = "",
@@ -37,6 +40,9 @@ data class EditableLotUi(
     val crearMateriaPrimaSiNoExisteix: Boolean = false
 )
 
+/**
+ * Pantalla o component d’interfície `RecepcioAlbaraViewModel` de l'aplicació mobile d'EasyTraza.
+ */
 class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = IpPreferencesRepository(application.applicationContext)
@@ -71,46 +77,93 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
     private var documentOcrRuta: String? = null
     private var usuariReceptorId: Long? = null
 
+    /**
+     * Executa l'operació `onUsuariReceptorSeleccionat`.
+     * @param id paràmetre necessari per a l'operació.
+     */
     fun onUsuariReceptorSeleccionat(id: Long?) {
         usuariReceptorId = id
     }
 
+    /**
+     * Executa l'operació `onDataRecepcioChange`.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onDataRecepcioChange(value: String) {
         _dataRecepcio.value = value
     }
 
+    /**
+     * Executa l'operació `onProveidorCifChange`.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onProveidorCifChange(value: String) {
         _proveidorCif.value = value
     }
 
+    /**
+     * Executa l'operació `onProveidorNomChange`.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onProveidorNomChange(value: String) {
         _proveidorNom.value = netejarNomProveidorDetectat(value)
     }
 
+    /**
+     * Executa l'operació `onCrearProveidorSiNoExisteixChange`.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onCrearProveidorSiNoExisteixChange(value: Boolean) {
         _crearProveidorSiNoExisteix.value = value
     }
 
+    /**
+     * Executa l'operació `onLotCodiChange`.
+     * @param index paràmetre necessari per a l'operació.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onLotCodiChange(index: Int, value: String) {
         updateLot(index) { it.copy(codiLot = value) }
     }
 
+    /**
+     * Executa l'operació `onLotQuantitatChange`.
+     * @param index paràmetre necessari per a l'operació.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onLotQuantitatChange(index: Int, value: String) {
         updateLot(index) { it.copy(quantitat = value) }
     }
 
+    /**
+     * Executa l'operació `onLotMateriaPrimaChange`.
+     * @param index paràmetre necessari per a l'operació.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onLotMateriaPrimaChange(index: Int, value: String) {
         updateLot(index) { it.copy(materiaPrimaNom = value) }
     }
 
+    /**
+     * Executa l'operació `onLotCrearMateriaPrimaChange`.
+     * @param index paràmetre necessari per a l'operació.
+     * @param value paràmetre necessari per a l'operació.
+     */
     fun onLotCrearMateriaPrimaChange(index: Int, value: Boolean) {
         updateLot(index) { it.copy(crearMateriaPrimaSiNoExisteix = value) }
     }
 
+    /**
+     * Executa l'operació `afegirLotBuit`.
+     */
     fun afegirLotBuit() {
         _lotsEditables.value += EditableLotUi()
     }
 
+    /**
+     * Executa l'operació `eliminarLot`.
+     * @param index paràmetre necessari per a l'operació.
+     */
     fun eliminarLot(index: Int) {
         val actuals = _lotsEditables.value.toMutableList()
 
@@ -123,10 +176,16 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         _lotsEditables.value = actuals
     }
 
+    /**
+     * Executa l'operació `marcarSaveConsumit`.
+     */
     fun marcarSaveConsumit() {
         _saveCompleted.value = false
     }
 
+    /**
+     * Executa l'operació `prepararModeManual`.
+     */
     fun prepararModeManual() {
         _textOcr.value = ""
         _status.value = ""
@@ -137,6 +196,12 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `analitzarUri`.
+     * @param contentResolver paràmetre necessari per a l'operació.
+     * @param uri paràmetre necessari per a l'operació.
+     * @param fileName paràmetre necessari per a l'operació.
+     */
     fun analitzarUri(contentResolver: ContentResolver, uri: Uri, fileName: String) {
         viewModelScope.launch {
             try {
@@ -197,6 +262,9 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `guardarAlbara`.
+     */
     fun guardarAlbara() {
         viewModelScope.launch {
             try {
@@ -244,6 +312,10 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `buildLotsPerGuardar`.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun buildLotsPerGuardar(): List<MobileLotSaveRequestDto> {
         return _lotsEditables.value.mapNotNull { lot ->
             val codi = lot.codiLot.trim()
@@ -274,6 +346,10 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `omplirDesDeResposta`.
+     * @param resposta paràmetre necessari per a l'operació.
+     */
     private fun omplirDesDeResposta(resposta: OcrAlbaraResponseDto) {
         _proveidorCif.value = resposta.proveidorCif.orEmpty()
         _dataRecepcio.value = resoldreDataRecepcio(resposta.dataAlbara)
@@ -300,6 +376,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         _proveidorNom.value = extraurePossibleNomProveidor(_textOcr.value)
     }
 
+    /**
+     * Executa l'operació `resoldreDataRecepcio`.
+     * @param dataOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun resoldreDataRecepcio(dataOcr: String?): String {
         val avui = todayIso()
         val dataOcrNormalitzada = dataOcr
@@ -314,6 +395,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `extraurePossibleNomProveidor`.
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun extraurePossibleNomProveidor(text: String): String {
         return text.lineSequence()
             .map { netejarNomProveidorDetectat(it) }
@@ -332,6 +418,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             .orEmpty()
     }
 
+    /**
+     * Executa l'operació `netejarNomProveidorDetectat`.
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun netejarNomProveidorDetectat(text: String?): String {
         if (text.isNullOrBlank()) {
             return ""
@@ -345,6 +436,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             .trim()
     }
 
+    /**
+     * Executa l'operació `normalitzarData`.
+     * @param value paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun normalitzarData(value: String): String {
         val clean = value.trim().replace("/", "-")
         val parts = clean.split("-")
@@ -361,6 +457,12 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         val mimeType: String
     )
 
+    /**
+     * Executa l'operació `prepararFitxerPerOcr`.
+     * @param file paràmetre necessari per a l'operació.
+     * @param mimeType paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun prepararFitxerPerOcr(file: File, mimeType: String): FitxerOcrPreparat {
         if (!mimeType.startsWith("image/", ignoreCase = true)) {
             return FitxerOcrPreparat(file, mimeType)
@@ -401,6 +503,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `llegirOrientacioExif`.
+     * @param file paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun llegirOrientacioExif(file: File): Int {
         return try {
             ExifInterface(file.absolutePath).getAttributeInt(
@@ -412,6 +519,12 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `aplicarOrientacioExif`.
+     * @param bitmap paràmetre necessari per a l'operació.
+     * @param orientacio paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun aplicarOrientacioExif(bitmap: Bitmap, orientacio: Int): Bitmap {
         val matrix = Matrix()
 
@@ -435,6 +548,13 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
+    /**
+     * Executa l'operació `copyUriToFile`.
+     * @param contentResolver paràmetre necessari per a l'operació.
+     * @param uri paràmetre necessari per a l'operació.
+     * @param file paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun copyUriToFile(contentResolver: ContentResolver, uri: Uri, file: File): Boolean {
         return try {
             contentResolver.openInputStream(uri).use { input ->
@@ -455,6 +575,11 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `inferMimeTypeFromName`.
+     * @param fileName paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun inferMimeTypeFromName(fileName: String): String {
         val lower = fileName.lowercase(Locale.ROOT)
 
@@ -465,10 +590,19 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * Executa l'operació `todayIso`.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private fun todayIso(): String {
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }
 
+    /**
+     * Executa l'operació `updateLot`.
+     * @param index paràmetre necessari per a l'operació.
+     * @param transform paràmetre necessari per a l'operació.
+     */
     private fun updateLot(index: Int, transform: (EditableLotUi) -> EditableLotUi) {
         val actuals = _lotsEditables.value.toMutableList()
 

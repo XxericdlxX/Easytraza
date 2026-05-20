@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Configuració `MobileApiExceptionHandler` del projecte EasyTraza.
+ */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(basePackages = "cat.copernic.easytraza_backend.controller.mobileapi")
 public class MobileApiExceptionHandler {
@@ -20,10 +23,22 @@ public class MobileApiExceptionHandler {
 
     private final MessageSource messageSource;
 
+    /**
+     * Crea una nova instància del component.
+     *
+     * @param messageSource paràmetre necessari per a l'operació.
+     */
     public MobileApiExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Executa l'operació `gestionarPeticioIncorrecta`.
+     *
+     * @param exception paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<MobileApiErrorDto> gestionarPeticioIncorrecta(
             IllegalArgumentException exception, Locale locale) {
@@ -36,6 +51,13 @@ public class MobileApiExceptionHandler {
         );
     }
 
+    /**
+     * Executa l'operació `gestionarEstatIncorrecte`.
+     *
+     * @param exception paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<MobileApiErrorDto> gestionarEstatIncorrecte(
             IllegalStateException exception, Locale locale) {
@@ -48,6 +70,13 @@ public class MobileApiExceptionHandler {
         );
     }
 
+    /**
+     * Executa l'operació `gestionarErrorGeneric`.
+     *
+     * @param exception paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MobileApiErrorDto> gestionarErrorGeneric(Exception exception, Locale locale) {
         LOGGER.error("Error no controlat en una petició mobile", exception);
@@ -59,6 +88,14 @@ public class MobileApiExceptionHandler {
         );
     }
 
+    /**
+     * Executa l'operació `missatgeSegur`.
+     *
+     * @param codi paràmetre necessari per a l'operació.
+     * @param codiPerDefecte paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String missatgeSegur(String codi, String codiPerDefecte, Locale locale) {
         String fallback = messageSource.getMessage(codiPerDefecte, null, codiPerDefecte, locale);
         return messageSource.getMessage(codi, null, fallback, locale);

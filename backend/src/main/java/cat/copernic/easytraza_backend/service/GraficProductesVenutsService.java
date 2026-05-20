@@ -16,12 +16,21 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servei `GraficProductesVenutsService` del projecte EasyTraza.
+ */
 @Service
 public class GraficProductesVenutsService {
 
     @Autowired
     private AlbaraClientRepository albaraClientRepository;
 
+    /**
+     * Executa l'operació `resoldreMesSeleccionat`.
+     *
+     * @param mes paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public YearMonth resoldreMesSeleccionat(String mes) {
         if (mes == null || mes.isBlank()) {
             return YearMonth.now();
@@ -34,6 +43,12 @@ public class GraficProductesVenutsService {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirUltimsDotzeMesos`.
+     *
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<MesGraficProductesDto> obtenirUltimsDotzeMesos(Locale locale) {
         Locale localeResolut = locale == null ? Locale.forLanguageTag("es") : locale;
         YearMonth mesActual = YearMonth.now();
@@ -49,6 +64,13 @@ public class GraficProductesVenutsService {
         return mesos;
     }
 
+    /**
+     * Executa l'operació `obtenirGraficMensual`.
+     *
+     * @param mes paràmetre necessari per a l'operació.
+     * @param producteId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public GraficProductesVenutsDto obtenirGraficMensual(YearMonth mes, Long producteId) {
         YearMonth mesResolut = mes == null ? YearMonth.now() : mes;
         Map<Integer, Long> quantitatsPerDia = inicialitzarDiesMes(mesResolut);
@@ -76,6 +98,12 @@ public class GraficProductesVenutsService {
         return new GraficProductesVenutsDto(dies, quantitats, totalUnitats);
     }
 
+    /**
+     * Executa l'operació `inicialitzarDiesMes`.
+     *
+     * @param mes paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Map<Integer, Long> inicialitzarDiesMes(YearMonth mes) {
         Map<Integer, Long> dies = new LinkedHashMap<>();
 
@@ -86,14 +114,32 @@ public class GraficProductesVenutsService {
         return dies;
     }
 
+    /**
+     * Executa l'operació `convertirAEnter`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private int convertirAEnter(Object valor) {
         return valor instanceof Number number ? number.intValue() : 0;
     }
 
+    /**
+     * Executa l'operació `convertirALong`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private long convertirALong(Object valor) {
         return valor instanceof Number number ? number.longValue() : 0L;
     }
 
+    /**
+     * Executa l'operació `capitalitzar`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String capitalitzar(String text) {
         if (text == null || text.isBlank()) {
             return "";

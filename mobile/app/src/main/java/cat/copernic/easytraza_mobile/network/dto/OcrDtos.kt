@@ -1,5 +1,8 @@
 package cat.copernic.easytraza_mobile.network.dto
 
+/**
+ * Component de xarxa `OcrLotRespostaDto` de l'aplicació mobile d'EasyTraza.
+ */
 data class OcrLotRespostaDto(
     val codiLot: String? = null,
     val codiMateriaPrimaOcr: String? = null,
@@ -7,6 +10,9 @@ data class OcrLotRespostaDto(
     val quantitat: Double? = null
 )
 
+/**
+ * Component de xarxa `OcrAlbaraResponseDto` de l'aplicació mobile d'EasyTraza.
+ */
 data class OcrAlbaraResponseDto(
     val proveidorCif: String? = null,
     val numeroAlbara: String? = null,
@@ -20,6 +26,9 @@ data class OcrAlbaraResponseDto(
     val documentOcrRuta: String? = null
 )
 
+/**
+ * Component de xarxa `MobileLotSaveRequestDto` de l'aplicació mobile d'EasyTraza.
+ */
 data class MobileLotSaveRequestDto(
     val codiLot: String,
     val codiMateriaPrimaOcr: String? = null,
@@ -28,6 +37,9 @@ data class MobileLotSaveRequestDto(
     val crearMateriaPrimaSiNoExisteix: Boolean
 )
 
+/**
+ * Component de xarxa `MobileAlbaraSaveRequestDto` de l'aplicació mobile d'EasyTraza.
+ */
 data class MobileAlbaraSaveRequestDto(
     val dataRecepcio: String,
     val proveidorCif: String?,
@@ -42,6 +54,9 @@ data class MobileAlbaraSaveRequestDto(
     val documentOcrRuta: String? = null
 )
 
+/**
+ * Component de xarxa `MobileLotDto` de l'aplicació mobile d'EasyTraza.
+ */
 data class MobileLotDto(
     val id: Long,
     val codiLot: String? = null,

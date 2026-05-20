@@ -12,9 +12,17 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
+/**
+ * Configuració `LocaleConfig` del projecte EasyTraza.
+ */
 @Configuration
 public class LocaleConfig implements WebMvcConfigurer {
 
+    /**
+     * Executa l'operació `localeResolver`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
@@ -22,6 +30,11 @@ public class LocaleConfig implements WebMvcConfigurer {
         return sessionLocaleResolver;
     }
 
+    /**
+     * Executa l'operació `localeChangeInterceptor`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
@@ -29,6 +42,11 @@ public class LocaleConfig implements WebMvcConfigurer {
         return interceptor;
     }
 
+    /**
+     * Executa l'operació `messageSource`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -37,6 +55,11 @@ public class LocaleConfig implements WebMvcConfigurer {
         return messageSource;
     }
 
+    /**
+     * Executa l'operació `addInterceptors`.
+     *
+     * @param registry paràmetre necessari per a l'operació.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());

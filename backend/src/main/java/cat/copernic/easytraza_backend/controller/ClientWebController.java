@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `ClientWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/clients")
 public class ClientWebController {
@@ -29,6 +32,17 @@ public class ClientWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistar`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @param nom paràmetre necessari per a l'operació.
+     * @param tipus paràmetre necessari per a l'operació.
+     * @param telefon paràmetre necessari per a l'operació.
+     * @param email paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistar(@RequestParam(required = false) String document,
             @RequestParam(required = false) String nom,
@@ -52,6 +66,12 @@ public class ClientWebController {
         return "clients/llistar-clients";
     }
 
+    /**
+     * Executa l'operació `crear`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String crear(Model model) {
         model.addAttribute("client", new Client());
@@ -60,6 +80,16 @@ public class ClientWebController {
         return "clients/crear-clients";
     }
 
+    /**
+     * Executa l'operació `guardar`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardar(@Valid Client client,
             BindingResult bindingResult,
@@ -81,6 +111,15 @@ public class ClientWebController {
         return "redirect:/web/clients";
     }
 
+    /**
+     * Executa l'operació `editar`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{nif}")
     public String editar(@PathVariable String nif,
             Model model,
@@ -100,6 +139,17 @@ public class ClientWebController {
         return "clients/editar-clients";
     }
 
+    /**
+     * Executa l'operació `actualitzar`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     * @param client paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{nif}")
     public String actualitzar(@PathVariable String nif,
             @Valid Client client,
@@ -127,6 +177,14 @@ public class ClientWebController {
         return "redirect:/web/clients";
     }
 
+    /**
+     * Executa l'operació `eliminar`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{nif}")
     public String eliminar(@PathVariable String nif,
             RedirectAttributes redirectAttributes,
@@ -144,6 +202,15 @@ public class ClientWebController {
         return "redirect:/web/clients";
     }
 
+    /**
+     * Executa l'operació `validarDocumentFiscalClient`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param esCreacio paràmetre necessari per a l'operació.
+     * @param nifOriginal paràmetre necessari per a l'operació.
+     */
     private void validarDocumentFiscalClient(Client client,
             BindingResult bindingResult,
             Locale locale,
@@ -169,6 +236,13 @@ public class ClientWebController {
         }
     }
 
+    /**
+     * Executa l'operació `validarTipusClientAltres`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     */
     private void validarTipusClientAltres(Client client, BindingResult bindingResult, Locale locale) {
         if (client.getTipusClient() == TipusClient.ALTRES
                 && (client.getTipusClientAltres() == null || client.getTipusClientAltres().isBlank())) {
@@ -176,12 +250,28 @@ public class ClientWebController {
         }
     }
 
+    /**
+     * Executa l'operació `afegirErrorSiNoExisteix`.
+     *
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param camp paràmetre necessari per a l'operació.
+     * @param codiMissatge paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     */
     private void afegirErrorSiNoExisteix(BindingResult bindingResult, String camp, String codiMissatge, Locale locale) {
         if (!bindingResult.hasFieldErrors(camp)) {
             bindingResult.rejectValue(camp, codiMissatge, missatge(codiMissatge, locale));
         }
     }
 
+    /**
+     * Executa l'operació `tornarCrearAmbErrors`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String tornarCrearAmbErrors(Client client, Model model, Locale locale) {
         model.addAttribute("errorNegoci", missatge("error.validacio", locale));
         model.addAttribute("client", client);
@@ -189,6 +279,14 @@ public class ClientWebController {
         return "clients/crear-clients";
     }
 
+    /**
+     * Executa l'operació `tornarEditarAmbErrors`.
+     *
+     * @param client paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String tornarEditarAmbErrors(Client client, Model model, Locale locale) {
         model.addAttribute("errorNegoci", missatge("error.validacio", locale));
         model.addAttribute("client", client);
@@ -196,11 +294,23 @@ public class ClientWebController {
         return "clients/editar-clients";
     }
 
+    /**
+     * Executa l'operació `prepararModelFormulari`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     */
     private void prepararModelFormulari(Model model) {
         model.addAttribute("tipusClients", clientService.obtenirTipusClients());
         model.addAttribute("currentPath", "/web/clients");
     }
 
+    /**
+     * Executa l'operació `missatge`.
+     *
+     * @param codi paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String missatge(String codi, Locale locale) {
         return messageSource.getMessage(codi, null, codi, locale);
     }

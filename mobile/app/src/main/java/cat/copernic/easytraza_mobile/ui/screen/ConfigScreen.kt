@@ -29,6 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
 
+/**
+ * Executa l'operació `ConfigScreen`.
+ * @param configuredIp paràmetre necessari per a l'operació.
+ * @param connectionStatus paràmetre necessari per a l'operació.
+ * @param onSaveIp paràmetre necessari per a l'operació.
+ */
 @Composable
 fun ConfigScreen(
     configuredIp: String,

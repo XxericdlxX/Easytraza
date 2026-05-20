@@ -32,6 +32,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Servei `OcrAlbaraService` del projecte EasyTraza.
+ */
 @Service
 public class OcrAlbaraService {
 
@@ -55,6 +58,12 @@ public class OcrAlbaraService {
             Pattern.CASE_INSENSITIVE
     );
 
+    /**
+     * Executa l'operació `processarImatgeAlbara`.
+     *
+     * @param fitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public OcrAlbaraResponseDto processarImatgeAlbara(MultipartFile fitxer) {
         if (fitxer == null || fitxer.isEmpty()) {
             LOGGER.warn("S'ha rebut una sol·licitud OCR sense document.");
@@ -80,6 +89,12 @@ public class OcrAlbaraService {
         return resposta;
     }
 
+    /**
+     * Executa l'operació `guardarDocumentOcr`.
+     *
+     * @param fitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private DocumentOcrInfo guardarDocumentOcr(MultipartFile fitxer) {
         String nomOriginal = Optional.ofNullable(fitxer.getOriginalFilename())
                 .filter(nom -> !nom.isBlank())
@@ -119,6 +134,12 @@ public class OcrAlbaraService {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirExtensio`.
+     *
+     * @param nomFitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirExtensio(String nomFitxer) {
         String nom = nomFitxer == null ? "" : nomFitxer.trim();
         int index = nom.lastIndexOf('.');
@@ -131,6 +152,12 @@ public class OcrAlbaraService {
         return extensio.matches("\\.[a-z0-9]{1,8}") ? extensio : ".bin";
     }
 
+    /**
+     * Executa l'operació `inferirContentType`.
+     *
+     * @param nomFitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String inferirContentType(String nomFitxer) {
         String nom = nomFitxer == null ? "" : nomFitxer.toLowerCase(Locale.ROOT);
 
@@ -149,6 +176,15 @@ public class OcrAlbaraService {
         return "application/octet-stream";
     }
 
+    /**
+     * Executa l'operació `DocumentOcrInfo`.
+     *
+     * @param nomOriginal paràmetre necessari per a l'operació.
+     * @param nomGuardat paràmetre necessari per a l'operació.
+     * @param contentType paràmetre necessari per a l'operació.
+     * @param ruta paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private record DocumentOcrInfo(
             String nomOriginal,
             String nomGuardat,
@@ -158,6 +194,12 @@ public class OcrAlbaraService {
 
     }
 
+    /**
+     * Executa l'operació `extreureTextImatge`.
+     *
+     * @param fitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureTextImatge(MultipartFile fitxer) {
         try {
             BufferedImage imatgeOriginal = ImageIO.read(fitxer.getInputStream());
@@ -177,6 +219,12 @@ public class OcrAlbaraService {
         }
     }
 
+    /**
+     * Executa l'operació `extreureTextPdf`.
+     *
+     * @param fitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureTextPdf(MultipartFile fitxer) {
         File tempFile = null;
 
@@ -208,6 +256,12 @@ public class OcrAlbaraService {
         }
     }
 
+    /**
+     * Executa l'operació `prepararImatgePerOcr`.
+     *
+     * @param original paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private BufferedImage prepararImatgePerOcr(BufferedImage original) {
         int amplada = original.getWidth() * 2;
         int alcada = original.getHeight() * 2;
@@ -224,6 +278,11 @@ public class OcrAlbaraService {
         return escalada;
     }
 
+    /**
+     * Executa l'operació `crearTesseract`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Tesseract crearTesseract() {
         Tesseract tesseract = new Tesseract();
         tesseract.setDatapath(tessdataPath);
@@ -233,6 +292,12 @@ public class OcrAlbaraService {
         return tesseract;
     }
 
+    /**
+     * Executa l'operació `parsejarTextOcr`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private OcrAlbaraResponseDto parsejarTextOcr(String textOcr) {
         String proveidor = detectarProveidor(textOcr);
 
@@ -246,6 +311,12 @@ public class OcrAlbaraService {
         return resposta;
     }
 
+    /**
+     * Executa l'operació `detectarProveidor`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String detectarProveidor(String textOcr) {
         String text = normalitzarPerComparar(textOcr);
 
@@ -288,6 +359,13 @@ public class OcrAlbaraService {
         return null;
     }
 
+    /**
+     * Executa l'operació `detectarCifProveidor`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String detectarCifProveidor(String textOcr, String proveidor) {
         if ("AVICOLA LLEONART".equals(proveidor)) {
             return "A08560021";
@@ -329,6 +407,13 @@ public class OcrAlbaraService {
         return null;
     }
 
+    /**
+     * Executa l'operació `detectarNumeroAlbara`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String detectarNumeroAlbara(String textOcr, String proveidor) {
         String text = normalitzarPerComparar(textOcr);
 
@@ -370,6 +455,12 @@ public class OcrAlbaraService {
         return null;
     }
 
+    /**
+     * Executa l'operació `detectarDataAlbara`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String detectarDataAlbara(String textOcr) {
         Matcher matcher = PATRON_DATA.matcher(textOcr);
 
@@ -384,6 +475,14 @@ public class OcrAlbaraService {
         return null;
     }
 
+    /**
+     * Executa l'operació `extreureLots`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @param proveidor paràmetre necessari per a l'operació.
+     * @param numeroAlbara paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLots(String textOcr, String proveidor, String numeroAlbara) {
         if ("AVICOLA LLEONART".equals(proveidor)) {
             return extreureLotsAvicola(textOcr);
@@ -412,6 +511,12 @@ public class OcrAlbaraService {
         return extreureLotsGeneric(textOcr);
     }
 
+    /**
+     * Executa l'operació `extreureLotsAvicola`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsAvicola(String textOcr) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String lot = extreureLotAmbPrefix(textOcr);
@@ -433,6 +538,12 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `extreureLotsPastissa`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsPastissa(String textOcr) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
 
@@ -459,6 +570,13 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `extreureLotsArtipas`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @param numeroAlbara paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsArtipas(String textOcr, String numeroAlbara) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String base = normalitzarPartCodi(numeroAlbara != null ? numeroAlbara : "WH-OUT-27804");
@@ -517,6 +635,12 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `netejarMateriaArtipas`.
+     *
+     * @param materia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String netejarMateriaArtipas(String materia) {
         if (materia == null) {
             return null;
@@ -531,6 +655,13 @@ public class OcrAlbaraService {
         return neta.length() < 3 ? null : neta;
     }
 
+    /**
+     * Executa l'operació `extreureLotsJoseNovau`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @param numeroAlbara paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsJoseNovau(String textOcr, String numeroAlbara) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String base = normalitzarPartCodi(numeroAlbara != null ? numeroAlbara : "012436");
@@ -561,6 +692,14 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `crearLotJoseNovauDesDeBloc`.
+     *
+     * @param bloc paràmetre necessari per a l'operació.
+     * @param base paràmetre necessari per a l'operació.
+     * @param ordinalSenseCodi paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private OcrLotRespostaDto crearLotJoseNovauDesDeBloc(String bloc, String base, int ordinalSenseCodi) {
         if (bloc == null || bloc.isBlank()) {
             return null;
@@ -603,10 +742,22 @@ public class OcrAlbaraService {
         return crearLot(codiLot, codiMateria, materia, quantitat);
     }
 
+    /**
+     * Executa l'operació `conteQuantitatDecimal`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean conteQuantitatDecimal(String linia) {
         return linia != null && Pattern.compile("\\b\\d+[\\.,]\\d+\\b").matcher(linia).find();
     }
 
+    /**
+     * Executa l'operació `extreureLotJoseNovau`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureLotJoseNovau(String linia) {
         Matcher matcher = Pattern.compile(
                 "\\bLOT\\s*([A-Z0-9\\-\\/]{4,})\\b",
@@ -620,6 +771,12 @@ public class OcrAlbaraService {
         return normalitzarLot(matcher.group(1));
     }
 
+    /**
+     * Executa l'operació `eliminarLotJoseNovau`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String eliminarLotJoseNovau(String linia) {
         if (linia == null || linia.isBlank()) {
             return linia;
@@ -630,6 +787,13 @@ public class OcrAlbaraService {
                 .trim();
     }
 
+    /**
+     * Executa l'operació `eliminarCodiMateriaInicial`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @param codiMateria paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String eliminarCodiMateriaInicial(String linia, String codiMateria) {
         if (linia == null || linia.isBlank() || codiMateria == null || codiMateria.isBlank()) {
             return linia;
@@ -639,6 +803,14 @@ public class OcrAlbaraService {
                 .trim();
     }
 
+    /**
+     * Executa l'operació `crearCodiLotFallbackJoseNovau`.
+     *
+     * @param base paràmetre necessari per a l'operació.
+     * @param codiMateria paràmetre necessari per a l'operació.
+     * @param ordinalSenseCodi paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String crearCodiLotFallbackJoseNovau(String base, String codiMateria, int ordinalSenseCodi) {
         String codiNormalitzat = normalitzarCodiMateriaNullable(codiMateria);
 
@@ -649,6 +821,12 @@ public class OcrAlbaraService {
         return normalitzarPartCodi(base) + "-" + ordinalSenseCodi;
     }
 
+    /**
+     * Executa l'operació `extreureLotsTalComPinta`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsTalComPinta(String textOcr) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String materiaPendent = null;
@@ -705,6 +883,12 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `extreureLotsLaMeta`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsLaMeta(String textOcr) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         boolean zonaEnvases = false;
@@ -737,6 +921,12 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `extreureLotsGeneric`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<OcrLotRespostaDto> extreureLotsGeneric(String textOcr) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         List<String> linies = obtenirLinies(textOcr);
@@ -761,6 +951,13 @@ public class OcrAlbaraService {
         return lots;
     }
 
+    /**
+     * Executa l'operació `buscarLiniaProductePropera`.
+     *
+     * @param linies paràmetre necessari per a l'operació.
+     * @param indexLot paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String buscarLiniaProductePropera(List<String> linies, int indexLot) {
         for (int i = Math.max(0, indexLot - 2); i <= Math.min(linies.size() - 1, indexLot + 1); i++) {
             String linia = normalitzarPerComparar(linies.get(i));
@@ -773,6 +970,12 @@ public class OcrAlbaraService {
         return "";
     }
 
+    /**
+     * Executa l'operació `semblaProducte`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean semblaProducte(String linia) {
         return linia != null
                 && !linia.isBlank()
@@ -784,6 +987,12 @@ public class OcrAlbaraService {
                         "TRAMEZZINI", "CATANIA");
     }
 
+    /**
+     * Executa l'operació `extreureMateriaProducte`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureMateriaProducte(String linia) {
         if (linia == null || linia.isBlank()) {
             return null;
@@ -799,6 +1008,12 @@ public class OcrAlbaraService {
         return netejarMateria(valor);
     }
 
+    /**
+     * Executa l'operació `extreureQuantitatDesDeLinia`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Double extreureQuantitatDesDeLinia(String linia) {
         if (linia == null || linia.isBlank()) {
             return null;
@@ -822,6 +1037,12 @@ public class OcrAlbaraService {
         return numeros.size() >= 3 ? numeros.get(numeros.size() - 3) : numeros.get(0);
     }
 
+    /**
+     * Executa l'operació `extreureLotAmbPrefix`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureLotAmbPrefix(String text) {
         if (text == null) {
             return null;
@@ -837,6 +1058,13 @@ public class OcrAlbaraService {
         return esLotValid(lot) ? lot : null;
     }
 
+    /**
+     * Executa l'operació `construirBlocArticle`.
+     *
+     * @param linies paràmetre necessari per a l'operació.
+     * @param index paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String construirBlocArticle(List<String> linies, int index) {
         String bloc = linies.get(index);
 
@@ -853,16 +1081,34 @@ public class OcrAlbaraService {
         return bloc;
     }
 
+    /**
+     * Executa l'operació `semblaIniciArticle`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean semblaIniciArticle(String linia) {
         return linia != null
                 && (linia.matches("^[A-Z0-9\\-\\[\\]]{2,}\\s+.*")
                 || conteQuantitatDecimal(linia));
     }
 
+    /**
+     * Executa l'operació `extreureCodiMateriaProducte`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureCodiMateriaProducte(String linia) {
         return extreureCodiMateriaIniciLinia(normalitzarPerComparar(linia));
     }
 
+    /**
+     * Executa l'operació `extreureCodiMateriaIniciLinia`.
+     *
+     * @param linia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureCodiMateriaIniciLinia(String linia) {
         if (linia == null || linia.isBlank()) {
             return null;
@@ -884,6 +1130,12 @@ public class OcrAlbaraService {
         return null;
     }
 
+    /**
+     * Executa l'operació `normalitzarCodiMateriaNullable`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarCodiMateriaNullable(String valor) {
         if (valor == null || valor.isBlank()) {
             return null;
@@ -893,6 +1145,13 @@ public class OcrAlbaraService {
         return "SENSE-CODI".equals(codi) ? null : codi;
     }
 
+    /**
+     * Executa l'operació `unirCodiLotFallback`.
+     *
+     * @param base paràmetre necessari per a l'operació.
+     * @param codiMateria paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String unirCodiLotFallback(String base, String codiMateria) {
         String prefix = normalitzarPartCodi(base);
         String codi = normalitzarCodiMateriaNullable(codiMateria);
@@ -904,10 +1163,27 @@ public class OcrAlbaraService {
         return prefix + "-" + codi;
     }
 
+    /**
+     * Executa l'operació `crearLot`.
+     *
+     * @param codiLot paràmetre necessari per a l'operació.
+     * @param materiaPrima paràmetre necessari per a l'operació.
+     * @param quantitat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private OcrLotRespostaDto crearLot(String codiLot, String materiaPrima, Double quantitat) {
         return crearLot(codiLot, null, materiaPrima, quantitat);
     }
 
+    /**
+     * Executa l'operació `crearLot`.
+     *
+     * @param codiLot paràmetre necessari per a l'operació.
+     * @param codiMateriaPrimaOcr paràmetre necessari per a l'operació.
+     * @param materiaPrima paràmetre necessari per a l'operació.
+     * @param quantitat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private OcrLotRespostaDto crearLot(String codiLot, String codiMateriaPrimaOcr, String materiaPrima, Double quantitat) {
         OcrLotRespostaDto dto = new OcrLotRespostaDto();
         dto.setCodiLot(codiLot);
@@ -917,6 +1193,12 @@ public class OcrAlbaraService {
         return dto;
     }
 
+    /**
+     * Executa l'operació `afegirSiValid`.
+     *
+     * @param lots paràmetre necessari per a l'operació.
+     * @param dto paràmetre necessari per a l'operació.
+     */
     private void afegirSiValid(List<OcrLotRespostaDto> lots, OcrLotRespostaDto dto) {
         if (dto == null
                 || !esLotValid(dto.getCodiLot())
@@ -935,6 +1217,12 @@ public class OcrAlbaraService {
         }
     }
 
+    /**
+     * Executa l'operació `esLotValid`.
+     *
+     * @param lot paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean esLotValid(String lot) {
         if (lot == null || lot.isBlank()) {
             return false;
@@ -952,6 +1240,13 @@ public class OcrAlbaraService {
         );
     }
 
+    /**
+     * Executa l'operació `afegirCapcaleraProveidor`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @param proveidorDetectat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String afegirCapcaleraProveidor(String textOcr, String proveidorDetectat) {
         String text = textOcr == null ? "" : textOcr.replaceFirst(
                 "(?i)^\\s*PROVEIDOR\\s+DETECTAT\\s+OCR\\s*:\\s*.*\\R?",
@@ -963,6 +1258,12 @@ public class OcrAlbaraService {
                 : "PROVEIDOR DETECTAT OCR: " + proveidorDetectat + "\n" + text;
     }
 
+    /**
+     * Executa l'operació `semblaDataValida`.
+     *
+     * @param data paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean semblaDataValida(String data) {
         if (data == null || data.isBlank()) {
             return false;
@@ -996,6 +1297,12 @@ public class OcrAlbaraService {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirLinies`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<String> obtenirLinies(String textOcr) {
         List<String> linies = new ArrayList<>();
 
@@ -1014,6 +1321,12 @@ public class OcrAlbaraService {
         return linies;
     }
 
+    /**
+     * Executa l'operació `obtenirLiniesNormalitzades`.
+     *
+     * @param textOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<String> obtenirLiniesNormalitzades(String textOcr) {
         List<String> linies = new ArrayList<>();
 
@@ -1024,6 +1337,14 @@ public class OcrAlbaraService {
         return linies;
     }
 
+    /**
+     * Executa l'operació `obtenirBloc`.
+     *
+     * @param linies paràmetre necessari per a l'operació.
+     * @param inici paràmetre necessari per a l'operació.
+     * @param fi paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirBloc(List<String> linies, int inici, int fi) {
         StringBuilder bloc = new StringBuilder();
 
@@ -1034,6 +1355,12 @@ public class OcrAlbaraService {
         return bloc.toString();
     }
 
+    /**
+     * Executa l'operació `esLiniaSoroll`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean esLiniaSoroll(String valor) {
         if (valor == null) {
             return true;
@@ -1051,6 +1378,12 @@ public class OcrAlbaraService {
                 || text.matches(".*[=]{3,}.*");
     }
 
+    /**
+     * Executa l'operació `normalitzarLot`.
+     *
+     * @param lot paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarLot(String lot) {
         if (lot == null) {
             return null;
@@ -1066,6 +1399,12 @@ public class OcrAlbaraService {
                 .trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarPartCodi`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarPartCodi(String valor) {
         if (valor == null || valor.isBlank()) {
             return "SENSE-CODI";
@@ -1079,6 +1418,12 @@ public class OcrAlbaraService {
                 .replaceAll("^-|-$", "");
     }
 
+    /**
+     * Executa l'operació `convertirNumero`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Double convertirNumero(String valor) {
         if (valor == null || valor.isBlank()) {
             return null;
@@ -1091,6 +1436,12 @@ public class OcrAlbaraService {
         }
     }
 
+    /**
+     * Executa l'operació `convertirQuantitatOcr`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Double convertirQuantitatOcr(String valor) {
         if (valor == null || valor.isBlank()) {
             return null;
@@ -1105,6 +1456,12 @@ public class OcrAlbaraService {
         return convertirNumero(net);
     }
 
+    /**
+     * Executa l'operació `netejarMateria`.
+     *
+     * @param materia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String netejarMateria(String materia) {
         if (materia == null) {
             return null;
@@ -1131,6 +1488,12 @@ public class OcrAlbaraService {
         return neta.length() < 3 ? null : neta;
     }
 
+    /**
+     * Executa l'operació `corregirMateriaJoseNovau`.
+     *
+     * @param materia paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String corregirMateriaJoseNovau(String materia) {
         if (materia == null || materia.isBlank()) {
             return materia;
@@ -1150,6 +1513,12 @@ public class OcrAlbaraService {
         return neta;
     }
 
+    /**
+     * Executa l'operació `normalitzarText`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarText(String valor) {
         return valor == null ? "" : valor
                 .replace("\r", "\n")
@@ -1161,6 +1530,12 @@ public class OcrAlbaraService {
                 .trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarPerComparar`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarPerComparar(String valor) {
         return valor == null ? "" : valor.toUpperCase(Locale.ROOT)
                 .replace("Á", "A")
@@ -1185,6 +1560,12 @@ public class OcrAlbaraService {
                 .trim();
     }
 
+    /**
+     * Executa l'operació `netejarValor`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String netejarValor(String valor) {
         return valor == null ? null : valor
                 .replace("\n", " ")
@@ -1194,6 +1575,12 @@ public class OcrAlbaraService {
                 .replaceAll("\\s{2,}", " ");
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String document) {
         return document == null ? null : document.toUpperCase(Locale.ROOT)
                 .replace("ES", "")
@@ -1204,6 +1591,12 @@ public class OcrAlbaraService {
                 .trim();
     }
 
+    /**
+     * Executa l'operació `esDocumentClient`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean esDocumentClient(String document) {
         String doc = normalitzarDocument(document);
 
@@ -1213,11 +1606,26 @@ public class OcrAlbaraService {
                 || "J5908731Z".equals(doc);
     }
 
+    /**
+     * Executa l'operació `primerMatch`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @param regex paràmetre necessari per a l'operació.
+     * @param defecte paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String primerMatch(String text, String regex, String defecte) {
         Matcher matcher = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text == null ? "" : text);
         return matcher.find() ? matcher.group(1).toUpperCase(Locale.ROOT) : defecte;
     }
 
+    /**
+     * Executa l'operació `conteAlguna`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @param valors paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean conteAlguna(String text, String... valors) {
         if (text == null) {
             return false;

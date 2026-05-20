@@ -16,12 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+/**
+ * Controlador `RecuperacioContrasenyaWebController` del projecte EasyTraza.
+ */
 @Controller
 public class RecuperacioContrasenyaWebController {
 
     @Autowired
     private RecuperacioContrasenyaService recuperacioContrasenyaService;
 
+    /**
+     * Executa l'operació `mostrarSollicitudRecuperacio`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/recuperar-contrasenya")
     public String mostrarSollicitudRecuperacio(Model model) {
         if (!model.containsAttribute("recuperacioContrasenyaDto")) {
@@ -30,6 +39,15 @@ public class RecuperacioContrasenyaWebController {
         return "auth/recuperar-contrasenya";
     }
 
+    /**
+     * Executa l'operació `generarSollicitudRecuperacio`.
+     *
+     * @param recuperacioContrasenyaDto paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/recuperar-contrasenya")
     public String generarSollicitudRecuperacio(
             @Valid @ModelAttribute("recuperacioContrasenyaDto") RecuperacioContrasenyaDto recuperacioContrasenyaDto,
@@ -48,6 +66,13 @@ public class RecuperacioContrasenyaWebController {
         return "auth/recuperar-contrasenya";
     }
 
+    /**
+     * Executa l'operació `mostrarRestablimentContrasenya`.
+     *
+     * @param token paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/restablir-contrasenya")
     public String mostrarRestablimentContrasenya(@RequestParam(required = false) String token, Model model) {
         RestablirContrasenyaDto restablirContrasenyaDto = new RestablirContrasenyaDto(token);
@@ -56,6 +81,15 @@ public class RecuperacioContrasenyaWebController {
         return "auth/restablir-contrasenya";
     }
 
+    /**
+     * Executa l'operació `restablirContrasenya`.
+     *
+     * @param restablirContrasenyaDto paràmetre necessari per a l'operació.
+     * @param bindingResult paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/restablir-contrasenya")
     public String restablirContrasenya(
             @Valid @ModelAttribute("restablirContrasenyaDto") RestablirContrasenyaDto restablirContrasenyaDto,

@@ -32,6 +32,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
 
+/**
+ * Executa l'operació `DashboardScreen`.
+ * @param currentUserName paràmetre necessari per a l'operació.
+ * @param currentUserRole paràmetre necessari per a l'operació.
+ * @param currentUserInitials paràmetre necessari per a l'operació.
+ * @param onBackToUsers paràmetre necessari per a l'operació.
+ */
 @Composable
 fun DashboardScreen(
     currentUserName: String,
@@ -153,6 +160,13 @@ fun DashboardScreen(
     }
 }
 
+/**
+ * Executa l'operació `DashboardActionCard`.
+ * @param emoji paràmetre necessari per a l'operació.
+ * @param title paràmetre necessari per a l'operació.
+ * @param subtitle paràmetre necessari per a l'operació.
+ * @param onClick paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun DashboardActionCard(
     emoji: String,
