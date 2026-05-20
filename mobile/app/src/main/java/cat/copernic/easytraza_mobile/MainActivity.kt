@@ -170,7 +170,7 @@ private fun construirNomVisible(user: MobileUsuariDto?): String {
     }
 
     val complet = "${user.nom.orEmpty().trim()} ${user.cognoms.orEmpty().trim()}".trim()
-    return complet.ifBlank { user.email.orEmpty() }
+    return complet.ifBlank { "#${user.id}" }
 }
 
 @androidx.compose.runtime.Composable
