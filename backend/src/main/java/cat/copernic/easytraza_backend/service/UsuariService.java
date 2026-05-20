@@ -1,5 +1,6 @@
 package cat.copernic.easytraza_backend.service;
 
+import cat.copernic.easytraza_backend.config.IdentificadorFiscalValidator;
 import cat.copernic.easytraza_backend.dto.PerfilUsuariDto;
 import cat.copernic.easytraza_backend.dto.UsuariDto;
 import cat.copernic.easytraza_backend.model.Proveidor;
@@ -7,11 +8,25 @@ import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.model.enums.Rol;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import cat.copernic.easytraza_backend.repository.UsuariRepository;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuariService {
@@ -26,6 +41,11 @@ public class UsuariService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${perfil.fotos.path:../uploads/perfils}")
+    private String perfilFotosPath;
+
+    private static final Set<String> EXTENSIONS_FOTO_PERMESES = Set.of("jpg", "jpeg", "png", "webp");
 
     public List<Usuari> findAll() {
         return usuariRepository.findAll();
@@ -63,6 +83,13 @@ public class UsuariService {
     public Usuari save(Usuari usuari) {
         codificarContrasenyaSiCal(usuari);
         return usuariRepository.save(usuari);
+    }
+
+    @Transactional
+    public Usuari crearUsuariAmbFoto(Usuari usuari, MultipartFile fotoPerfil) {
+        Usuari usuariGuardat = save(usuari);
+        actualitzarFotoPerfil(usuariGuardat.getId(), fotoPerfil);
+        return usuariGuardat;
     }
 
     public Usuari update(Long id, Usuari usuariActualitzat) {
@@ -115,6 +142,11 @@ public class UsuariService {
     }
 
     public String validarPerfilUsuari(PerfilUsuariDto perfilUsuariDto, Long idActual) {
+        String nifNormalitzat = normalitzarDocument(perfilUsuariDto.getNif());
+        if (!IdentificadorFiscalValidator.esDocumentFiscalValid(nifNormalitzat)) {
+            return "perfil.nif.invalid";
+        }
+
         String emailNormalitzat = normalitzarEmail(perfilUsuariDto.getEmail());
 
         Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
@@ -191,6 +223,7 @@ public class UsuariService {
         Usuari usuari = usuariExistent.get();
         usuari.setNom(normalitzarText(perfilUsuariDto.getNom()));
         usuari.setCognoms(normalitzarText(perfilUsuariDto.getCognoms()));
+        usuari.setNif(normalitzarDocument(perfilUsuariDto.getNif()));
 
         if (!isProtectedUser(usuari)) {
             usuari.setEmail(normalitzarEmail(perfilUsuariDto.getEmail()));
@@ -201,6 +234,75 @@ public class UsuariService {
         }
 
         return usuariRepository.save(usuari);
+    }
+
+    public String validarFotoPerfil(MultipartFile fotoPerfil) {
+        if (fotoPerfil == null || fotoPerfil.isEmpty()) {
+            return null;
+        }
+
+        String contentType = fotoPerfil.getContentType();
+        if (contentType == null || !contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
+            return "perfil.foto.format.invalid";
+        }
+
+        String extensio = obtenirExtensioFoto(fotoPerfil.getOriginalFilename());
+        if (!EXTENSIONS_FOTO_PERMESES.contains(extensio)) {
+            return "perfil.foto.format.invalid";
+        }
+
+        return null;
+    }
+
+    public void actualitzarFotoPerfil(Long id, MultipartFile fotoPerfil) {
+        if (fotoPerfil == null || fotoPerfil.isEmpty()) {
+            return;
+        }
+
+        Usuari usuari = usuariRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("perfil.error.no.trobat"));
+
+        String extensio = obtenirExtensioFoto(fotoPerfil.getOriginalFilename());
+        String nomFitxer = "perfil-" + id + "-" + UUID.randomUUID() + "." + extensio;
+
+        try {
+            Path directori = Paths.get(perfilFotosPath).toAbsolutePath().normalize();
+            Files.createDirectories(directori);
+
+            Path desti = directori.resolve(nomFitxer).normalize();
+            if (!desti.startsWith(directori)) {
+                throw new IllegalStateException("perfil.foto.error.guardar");
+            }
+
+            try (InputStream input = fotoPerfil.getInputStream()) {
+                Files.copy(input, desti, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            usuari.setFotoPerfilNom(nomFitxer);
+            usuariRepository.save(usuari);
+        } catch (IOException ex) {
+            throw new IllegalStateException("perfil.foto.error.guardar", ex);
+        }
+    }
+
+    public Optional<Resource> carregarFotoPerfil(String nomFitxer) {
+        if (nomFitxer == null || nomFitxer.isBlank()) {
+            return Optional.empty();
+        }
+
+        try {
+            Path directori = Paths.get(perfilFotosPath).toAbsolutePath().normalize();
+            Path fitxer = directori.resolve(nomFitxer).normalize();
+
+            if (!fitxer.startsWith(directori) || !Files.exists(fitxer) || !Files.isReadable(fitxer)) {
+                return Optional.empty();
+            }
+
+            Resource resource = new UrlResource(fitxer.toUri());
+            return resource.exists() && resource.isReadable() ? Optional.of(resource) : Optional.empty();
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
     }
 
     private String validarCanviContrasenyaPerfil(PerfilUsuariDto perfilUsuariDto, Usuari usuariActual) {
@@ -248,7 +350,9 @@ public class UsuariService {
         perfilUsuariDto.setId(usuari.getId());
         perfilUsuariDto.setNom(usuari.getNom());
         perfilUsuariDto.setCognoms(usuari.getCognoms());
+        perfilUsuariDto.setNif(usuari.getNif());
         perfilUsuariDto.setEmail(usuari.getEmail());
+        perfilUsuariDto.setFotoPerfilNom(usuari.getFotoPerfilNom());
         return perfilUsuariDto;
     }
 
@@ -278,6 +382,20 @@ public class UsuariService {
         if (usuari.getContrasenya() != null && !usuari.getContrasenya().isBlank()) {
             usuari.setContrasenya(passwordEncoder.encode(usuari.getContrasenya()));
         }
+    }
+
+    private String obtenirExtensioFoto(String nomOriginal) {
+        if (nomOriginal == null || !nomOriginal.contains(".")) {
+            return "jpg";
+        }
+
+        return nomOriginal.substring(nomOriginal.lastIndexOf('.') + 1)
+                .trim()
+                .toLowerCase(Locale.ROOT);
+    }
+
+    private String normalitzarDocument(String document) {
+        return IdentificadorFiscalValidator.normalitzar(document);
     }
 
     private String normalitzarEmail(String email) {

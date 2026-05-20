@@ -1,6 +1,8 @@
 package cat.copernic.easytraza_mobile.ui.screen
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,11 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -25,7 +32,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.network.dto.MobileLotDto
 import cat.copernic.easytraza_mobile.ui.viewmodel.GestioLotsViewModel
+import java.util.Calendar
+import java.util.Locale
 
 private enum class LotAction {
     Iniciar,
@@ -47,9 +59,31 @@ fun GestioLotsScreen(
     val lots by viewModel.lots.collectAsState()
     val status by viewModel.status.collectAsState()
     val loading by viewModel.loading.collectAsState()
+    val codisLotDisponibles by viewModel.codisLotDisponibles.collectAsState()
+    val materiesDisponibles by viewModel.materiesDisponibles.collectAsState()
+    val filtreCodi by viewModel.filtreCodi.collectAsState()
+    val filtreMateria by viewModel.filtreMateria.collectAsState()
+    val filtreDataRecepcio by viewModel.filtreDataRecepcio.collectAsState()
+    val filtreEstat by viewModel.filtreEstat.collectAsState()
 
     val pendingLot = remember { mutableStateOf<MobileLotDto?>(null) }
     val pendingAction = remember { mutableStateOf<LotAction?>(null) }
+    val context = LocalContext.current
+    val calendari = remember { Calendar.getInstance() }
+
+    fun obrirSelectorData() {
+        DatePickerDialog(
+            context,
+            { _, any, mes, dia ->
+                viewModel.actualitzarFiltreDataRecepcio(
+                    String.format(Locale.ROOT, "%04d-%02d-%02d", any, mes + 1, dia)
+                )
+            },
+            calendari.get(Calendar.YEAR),
+            calendari.get(Calendar.MONTH),
+            calendari.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
 
     LaunchedEffect(Unit) {
         viewModel.carregarLots()
@@ -160,6 +194,109 @@ fun GestioLotsScreen(
             }
         }
 
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.lots_mobile_filters_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                FiltreDropdown(
+                    label = stringResource(R.string.lots_mobile_filter_code),
+                    selectedValue = filtreCodi,
+                    emptyLabel = stringResource(R.string.lots_mobile_filter_code_all),
+                    options = codisLotDisponibles,
+                    onSelected = viewModel::actualitzarFiltreCodi
+                )
+
+                FiltreDropdown(
+                    label = stringResource(R.string.lots_mobile_filter_material),
+                    selectedValue = filtreMateria,
+                    emptyLabel = stringResource(R.string.lots_mobile_filter_material_all),
+                    options = materiesDisponibles,
+                    onSelected = viewModel::actualitzarFiltreMateria
+                )
+
+                OutlinedTextField(
+                    value = filtreDataRecepcio,
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.lots_mobile_filter_date)) },
+                    supportingText = { Text(stringResource(R.string.lots_mobile_filter_date_help)) },
+                    trailingIcon = {
+                        IconButton(onClick = ::obrirSelectorData) {
+                            Text("📅")
+                        }
+                    }
+                )
+
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.lots_mobile_filter_status),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        EstatLotFilterChip(
+                            text = stringResource(R.string.lots_mobile_filter_all),
+                            selected = filtreEstat.isBlank(),
+                            onClick = { viewModel.actualitzarFiltreEstat("") },
+                            modifier = Modifier.weight(1f)
+                        )
+                        EstatLotFilterChip(
+                            text = stringResource(R.string.lots_mobile_status_stock),
+                            selected = filtreEstat == "EN_ESTOC",
+                            onClick = { viewModel.actualitzarFiltreEstat("EN_ESTOC") },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        EstatLotFilterChip(
+                            text = stringResource(R.string.lots_mobile_status_open),
+                            selected = filtreEstat == "OBERT",
+                            onClick = { viewModel.actualitzarFiltreEstat("OBERT") },
+                            modifier = Modifier.weight(1f)
+                        )
+                        EstatLotFilterChip(
+                            text = stringResource(R.string.lots_mobile_status_finished),
+                            selected = filtreEstat == "ACABAT",
+                            onClick = { viewModel.actualitzarFiltreEstat("ACABAT") },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick = viewModel::netejarFiltres,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text(stringResource(R.string.lots_mobile_filter_clear))
+                }
+            }
+        }
+
         Button(
             onClick = { viewModel.carregarLots() },
             modifier = Modifier.fillMaxWidth(),
@@ -215,6 +352,77 @@ fun GestioLotsScreen(
             )
         }
     }
+}
+
+@Composable
+private fun FiltreDropdown(
+    label: String,
+    selectedValue: String,
+    emptyLabel: String,
+    options: List<String>,
+    onSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = selectedValue.ifBlank { emptyLabel },
+            onValueChange = {},
+            readOnly = true,
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            label = { Text(label) },
+            trailingIcon = {
+                IconButton(onClick = { expanded = true }) {
+                    Text("⌄")
+                }
+            }
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            DropdownMenuItem(
+                text = { Text(emptyLabel) },
+                onClick = {
+                    onSelected("")
+                    expanded = false
+                }
+            )
+
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onSelected(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EstatLotFilterChip(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier,
+        label = {
+            Text(
+                text = text,
+                maxLines = 1
+            )
+        }
+    )
 }
 
 @Composable

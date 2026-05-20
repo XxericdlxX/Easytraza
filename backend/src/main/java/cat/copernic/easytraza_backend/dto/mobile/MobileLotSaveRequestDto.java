@@ -3,6 +3,7 @@ package cat.copernic.easytraza_backend.dto.mobile;
 public class MobileLotSaveRequestDto {
 
     private String codiLot;
+    private String codiMateriaPrimaOcr;
     private Double quantitat;
     private String materiaPrimaNom;
     private boolean crearMateriaPrimaSiNoExisteix;
@@ -16,6 +17,14 @@ public class MobileLotSaveRequestDto {
 
     public void setCodiLot(String codiLot) {
         this.codiLot = codiLot;
+    }
+
+    public String getCodiMateriaPrimaOcr() {
+        return codiMateriaPrimaOcr;
+    }
+
+    public void setCodiMateriaPrimaOcr(String codiMateriaPrimaOcr) {
+        this.codiMateriaPrimaOcr = codiMateriaPrimaOcr;
     }
 
     public Double getQuantitat() {

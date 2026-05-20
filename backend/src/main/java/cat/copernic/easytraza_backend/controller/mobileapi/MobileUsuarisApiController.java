@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/mobile-api/usuaris")
@@ -34,7 +35,21 @@ public class MobileUsuarisApiController {
         dto.setCognoms(usuari.getCognoms());
         dto.setEmail(usuari.getEmail());
         dto.setRol(usuari.getRol() != null ? usuari.getRol().name() : null);
+        dto.setFotoPerfilUrl(construirUrlFotoPerfil(usuari));
         return dto;
+    }
+
+    private String construirUrlFotoPerfil(Usuari usuari) {
+        String fotoPerfil = usuari.getFotoPerfilNom();
+        if (fotoPerfil == null || fotoPerfil.isBlank()) {
+            return null;
+        }
+
+        return ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/web/perfil/foto/{foto}")
+                .buildAndExpand(fotoPerfil)
+                .toUriString();
     }
 
     private String nomCompletSegur(Usuari usuari) {

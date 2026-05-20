@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <div class="actions revisar-ocr-lang-actions">
+                <div class="actions header-top-actions revisar-ocr-lang-actions">
                     <a th:href="@{/web/albarans-proveidor/ocr}"
                        class="btn btn-secondary"
                        th:text="#{albara.proveidor.ocr.tornar.processar}">
@@ -166,6 +166,9 @@
 
                     <input type="hidden"
                            th:field="*{lots[__${iterStat.index}__].id}">
+
+                    <input type="hidden"
+                           th:field="*{lots[__${iterStat.index}__].codiMateriaPrimaOcr}">
 
                     <div class="form-group">
                         <label th:for="${'codiLot-' + iterStat.index}">

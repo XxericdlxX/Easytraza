@@ -8,9 +8,7 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body>
-        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
-
-        <div class="page-with-nav profile-page">
+        <div class="page-standalone profile-page">
             <div class="container">
                 <div class="header-actions">
                     <div class="logo-title">
@@ -22,14 +20,32 @@
                             </p>
                         </div>
                     </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
                 <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
 
                 <div class="form-card profile-form-card">
-                    <form th:action="@{/web/perfil/actualitzar}" th:object="${perfil}" method="post" novalidate>
+                    <form th:action="@{/web/perfil/actualitzar}" th:object="${perfil}" method="post" enctype="multipart/form-data" novalidate>
                         <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{fotoPerfilNom}">
 
                         <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
 
@@ -49,6 +65,23 @@
                             <div class="field-error" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
                         </div>
 
+
+                        <div class="form-group">
+                            <label for="nif">
+                                <span th:text="#{perfil.nif}">DNI/NIF/NIE</span> <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nif" th:field="*{nif}">
+                            <div class="field-error" th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></div>
+                        </div>
+
+                        <div class="form-group profile-photo-group">
+                            <label for="fotoPerfil" th:text="#{perfil.foto}">Foto de perfil</label>
+                            <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/png,image/jpeg,image/webp">
+                            <p class="form-help" th:text="#{perfil.foto.ajuda}">Puja una imatge JPG, PNG o WEBP.</p>
+                            <div class="profile-photo-preview" th:if="${perfil.fotoPerfilNom != null and !#strings.isEmpty(perfil.fotoPerfilNom)}">
+                                <img th:src="@{/web/perfil/foto/{foto}(foto=${perfil.fotoPerfilNom})}" alt="Foto de perfil actual">
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="email">
                                 <span th:text="#{perfil.email}">Correu electrònic</span> <span class="required">*</span>
@@ -100,5 +133,21 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
     </body>
 </html>

@@ -30,6 +30,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.network.dto.MobileUsuariDto
 
@@ -150,20 +156,7 @@ fun UserSelectionScreen(
                                 .padding(18.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(58.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = obtenirInicials(user),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
+                            AvatarUsuari(user = user)
 
                             Text(
                                 text = obtenirNomVisible(user),
@@ -218,6 +211,58 @@ fun UserSelectionScreen(
     }
 }
 
+
+@Composable
+private fun AvatarUsuari(user: MobileUsuariDto) {
+    val fotoUrl = user.fotoPerfilUrl?.trim().orEmpty()
+    val esLogoEasyTraza = fotoUrl.endsWith("/superadmin-logo-easytraza.png", ignoreCase = true)
+            || fotoUrl.endsWith("superadmin-logo-easytraza.png", ignoreCase = true)
+
+    var fotoCarregada by remember(fotoUrl) { mutableStateOf(false) }
+    var fotoError by remember(fotoUrl) { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .size(58.dp)
+            .clip(CircleShape)
+            .background(
+                if (esLogoEasyTraza) {
+                    MaterialTheme.colorScheme.surface
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        if (!fotoCarregada || fotoError || fotoUrl.isBlank()) {
+            Text(
+                text = obtenirInicials(user),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = if (esLogoEasyTraza) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onPrimary
+                }
+            )
+        }
+
+        if (fotoUrl.isNotBlank() && !fotoError) {
+            AsyncImage(
+                model = fotoUrl,
+                contentDescription = null,
+                contentScale = if (esLogoEasyTraza) ContentScale.Fit else ContentScale.Crop,
+                onSuccess = { fotoCarregada = true },
+                onError = { fotoError = true },
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(if (esLogoEasyTraza) 8.dp else 0.dp)
+                    .clip(CircleShape)
+            )
+        }
+    }
+}
+
 @Composable
 private fun obtenirRolVisible(user: MobileUsuariDto): String {
     return when (user.rol?.uppercase()) {
@@ -241,7 +286,7 @@ private fun obtenirInicials(user: MobileUsuariDto): String {
     val parts = nomVisible.trim().split(Regex("\\s+"))
 
     if (parts.size == 1) {
-        return parts[0].take(2).uppercase()
+        return parts[0].take(3).uppercase()
     }
 
     return "${parts[0].take(1)}${parts[1].take(1)}".uppercase()

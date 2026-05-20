@@ -128,6 +128,14 @@
 
     <string name="lots_mobile_started">Lot iniciat correctament.</string>
     <string name="lots_mobile_finished">Lot finalitzat correctament.</string>
+    <string name="lots_mobile_filters_title">Filtrar lots</string>
+    <string name="lots_mobile_filter_code">Codi de lot</string>
+    <string name="lots_mobile_filter_material">Matèria primera</string>
+    <string name="lots_mobile_filter_date">Data de recepció</string>
+    <string name="lots_mobile_filter_date_help">Fes servir el format AAAA-MM-DD.</string>
+    <string name="lots_mobile_filter_status">Estat</string>
+    <string name="lots_mobile_filter_all">Tots</string>
+    <string name="lots_mobile_filter_clear">Netejar filtres</string>
     <string name="lots_mobile_action_error">No s’ha pogut completar l’operació sobre el lot.</string>
 
     <string name="mobile_user_loading">Carregant usuaris…</string>
@@ -136,4 +144,7 @@
     <string name="mobile_user_refresh_button">Actualitzar usuaris</string>
     <string name="mobile_user_role_admin">Administrador</string>
     <string name="mobile_user_role_operari">Operari</string>
+
+    <string name="lots_mobile_filter_code_all">Tots els codis de lot</string>
+    <string name="lots_mobile_filter_material_all">Totes les matèries primeres</string>
 </resources>

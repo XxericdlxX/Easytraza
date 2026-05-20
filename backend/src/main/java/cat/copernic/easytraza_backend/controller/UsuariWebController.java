@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/web/usuaris")
@@ -54,11 +55,26 @@ public class UsuariWebController {
     @PostMapping("/guardar")
     public String guardarUsuari(@Valid @ModelAttribute("usuari") UsuariDto usuariDto,
             BindingResult result,
+            @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil,
             Model model,
             RedirectAttributes redirectAttributes,
             Locale locale) {
 
         if (result.hasErrors()) {
+            return "usuaris/crear-usuaris";
+        }
+
+        if (fotoPerfil == null || fotoPerfil.isEmpty()) {
+            model.addAttribute(
+                    "errorFotoPerfil",
+                    messageSource.getMessage("usuaris.foto.obligatoria", null, locale)
+            );
+            return "usuaris/crear-usuaris";
+        }
+
+        String errorFoto = usuariService.validarFotoPerfil(fotoPerfil);
+        if (errorFoto != null) {
+            model.addAttribute("errorFotoPerfil", messageSource.getMessage(errorFoto, null, locale));
             return "usuaris/crear-usuaris";
         }
 
@@ -69,7 +85,16 @@ public class UsuariWebController {
         }
 
         Usuari usuari = usuariService.convertirDtoAEntity(usuariDto);
-        usuariService.save(usuari);
+
+        try {
+            usuariService.crearUsuariAmbFoto(usuari, fotoPerfil);
+        } catch (IllegalStateException ex) {
+            String clau = ex.getMessage() != null && !ex.getMessage().isBlank()
+                    ? ex.getMessage()
+                    : "perfil.foto.error.guardar";
+            model.addAttribute("errorFotoPerfil", messageSource.getMessage(clau, null, locale));
+            return "usuaris/crear-usuaris";
+        }
 
         redirectAttributes.addFlashAttribute(
                 "missatgeExit",

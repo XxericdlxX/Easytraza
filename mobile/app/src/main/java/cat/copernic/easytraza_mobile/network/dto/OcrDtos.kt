@@ -2,6 +2,7 @@ package cat.copernic.easytraza_mobile.network.dto
 
 data class OcrLotRespostaDto(
     val codiLot: String? = null,
+    val codiMateriaPrimaOcr: String? = null,
     val materiaPrima: String? = null,
     val quantitat: Double? = null
 )
@@ -21,6 +22,7 @@ data class OcrAlbaraResponseDto(
 
 data class MobileLotSaveRequestDto(
     val codiLot: String,
+    val codiMateriaPrimaOcr: String? = null,
     val quantitat: Double?,
     val materiaPrimaNom: String,
     val crearMateriaPrimaSiNoExisteix: Boolean

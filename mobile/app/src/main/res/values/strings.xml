@@ -128,6 +128,14 @@
 
     <string name="lots_mobile_started">Lote iniciado correctamente.</string>
     <string name="lots_mobile_finished">Lote finalizado correctamente.</string>
+    <string name="lots_mobile_filters_title">Filtrar lotes</string>
+    <string name="lots_mobile_filter_code">Código de lote</string>
+    <string name="lots_mobile_filter_material">Materia prima</string>
+    <string name="lots_mobile_filter_date">Fecha de recepción</string>
+    <string name="lots_mobile_filter_date_help">Usa el formato AAAA-MM-DD.</string>
+    <string name="lots_mobile_filter_status">Estado</string>
+    <string name="lots_mobile_filter_all">Todos</string>
+    <string name="lots_mobile_filter_clear">Limpiar filtros</string>
     <string name="lots_mobile_action_error">No se ha podido completar la operación sobre el lote.</string>
 
     <string name="mobile_user_loading">Cargando usuarios…</string>
@@ -136,4 +144,7 @@
     <string name="mobile_user_refresh_button">Actualizar usuarios</string>
     <string name="mobile_user_role_admin">Administrador</string>
     <string name="mobile_user_role_operari">Operario</string>
+
+    <string name="lots_mobile_filter_code_all">Todos los códigos de lote</string>
+    <string name="lots_mobile_filter_material_all">Todas las materias primas</string>
 </resources>

@@ -14,7 +14,7 @@
                     ADMINISTRACIÓN
                 </div>
 
-                <a th:href="@{/web/productes}">
+                <a th:if="${navUserAdmin}" th:href="@{/web/productes}">
                     <span class="leftnav-icon">🥖</span>
                     <span th:text="#{nav.productes}">Productos</span>
                 </a>
@@ -24,17 +24,17 @@
                     <span th:text="#{nav.usuaris}">Usuarios</span>
                 </a>
 
-                <a th:href="@{/web/proveidors}">
+                <a th:if="${navUserAdmin}" th:href="@{/web/proveidors}">
                     <span class="leftnav-icon">🚚</span>
                     <span th:text="#{nav.proveidors}">Proveedores</span>
                 </a>
 
-                <a th:href="@{/web/materies-primeres}">
+                <a th:if="${navUserAdmin}" th:href="@{/web/materies-primeres}">
                     <span class="leftnav-icon">🌾</span>
                     <span th:text="#{nav.materies}">Materias primas</span>
                 </a>
 
-                <a th:href="@{/web/clients}">
+                <a th:if="${navUserAdmin}" th:href="@{/web/clients}">
                     <span class="leftnav-icon">🤝</span>
                     <span th:text="#{nav.clients}">Clientes</span>
                 </a>
@@ -82,7 +82,14 @@
 
                 <div class="leftnav-user-panel" th:if="${navUserAuthenticated}">
                     <div class="leftnav-user">
-                        <div class="leftnav-user-avatar" th:text="${navUserInitials}">ET</div>
+                        <div class="leftnav-user-avatar"
+                             th:classappend="${navUserPhoto == 'superadmin-logo-easytraza.png'} ? ' leftnav-user-avatar-logo' : ''">
+                            <img th:if="${navUserPhoto != null and !#strings.isEmpty(navUserPhoto)}"
+                                 th:src="@{/web/perfil/foto/{foto}(foto=${navUserPhoto})}"
+                                 alt="Foto de perfil">
+                            <span th:if="${navUserPhoto == null or #strings.isEmpty(navUserPhoto)}"
+                                  th:text="${navUserInitials}">ET</span>
+                        </div>
                         <div class="leftnav-user-copy">
                             <div class="leftnav-user-name" th:text="${navUserName}">Eric Delgado</div>
                             <div class="leftnav-user-role" th:text="#{${'rol.' + navUserRole}}">Administrador</div>

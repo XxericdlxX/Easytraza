@@ -15,6 +15,9 @@ public class LotProveidor {
     @Column(name = "codi_lot", nullable = false, length = 100)
     private String codiLot;
 
+    @Column(name = "codi_materia_prima_ocr", length = 120)
+    private String codiMateriaPrimaOcr;
+
     @Column(nullable = false)
     private Double quantitat;
 
@@ -70,6 +73,14 @@ public class LotProveidor {
 
     public void setCodiLot(String codiLot) {
         this.codiLot = codiLot;
+    }
+
+    public String getCodiMateriaPrimaOcr() {
+        return codiMateriaPrimaOcr;
+    }
+
+    public void setCodiMateriaPrimaOcr(String codiMateriaPrimaOcr) {
+        this.codiMateriaPrimaOcr = codiMateriaPrimaOcr;
     }
 
     public Double getQuantitat() {

@@ -9,9 +9,7 @@
     </head>
 
     <body>
-        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
-
-        <div class="page-with-nav">
+        <div class="page-standalone">
             <div class="container">
                 <div class="list-header">
                     <div class="list-title-block">
@@ -33,11 +31,28 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/}"
-                       class="btn btn-secondary"
-                       th:text="#{accio.tornar}">
-                        Volver
-                    </a>
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+
+                        <a th:href="@{/}"
+                           class="btn btn-secondary"
+                           th:text="#{accio.tornar}">
+                            Volver
+                        </a>
+                    </div>
                 </div>
 
                 <div class="form-card" style="margin-bottom: 24px;">
@@ -182,5 +197,21 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
     </body>
 </html>

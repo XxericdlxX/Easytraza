@@ -116,6 +116,7 @@ public class OcrAlbaraMobileApiController {
                 }
 
                 String codiLot = netejar(lotRequest.getCodiLot());
+                String codiMateriaPrimaOcr = netejar(lotRequest.getCodiMateriaPrimaOcr());
                 String materiaNom = netejar(lotRequest.getMateriaPrimaNom());
 
                 if ((codiLot == null || codiLot.isBlank())
@@ -126,6 +127,7 @@ public class OcrAlbaraMobileApiController {
 
                 LotProveidorDto lot = new LotProveidorDto();
                 lot.setCodiLot(codiLot);
+                lot.setCodiMateriaPrimaOcr(codiMateriaPrimaOcr);
                 lot.setQuantitat(lotRequest.getQuantitat());
                 lot.setCrearMateriaPrimaSiNoExisteix(lotRequest.isCrearMateriaPrimaSiNoExisteix());
 

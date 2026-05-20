@@ -17,8 +17,28 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
 
     private val repository = IpPreferencesRepository(application.applicationContext)
 
+    private val _lotsComplets = MutableStateFlow<List<MobileLotDto>>(emptyList())
+
     private val _lots = MutableStateFlow<List<MobileLotDto>>(emptyList())
     val lots: StateFlow<List<MobileLotDto>> = _lots
+
+    private val _codisLotDisponibles = MutableStateFlow<List<String>>(emptyList())
+    val codisLotDisponibles: StateFlow<List<String>> = _codisLotDisponibles
+
+    private val _materiesDisponibles = MutableStateFlow<List<String>>(emptyList())
+    val materiesDisponibles: StateFlow<List<String>> = _materiesDisponibles
+
+    private val _filtreCodi = MutableStateFlow("")
+    val filtreCodi: StateFlow<String> = _filtreCodi
+
+    private val _filtreMateria = MutableStateFlow("")
+    val filtreMateria: StateFlow<String> = _filtreMateria
+
+    private val _filtreDataRecepcio = MutableStateFlow("")
+    val filtreDataRecepcio: StateFlow<String> = _filtreDataRecepcio
+
+    private val _filtreEstat = MutableStateFlow("")
+    val filtreEstat: StateFlow<String> = _filtreEstat
 
     private val _status = MutableStateFlow("")
     val status: StateFlow<String> = _status
@@ -40,9 +60,11 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
                 }
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-                _lots.value = api.llistarLots()
+                _lotsComplets.value = api.llistarLots()
+                actualitzarOpcionsFiltres()
+                aplicarFiltres()
 
-                if (_lots.value.isEmpty()) {
+                if (_lotsComplets.value.isEmpty()) {
                     _status.value = getApplication<Application>().getString(R.string.lots_mobile_empty)
                 }
 
@@ -54,6 +76,62 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
             } finally {
                 _loading.value = false
             }
+        }
+    }
+
+    fun actualitzarFiltreCodi(valor: String) {
+        _filtreCodi.value = valor
+        aplicarFiltres()
+    }
+
+    fun actualitzarFiltreMateria(valor: String) {
+        _filtreMateria.value = valor
+        aplicarFiltres()
+    }
+
+    fun actualitzarFiltreDataRecepcio(valor: String) {
+        _filtreDataRecepcio.value = valor
+        aplicarFiltres()
+    }
+
+    fun actualitzarFiltreEstat(valor: String) {
+        _filtreEstat.value = valor
+        aplicarFiltres()
+    }
+
+    fun netejarFiltres() {
+        _filtreCodi.value = ""
+        _filtreMateria.value = ""
+        _filtreDataRecepcio.value = ""
+        _filtreEstat.value = ""
+        aplicarFiltres()
+    }
+
+    private fun actualitzarOpcionsFiltres() {
+        _codisLotDisponibles.value = _lotsComplets.value
+            .mapNotNull { it.codiLot?.trim()?.takeIf { valor -> valor.isNotBlank() } }
+            .distinct()
+            .sortedWith(String.CASE_INSENSITIVE_ORDER)
+
+        _materiesDisponibles.value = _lotsComplets.value
+            .mapNotNull { it.materiaPrimaNom?.trim()?.takeIf { valor -> valor.isNotBlank() } }
+            .distinct()
+            .sortedWith(String.CASE_INSENSITIVE_ORDER)
+    }
+
+    private fun aplicarFiltres() {
+        val codi = _filtreCodi.value.trim()
+        val materia = _filtreMateria.value.trim()
+        val dataRecepcio = _filtreDataRecepcio.value.trim()
+        val estat = _filtreEstat.value.trim()
+
+        _lots.value = _lotsComplets.value.filter { lot ->
+            val coincideixCodi = codi.isBlank() || lot.codiLot.orEmpty().equals(codi, ignoreCase = true)
+            val coincideixMateria = materia.isBlank() || lot.materiaPrimaNom.orEmpty().equals(materia, ignoreCase = true)
+            val coincideixData = dataRecepcio.isBlank() || lot.dataRecepcio.orEmpty().equals(dataRecepcio, ignoreCase = true)
+            val coincideixEstat = estat.isBlank() || lot.estat.orEmpty().equals(estat, ignoreCase = true)
+
+            coincideixCodi && coincideixMateria && coincideixData && coincideixEstat
         }
     }
 

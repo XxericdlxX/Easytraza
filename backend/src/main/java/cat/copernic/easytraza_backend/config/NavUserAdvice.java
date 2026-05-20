@@ -28,6 +28,14 @@ public class NavUserAdvice {
         return obtenirInicials(navUserName());
     }
 
+    @ModelAttribute("navUserPhoto")
+    public String navUserPhoto() {
+        return obtenirUsuariAutenticat()
+                .map(Usuari::getFotoPerfilNom)
+                .filter(foto -> foto != null && !foto.isBlank())
+                .orElse("");
+    }
+
     @ModelAttribute("navUserEmail")
     public String navUserEmail() {
         return obtenirUsuariAutenticat()

@@ -3,6 +3,9 @@ package cat.copernic.easytraza_mobile.ui.viewmodel
 import android.app.Application
 import android.content.ContentResolver
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +31,7 @@ import java.util.Locale
 
 data class EditableLotUi(
     val codiLot: String = "",
+    val codiMateriaPrimaOcr: String = "",
     val quantitat: String = "",
     val materiaPrimaNom: String = "",
     val crearMateriaPrimaSiNoExisteix: Boolean = false
@@ -166,56 +170,17 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
                     return@launch
                 }
 
-                val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-                val requestBody = tempFile.asRequestBody(mimeType.toMediaTypeOrNull())
-                val part = MultipartBody.Part.createFormData("fitxer", tempFile.name, requestBody)
-
-                val resposta = api.analitzarAlbara(part)
-
-                omplirDesDeResposta(resposta)
-
-                _status.value = getApplication<Application>().getString(R.string.ocr_success)
-
-            } catch (ex: Exception) {
-                _status.value = NetworkErrorMapper.ocrError(
-                    getApplication(),
-                    ex
-                )
-            }
-        }
-    }
-
-    fun analitzarBitmap(bitmap: Bitmap) {
-        viewModelScope.launch {
-            try {
-                _saveCompleted.value = false
-                _status.value = getApplication<Application>().getString(R.string.ocr_processing_photo)
-
-                val savedIp = repository.serverIpFlow.first().trim()
-
-                if (savedIp.isBlank()) {
-                    _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
-                    return@launch
-                }
-
-                val tempFile = File(
-                    getApplication<Application>().cacheDir,
-                    "ocr_camera_${System.currentTimeMillis()}.jpg"
-                )
-
-                FileOutputStream(tempFile).use { output ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 95, output)
-                    output.flush()
-                }
-
-                if (!tempFile.exists() || tempFile.length() <= 0L) {
-                    _status.value = getApplication<Application>().getString(R.string.ocr_error_file)
-                    return@launch
-                }
+                val fitxerPreparat = prepararFitxerPerOcr(tempFile, mimeType)
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-                val requestBody = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val part = MultipartBody.Part.createFormData("fitxer", tempFile.name, requestBody)
+                val requestBody = fitxerPreparat.file.asRequestBody(
+                    fitxerPreparat.mimeType.toMediaTypeOrNull()
+                )
+                val part = MultipartBody.Part.createFormData(
+                    "fitxer",
+                    fitxerPreparat.file.name,
+                    requestBody
+                )
 
                 val resposta = api.analitzarAlbara(part)
 
@@ -290,6 +255,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             } else {
                 MobileLotSaveRequestDto(
                     codiLot = codi,
+                    codiMateriaPrimaOcr = lot.codiMateriaPrimaOcr.trim().ifBlank { null },
                     quantitat = quantitat,
                     materiaPrimaNom = materia,
                     crearMateriaPrimaSiNoExisteix = lot.crearMateriaPrimaSiNoExisteix
@@ -299,6 +265,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             listOf(
                 MobileLotSaveRequestDto(
                     codiLot = "",
+                    codiMateriaPrimaOcr = null,
                     quantitat = null,
                     materiaPrimaNom = "",
                     crearMateriaPrimaSiNoExisteix = false
@@ -319,6 +286,7 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
         val lotsMapejats = resposta.lots.map { lot ->
             EditableLotUi(
                 codiLot = lot.codiLot.orEmpty(),
+                codiMateriaPrimaOcr = lot.codiMateriaPrimaOcr.orEmpty(),
                 quantitat = lot.quantitat?.toString().orEmpty(),
                 materiaPrimaNom = lot.materiaPrima.orEmpty(),
                 crearMateriaPrimaSiNoExisteix = false
@@ -386,6 +354,85 @@ class RecepcioAlbaraViewModel(application: Application) : AndroidViewModel(appli
             3 if parts[0].length == 4 -> clean
             else -> ""
         }
+    }
+
+    private data class FitxerOcrPreparat(
+        val file: File,
+        val mimeType: String
+    )
+
+    private fun prepararFitxerPerOcr(file: File, mimeType: String): FitxerOcrPreparat {
+        if (!mimeType.startsWith("image/", ignoreCase = true)) {
+            return FitxerOcrPreparat(file, mimeType)
+        }
+
+        val orientacio = llegirOrientacioExif(file)
+        if (orientacio == ExifInterface.ORIENTATION_NORMAL ||
+            orientacio == ExifInterface.ORIENTATION_UNDEFINED
+        ) {
+            return FitxerOcrPreparat(file, mimeType)
+        }
+
+        val bitmapOriginal = BitmapFactory.decodeFile(file.absolutePath)
+            ?: return FitxerOcrPreparat(file, mimeType)
+
+        val bitmapNormalitzat = aplicarOrientacioExif(bitmapOriginal, orientacio)
+        if (bitmapNormalitzat === bitmapOriginal) {
+            return FitxerOcrPreparat(file, mimeType)
+        }
+
+        val fitxerNormalitzat = File(
+            getApplication<Application>().cacheDir,
+            "ocr_input_normalitzat_${System.currentTimeMillis()}.jpg"
+        )
+
+        return try {
+            FileOutputStream(fitxerNormalitzat).use { output ->
+                bitmapNormalitzat.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                output.flush()
+            }
+
+            FitxerOcrPreparat(fitxerNormalitzat, "image/jpeg")
+        } catch (_: Exception) {
+            FitxerOcrPreparat(file, mimeType)
+        } finally {
+            bitmapNormalitzat.recycle()
+            bitmapOriginal.recycle()
+        }
+    }
+
+    private fun llegirOrientacioExif(file: File): Int {
+        return try {
+            ExifInterface(file.absolutePath).getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_NORMAL
+            )
+        } catch (_: Exception) {
+            ExifInterface.ORIENTATION_NORMAL
+        }
+    }
+
+    private fun aplicarOrientacioExif(bitmap: Bitmap, orientacio: Int): Bitmap {
+        val matrix = Matrix()
+
+        when (orientacio) {
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.preScale(-1f, 1f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.preScale(1f, -1f)
+            ExifInterface.ORIENTATION_TRANSPOSE -> {
+                matrix.postRotate(90f)
+                matrix.preScale(-1f, 1f)
+            }
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            ExifInterface.ORIENTATION_TRANSVERSE -> {
+                matrix.postRotate(-90f)
+                matrix.preScale(-1f, 1f)
+            }
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+            else -> return bitmap
+        }
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     private fun copyUriToFile(contentResolver: ContentResolver, uri: Uri, file: File): Boolean {
