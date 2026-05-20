@@ -8,13 +8,21 @@
         <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
     </head>
     <body class="home-body">
-        <div class="home-language">
-            <a th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">
-                ES
-            </a>
-            <a th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">
-                CA
-            </a>
+        <div class="home-toolbar">
+            <div class="home-language">
+                <a th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">
+                    ES
+                </a>
+                <a th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">
+                    CA
+                </a>
+            </div>
+
+            <form th:action="@{/logout}" method="post" class="home-logout-form">
+                <button type="submit" class="btn btn-danger home-logout-btn" th:text="#{auth.logout.boto}">
+                    Cerrar sesión
+                </button>
+            </form>
         </div>
 
         <section class="home-hero">
@@ -23,7 +31,7 @@
         </section>
 
         <main class="home-content">
-            <section class="home-section">
+            <section class="home-section" th:if="${navUserAdmin}">
                 <h2 class="home-section-title" th:text="#{nav.section.administracio}">
                     ADMINISTRACIÓN
                 </h2>
