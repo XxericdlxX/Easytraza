@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{auth.acces.denegat.titol}">Acceso denegado</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body class="login-body">
+        <main class="login-page">
+            <section class="login-card">
+                <div class="login-brand">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="login-logo">
+                    <div>
+                        <h1 th:text="#{auth.acces.denegat.titol}">Acceso denegado</h1>
+                        <p th:text="#{auth.acces.denegat.subtitol}">No tienes permisos para consultar esta pantalla.</p>
+                    </div>
+                </div>
+
+                <div class="error-message" th:text="#{auth.acces.denegat.detall}">
+                    La URL solicitada está restringida para tu usuario.
+                </div>
+
+                <div class="login-submit-row">
+                    <a class="btn btn-primary login-submit" th:href="@{/}" th:text="#{auth.acces.denegat.tornar}">
+                        Volver al inicio
+                    </a>
+                    <div class="login-inline-locale" aria-label="Selector de idioma">
+                        <a class="locale-pill" th:href="@{/acces-denegat(lang='es')}" th:text="#{lang.es}">ES</a>
+                        <a class="locale-pill" th:href="@{/acces-denegat(lang='ca')}" th:text="#{lang.ca}">CA</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>
