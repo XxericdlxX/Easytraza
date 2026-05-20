@@ -255,12 +255,14 @@ public class OcrAlbaraService {
         if (conteAlguna(
                 text,
                 "JOSE NOVAU DIL",
-                "JOSE NOVAU DIT",
-                "JOSE NOVAU DI",
                 "NOVAU DIL",
+                "JOSE NOVAU DIT",
                 "NOVAU DIT",
+                "JOSE NOVAU DI",
                 "JOSENOVAUDIL",
+                "JOSENOVAUDIT",
                 "WWW JOSENOVAUDIL",
+                "WWW JOSENOVAUDIT",
                 "47183180"
         )) {
             return "JOSE NOVAU DIL";
@@ -409,7 +411,16 @@ public class OcrAlbaraService {
             lot = primerMatch(textOcr, "\\b(020[- ]1722[- ]2611[35])\\b", null);
         }
 
-        afegirSiValid(lots, crearLot(normalitzarLot(lot), "L GRANEL CAT.A-RUBIO", 60.0));
+        String codiMateria = normalitzarCodiMateriaNullable(
+                primerMatch(textOcr, "\\b(600[\\.\\- ]?20[\\.\\- ]?1)\\b", null)
+        );
+
+        afegirSiValid(lots, crearLot(
+                normalitzarLot(lot),
+                codiMateria,
+                "L GRANEL CAT.A-RUBIO",
+                60.0
+        ));
         return lots;
     }
 
@@ -429,6 +440,7 @@ public class OcrAlbaraService {
             if (matcher.find()) {
                 afegirSiValid(lots, crearLot(
                         normalitzarLot(matcher.group(3)),
+                        normalitzarCodiMateriaNullable(matcher.group(1)),
                         netejarMateria(matcher.group(2)),
                         convertirQuantitatOcr(matcher.group(4))
                 ));
@@ -475,7 +487,7 @@ public class OcrAlbaraService {
                 continue;
             }
 
-            String codiProducte = normalitzarPartCodi(matcher.group(1));
+            String codiProducte = normalitzarCodiMateriaNullable(matcher.group(1));
             String materia = netejarMateriaArtipas(matcher.group(2));
             Double quantitatEntregada = convertirNumero(matcher.group(4));
 
@@ -483,8 +495,11 @@ public class OcrAlbaraService {
                 continue;
             }
 
+            String codiLotFallback = unirCodiLotFallback(base, codiProducte);
+
             afegirSiValid(lots, crearLot(
-                    "ARTIPAS-" + base + "-" + codiProducte,
+                    codiLotFallback,
+                    codiProducte,
                     materia,
                     quantitatEntregada
             ));
@@ -510,20 +525,26 @@ public class OcrAlbaraService {
     private List<OcrLotRespostaDto> extreureLotsJoseNovau(String textOcr, String numeroAlbara) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String base = normalitzarPartCodi(numeroAlbara != null ? numeroAlbara : "012436");
+        List<String> linies = obtenirLiniesNormalitzades(textOcr);
 
-        for (String linia : obtenirLiniesNormalitzades(textOcr)) {
+        for (int i = 0; i < linies.size(); i++) {
+            String linia = linies.get(i);
+
             if (esLiniaSoroll(linia)) {
                 continue;
             }
 
+            String bloc = construirBlocArticle(linies, i);
+
             Matcher ambLot = Pattern.compile(
                     "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s*LOT\\s*([A-Z0-9\\-\\/]{4,})\\s+(\\d+[\\.,]\\d+|\\d+)\\b.*$",
                     Pattern.CASE_INSENSITIVE
-            ).matcher(linia);
+            ).matcher(bloc);
 
             if (ambLot.find()) {
                 afegirSiValid(lots, crearLot(
                         normalitzarLot(ambLot.group(3)),
+                        normalitzarCodiMateriaNullable(ambLot.group(1)),
                         netejarMateria(ambLot.group(2)),
                         convertirNumero(ambLot.group(4))
                 ));
@@ -533,13 +554,14 @@ public class OcrAlbaraService {
             Matcher senseLot = Pattern.compile(
                     "^([A-Z0-9\\-]{2,})\\s+(.+?)\\s+(\\d+[\\.,]\\d+)\\s+\\d+[\\.,]\\d+\\s+\\d+[\\.,]\\d+.*$",
                     Pattern.CASE_INSENSITIVE
-            ).matcher(linia);
+            ).matcher(bloc);
 
             if (senseLot.find()) {
-                String codi = normalitzarPartCodi(senseLot.group(1));
+                String codiMateria = normalitzarCodiMateriaNullable(senseLot.group(1));
 
                 afegirSiValid(lots, crearLot(
-                        "JOSE-NOVAU-" + base + "-" + codi,
+                        unirCodiLotFallback(base, codiMateria),
+                        codiMateria,
                         netejarMateria(senseLot.group(2)),
                         convertirNumero(senseLot.group(3))
                 ));
@@ -552,6 +574,7 @@ public class OcrAlbaraService {
     private List<OcrLotRespostaDto> extreureLotsTalComPinta(String textOcr) {
         List<OcrLotRespostaDto> lots = new ArrayList<>();
         String materiaPendent = null;
+        String codiMateriaPendent = null;
         Double quantitatPendent = null;
 
         for (String linia : obtenirLiniesNormalitzades(textOcr)) {
@@ -561,18 +584,21 @@ public class OcrAlbaraService {
 
             if (linia.contains("AMBAR B-90")) {
                 materiaPendent = "AMBAR B-90 Hojaldre 20 kg";
+                codiMateriaPendent = extreureCodiMateriaIniciLinia(linia);
                 quantitatPendent = 1.0;
                 continue;
             }
 
             if (linia.contains("SAINT AUVENT")) {
                 materiaPendent = "Saint Auvent croissant 10 kg";
+                codiMateriaPendent = extreureCodiMateriaIniciLinia(linia);
                 quantitatPendent = 2.0;
                 continue;
             }
 
             if (linia.contains("LLARD DUR") || linia.contains("LIARD DUR")) {
                 materiaPendent = "Llard dur 15 kg - LABORA";
+                codiMateriaPendent = extreureCodiMateriaIniciLinia(linia);
                 quantitatPendent = 2.0;
                 continue;
             }
@@ -587,11 +613,13 @@ public class OcrAlbaraService {
 
                 afegirSiValid(lots, crearLot(
                         normalitzarLot(matcher.group(2)),
+                        codiMateriaPendent,
                         materiaPendent,
                         quantitat != null && quantitat > 0 ? quantitat : quantitatPendent
                 ));
 
                 materiaPendent = null;
+                codiMateriaPendent = null;
                 quantitatPendent = null;
             }
         }
@@ -621,6 +649,7 @@ public class OcrAlbaraService {
             if (matcher.find()) {
                 afegirSiValid(lots, crearLot(
                         normalitzarLot(matcher.group(4)),
+                        normalitzarCodiMateriaNullable(matcher.group(1)),
                         netejarMateria(matcher.group(2)),
                         convertirNumero(matcher.group(5))
                 ));
@@ -645,6 +674,7 @@ public class OcrAlbaraService {
 
             afegirSiValid(lots, crearLot(
                     lot,
+                    extreureCodiMateriaProducte(producte),
                     extreureMateriaProducte(producte),
                     extreureQuantitatDesDeLinia(producte)
             ));
@@ -729,9 +759,79 @@ public class OcrAlbaraService {
         return esLotValid(lot) ? lot : null;
     }
 
+    private String construirBlocArticle(List<String> linies, int index) {
+        String bloc = linies.get(index);
+
+        for (int i = index + 1; i < linies.size() && i <= index + 2; i++) {
+            String candidata = linies.get(i);
+
+            if (esLiniaSoroll(candidata) || semblaIniciArticle(candidata)) {
+                break;
+            }
+
+            bloc += " " + candidata;
+        }
+
+        return bloc;
+    }
+
+    private boolean semblaIniciArticle(String linia) {
+        return linia != null && linia.matches("^[A-Z0-9\\-\\[\\]]{2,}\\s+.*");
+    }
+
+    private String extreureCodiMateriaProducte(String linia) {
+        return extreureCodiMateriaIniciLinia(normalitzarPerComparar(linia));
+    }
+
+    private String extreureCodiMateriaIniciLinia(String linia) {
+        if (linia == null || linia.isBlank()) {
+            return null;
+        }
+
+        Matcher entreClaudators = Pattern.compile("^\\s*\\[([A-Z0-9\\-]{2,20})\\]", Pattern.CASE_INSENSITIVE).matcher(linia);
+        if (entreClaudators.find()) {
+            return normalitzarCodiMateriaNullable(entreClaudators.group(1));
+        }
+
+        Matcher inici = Pattern.compile("^\\s*([A-Z0-9][A-Z0-9\\.\\-]{1,20})\\s+", Pattern.CASE_INSENSITIVE).matcher(linia);
+        if (inici.find()) {
+            String candidat = inici.group(1);
+            if (candidat.matches(".*\\d.*") || candidat.contains("-")) {
+                return normalitzarCodiMateriaNullable(candidat);
+            }
+        }
+
+        return null;
+    }
+
+    private String normalitzarCodiMateriaNullable(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+
+        String codi = normalitzarPartCodi(valor);
+        return "SENSE-CODI".equals(codi) ? null : codi;
+    }
+
+    private String unirCodiLotFallback(String base, String codiMateria) {
+        String prefix = normalitzarPartCodi(base);
+        String codi = normalitzarCodiMateriaNullable(codiMateria);
+
+        if (codi == null || codi.isBlank()) {
+            return prefix;
+        }
+
+        return prefix + "-" + codi;
+    }
+
     private OcrLotRespostaDto crearLot(String codiLot, String materiaPrima, Double quantitat) {
+        return crearLot(codiLot, null, materiaPrima, quantitat);
+    }
+
+    private OcrLotRespostaDto crearLot(String codiLot, String codiMateriaPrimaOcr, String materiaPrima, Double quantitat) {
         OcrLotRespostaDto dto = new OcrLotRespostaDto();
         dto.setCodiLot(codiLot);
+        dto.setCodiMateriaPrimaOcr(normalitzarCodiMateriaNullable(codiMateriaPrimaOcr));
         dto.setMateriaPrima(materiaPrima);
         dto.setQuantitat(quantitat);
         return dto;
