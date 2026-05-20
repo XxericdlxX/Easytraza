@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -30,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuariService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.usuaris");
 
     private static final String SUPERADMIN_EMAIL = "superadmin@easytraza.local";
 
@@ -81,14 +85,22 @@ public class UsuariService {
     }
 
     public Usuari save(Usuari usuari) {
-        codificarContrasenyaSiCal(usuari);
-        return usuariRepository.save(usuari);
+        try {
+            codificarContrasenyaSiCal(usuari);
+            Usuari usuariDesat = usuariRepository.save(usuari);
+            LOGGER.info("Usuari desat correctament amb id {}.", usuariDesat.getId());
+            return usuariDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un usuari.", ex);
+            throw ex;
+        }
     }
 
     @Transactional
     public Usuari crearUsuariAmbFoto(Usuari usuari, MultipartFile fotoPerfil) {
         Usuari usuariGuardat = save(usuari);
         actualitzarFotoPerfil(usuariGuardat.getId(), fotoPerfil);
+        LOGGER.info("Usuari creat amb foto de perfil amb id {}.", usuariGuardat.getId());
         return usuariGuardat;
     }
 
@@ -102,7 +114,14 @@ public class UsuariService {
                 if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
                     usuari.setContrasenya(passwordEncoder.encode(usuariActualitzat.getContrasenya()));
                 }
-                return usuariRepository.save(usuari);
+                try {
+                    Usuari usuariDesat = usuariRepository.save(usuari);
+                    LOGGER.info("Usuari protegit actualitzat amb id {}.", usuariDesat.getId());
+                    return usuariDesat;
+                } catch (RuntimeException ex) {
+                    LOGGER.error("Error en actualitzar l'usuari protegit.", ex);
+                    throw ex;
+                }
             }
 
             usuari.setNom(usuariActualitzat.getNom());
@@ -114,8 +133,16 @@ public class UsuariService {
                 usuari.setContrasenya(passwordEncoder.encode(usuariActualitzat.getContrasenya()));
             }
 
-            return usuariRepository.save(usuari);
+            try {
+                Usuari usuariDesat = usuariRepository.save(usuari);
+                LOGGER.info("Usuari actualitzat correctament amb id {}.", usuariDesat.getId());
+                return usuariDesat;
+            } catch (RuntimeException ex) {
+                LOGGER.error("Error en actualitzar un usuari.", ex);
+                throw ex;
+            }
         } else {
+            LOGGER.warn("No s'ha pogut actualitzar l'usuari perquè no existeix.");
             return null;
         }
     }
@@ -124,11 +151,18 @@ public class UsuariService {
         Optional<Usuari> usuari = usuariRepository.findById(id);
 
         if (usuari.isPresent() && isProtectedUser(usuari.get())) {
+            LOGGER.warn("S'ha bloquejat l'eliminació de l'usuari protegit amb id {}.", id);
             return false;
         }
 
-        usuariRepository.deleteById(id);
-        return true;
+        try {
+            usuariRepository.deleteById(id);
+            LOGGER.info("Usuari eliminat correctament amb id {}.", id);
+            return true;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar l'usuari amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     public boolean isProtectedUser(Usuari usuari) {
@@ -144,6 +178,7 @@ public class UsuariService {
     public String validarPerfilUsuari(PerfilUsuariDto perfilUsuariDto, Long idActual) {
         String nifNormalitzat = normalitzarDocument(perfilUsuariDto.getNif());
         if (!IdentificadorFiscalValidator.esDocumentFiscalValid(nifNormalitzat)) {
+            LOGGER.warn("Validació de perfil rebutjada per document fiscal no vàlid.");
             return "perfil.nif.invalid";
         }
 
@@ -152,20 +187,24 @@ public class UsuariService {
         Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
         if (usuariAmbMateixEmail.isPresent()
                 && (idActual == null || !usuariAmbMateixEmail.get().getId().equals(idActual))) {
+            LOGGER.warn("Validació de perfil rebutjada per correu duplicat.");
             return "perfil.error.email.duplicat";
         }
 
         Optional<Proveidor> proveidorAmbMateixEmail = proveidorRepository.findByEmailIgnoreCase(emailNormalitzat);
         if (proveidorAmbMateixEmail.isPresent()) {
+            LOGGER.warn("Validació de perfil rebutjada perquè el correu pertany a un proveïdor.");
             return "perfil.error.email.proveidor";
         }
 
         if (idActual == null) {
+            LOGGER.warn("Validació de perfil rebutjada perquè no s'ha trobat l'usuari.");
             return "perfil.error.no.trobat";
         }
 
         Optional<Usuari> usuariActual = usuariRepository.findById(idActual);
         if (usuariActual.isEmpty()) {
+            LOGGER.warn("Validació de perfil rebutjada perquè l'usuari actual no existeix.");
             return "perfil.error.no.trobat";
         }
 
@@ -179,22 +218,26 @@ public class UsuariService {
 
         if (usuariAmbMateixEmail.isPresent()) {
             if (idActual == null || !usuariAmbMateixEmail.get().getId().equals(idActual)) {
+                LOGGER.warn("Validació d'usuari rebutjada per correu duplicat.");
                 return "usuaris.error.email.duplicat";
             }
         }
 
         Optional<Proveidor> proveidorAmbMateixEmail = proveidorRepository.findByEmailIgnoreCase(emailNormalitzat);
         if (proveidorAmbMateixEmail.isPresent()) {
+            LOGGER.warn("Validació d'usuari rebutjada perquè el correu pertany a un proveïdor.");
             return "usuaris.error.email.proveidor";
         }
 
         if (idActual == null && (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank())) {
+            LOGGER.warn("Validació d'usuari rebutjada perquè falta la contrasenya inicial.");
             return "usuaris.contrasenya.obligatoria";
         }
 
         if (usuariDto.getRol() == Rol.ADMIN) {
             if (idActual == null) {
                 if (usuariDto.getContrasenya() == null || usuariDto.getContrasenya().isBlank()) {
+                    LOGGER.warn("Validació d'usuari ADMIN rebutjada perquè falta contrasenya.");
                     return "usuaris.admin.contrasenya.obligatoria";
                 }
             } else {
@@ -205,6 +248,7 @@ public class UsuariService {
                     boolean contrasenyaActualBuida = contrasenyaActual == null || contrasenyaActual.isBlank();
 
                     if (novaContrasenyaBuida && contrasenyaActualBuida) {
+                        LOGGER.warn("Validació d'usuari ADMIN rebutjada perquè falta contrasenya.");
                         return "usuaris.admin.contrasenya.obligatoria";
                     }
                 }
@@ -217,6 +261,7 @@ public class UsuariService {
     public Usuari actualitzarPerfil(Long id, PerfilUsuariDto perfilUsuariDto) {
         Optional<Usuari> usuariExistent = usuariRepository.findById(id);
         if (usuariExistent.isEmpty()) {
+            LOGGER.warn("No s'ha pogut actualitzar el perfil perquè l'usuari no existeix.");
             return null;
         }
 
@@ -233,7 +278,14 @@ public class UsuariService {
             usuari.setContrasenya(passwordEncoder.encode(perfilUsuariDto.getNovaContrasenya()));
         }
 
-        return usuariRepository.save(usuari);
+        try {
+            Usuari usuariDesat = usuariRepository.save(usuari);
+            LOGGER.info("Perfil d'usuari actualitzat correctament amb id {}.", usuariDesat.getId());
+            return usuariDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en actualitzar el perfil d'usuari amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     public String validarFotoPerfil(MultipartFile fotoPerfil) {
@@ -243,11 +295,13 @@ public class UsuariService {
 
         String contentType = fotoPerfil.getContentType();
         if (contentType == null || !contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
+            LOGGER.warn("Foto de perfil rebutjada per tipus de contingut no vàlid.");
             return "perfil.foto.format.invalid";
         }
 
         String extensio = obtenirExtensioFoto(fotoPerfil.getOriginalFilename());
         if (!EXTENSIONS_FOTO_PERMESES.contains(extensio)) {
+            LOGGER.warn("Foto de perfil rebutjada per extensió no vàlida.");
             return "perfil.foto.format.invalid";
         }
 
@@ -280,7 +334,9 @@ public class UsuariService {
 
             usuari.setFotoPerfilNom(nomFitxer);
             usuariRepository.save(usuari);
+            LOGGER.info("Foto de perfil actualitzada per a l'usuari amb id {}.", id);
         } catch (IOException ex) {
+            LOGGER.error("Error en desar la foto de perfil de l'usuari amb id {}.", id, ex);
             throw new IllegalStateException("perfil.foto.error.guardar", ex);
         }
     }
