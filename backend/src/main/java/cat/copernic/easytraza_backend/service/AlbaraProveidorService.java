@@ -186,6 +186,7 @@ public class AlbaraProveidorService {
             LotProveidor lot = new LotProveidor();
             lot.setId(lotDto.getId());
             lot.setCodiLot(normalitzar(lotDto.getCodiLot()));
+            lot.setCodiMateriaPrimaOcr(normalitzarNullable(lotDto.getCodiMateriaPrimaOcr()));
             lot.setQuantitat(lotDto.getQuantitat());
             lot.setEstat(EstatLot.EN_ESTOC);
             lot.setDataObertura(null);
@@ -228,6 +229,7 @@ public class AlbaraProveidorService {
                 LotProveidorDto lotDto = new LotProveidorDto();
                 lotDto.setId(lot.getId());
                 lotDto.setCodiLot(lot.getCodiLot());
+                lotDto.setCodiMateriaPrimaOcr(lot.getCodiMateriaPrimaOcr());
                 lotDto.setQuantitat(lot.getQuantitat());
 
                 if (lot.getMateriaPrima() != null) {
@@ -466,6 +468,11 @@ public class AlbaraProveidorService {
 
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
+    }
+
+    private String normalitzarNullable(String text) {
+        String normalitzat = normalitzar(text);
+        return normalitzat == null || normalitzat.isBlank() ? null : normalitzat;
     }
 
     private String normalitzarTextCerca(String text) {
