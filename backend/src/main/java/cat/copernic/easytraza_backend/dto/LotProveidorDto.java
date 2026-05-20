@@ -22,6 +22,8 @@ public class LotProveidorDto {
 
     private String materiaPrimaNomDetectada;
 
+    private String codiMateriaPrimaOcr;
+
     private boolean crearMateriaPrimaSiNoExisteix;
 
     public LotProveidorDto() {
@@ -65,6 +67,14 @@ public class LotProveidorDto {
 
     public void setMateriaPrimaNomDetectada(String materiaPrimaNomDetectada) {
         this.materiaPrimaNomDetectada = materiaPrimaNomDetectada;
+    }
+
+    public String getCodiMateriaPrimaOcr() {
+        return codiMateriaPrimaOcr;
+    }
+
+    public void setCodiMateriaPrimaOcr(String codiMateriaPrimaOcr) {
+        this.codiMateriaPrimaOcr = codiMateriaPrimaOcr;
     }
 
     public boolean isCrearMateriaPrimaSiNoExisteix() {
