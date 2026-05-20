@@ -23,7 +23,7 @@ public class MobileUsuarisApiController {
         return usuariService.findAll().stream()
                 .sorted(Comparator
                         .comparing(this::nomCompletSegur, String.CASE_INSENSITIVE_ORDER)
-                        .thenComparing(Usuari::getEmail, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                        .thenComparing(Usuari::getId, Comparator.nullsLast(Long::compareTo)))
                 .map(this::toDto)
                 .toList();
     }
@@ -33,7 +33,6 @@ public class MobileUsuarisApiController {
         dto.setId(usuari.getId());
         dto.setNom(usuari.getNom());
         dto.setCognoms(usuari.getCognoms());
-        dto.setEmail(usuari.getEmail());
         dto.setRol(usuari.getRol() != null ? usuari.getRol().name() : null);
         dto.setFotoPerfilUrl(construirUrlFotoPerfil(usuari));
         return dto;
@@ -61,6 +60,6 @@ public class MobileUsuarisApiController {
             return complet;
         }
 
-        return usuari.getEmail() != null ? usuari.getEmail() : "";
+        return usuari.getId() != null ? "Usuari " + usuari.getId() : "";
     }
 }
