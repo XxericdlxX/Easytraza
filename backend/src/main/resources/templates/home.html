@@ -29,7 +29,7 @@
                 </h2>
 
                 <div class="home-modules home-modules-admin">
-                    <a th:href="@{/web/productes}" class="home-card products-card">
+                    <a th:if="${navUserAdmin}" th:href="@{/web/productes}" class="home-card products-card">
                         <div class="home-card-image">🥖</div>
                         <div class="home-card-title" th:text="#{nav.productes}">Productos</div>
                     </a>
@@ -39,17 +39,17 @@
                         <div class="home-card-title" th:text="#{nav.usuaris}">Usuarios</div>
                     </a>
 
-                    <a th:href="@{/web/proveidors}" class="home-card providers-card">
+                    <a th:if="${navUserAdmin}" th:href="@{/web/proveidors}" class="home-card providers-card">
                         <div class="home-card-image">🚚</div>
                         <div class="home-card-title" th:text="#{nav.proveidors}">Proveedores</div>
                     </a>
 
-                    <a th:href="@{/web/materies-primeres}" class="home-card materials-card">
+                    <a th:if="${navUserAdmin}" th:href="@{/web/materies-primeres}" class="home-card materials-card">
                         <div class="home-card-image">🌾</div>
                         <div class="home-card-title" th:text="#{nav.materies}">Materias primas</div>
                     </a>
 
-                    <a th:href="@{/web/clients}" class="home-card clients-card">
+                    <a th:if="${navUserAdmin}" th:href="@{/web/clients}" class="home-card clients-card">
                         <div class="home-card-image">🤝</div>
                         <div class="home-card-title" th:text="#{nav.clients}">Clientes</div>
                     </a>
