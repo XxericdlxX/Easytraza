@@ -96,11 +96,15 @@
 
                 <div class="lots-table-wrapper"
                      th:if="${albara != null && albara.lots != null && !#lists.isEmpty(albara.lots)}">
-                    <table class="lots-table">
+                    <table class="lots-table albara-proveidor-detail-table">
                         <thead>
                             <tr>
                                 <th class="lot-col-codi" th:text="#{lot.proveidor.codi}">
                                     Código/identificador de lote
+                                </th>
+
+                                <th class="lot-col-codi-materia-ocr" th:text="#{lot.proveidor.codi.materia.ocr}">
+                                    Código de materia prima
                                 </th>
 
                                 <th class="lot-col-quantitat" th:text="#{lot.proveidor.quantitat}">
@@ -133,6 +137,11 @@
                             <tr th:each="lot : ${albara.lots}">
                                 <td class="lot-col-codi" th:text="${lot.codiLot}">
                                     LOT-001
+                                </td>
+
+                                <td class="lot-col-codi-materia-ocr"
+                                    th:text="${lot.codiMateriaPrimaOcr != null && !#strings.isEmpty(lot.codiMateriaPrimaOcr) ? lot.codiMateriaPrimaOcr : '-'}">
+                                    ART-001
                                 </td>
 
                                 <td class="lot-col-quantitat" th:text="${lot.quantitat != null ? lot.quantitat : '-'}">
