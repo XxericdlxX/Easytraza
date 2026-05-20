@@ -9,12 +9,16 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LotProveidorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.lots");
 
     @Autowired
     private LotProveidorRepository lotProveidorRepository;
@@ -62,17 +66,23 @@ public class LotProveidorService {
     @Transactional
     public LotProveidor iniciarLot(Long id) {
         LotProveidor lot = lotProveidorRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("lots.error.no.trobat"));
+                .orElseThrow(() -> {
+                    LOGGER.warn("No s'ha pogut iniciar el lot perquè no existeix. Id: {}", id);
+                    return new IllegalArgumentException("lots.error.no.trobat");
+                });
 
         if (lot.getEstat() == EstatLot.ACABAT) {
+            LOGGER.warn("Intent d'iniciar un lot acabat. Id: {}", id);
             throw new IllegalStateException("lots.error.iniciar.acabat");
         }
 
         if (lot.getEstat() == EstatLot.OBERT) {
+            LOGGER.warn("Intent d'iniciar un lot que ja estava obert. Id: {}", id);
             throw new IllegalStateException("lots.error.iniciar.obert");
         }
 
         if (lot.getMateriaPrima() == null || lot.getMateriaPrima().getId() == null) {
+            LOGGER.warn("No s'ha pogut iniciar el lot perquè no té matèria primera associada. Id: {}", id);
             throw new IllegalStateException("lots.error.materia.no.trobada");
         }
 
@@ -89,6 +99,7 @@ public class LotProveidorService {
                 lotObert.setEstat(EstatLot.ACABAT);
                 lotObert.setDataAcabament(avui);
                 lotProveidorRepository.save(lotObert);
+                LOGGER.info("Lot obert anterior finalitzat automàticament. Id: {}", lotObert.getId());
             }
         }
 
@@ -96,26 +107,45 @@ public class LotProveidorService {
         lot.setDataObertura(avui);
         lot.setDataAcabament(null);
 
-        return lotProveidorRepository.save(lot);
+        try {
+            LotProveidor lotDesat = lotProveidorRepository.save(lot);
+            LOGGER.info("Lot iniciat correctament. Id: {}", lotDesat.getId());
+            return lotDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en iniciar el lot amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     @Transactional
     public LotProveidor finalitzarLot(Long id) {
         LotProveidor lot = lotProveidorRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("lots.error.no.trobat"));
+                .orElseThrow(() -> {
+                    LOGGER.warn("No s'ha pogut finalitzar el lot perquè no existeix. Id: {}", id);
+                    return new IllegalArgumentException("lots.error.no.trobat");
+                });
 
         if (lot.getEstat() == EstatLot.EN_ESTOC) {
+            LOGGER.warn("Intent de finalitzar un lot que encara està en estoc. Id: {}", id);
             throw new IllegalStateException("lots.error.finalitzar.estoc");
         }
 
         if (lot.getEstat() == EstatLot.ACABAT) {
+            LOGGER.warn("Intent de finalitzar un lot que ja estava acabat. Id: {}", id);
             throw new IllegalStateException("lots.error.finalitzar.acabat");
         }
 
         lot.setEstat(EstatLot.ACABAT);
         lot.setDataAcabament(LocalDate.now());
 
-        return lotProveidorRepository.save(lot);
+        try {
+            LotProveidor lotDesat = lotProveidorRepository.save(lot);
+            LOGGER.info("Lot finalitzat correctament. Id: {}", lotDesat.getId());
+            return lotDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en finalitzar el lot amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     private List<LotProveidor> ordenarLots(List<LotProveidor> lots, String sortField, String sortDir) {
