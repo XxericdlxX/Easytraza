@@ -6,11 +6,14 @@ import androidx.lifecycle.viewModelScope
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
 import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
-import cat.copernic.easytraza_mobile.network.RetrofitClient
+import cat.copernic.easytraza_mobile.domain.usecase.config.GetServerIpUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.lot.FinalitzarLotUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.lot.GetLotsUseCase
+import cat.copernic.easytraza_mobile.domain.usecase.lot.IniciarLotUseCase
 import cat.copernic.easytraza_mobile.network.dto.MobileLotDto
+import retrofit2.Response
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
@@ -19,6 +22,10 @@ import kotlinx.coroutines.launch
 class GestioLotsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = IpPreferencesRepository(application.applicationContext)
+    private val getServerIpUseCase = GetServerIpUseCase(repository)
+    private val getLotsUseCase = GetLotsUseCase()
+    private val iniciarLotUseCase = IniciarLotUseCase()
+    private val finalitzarLotUseCase = FinalitzarLotUseCase()
 
     private val _lotsComplets = MutableStateFlow<List<MobileLotDto>>(emptyList())
 
@@ -58,15 +65,14 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
                 _loading.value = true
                 _status.value = ""
 
-                val savedIp = repository.serverIpFlow.first().trim()
+                val savedIp = getServerIpUseCase()
 
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
                     return@launch
                 }
 
-                val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-                _lotsComplets.value = api.llistarLots()
+                _lotsComplets.value = getLotsUseCase(savedIp)
                 actualitzarOpcionsFiltres()
                 aplicarFiltres()
 
@@ -174,7 +180,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         executarAccioLot(
             id = id,
             missatgeExit = getApplication<Application>().getString(R.string.lots_mobile_started),
-            accio = { api, lotId -> api.iniciarLot(lotId) }
+            accio = { lotId -> iniciarLotUseCase(getServerIpUseCase(), lotId) }
         )
     }
 
@@ -186,7 +192,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         executarAccioLot(
             id = id,
             missatgeExit = getApplication<Application>().getString(R.string.lots_mobile_finished),
-            accio = { api, lotId -> api.finalitzarLot(lotId) }
+            accio = { lotId -> finalitzarLotUseCase(getServerIpUseCase(), lotId) }
         )
     }
 
@@ -199,22 +205,21 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     private fun executarAccioLot(
         id: Long,
         missatgeExit: String,
-        accio: suspend (cat.copernic.easytraza_mobile.network.BackendApiService, Long) -> retrofit2.Response<MobileLotDto>
+        accio: suspend (Long) -> Response<MobileLotDto>
     ) {
         viewModelScope.launch {
             try {
                 _loading.value = true
                 _status.value = ""
 
-                val savedIp = repository.serverIpFlow.first().trim()
+                val savedIp = getServerIpUseCase()
 
                 if (savedIp.isBlank()) {
                     _status.value = getApplication<Application>().getString(R.string.ocr_error_no_ip)
                     return@launch
                 }
 
-                val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
-                val response = accio(api, id)
+                val response = accio(id)
 
                 if (response.isSuccessful) {
                     _status.value = missatgeExit
