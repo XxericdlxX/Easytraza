@@ -82,7 +82,8 @@
 
                 <div class="leftnav-user-panel" th:if="${navUserAuthenticated}">
                     <div class="leftnav-user">
-                        <div class="leftnav-user-avatar">
+                        <div class="leftnav-user-avatar"
+                             th:classappend="${navUserPhoto == 'superadmin-logo-easytraza.png'} ? ' leftnav-user-avatar-logo' : ''">
                             <img th:if="${navUserPhoto != null and !#strings.isEmpty(navUserPhoto)}"
                                  th:src="@{/web/perfil/foto/{foto}(foto=${navUserPhoto})}"
                                  alt="Foto de perfil">
