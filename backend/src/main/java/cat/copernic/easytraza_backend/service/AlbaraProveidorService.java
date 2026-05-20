@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AlbaraProveidorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.albarans.proveidor");
 
     @Autowired
     private AlbaraProveidorRepository albaraProveidorRepository;
@@ -74,8 +78,15 @@ public class AlbaraProveidorService {
     }
 
     public AlbaraProveidor save(AlbaraProveidor albaraProveidor) {
-        prepararLots(albaraProveidor);
-        return albaraProveidorRepository.save(albaraProveidor);
+        try {
+            prepararLots(albaraProveidor);
+            AlbaraProveidor albaraDesat = albaraProveidorRepository.save(albaraProveidor);
+            LOGGER.info("Albarà de proveïdor desat correctament amb id {}.", albaraDesat.getId());
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un albarà de proveïdor.", ex);
+            throw ex;
+        }
     }
 
     @Transactional
@@ -83,6 +94,7 @@ public class AlbaraProveidorService {
         Optional<AlbaraProveidor> existentOpt = albaraProveidorRepository.findById(id);
 
         if (existentOpt.isEmpty()) {
+            LOGGER.warn("No s'ha pogut actualitzar l'albarà de proveïdor perquè no existeix. Id: {}", id);
             return null;
         }
 
@@ -107,8 +119,15 @@ public class AlbaraProveidorService {
             existent.getLots().add(lot);
         }
 
-        prepararLots(existent);
-        return albaraProveidorRepository.saveAndFlush(existent);
+        try {
+            prepararLots(existent);
+            AlbaraProveidor albaraDesat = albaraProveidorRepository.saveAndFlush(existent);
+            LOGGER.info("Albarà de proveïdor actualitzat correctament amb id {}.", albaraDesat.getId());
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en actualitzar l'albarà de proveïdor amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     @Transactional
@@ -116,6 +135,7 @@ public class AlbaraProveidorService {
         AlbaraProveidor albara = albaraProveidorRepository.findById(id).orElse(null);
 
         if (albara == null) {
+            LOGGER.warn("No s'ha pogut eliminar l'albarà de proveïdor perquè no existeix. Id: {}", id);
             throw new IllegalArgumentException("albara.proveidor.error.no.trobat");
         }
 
@@ -126,15 +146,23 @@ public class AlbaraProveidorService {
                     || "INICIAT".equals(lot.getEstat().name())));
 
             if (teLotsActius) {
+                LOGGER.warn("S'ha bloquejat l'eliminació de l'albarà de proveïdor perquè té lots actius. Id: {}", id);
                 throw new IllegalStateException("albara.proveidor.error.eliminar.lots.iniciats");
             }
         }
 
-        albaraProveidorRepository.delete(albara);
+        try {
+            albaraProveidorRepository.delete(albara);
+            LOGGER.info("Albarà de proveïdor eliminat correctament amb id {}.", id);
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar l'albarà de proveïdor amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     public String validarAlbara(AlbaraProveidorDto dto, Long idActual) {
         if (dto.getDataRecepcio() == null) {
+            LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè falta la data de recepció.");
             return "albara.proveidor.data.obligatoria";
         }
 
@@ -142,11 +170,13 @@ public class AlbaraProveidorService {
 
         Proveidor proveidor = obtenirOCrearProveidor(dto);
         if (proveidor == null) {
+            LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè el proveïdor no existeix.");
             return "albara.proveidor.error.proveidor.no.trobat";
         }
 
         List<LotProveidorDto> lotsValids = obtenirLotsValids(dto);
         if (lotsValids.isEmpty()) {
+            LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè no conté lots vàlids.");
             return "albara.proveidor.lots.obligatori";
         }
 
@@ -155,6 +185,7 @@ public class AlbaraProveidorService {
         for (LotProveidorDto lotDto : lotsValids) {
             String errorLot = validarLot(lotDto, proveidor.getCif(), dto.getDataRecepcio(), idActual, lotsRevisats);
             if (errorLot != null) {
+                LOGGER.warn("Validació d'albarà de proveïdor rebutjada per un error de lot: {}", errorLot);
                 return errorLot;
             }
         }
