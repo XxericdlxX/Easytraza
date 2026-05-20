@@ -10,4 +10,9 @@ public class AuthWebController {
     public String mostrarLogin() {
         return "auth/login";
     }
+
+    @GetMapping("/acces-denegat")
+    public String mostrarAccesDenegat() {
+        return "auth/acces-denegat";
+    }
 }
