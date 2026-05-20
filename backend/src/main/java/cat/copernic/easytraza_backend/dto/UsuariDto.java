@@ -25,6 +25,10 @@ public class UsuariDto {
     @NotNull(message = "{usuaris.rol.obligatori}")
     private Rol rol;
 
+    @NotBlank(message = "{usuaris.nif.obligatori}")
+    @Size(max = 20, message = "{usuaris.nif.max}")
+    private String nif;
+
     @NotBlank(message = "{usuaris.email.obligatori}")
     @Email(message = "{usuaris.email.invalid}")
     @Pattern(
@@ -49,14 +53,16 @@ public class UsuariDto {
      * @param nom paràmetre necessari per a l'operació.
      * @param cognoms paràmetre necessari per a l'operació.
      * @param rol paràmetre necessari per a l'operació.
+     * @param nif paràmetre necessari per a l'operació.
      * @param email paràmetre necessari per a l'operació.
      * @param contrasenya paràmetre necessari per a l'operació.
      */
-    public UsuariDto(Long id, String nom, String cognoms, Rol rol, String email, String contrasenya) {
+    public UsuariDto(Long id, String nom, String cognoms, Rol rol, String nif, String email, String contrasenya) {
         this.id = id;
         this.nom = nom;
         this.cognoms = cognoms;
         this.rol = rol;
+        this.nif = nif;
         this.email = email;
         this.contrasenya = contrasenya;
     }
@@ -131,6 +137,24 @@ public class UsuariDto {
      */
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    /**
+     * Executa l'operació `getNif`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
+    public String getNif() {
+        return nif;
+    }
+
+    /**
+     * Executa l'operació `setNif`.
+     *
+     * @param nif paràmetre necessari per a l'operació.
+     */
+    public void setNif(String nif) {
+        this.nif = nif;
     }
 
     /**

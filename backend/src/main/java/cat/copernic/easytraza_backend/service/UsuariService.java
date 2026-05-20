@@ -176,6 +176,7 @@ public class UsuariService {
             usuari.setNom(usuariActualitzat.getNom());
             usuari.setCognoms(usuariActualitzat.getCognoms());
             usuari.setRol(usuariActualitzat.getRol());
+            usuari.setNif(normalitzarDocument(usuariActualitzat.getNif()));
             usuari.setEmail(usuari.getEmail());
 
             if (usuariActualitzat.getContrasenya() != null && !usuariActualitzat.getContrasenya().isBlank()) {
@@ -293,6 +294,12 @@ public class UsuariService {
      * @return resultat obtingut després d'executar l'operació.
      */
     public String validarUsuari(UsuariDto usuariDto, Long idActual) {
+        String nifNormalitzat = normalitzarDocument(usuariDto.getNif());
+        if (!IdentificadorFiscalValidator.esDocumentFiscalValid(nifNormalitzat)) {
+            LOGGER.warn("Validació d'usuari rebutjada per document fiscal no vàlid.");
+            return "usuaris.nif.invalid";
+        }
+
         String emailNormalitzat = normalitzarEmail(usuariDto.getEmail());
 
         Optional<Usuari> usuariAmbMateixEmail = usuariRepository.findByEmailIgnoreCase(emailNormalitzat);
@@ -354,11 +361,11 @@ public class UsuariService {
         }
 
         Usuari usuari = usuariExistent.get();
-        usuari.setNom(normalitzarText(perfilUsuariDto.getNom()));
-        usuari.setCognoms(normalitzarText(perfilUsuariDto.getCognoms()));
-        usuari.setNif(normalitzarDocument(perfilUsuariDto.getNif()));
 
         if (!isProtectedUser(usuari)) {
+            usuari.setNom(normalitzarText(perfilUsuariDto.getNom()));
+            usuari.setCognoms(normalitzarText(perfilUsuariDto.getCognoms()));
+            usuari.setNif(normalitzarDocument(perfilUsuariDto.getNif()));
             usuari.setEmail(normalitzarEmail(perfilUsuariDto.getEmail()));
         }
 
@@ -555,6 +562,7 @@ public class UsuariService {
         usuari.setNom(normalitzarText(usuariDto.getNom()));
         usuari.setCognoms(normalitzarText(usuariDto.getCognoms()));
         usuari.setRol(usuariDto.getRol());
+        usuari.setNif(normalitzarDocument(usuariDto.getNif()));
         usuari.setEmail(normalitzarEmail(usuariDto.getEmail()));
         usuari.setContrasenya(usuariDto.getContrasenya());
         return usuari;
@@ -572,6 +580,7 @@ public class UsuariService {
         usuariDto.setNom(usuari.getNom());
         usuariDto.setCognoms(usuari.getCognoms());
         usuariDto.setRol(usuari.getRol());
+        usuariDto.setNif(usuari.getNif());
         usuariDto.setEmail(usuari.getEmail());
         usuariDto.setContrasenya("");
         return usuariDto;

@@ -64,8 +64,10 @@ public class PerfilWebController {
         }
 
         Usuari usuari = usuariAutenticat.get();
+        boolean perfilProtegit = usuariService.isProtectedUser(usuari);
         model.addAttribute("perfil", usuariService.convertirEntityAPerfilDto(usuari));
-        model.addAttribute("perfilEmailBloquejat", usuariService.isProtectedUser(usuari));
+        model.addAttribute("perfilEmailBloquejat", perfilProtegit);
+        model.addAttribute("perfilDadesBloquejades", perfilProtegit);
         model.addAttribute("currentPath", "/web/perfil");
         return "perfil/editar-perfil";
     }
@@ -99,7 +101,9 @@ public class PerfilWebController {
         }
 
         Usuari usuariActual = usuariAutenticat.get();
-        model.addAttribute("perfilEmailBloquejat", usuariService.isProtectedUser(usuariActual));
+        boolean perfilProtegit = usuariService.isProtectedUser(usuariActual);
+        model.addAttribute("perfilEmailBloquejat", perfilProtegit);
+        model.addAttribute("perfilDadesBloquejades", perfilProtegit);
         model.addAttribute("currentPath", "/web/perfil");
 
         if (result.hasErrors()) {
