@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servei `MateriaPrimaService` del projecte EasyTraza.
+ */
 @Service
 public class MateriaPrimaService {
 
@@ -18,14 +21,32 @@ public class MateriaPrimaService {
     @Autowired
     private MateriaPrimaRepository materiaPrimaRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<MateriaPrima> findAll() {
         return materiaPrimaRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<MateriaPrima> findById(Long id) {
         return materiaPrimaRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @param descripcio paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<MateriaPrima> buscar(String nom, String descripcio) {
         String nomNormalitzat = normalitzarTextCerca(nom);
         String descripcioNormalitzada = normalitzarTextCerca(descripcio);
@@ -36,6 +57,12 @@ public class MateriaPrimaService {
         );
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param materiaPrima paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public MateriaPrima save(MateriaPrima materiaPrima) {
         try {
             MateriaPrima materiaDesada = materiaPrimaRepository.save(materiaPrima);
@@ -47,6 +74,13 @@ public class MateriaPrimaService {
         }
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param materiaPrimaActualitzada paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public MateriaPrima update(Long id, MateriaPrima materiaPrimaActualitzada) {
         Optional<MateriaPrima> materiaPrimaExistent = materiaPrimaRepository.findById(id);
 
@@ -68,6 +102,11 @@ public class MateriaPrimaService {
         }
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     */
     public void deleteById(Long id) {
         try {
             materiaPrimaRepository.deleteById(id);
@@ -78,6 +117,13 @@ public class MateriaPrimaService {
         }
     }
 
+    /**
+     * Executa l'operació `validarMateriaPrima`.
+     *
+     * @param materiaPrimaDto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarMateriaPrima(MateriaPrimaDto materiaPrimaDto, Long idActual) {
         Optional<MateriaPrima> materiaAmbMateixNom = materiaPrimaRepository.findByNomIgnoreCase(
                 normalitzarText(materiaPrimaDto.getNom())
@@ -93,6 +139,12 @@ public class MateriaPrimaService {
         return null;
     }
 
+    /**
+     * Executa l'operació `convertirDtoAEntity`.
+     *
+     * @param materiaPrimaDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public MateriaPrima convertirDtoAEntity(MateriaPrimaDto materiaPrimaDto) {
         MateriaPrima materiaPrima = new MateriaPrima();
         materiaPrima.setId(materiaPrimaDto.getId());
@@ -101,6 +153,12 @@ public class MateriaPrimaService {
         return materiaPrima;
     }
 
+    /**
+     * Executa l'operació `convertirEntityADto`.
+     *
+     * @param materiaPrima paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public MateriaPrimaDto convertirEntityADto(MateriaPrima materiaPrima) {
         MateriaPrimaDto materiaPrimaDto = new MateriaPrimaDto();
         materiaPrimaDto.setId(materiaPrima.getId());
@@ -109,10 +167,22 @@ public class MateriaPrimaService {
         return materiaPrimaDto;
     }
 
+    /**
+     * Executa l'operació `normalitzarText`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarText(String text) {
         return text == null ? null : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }

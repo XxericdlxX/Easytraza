@@ -30,6 +30,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Servei `AlbaraClientService` del projecte EasyTraza.
+ */
 @Service
 public class AlbaraClientService {
 
@@ -50,14 +53,33 @@ public class AlbaraClientService {
     @Autowired
     private LotProveidorRepository lotProveidorRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<AlbaraClient> findAll() {
         return albaraClientRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<AlbaraClient> findById(Long id) {
         return albaraClientRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param clientNif paràmetre necessari per a l'operació.
+     * @param dataProduccio paràmetre necessari per a l'operació.
+     * @param estat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<AlbaraClient> buscar(String clientNif, LocalDate dataProduccio, EstatAlbaraClient estat) {
         String nifNormalitzat = normalitzarTextCerca(clientNif);
 
@@ -99,6 +121,12 @@ public class AlbaraClientService {
         return albaraClientRepository.findByEstat(estat);
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param albaraClient paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraClient save(AlbaraClient albaraClient) {
         try {
             prepararLinies(albaraClient);
@@ -111,6 +139,13 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param albaraActualitzat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public AlbaraClient update(Long id, AlbaraClient albaraActualitzat) {
         Optional<AlbaraClient> existentOpt = albaraClientRepository.findById(id);
@@ -150,6 +185,11 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     */
     public void deleteById(Long id) {
         Optional<AlbaraClient> albaraOpt = albaraClientRepository.findById(id);
 
@@ -166,6 +206,12 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `marcarComLliurat`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public AlbaraClient marcarComLliurat(Long id) {
         AlbaraClient albara = albaraClientRepository.findById(id)
@@ -195,6 +241,13 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `validarAlbara`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarAlbara(AlbaraClientDto dto, Long idActual) {
         if (dto.getDataProduccio() == null) {
             LOGGER.warn("Validació d'albarà de client rebutjada perquè falta la data de producció.");
@@ -252,6 +305,12 @@ public class AlbaraClientService {
         return null;
     }
 
+    /**
+     * Executa l'operació `convertirDtoAEntity`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraClient convertirDtoAEntity(AlbaraClientDto dto) {
         Client client = clientRepository.findById(normalitzarDocument(dto.getClientNif())).orElse(null);
         Usuari usuariLoguejat = obtenirUsuariLoguejat();
@@ -285,6 +344,12 @@ public class AlbaraClientService {
         return albara;
     }
 
+    /**
+     * Executa l'operació `convertirEntityADto`.
+     *
+     * @param entity paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraClientDto convertirEntityADto(AlbaraClient entity) {
         AlbaraClientDto dto = new AlbaraClientDto();
         dto.setId(entity.getId());
@@ -325,6 +390,11 @@ public class AlbaraClientService {
         return dto;
     }
 
+    /**
+     * Executa l'operació `assegurarMinimUnaLinia`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     */
     public void assegurarMinimUnaLinia(AlbaraClientDto dto) {
         if (dto.getLinies() == null) {
             dto.setLinies(new ArrayList<>());
@@ -335,6 +405,11 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `prepararLinies`.
+     *
+     * @param albara paràmetre necessari per a l'operació.
+     */
     private void prepararLinies(AlbaraClient albara) {
         List<LotProveidor> lotsOberts = obtenirLotsOberts();
         int numeroLotIntern = 1;
@@ -355,14 +430,30 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `existeixLotObert`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean existeixLotObert() {
         return !obtenirLotsOberts().isEmpty();
     }
 
+    /**
+     * Executa l'operació `obtenirLotsOberts`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<LotProveidor> obtenirLotsOberts() {
         return lotProveidorRepository.findByEstat(EstatLot.OBERT);
     }
 
+    /**
+     * Executa l'operació `obtenirLiniesValides`.
+     *
+     * @param linies paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<LiniaClientDto> obtenirLiniesValides(List<LiniaClientDto> linies) {
         List<LiniaClientDto> valides = new ArrayList<>();
 
@@ -390,6 +481,11 @@ public class AlbaraClientService {
         return valides;
     }
 
+    /**
+     * Executa l'operació `validarEditable`.
+     *
+     * @param albara paràmetre necessari per a l'operació.
+     */
     private void validarEditable(AlbaraClient albara) {
         if (albara.getEstat() == EstatAlbaraClient.LLIURAT) {
             LOGGER.warn("S'ha bloquejat la modificació d'un albarà de client lliurat. Id: {}", albara.getId());
@@ -397,6 +493,11 @@ public class AlbaraClientService {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariLoguejat`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Usuari obtenirUsuariLoguejat() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -411,10 +512,22 @@ public class AlbaraClientService {
         return null;
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String document) {
         if (document == null) {
             return null;

@@ -19,6 +19,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `AlbaraClientWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/albarans-client")
 public class AlbaraClientWebController {
@@ -35,6 +38,15 @@ public class AlbaraClientWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistar`.
+     *
+     * @param clientNif paràmetre necessari per a l'operació.
+     * @param dataProduccio paràmetre necessari per a l'operació.
+     * @param estat paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistar(
             @RequestParam(required = false) String clientNif,
@@ -53,6 +65,15 @@ public class AlbaraClientWebController {
         return "albarans_client/llistar-albarans-client";
     }
 
+    /**
+     * Executa l'operació `veureDetall`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/veure/{id}")
     public String veureDetall(@PathVariable Long id,
             Model model,
@@ -75,6 +96,12 @@ public class AlbaraClientWebController {
         return "albarans_client/veure-albara-client";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariCrear`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String mostrarFormulariCrear(Model model) {
         AlbaraClientDto dto = new AlbaraClientDto();
@@ -88,6 +115,15 @@ public class AlbaraClientWebController {
         return "albarans_client/crear-albara-client";
     }
 
+    /**
+     * Executa l'operació `guardar`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute("albara") AlbaraClientDto dto,
             Model model,
@@ -116,6 +152,15 @@ public class AlbaraClientWebController {
         return "redirect:/web/albarans-client";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariEditar`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{id}")
     public String mostrarFormulariEditar(@PathVariable Long id,
             Model model,
@@ -147,6 +192,16 @@ public class AlbaraClientWebController {
         return "albarans_client/editar-albara-client";
     }
 
+    /**
+     * Executa l'operació `actualitzar`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param dto paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{id}")
     public String actualitzar(@PathVariable Long id,
             @ModelAttribute("albara") AlbaraClientDto dto,
@@ -176,6 +231,14 @@ public class AlbaraClientWebController {
         return "redirect:/web/albarans-client";
     }
 
+    /**
+     * Executa l'operació `marcarComLliurat`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/lliurar/{id}")
     public String marcarComLliurat(@PathVariable Long id,
             RedirectAttributes redirectAttributes,
@@ -197,6 +260,14 @@ public class AlbaraClientWebController {
         return "redirect:/web/albarans-client/veure/" + id;
     }
 
+    /**
+     * Executa l'operació `eliminar`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id,
             RedirectAttributes redirectAttributes,
@@ -228,6 +299,11 @@ public class AlbaraClientWebController {
         return "redirect:/web/albarans-client";
     }
 
+    /**
+     * Executa l'operació `carregarDadesFormulari`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     */
     private void carregarDadesFormulari(Model model) {
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("productes", producteRepository.findAll());

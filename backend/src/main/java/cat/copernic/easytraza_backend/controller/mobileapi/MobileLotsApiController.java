@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controlador de l’API mobile `MobileLotsApiController` del projecte EasyTraza.
+ */
 @RestController
 @RequestMapping("/mobile-api/lots")
 public class MobileLotsApiController {
@@ -24,6 +27,11 @@ public class MobileLotsApiController {
     @Autowired
     private LotProveidorService lotProveidorService;
 
+    /**
+     * Executa l'operació `llistarLots`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public List<MobileLotDto> llistarLots() {
         return lotProveidorService.findAll().stream()
@@ -34,18 +42,36 @@ public class MobileLotsApiController {
                 .toList();
     }
 
+    /**
+     * Executa l'operació `iniciarLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/{id}/iniciar")
     public ResponseEntity<MobileLotDto> iniciarLot(@PathVariable Long id) {
         LotProveidor lot = lotProveidorService.iniciarLot(id);
         return ResponseEntity.ok(toDto(lot));
     }
 
+    /**
+     * Executa l'operació `finalitzarLot`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/{id}/finalitzar")
     public ResponseEntity<MobileLotDto> finalitzarLot(@PathVariable Long id) {
         LotProveidor lot = lotProveidorService.finalitzarLot(id);
         return ResponseEntity.ok(toDto(lot));
     }
 
+    /**
+     * Executa l'operació `toDto`.
+     *
+     * @param lot paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private MobileLotDto toDto(LotProveidor lot) {
         MobileLotDto dto = new MobileLotDto();
 
@@ -85,6 +111,12 @@ public class MobileLotsApiController {
         return dto;
     }
 
+    /**
+     * Executa l'operació `obtenirDataRecepcioSegura`.
+     *
+     * @param lot paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private LocalDate obtenirDataRecepcioSegura(LotProveidor lot) {
         if (lot.getAlbaraProveidor() != null && lot.getAlbaraProveidor().getDataRecepcio() != null) {
             return lot.getAlbaraProveidor().getDataRecepcio();

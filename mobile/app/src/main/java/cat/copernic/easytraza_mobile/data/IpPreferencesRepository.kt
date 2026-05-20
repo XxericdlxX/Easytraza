@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore by preferencesDataStore(name = "easytraza_settings")
 
+/**
+ * Component de dades `IpPreferencesRepository` de l'aplicació mobile d'EasyTraza.
+ */
 class IpPreferencesRepository(private val context: Context) {
 
     companion object {
@@ -20,6 +23,10 @@ class IpPreferencesRepository(private val context: Context) {
         preferences[SERVER_IP_KEY] ?: "10.0.2.2"
     }
 
+    /**
+     * Executa l'operació `saveServerIp`.
+     * @param ip paràmetre necessari per a l'operació.
+     */
     suspend fun saveServerIp(ip: String) {
         context.dataStore.edit { preferences ->
             preferences[SERVER_IP_KEY] = ip

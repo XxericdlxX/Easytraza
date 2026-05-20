@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Controlador `UsuariWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/usuaris")
 public class UsuariWebController {
@@ -27,6 +30,16 @@ public class UsuariWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistarUsuaris`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @param cognoms paràmetre necessari per a l'operació.
+     * @param email paràmetre necessari per a l'operació.
+     * @param rol paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistarUsuaris(
             @RequestParam(required = false) String nom,
@@ -46,12 +59,29 @@ public class UsuariWebController {
         return "usuaris/llistar-usuaris";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariCrearUsuari`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String mostrarFormulariCrearUsuari(Model model) {
         model.addAttribute("usuari", new UsuariDto());
         return "usuaris/crear-usuaris";
     }
 
+    /**
+     * Executa l'operació `guardarUsuari`.
+     *
+     * @param usuariDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param fotoPerfil paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardarUsuari(@Valid @ModelAttribute("usuari") UsuariDto usuariDto,
             BindingResult result,
@@ -104,6 +134,15 @@ public class UsuariWebController {
         return "redirect:/web/usuaris";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariEditarUsuari`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{id}")
     public String mostrarFormulariEditarUsuari(@PathVariable Long id,
             Model model,
@@ -126,6 +165,17 @@ public class UsuariWebController {
         }
     }
 
+    /**
+     * Executa l'operació `actualitzarUsuari`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param usuariDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{id}")
     public String actualitzarUsuari(@PathVariable Long id,
             @Valid @ModelAttribute("usuari") UsuariDto usuariDto,
@@ -159,6 +209,14 @@ public class UsuariWebController {
         return "redirect:/web/usuaris";
     }
 
+    /**
+     * Executa l'operació `eliminarUsuari`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminarUsuari(@PathVariable Long id,
             RedirectAttributes redirectAttributes,

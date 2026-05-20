@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+/**
+ * Controlador de l’API mobile `MobileUsuarisApiController` del projecte
+ * EasyTraza.
+ */
 @RestController
 @RequestMapping("/mobile-api/usuaris")
 public class MobileUsuarisApiController {
@@ -18,6 +22,11 @@ public class MobileUsuarisApiController {
     @Autowired
     private UsuariService usuariService;
 
+    /**
+     * Executa l'operació `llistarUsuarisIdentificables`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public List<MobileUsuariDto> llistarUsuarisIdentificables() {
         return usuariService.findAll().stream()
@@ -28,6 +37,12 @@ public class MobileUsuarisApiController {
                 .toList();
     }
 
+    /**
+     * Executa l'operació `toDto`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private MobileUsuariDto toDto(Usuari usuari) {
         MobileUsuariDto dto = new MobileUsuariDto();
         dto.setId(usuari.getId());
@@ -38,6 +53,12 @@ public class MobileUsuarisApiController {
         return dto;
     }
 
+    /**
+     * Executa l'operació `construirUrlFotoPerfil`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String construirUrlFotoPerfil(Usuari usuari) {
         String fotoPerfil = usuari.getFotoPerfilNom();
         if (fotoPerfil == null || fotoPerfil.isBlank()) {
@@ -51,6 +72,12 @@ public class MobileUsuarisApiController {
                 .toUriString();
     }
 
+    /**
+     * Executa l'operació `nomCompletSegur`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String nomCompletSegur(Usuari usuari) {
         String nom = usuari.getNom() != null ? usuari.getNom().trim() : "";
         String cognoms = usuari.getCognoms() != null ? usuari.getCognoms().trim() : "";

@@ -10,12 +10,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+/**
+ * Configuració `NavUserAdvice` del projecte EasyTraza.
+ */
 @ControllerAdvice
 public class NavUserAdvice {
 
     @Autowired
     private UsuariRepository usuariRepository;
 
+    /**
+     * Executa l'operació `navUserName`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserName")
     public String navUserName() {
         return obtenirUsuariAutenticat()
@@ -23,11 +31,21 @@ public class NavUserAdvice {
                 .orElseGet(this::obtenirPrincipalVisible);
     }
 
+    /**
+     * Executa l'operació `navUserInitials`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserInitials")
     public String navUserInitials() {
         return obtenirInicials(navUserName());
     }
 
+    /**
+     * Executa l'operació `navUserPhoto`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserPhoto")
     public String navUserPhoto() {
         return obtenirUsuariAutenticat()
@@ -36,6 +54,11 @@ public class NavUserAdvice {
                 .orElse("");
     }
 
+    /**
+     * Executa l'operació `navUserEmail`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserEmail")
     public String navUserEmail() {
         return obtenirUsuariAutenticat()
@@ -44,6 +67,11 @@ public class NavUserAdvice {
                 .orElseGet(this::obtenirPrincipalVisible);
     }
 
+    /**
+     * Executa l'operació `navUserRole`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserRole")
     public String navUserRole() {
         return obtenirUsuariAutenticat()
@@ -52,16 +80,31 @@ public class NavUserAdvice {
                 .orElseGet(() -> esAdminAutenticat() ? "ADMIN" : "");
     }
 
+    /**
+     * Executa l'operació `navUserAuthenticated`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserAuthenticated")
     public boolean navUserAuthenticated() {
         return obtenirAutenticacioValida().isPresent();
     }
 
+    /**
+     * Executa l'operació `navUserAdmin`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @ModelAttribute("navUserAdmin")
     public boolean navUserAdmin() {
         return esAdminAutenticat();
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariAutenticat`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Optional<Usuari> obtenirUsuariAutenticat() {
         return obtenirAutenticacioValida()
                 .map(Authentication::getName)
@@ -69,6 +112,11 @@ public class NavUserAdvice {
                 .flatMap(usuariRepository::findByEmailIgnoreCase);
     }
 
+    /**
+     * Executa l'operació `obtenirAutenticacioValida`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Optional<Authentication> obtenirAutenticacioValida() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -81,6 +129,11 @@ public class NavUserAdvice {
         return Optional.of(authentication);
     }
 
+    /**
+     * Executa l'operació `esAdminAutenticat`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private boolean esAdminAutenticat() {
         return obtenirAutenticacioValida()
                 .map(Authentication::getAuthorities)
@@ -89,6 +142,11 @@ public class NavUserAdvice {
                 .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
     }
 
+    /**
+     * Executa l'operació `obtenirPrincipalVisible`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirPrincipalVisible() {
         return obtenirAutenticacioValida()
                 .map(Authentication::getName)
@@ -96,6 +154,12 @@ public class NavUserAdvice {
                 .orElse("");
     }
 
+    /**
+     * Executa l'operació `construirNomVisible`.
+     *
+     * @param usuari paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String construirNomVisible(Usuari usuari) {
         String nom = usuari.getNom() != null ? usuari.getNom().trim() : "";
         String cognoms = usuari.getCognoms() != null ? usuari.getCognoms().trim() : "";
@@ -108,6 +172,12 @@ public class NavUserAdvice {
         return usuari.getEmail() != null ? usuari.getEmail() : "";
     }
 
+    /**
+     * Executa l'operació `obtenirInicials`.
+     *
+     * @param nomVisible paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String obtenirInicials(String nomVisible) {
         if (nomVisible == null || nomVisible.isBlank()) {
             return "ET";

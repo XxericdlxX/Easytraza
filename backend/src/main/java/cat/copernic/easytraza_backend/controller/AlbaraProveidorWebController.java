@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `AlbaraProveidorWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/albarans-proveidor")
 public class AlbaraProveidorWebController {
@@ -49,6 +52,14 @@ public class AlbaraProveidorWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `listar`.
+     *
+     * @param proveidorCif paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String listar(
             @RequestParam(required = false) String proveidorCif,
@@ -62,6 +73,12 @@ public class AlbaraProveidorWebController {
         return "albarans_proveidor/llistar-albarans-proveidor";
     }
 
+    /**
+     * Executa l'operació `crear`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String crear(Model model) {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
@@ -73,6 +90,15 @@ public class AlbaraProveidorWebController {
         return "albarans_proveidor/crear-albara-proveidor";
     }
 
+    /**
+     * Executa l'operació `guardar`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardar(
             @ModelAttribute("albara") AlbaraProveidorDto dto,
@@ -97,6 +123,15 @@ public class AlbaraProveidorWebController {
         return "redirect:/web/albarans-proveidor";
     }
 
+    /**
+     * Executa l'operació `editar`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{id}")
     public String editar(
             @PathVariable Long id,
@@ -118,6 +153,16 @@ public class AlbaraProveidorWebController {
         return "albarans_proveidor/editar-albara-proveidor";
     }
 
+    /**
+     * Executa l'operació `actualitzar`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param dto paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping({"/editar/{id}", "/actualitzar/{id}"})
     public String actualitzar(
             @PathVariable Long id,
@@ -149,6 +194,15 @@ public class AlbaraProveidorWebController {
         return "redirect:/web/albarans-proveidor";
     }
 
+    /**
+     * Executa l'operació `veure`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/veure/{id}")
     public String veure(
             @PathVariable Long id,
@@ -169,6 +223,14 @@ public class AlbaraProveidorWebController {
         return "albarans_proveidor/veure-albara-proveidor";
     }
 
+    /**
+     * Executa l'operació `eliminar`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminar(
             @PathVariable Long id,
@@ -195,11 +257,25 @@ public class AlbaraProveidorWebController {
         return "redirect:/web/albarans-proveidor";
     }
 
+    /**
+     * Executa l'operació `mostrarOcr`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/ocr")
     public String mostrarOcr() {
         return "albarans_proveidor/ocr-albara-proveidor";
     }
 
+    /**
+     * Executa l'operació `processarOcr`.
+     *
+     * @param fitxer paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/ocr/processar")
     public String processarOcr(
             @RequestParam("fitxer") MultipartFile fitxer,
@@ -231,6 +307,15 @@ public class AlbaraProveidorWebController {
         }
     }
 
+    /**
+     * Executa l'operació `guardarOcr`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/ocr/guardar")
     public String guardarOcr(
             @ModelAttribute("albara") AlbaraProveidorDto dto,
@@ -256,6 +341,12 @@ public class AlbaraProveidorWebController {
         return "redirect:/web/albarans-proveidor";
     }
 
+    /**
+     * Executa l'operació `convertirOcrAAlbaraDto`.
+     *
+     * @param ocrResposta paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private AlbaraProveidorDto convertirOcrAAlbaraDto(OcrAlbaraResponseDto ocrResposta) {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
 
@@ -292,6 +383,12 @@ public class AlbaraProveidorWebController {
         return dto;
     }
 
+    /**
+     * Executa l'operació `convertirDataOcr`.
+     *
+     * @param dataOcr paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private LocalDate convertirDataOcr(String dataOcr) {
         if (dataOcr == null || dataOcr.isBlank()) {
             return LocalDate.now();
@@ -317,6 +414,12 @@ public class AlbaraProveidorWebController {
         return LocalDate.now();
     }
 
+    /**
+     * Executa l'operació `extreureNomProveidorDetectat`.
+     *
+     * @param textDetectat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String extreureNomProveidorDetectat(String textDetectat) {
         if (textDetectat == null || textDetectat.isBlank()) {
             return null;
@@ -333,6 +436,12 @@ public class AlbaraProveidorWebController {
         return null;
     }
 
+    /**
+     * Executa l'operació `carregarDadesFormulari`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @param dto paràmetre necessari per a l'operació.
+     */
     private void carregarDadesFormulari(Model model, AlbaraProveidorDto dto) {
         albaraProveidorService.assegurarMinimUnLot(dto);
 
@@ -341,6 +450,13 @@ public class AlbaraProveidorWebController {
         model.addAttribute("materiesPrimeres", materiaPrimaService.findAll());
     }
 
+    /**
+     * Executa l'operació `afegirErrorFormulari`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @param codiError paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     */
     private void afegirErrorFormulari(Model model, String codiError, Locale locale) {
         String text = missatge(codiError, locale);
 
@@ -348,6 +464,13 @@ public class AlbaraProveidorWebController {
         model.addAttribute("missatgeError", text);
     }
 
+    /**
+     * Executa l'operació `missatge`.
+     *
+     * @param codi paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String missatge(String codi, Locale locale) {
         return messageSource.getMessage(codi, null, codi, locale);
     }

@@ -22,6 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Controlador de l’API mobile `OcrAlbaraMobileApiController` del projecte
+ * EasyTraza.
+ */
 @RestController
 @RequestMapping("/mobile-api/ocr/albarans-proveidor")
 public class OcrAlbaraMobileApiController {
@@ -43,6 +47,12 @@ public class OcrAlbaraMobileApiController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    /**
+     * Executa l'operació `analitzarAlbara`.
+     *
+     * @param fitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public OcrAlbaraResponseDto analitzarAlbara(@RequestParam("fitxer") MultipartFile fitxer) {
         return ocrAlbaraService.processarImatgeAlbara(fitxer);
     }
@@ -52,6 +62,12 @@ public class OcrAlbaraMobileApiController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    /**
+     * Executa l'operació `guardarAlbara`.
+     *
+     * @param request paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public ResponseEntity<?> guardarAlbara(@RequestBody MobileAlbaraSaveRequestDto request) {
         try {
             AlbaraProveidorDto dto = new AlbaraProveidorDto();
@@ -83,6 +99,12 @@ public class OcrAlbaraMobileApiController {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariReceptor`.
+     *
+     * @param usuariReceptorId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Optional<Usuari> obtenirUsuariReceptor(Long usuariReceptorId) {
         if (usuariReceptorId == null) {
             return Optional.empty();
@@ -91,6 +113,12 @@ public class OcrAlbaraMobileApiController {
         return usuariRepository.findById(usuariReceptorId);
     }
 
+    /**
+     * Executa l'operació `parseData`.
+     *
+     * @param value paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private LocalDate parseData(String value) {
         if (value == null || value.isBlank()) {
             return LocalDate.now();
@@ -106,6 +134,12 @@ public class OcrAlbaraMobileApiController {
         return LocalDate.parse(clean);
     }
 
+    /**
+     * Executa l'operació `convertirLots`.
+     *
+     * @param lotsRequest paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<LotProveidorDto> convertirLots(List<MobileLotSaveRequestDto> lotsRequest) {
         List<LotProveidorDto> lots = new ArrayList<>();
 
@@ -147,6 +181,12 @@ public class OcrAlbaraMobileApiController {
         return lots;
     }
 
+    /**
+     * Executa l'operació `buscarMateriaPrima`.
+     *
+     * @param materiaNom paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Optional<MateriaPrima> buscarMateriaPrima(String materiaNom) {
         if (materiaNom == null || materiaNom.isBlank()) {
             return Optional.empty();
@@ -155,6 +195,12 @@ public class OcrAlbaraMobileApiController {
         return materiaPrimaRepository.findByNomIgnoreCase(materiaNom);
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param value paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String value) {
         if (value == null) {
             return null;
@@ -164,6 +210,12 @@ public class OcrAlbaraMobileApiController {
         return normalitzat.isBlank() ? null : normalitzat;
     }
 
+    /**
+     * Executa l'operació `netejarNomProveidor`.
+     *
+     * @param value paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String netejarNomProveidor(String value) {
         String net = netejar(value);
 
@@ -179,6 +231,12 @@ public class OcrAlbaraMobileApiController {
         return net.isBlank() ? null : net;
     }
 
+    /**
+     * Executa l'operació `netejar`.
+     *
+     * @param value paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String netejar(String value) {
         if (value == null) {
             return null;
