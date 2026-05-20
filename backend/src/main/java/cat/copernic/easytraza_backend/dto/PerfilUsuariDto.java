@@ -17,6 +17,13 @@ public class PerfilUsuariDto {
     @Size(max = 100, message = "{perfil.cognoms.max}")
     private String cognoms;
 
+    @NotBlank(message = "{perfil.nif.obligatori}")
+    @Size(max = 20, message = "{perfil.nif.max}")
+    private String nif;
+
+    @Size(max = 255, message = "{perfil.foto.max}")
+    private String fotoPerfilNom;
+
     @NotBlank(message = "{perfil.email.obligatori}")
     @Email(message = "{perfil.email.invalid}")
     @Pattern(
@@ -38,11 +45,13 @@ public class PerfilUsuariDto {
     public PerfilUsuariDto() {
     }
 
-    public PerfilUsuariDto(Long id, String nom, String cognoms, String email) {
+    public PerfilUsuariDto(Long id, String nom, String cognoms, String nif, String email, String fotoPerfilNom) {
         this.id = id;
         this.nom = nom;
         this.cognoms = cognoms;
+        this.nif = nif;
         this.email = email;
+        this.fotoPerfilNom = fotoPerfilNom;
     }
 
     public Long getId() {
@@ -67,6 +76,22 @@ public class PerfilUsuariDto {
 
     public void setCognoms(String cognoms) {
         this.cognoms = cognoms;
+    }
+
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) {
+        this.nif = nif;
+    }
+
+    public String getFotoPerfilNom() {
+        return fotoPerfilNom;
+    }
+
+    public void setFotoPerfilNom(String fotoPerfilNom) {
+        this.fotoPerfilNom = fotoPerfilNom;
     }
 
     public String getEmail() {
