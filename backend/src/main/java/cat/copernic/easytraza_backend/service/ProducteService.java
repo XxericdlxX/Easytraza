@@ -52,14 +52,10 @@ public class ProducteService {
         String nomNormalitzat = normalitzarTextCerca(nom);
         String descripcioNormalitzada = normalitzarTextCerca(descripcio);
 
-        if (nomNormalitzat.isEmpty() && descripcioNormalitzada.isEmpty()) {
-            return findAll();
-        }
-
-        return producteRepository.findByNomContainingIgnoreCaseAndDescripcioContainingIgnoreCase(
-                nomNormalitzat,
-                descripcioNormalitzada
-        );
+        return findAll().stream()
+                .filter(producte -> conte(producte.getNom(), nomNormalitzat))
+                .filter(producte -> conte(producte.getDescripcio(), descripcioNormalitzada))
+                .toList();
     }
 
     public List<LiniaClient> cercarProduccioLotsPerProducte(Long producteId) {
@@ -92,7 +88,7 @@ public class ProducteService {
         Producte producte = new Producte();
         producte.setId(producteDto.getId());
         producte.setNom(normalitzar(producteDto.getNom()));
-        producte.setDescripcio(normalitzar(producteDto.getDescripcio()));
+        producte.setDescripcio(normalitzarOpcional(producteDto.getDescripcio()));
         return producte;
     }
 
@@ -106,6 +102,22 @@ public class ProducteService {
 
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
+    }
+
+    private boolean conte(String valor, String filtre) {
+        if (filtre.isBlank()) {
+            return true;
+        }
+
+        return valor != null && valor.toLowerCase().contains(filtre.toLowerCase());
+    }
+
+    private String normalitzarOpcional(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+
+        return text.trim();
     }
 
     private String normalitzarTextCerca(String text) {
