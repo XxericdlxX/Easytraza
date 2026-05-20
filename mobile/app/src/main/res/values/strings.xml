@@ -144,4 +144,7 @@
     <string name="mobile_user_refresh_button">Actualizar usuarios</string>
     <string name="mobile_user_role_admin">Administrador</string>
     <string name="mobile_user_role_operari">Operario</string>
+
+    <string name="lots_mobile_filter_code_all">Todos los códigos de lote</string>
+    <string name="lots_mobile_filter_material_all">Todas las materias primas</string>
 </resources>
