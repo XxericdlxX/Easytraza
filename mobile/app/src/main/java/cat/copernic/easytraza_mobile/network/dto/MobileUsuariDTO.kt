@@ -5,5 +5,7 @@ data class MobileUsuariDto(
     val nom: String? = null,
     val cognoms: String? = null,
     val email: String? = null,
-    val rol: String? = null
+    val rol: String? = null,
+
+    val fotoPerfilUrl: String? = null
 )
