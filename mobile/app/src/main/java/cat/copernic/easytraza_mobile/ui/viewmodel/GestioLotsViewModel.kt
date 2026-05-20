@@ -22,6 +22,12 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     private val _lots = MutableStateFlow<List<MobileLotDto>>(emptyList())
     val lots: StateFlow<List<MobileLotDto>> = _lots
 
+    private val _codisLotDisponibles = MutableStateFlow<List<String>>(emptyList())
+    val codisLotDisponibles: StateFlow<List<String>> = _codisLotDisponibles
+
+    private val _materiesDisponibles = MutableStateFlow<List<String>>(emptyList())
+    val materiesDisponibles: StateFlow<List<String>> = _materiesDisponibles
+
     private val _filtreCodi = MutableStateFlow("")
     val filtreCodi: StateFlow<String> = _filtreCodi
 
@@ -55,6 +61,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
 
                 val api = RetrofitClient.create(RetrofitClient.buildBaseUrl(savedIp))
                 _lotsComplets.value = api.llistarLots()
+                actualitzarOpcionsFiltres()
                 aplicarFiltres()
 
                 if (_lotsComplets.value.isEmpty()) {
@@ -100,6 +107,18 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         aplicarFiltres()
     }
 
+    private fun actualitzarOpcionsFiltres() {
+        _codisLotDisponibles.value = _lotsComplets.value
+            .mapNotNull { it.codiLot?.trim()?.takeIf { valor -> valor.isNotBlank() } }
+            .distinct()
+            .sortedWith(String.CASE_INSENSITIVE_ORDER)
+
+        _materiesDisponibles.value = _lotsComplets.value
+            .mapNotNull { it.materiaPrimaNom?.trim()?.takeIf { valor -> valor.isNotBlank() } }
+            .distinct()
+            .sortedWith(String.CASE_INSENSITIVE_ORDER)
+    }
+
     private fun aplicarFiltres() {
         val codi = _filtreCodi.value.trim()
         val materia = _filtreMateria.value.trim()
@@ -107,9 +126,9 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
         val estat = _filtreEstat.value.trim()
 
         _lots.value = _lotsComplets.value.filter { lot ->
-            val coincideixCodi = codi.isBlank() || lot.codiLot.orEmpty().contains(codi, ignoreCase = true)
-            val coincideixMateria = materia.isBlank() || lot.materiaPrimaNom.orEmpty().contains(materia, ignoreCase = true)
-            val coincideixData = dataRecepcio.isBlank() || lot.dataRecepcio.orEmpty().contains(dataRecepcio, ignoreCase = true)
+            val coincideixCodi = codi.isBlank() || lot.codiLot.orEmpty().equals(codi, ignoreCase = true)
+            val coincideixMateria = materia.isBlank() || lot.materiaPrimaNom.orEmpty().equals(materia, ignoreCase = true)
+            val coincideixData = dataRecepcio.isBlank() || lot.dataRecepcio.orEmpty().equals(dataRecepcio, ignoreCase = true)
             val coincideixEstat = estat.isBlank() || lot.estat.orEmpty().equals(estat, ignoreCase = true)
 
             coincideixCodi && coincideixMateria && coincideixData && coincideixEstat
