@@ -275,6 +275,7 @@ public class AlbaraProveidorWebController {
                 LotProveidorDto lotDto = new LotProveidorDto();
 
                 lotDto.setCodiLot(lotOcr.getCodiLot());
+                lotDto.setCodiMateriaPrimaOcr(lotOcr.getCodiMateriaPrimaOcr());
                 lotDto.setQuantitat(lotOcr.getQuantitat());
                 lotDto.setMateriaPrimaNomDetectada(lotOcr.getMateriaPrima());
                 lotDto.setCrearMateriaPrimaSiNoExisteix(false);
