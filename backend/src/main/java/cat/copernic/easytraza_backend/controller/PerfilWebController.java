@@ -4,10 +4,15 @@ import cat.copernic.easytraza_backend.dto.PerfilUsuariDto;
 import cat.copernic.easytraza_backend.model.Usuari;
 import cat.copernic.easytraza_backend.service.UsuariService;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +20,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -53,6 +61,7 @@ public class PerfilWebController {
 
     @PostMapping("/actualitzar")
     public String actualitzarPerfil(@Valid @ModelAttribute("perfil") PerfilUsuariDto perfilUsuariDto,
+            @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil,
             BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes,
@@ -75,6 +84,12 @@ public class PerfilWebController {
             return "perfil/editar-perfil";
         }
 
+        String errorFoto = usuariService.validarFotoPerfil(fotoPerfil);
+        if (errorFoto != null) {
+            model.addAttribute("errorNegoci", messageSource.getMessage(errorFoto, null, locale));
+            return "perfil/editar-perfil";
+        }
+
         String errorNegoci = usuariService.validarPerfilUsuari(perfilUsuariDto, usuariActual.getId());
         if (errorNegoci != null) {
             model.addAttribute("errorNegoci", messageSource.getMessage(errorNegoci, null, locale));
@@ -92,6 +107,16 @@ public class PerfilWebController {
             return "redirect:/";
         }
 
+        try {
+            usuariService.actualitzarFotoPerfil(usuariActualitzat.getId(), fotoPerfil);
+        } catch (IllegalStateException ex) {
+            redirectAttributes.addFlashAttribute(
+                    "missatgeError",
+                    messageSource.getMessage(ex.getMessage(), null, locale)
+            );
+            return "redirect:/web/perfil";
+        }
+
         actualitzarPrincipalSiCanviaEmail(emailAnterior, usuariActualitzat.getEmail());
 
         redirectAttributes.addFlashAttribute(
@@ -100,6 +125,28 @@ public class PerfilWebController {
         );
 
         return "redirect:/web/perfil";
+    }
+
+    @GetMapping("/foto/{nomFitxer}")
+    public ResponseEntity<Resource> mostrarFotoPerfil(@PathVariable String nomFitxer) {
+        Optional<Resource> foto = usuariService.carregarFotoPerfil(nomFitxer);
+        if (foto.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        MediaType mediaType = MediaType.IMAGE_JPEG;
+        try {
+            String contentType = Files.probeContentType(foto.get().getFile().toPath());
+            if (contentType != null && !contentType.isBlank()) {
+                mediaType = MediaType.parseMediaType(contentType);
+            }
+        } catch (IOException ex) {
+            // Manté image/jpeg per defecte si no es pot detectar el tipus MIME.
+        }
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(foto.get());
     }
 
     private Optional<Usuari> obtenirUsuariAutenticat() {
@@ -126,8 +173,8 @@ public class PerfilWebController {
             return;
         }
 
-        UsernamePasswordAuthenticationToken authenticationActualitzada =
-                UsernamePasswordAuthenticationToken.authenticated(
+        UsernamePasswordAuthenticationToken authenticationActualitzada
+                = UsernamePasswordAuthenticationToken.authenticated(
                         emailNou,
                         authentication.getCredentials(),
                         authentication.getAuthorities()
