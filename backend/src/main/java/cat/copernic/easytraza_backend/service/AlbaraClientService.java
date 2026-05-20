@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AlbaraClientService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.albarans.client");
 
     @Autowired
     private AlbaraClientRepository albaraClientRepository;
@@ -96,8 +100,15 @@ public class AlbaraClientService {
     }
 
     public AlbaraClient save(AlbaraClient albaraClient) {
-        prepararLinies(albaraClient);
-        return albaraClientRepository.save(albaraClient);
+        try {
+            prepararLinies(albaraClient);
+            AlbaraClient albaraDesat = albaraClientRepository.save(albaraClient);
+            LOGGER.info("Albarà de client desat correctament amb id {}.", albaraDesat.getId());
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un albarà de client.", ex);
+            throw ex;
+        }
     }
 
     @Transactional
@@ -105,6 +116,7 @@ public class AlbaraClientService {
         Optional<AlbaraClient> existentOpt = albaraClientRepository.findById(id);
 
         if (existentOpt.isEmpty()) {
+            LOGGER.warn("No s'ha pogut actualitzar l'albarà de client perquè no existeix. Id: {}", id);
             return null;
         }
 
@@ -127,8 +139,15 @@ public class AlbaraClientService {
             existent.getLinies().add(linia);
         }
 
-        prepararLinies(existent);
-        return albaraClientRepository.saveAndFlush(existent);
+        try {
+            prepararLinies(existent);
+            AlbaraClient albaraDesat = albaraClientRepository.saveAndFlush(existent);
+            LOGGER.info("Albarà de client actualitzat correctament amb id {}.", albaraDesat.getId());
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en actualitzar l'albarà de client amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     public void deleteById(Long id) {
@@ -138,15 +157,25 @@ public class AlbaraClientService {
             validarEditable(albaraOpt.get());
         }
 
-        albaraClientRepository.deleteById(id);
+        try {
+            albaraClientRepository.deleteById(id);
+            LOGGER.info("Albarà de client eliminat correctament amb id {}.", id);
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar l'albarà de client amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     @Transactional
     public AlbaraClient marcarComLliurat(Long id) {
         AlbaraClient albara = albaraClientRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("albara.client.flash.no.trobat"));
+                .orElseThrow(() -> {
+                    LOGGER.warn("No s'ha pogut marcar com a lliurat l'albarà de client perquè no existeix. Id: {}", id);
+                    return new IllegalArgumentException("albara.client.flash.no.trobat");
+                });
 
         if (albara.getEstat() == EstatAlbaraClient.LLIURAT) {
+            LOGGER.warn("Intent de lliurar un albarà de client que ja estava lliurat. Id: {}", id);
             throw new IllegalStateException("albara.client.error.ja.lliurat");
         }
 
@@ -156,42 +185,57 @@ public class AlbaraClientService {
             linia.setEstat(EstatLiniaClient.LLIURADA);
         }
 
-        return albaraClientRepository.save(albara);
+        try {
+            AlbaraClient albaraDesat = albaraClientRepository.save(albara);
+            LOGGER.info("Albarà de client marcat com a lliurat correctament amb id {}.", id);
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en marcar com a lliurat l'albarà de client amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
     public String validarAlbara(AlbaraClientDto dto, Long idActual) {
         if (dto.getDataProduccio() == null) {
+            LOGGER.warn("Validació d'albarà de client rebutjada perquè falta la data de producció.");
             return "albara.client.data.obligatoria";
         }
 
         if (dto.getClientNif() == null || dto.getClientNif().isBlank()) {
+            LOGGER.warn("Validació d'albarà de client rebutjada perquè falta el client.");
             return "albara.client.client.obligatori";
         }
 
         String nifNormalitzat = normalitzarDocument(dto.getClientNif());
         if (clientRepository.findById(nifNormalitzat).isEmpty()) {
+            LOGGER.warn("Validació d'albarà de client rebutjada perquè el client no existeix.");
             return "albara.client.error.client.no.trobat";
         }
 
         if (!existeixLotObert()) {
+            LOGGER.warn("Validació d'albarà de client rebutjada perquè no hi ha lots oberts.");
             return "albara.client.error.sense.lots.oberts";
         }
 
         List<LiniaClientDto> liniesValides = obtenirLiniesValides(dto.getLinies());
         if (liniesValides.isEmpty()) {
+            LOGGER.warn("Validació d'albarà de client rebutjada perquè no conté línies vàlides.");
             return "albara.client.linies.obligatories";
         }
 
         for (LiniaClientDto linia : liniesValides) {
             if (linia.getProducteId() == null) {
+                LOGGER.warn("Validació d'albarà de client rebutjada perquè una línia no té producte.");
                 return "albara.client.linia.producte.obligatori";
             }
 
             if (producteRepository.findById(linia.getProducteId()).isEmpty()) {
+                LOGGER.warn("Validació d'albarà de client rebutjada perquè un producte no existeix.");
                 return "albara.client.error.producte.no.trobat";
             }
 
             if (linia.getQuantitat() == null || linia.getQuantitat() <= 0) {
+                LOGGER.warn("Validació d'albarà de client rebutjada perquè una línia té quantitat no vàlida.");
                 return "albara.client.linia.quantitat.min";
             }
         }
@@ -200,6 +244,7 @@ public class AlbaraClientService {
             Optional<AlbaraClient> existent = albaraClientRepository.findById(idActual);
 
             if (existent.isPresent() && existent.get().getEstat() == EstatAlbaraClient.LLIURAT) {
+                LOGGER.warn("Validació d'albarà de client rebutjada perquè ja està lliurat. Id: {}", idActual);
                 return "albara.client.error.modificar.lliurat";
             }
         }
@@ -347,6 +392,7 @@ public class AlbaraClientService {
 
     private void validarEditable(AlbaraClient albara) {
         if (albara.getEstat() == EstatAlbaraClient.LLIURAT) {
+            LOGGER.warn("S'ha bloquejat la modificació d'un albarà de client lliurat. Id: {}", albara.getId());
             throw new IllegalStateException("albara.client.error.modificar.lliurat");
         }
     }
