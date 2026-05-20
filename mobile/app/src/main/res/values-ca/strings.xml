@@ -147,4 +147,6 @@
 
     <string name="lots_mobile_filter_code_all">Tots els codis de lot</string>
     <string name="lots_mobile_filter_material_all">Totes les matèries primeres</string>
+
+    <string name="profile_photo_label">Foto de perfil</string>
 </resources>
