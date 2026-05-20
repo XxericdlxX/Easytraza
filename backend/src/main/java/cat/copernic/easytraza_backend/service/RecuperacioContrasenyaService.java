@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class RecuperacioContrasenyaService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecuperacioContrasenyaService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.login");
     private static final int TOKEN_BYTES = 32;
     private static final int MINUTS_VALIDESA_TOKEN = 15;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -73,7 +73,7 @@ public class RecuperacioContrasenyaService {
             usuari.setTokenRecuperacioContrasenya(null);
             usuari.setTokenRecuperacioExpiracio(null);
             usuariRepository.save(usuari);
-            LOGGER.error("No s'ha pogut enviar el correu de recuperació de contrasenya a {}", usuari.getEmail(), ex);
+            LOGGER.error("No s'ha pogut enviar el correu de recuperació de contrasenya per a l'usuari amb id {}", usuari.getId(), ex);
         }
     }
 
