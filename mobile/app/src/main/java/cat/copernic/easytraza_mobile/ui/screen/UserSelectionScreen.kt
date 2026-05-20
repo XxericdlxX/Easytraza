@@ -215,6 +215,9 @@ fun UserSelectionScreen(
 @Composable
 private fun AvatarUsuari(user: MobileUsuariDto) {
     val fotoUrl = user.fotoPerfilUrl?.trim().orEmpty()
+    val esLogoEasyTraza = fotoUrl.endsWith("/superadmin-logo-easytraza.png", ignoreCase = true)
+            || fotoUrl.endsWith("superadmin-logo-easytraza.png", ignoreCase = true)
+
     var fotoCarregada by remember(fotoUrl) { mutableStateOf(false) }
     var fotoError by remember(fotoUrl) { mutableStateOf(false) }
 
@@ -222,7 +225,13 @@ private fun AvatarUsuari(user: MobileUsuariDto) {
         modifier = Modifier
             .size(58.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary),
+            .background(
+                if (esLogoEasyTraza) {
+                    MaterialTheme.colorScheme.surface
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         if (!fotoCarregada || fotoError || fotoUrl.isBlank()) {
@@ -230,7 +239,11 @@ private fun AvatarUsuari(user: MobileUsuariDto) {
                 text = obtenirInicials(user),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = if (esLogoEasyTraza) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onPrimary
+                }
             )
         }
 
@@ -238,11 +251,12 @@ private fun AvatarUsuari(user: MobileUsuariDto) {
             AsyncImage(
                 model = fotoUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale = if (esLogoEasyTraza) ContentScale.Fit else ContentScale.Crop,
                 onSuccess = { fotoCarregada = true },
                 onError = { fotoError = true },
                 modifier = Modifier
                     .matchParentSize()
+                    .padding(if (esLogoEasyTraza) 8.dp else 0.dp)
                     .clip(CircleShape)
             )
         }
