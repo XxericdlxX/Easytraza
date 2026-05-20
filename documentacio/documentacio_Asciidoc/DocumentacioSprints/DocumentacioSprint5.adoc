@@ -9,8 +9,7 @@
 ==== Board inicial — Eric Delgado López
 
 image::Sprint5/BoardInicial/BoardInicialSprint5.1.png[Board inicial 1]
-image::Sprint5/BoardInicial/BoardInicialSprint5.2.png[Board inicial 2]
-image::Sprint5/BoardInicial/BoardInicialSprint5.3.png[Board inicial 3]
+
 
 == 2. Daily Stand Ups
 
