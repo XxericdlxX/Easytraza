@@ -13,7 +13,7 @@ public class Producte {
     @Column(nullable = false, unique = true, length = 100)
     private String nom;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     private String descripcio;
 
     public Producte() {
