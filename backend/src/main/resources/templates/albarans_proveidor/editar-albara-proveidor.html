@@ -74,6 +74,7 @@
                             </div>
 
                             <input type="hidden" class="lot-id-field" th:name="${'lots[' + stat.index + '].id'}" th:value="${lot.id}">
+                            <input type="hidden" class="lot-codi-materia-ocr-field" th:name="${'lots[' + stat.index + '].codiMateriaPrimaOcr'}" th:value="${lot.codiMateriaPrimaOcr}">
 
                             <div class="form-group">
                                 <label>
@@ -133,6 +134,7 @@
                 </div>
 
                 <input type="hidden" class="lot-id-field" value="">
+                <input type="hidden" class="lot-codi-materia-ocr-field" value="">
 
                 <div class="form-group">
                     <label>Código/identificador de lote <span class="required">*</span></label>
