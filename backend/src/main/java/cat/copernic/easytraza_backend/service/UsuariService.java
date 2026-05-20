@@ -25,6 +25,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -82,6 +83,13 @@ public class UsuariService {
     public Usuari save(Usuari usuari) {
         codificarContrasenyaSiCal(usuari);
         return usuariRepository.save(usuari);
+    }
+
+    @Transactional
+    public Usuari crearUsuariAmbFoto(Usuari usuari, MultipartFile fotoPerfil) {
+        Usuari usuariGuardat = save(usuari);
+        actualitzarFotoPerfil(usuariGuardat.getId(), fotoPerfil);
+        return usuariGuardat;
     }
 
     public Usuari update(Long id, Usuari usuariActualitzat) {
