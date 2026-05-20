@@ -25,6 +25,12 @@ public class Usuari {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(length = 20)
+    private String nif;
+
+    @Column(name = "foto_perfil_nom", length = 255)
+    private String fotoPerfilNom;
+
     @Column(nullable = true)
     private String contrasenya;
 
@@ -84,6 +90,22 @@ public class Usuari {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) {
+        this.nif = nif;
+    }
+
+    public String getFotoPerfilNom() {
+        return fotoPerfilNom;
+    }
+
+    public void setFotoPerfilNom(String fotoPerfilNom) {
+        this.fotoPerfilNom = fotoPerfilNom;
     }
 
     public String getContrasenya() {
