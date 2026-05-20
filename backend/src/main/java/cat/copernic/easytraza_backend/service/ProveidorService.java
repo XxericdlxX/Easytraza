@@ -4,11 +4,15 @@ import cat.copernic.easytraza_backend.model.Proveidor;
 import cat.copernic.easytraza_backend.repository.ProveidorRepository;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProveidorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.proveidors");
 
     @Autowired
     private ProveidorRepository proveidorRepository;
@@ -22,14 +26,22 @@ public class ProveidorService {
     }
 
     public Proveidor save(Proveidor proveidor) {
-        normalitzarProveidor(proveidor);
-        return proveidorRepository.save(proveidor);
+        try {
+            normalitzarProveidor(proveidor);
+            Proveidor proveidorDesat = proveidorRepository.save(proveidor);
+            LOGGER.info("Proveïdor desat correctament.");
+            return proveidorDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un proveïdor.", ex);
+            throw ex;
+        }
     }
 
     public Proveidor update(String cif, Proveidor proveidorActualitzat) {
         Optional<Proveidor> proveidorExistentOpt = proveidorRepository.findById(cif);
 
         if (proveidorExistentOpt.isEmpty()) {
+            LOGGER.warn("No s'ha pogut actualitzar el proveïdor perquè no existeix.");
             return null;
         }
 
@@ -41,12 +53,25 @@ public class ProveidorService {
         proveidorExistent.setEmail(proveidorActualitzat.getEmail());
         proveidorExistent.setNotes(proveidorActualitzat.getNotes());
 
-        normalitzarProveidor(proveidorExistent);
-        return proveidorRepository.save(proveidorExistent);
+        try {
+            normalitzarProveidor(proveidorExistent);
+            Proveidor proveidorDesat = proveidorRepository.save(proveidorExistent);
+            LOGGER.info("Proveïdor actualitzat correctament.");
+            return proveidorDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en actualitzar un proveïdor.", ex);
+            throw ex;
+        }
     }
 
     public void deleteById(String cif) {
-        proveidorRepository.deleteById(cif);
+        try {
+            proveidorRepository.deleteById(cif);
+            LOGGER.info("Proveïdor eliminat correctament.");
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar un proveïdor.", ex);
+            throw ex;
+        }
     }
 
     public boolean existsById(String cif) {
