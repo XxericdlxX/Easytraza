@@ -64,7 +64,10 @@ image::Sprint5/BoardFinal/BoardFinalSprint5.5.png[Board final 5]
 [cols="1,4", options="header"]
 |===
 | Apartat | Contingut
-| Aspectes positius |
-| Aspectes a millorar | 
-| 
+
+| Aspectes positius
+| Durant aquest sprint he avançat en la correcció dels bugfixs relacionats amb l’OCR dels albarans de proveïdor, sobretot en l’extracció de codis de matèria primera, lots i línies detectades. També he millorat algunes pantalles web, com el llistat de lots i les taules que no mostraven bé tota la informació.
+
+| Aspectes a millorar
+| He dedicat més temps del previst a ajustar l’OCR, especialment perquè en mòbil no detectava els albarans tan bé com en PC. També m’ha costat deixar les taules web més compactes sense que es retallés la informació. A més, hauria d’haver anat actualitzant abans la documentació del sprint i no deixar tanta part per al final.
 |===
