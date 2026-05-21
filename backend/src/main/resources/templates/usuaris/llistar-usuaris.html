@@ -87,6 +87,7 @@
                                 <th th:text="#{usuaris.nom}">Nombre</th>
                                 <th th:text="#{usuaris.cognoms}">Apellidos</th>
                                 <th th:text="#{usuaris.rol}">Rol</th>
+                                <th th:text="#{usuaris.nif}">DNI/NIF/NIE</th>
                                 <th th:text="#{usuaris.email}">Correo electrónico</th>
                                 <th th:text="#{usuaris.accions}">Acciones</th>
                             </tr>
@@ -99,6 +100,7 @@
                                 <td>
                                     <span class="badge" th:text="#{${'rol.' + usuari.rol}}">Rol</span>
                                 </td>
+                                <td th:text="${usuari.nif}">DNI/NIF/NIE</td>
                                 <td th:text="${usuari.email}">email</td>
                                 <td>
                                     <div class="actions">

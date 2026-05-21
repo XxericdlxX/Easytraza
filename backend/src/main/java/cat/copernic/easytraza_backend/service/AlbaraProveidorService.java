@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,8 +28,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Servei `AlbaraProveidorService` del projecte EasyTraza.
+ */
 @Service
 public class AlbaraProveidorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("easytraza.albarans.proveidor");
 
     @Autowired
     private AlbaraProveidorRepository albaraProveidorRepository;
@@ -44,14 +51,32 @@ public class AlbaraProveidorService {
     @Autowired
     private UsuariRepository usuariRepository;
 
+    /**
+     * Executa l'operació `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<AlbaraProveidor> findAll() {
         return albaraProveidorRepository.findAll();
     }
 
+    /**
+     * Executa l'operació `findById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Optional<AlbaraProveidor> findById(Long id) {
         return albaraProveidorRepository.findById(id);
     }
 
+    /**
+     * Executa l'operació `buscar`.
+     *
+     * @param proveidorCif paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<AlbaraProveidor> buscar(String proveidorCif, LocalDate dataRecepcio) {
         String cifNormalitzat = normalitzarTextCerca(proveidorCif);
 
@@ -73,16 +98,37 @@ public class AlbaraProveidorService {
         return albaraProveidorRepository.findByDataRecepcio(dataRecepcio);
     }
 
+    /**
+     * Executa l'operació `save`.
+     *
+     * @param albaraProveidor paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraProveidor save(AlbaraProveidor albaraProveidor) {
-        prepararLots(albaraProveidor);
-        return albaraProveidorRepository.save(albaraProveidor);
+        try {
+            prepararLots(albaraProveidor);
+            AlbaraProveidor albaraDesat = albaraProveidorRepository.save(albaraProveidor);
+            LOGGER.info("Albarà de proveïdor desat correctament amb id {}.", albaraDesat.getId());
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en desar un albarà de proveïdor.", ex);
+            throw ex;
+        }
     }
 
+    /**
+     * Executa l'operació `update`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param albaraActualitzat paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Transactional
     public AlbaraProveidor update(Long id, AlbaraProveidor albaraActualitzat) {
         Optional<AlbaraProveidor> existentOpt = albaraProveidorRepository.findById(id);
 
         if (existentOpt.isEmpty()) {
+            LOGGER.warn("No s'ha pogut actualitzar l'albarà de proveïdor perquè no existeix. Id: {}", id);
             return null;
         }
 
@@ -107,15 +153,28 @@ public class AlbaraProveidorService {
             existent.getLots().add(lot);
         }
 
-        prepararLots(existent);
-        return albaraProveidorRepository.saveAndFlush(existent);
+        try {
+            prepararLots(existent);
+            AlbaraProveidor albaraDesat = albaraProveidorRepository.saveAndFlush(existent);
+            LOGGER.info("Albarà de proveïdor actualitzat correctament amb id {}.", albaraDesat.getId());
+            return albaraDesat;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en actualitzar l'albarà de proveïdor amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
+    /**
+     * Executa l'operació `deleteById`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     */
     @Transactional
     public void deleteById(Long id) {
         AlbaraProveidor albara = albaraProveidorRepository.findById(id).orElse(null);
 
         if (albara == null) {
+            LOGGER.warn("No s'ha pogut eliminar l'albarà de proveïdor perquè no existeix. Id: {}", id);
             throw new IllegalArgumentException("albara.proveidor.error.no.trobat");
         }
 
@@ -126,15 +185,30 @@ public class AlbaraProveidorService {
                     || "INICIAT".equals(lot.getEstat().name())));
 
             if (teLotsActius) {
+                LOGGER.warn("S'ha bloquejat l'eliminació de l'albarà de proveïdor perquè té lots actius. Id: {}", id);
                 throw new IllegalStateException("albara.proveidor.error.eliminar.lots.iniciats");
             }
         }
 
-        albaraProveidorRepository.delete(albara);
+        try {
+            albaraProveidorRepository.delete(albara);
+            LOGGER.info("Albarà de proveïdor eliminat correctament amb id {}.", id);
+        } catch (RuntimeException ex) {
+            LOGGER.error("Error en eliminar l'albarà de proveïdor amb id {}.", id, ex);
+            throw ex;
+        }
     }
 
+    /**
+     * Executa l'operació `validarAlbara`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String validarAlbara(AlbaraProveidorDto dto, Long idActual) {
         if (dto.getDataRecepcio() == null) {
+            LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè falta la data de recepció.");
             return "albara.proveidor.data.obligatoria";
         }
 
@@ -142,11 +216,13 @@ public class AlbaraProveidorService {
 
         Proveidor proveidor = obtenirOCrearProveidor(dto);
         if (proveidor == null) {
+            LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè el proveïdor no existeix.");
             return "albara.proveidor.error.proveidor.no.trobat";
         }
 
         List<LotProveidorDto> lotsValids = obtenirLotsValids(dto);
         if (lotsValids.isEmpty()) {
+            LOGGER.warn("Validació d'albarà de proveïdor rebutjada perquè no conté lots vàlids.");
             return "albara.proveidor.lots.obligatori";
         }
 
@@ -155,6 +231,7 @@ public class AlbaraProveidorService {
         for (LotProveidorDto lotDto : lotsValids) {
             String errorLot = validarLot(lotDto, proveidor.getCif(), dto.getDataRecepcio(), idActual, lotsRevisats);
             if (errorLot != null) {
+                LOGGER.warn("Validació d'albarà de proveïdor rebutjada per un error de lot: {}", errorLot);
                 return errorLot;
             }
         }
@@ -162,6 +239,12 @@ public class AlbaraProveidorService {
         return null;
     }
 
+    /**
+     * Executa l'operació `convertirDtoAEntity`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraProveidor convertirDtoAEntity(AlbaraProveidorDto dto) {
         completarReferenciesOcr(dto);
 
@@ -202,6 +285,12 @@ public class AlbaraProveidorService {
         return albara;
     }
 
+    /**
+     * Executa l'operació `convertirEntityADto`.
+     *
+     * @param entity paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraProveidorDto convertirEntityADto(AlbaraProveidor entity) {
         AlbaraProveidorDto dto = new AlbaraProveidorDto();
         dto.setId(entity.getId());
@@ -249,6 +338,11 @@ public class AlbaraProveidorService {
         return dto;
     }
 
+    /**
+     * Executa l'operació `assegurarMinimUnLot`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     */
     public void assegurarMinimUnLot(AlbaraProveidorDto dto) {
         if (dto.getLots() == null) {
             dto.setLots(new ArrayList<>());
@@ -259,6 +353,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `completarReferenciesOcr`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     */
     public void completarReferenciesOcr(AlbaraProveidorDto dto) {
         if (dto == null) {
             return;
@@ -279,6 +378,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `completarMateriaPrimaSiExisteix`.
+     *
+     * @param lotDto paràmetre necessari per a l'operació.
+     */
     private void completarMateriaPrimaSiExisteix(LotProveidorDto lotDto) {
         if (lotDto == null || lotDto.getMateriaPrimaId() != null) {
             return;
@@ -297,6 +401,16 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `validarLot`.
+     *
+     * @param lotDto paràmetre necessari per a l'operació.
+     * @param proveidorCif paràmetre necessari per a l'operació.
+     * @param dataRecepcio paràmetre necessari per a l'operació.
+     * @param idActual paràmetre necessari per a l'operació.
+     * @param lotsRevisats paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String validarLot(LotProveidorDto lotDto, String proveidorCif, LocalDate dataRecepcio, Long idActual, Set<String> lotsRevisats) {
         String codiLot = normalitzar(lotDto.getCodiLot());
 
@@ -332,6 +446,12 @@ public class AlbaraProveidorService {
         return repetits > 0 ? "lot.proveidor.codi.duplicat.recepcio" : null;
     }
 
+    /**
+     * Executa l'operació `obtenirOCrearProveidor`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Proveidor obtenirOCrearProveidor(AlbaraProveidorDto dto) {
         String cif = normalitzarDocument(dto.getProveidorCif());
 
@@ -357,6 +477,12 @@ public class AlbaraProveidorService {
         return proveidorRepository.save(proveidor);
     }
 
+    /**
+     * Executa l'operació `obtenirOCrearMateriaPrima`.
+     *
+     * @param lotDto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private MateriaPrima obtenirOCrearMateriaPrima(LotProveidorDto lotDto) {
         if (lotDto.getMateriaPrimaId() != null) {
             return materiaPrimaRepository.findById(lotDto.getMateriaPrimaId()).orElse(null);
@@ -387,6 +513,12 @@ public class AlbaraProveidorService {
         return creada;
     }
 
+    /**
+     * Executa l'operació `obtenirLotsValids`.
+     *
+     * @param dto paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private List<LotProveidorDto> obtenirLotsValids(AlbaraProveidorDto dto) {
         List<LotProveidorDto> valids = new ArrayList<>();
 
@@ -410,6 +542,11 @@ public class AlbaraProveidorService {
         return valids;
     }
 
+    /**
+     * Executa l'operació `prepararLots`.
+     *
+     * @param albara paràmetre necessari per a l'operació.
+     */
     private void prepararLots(AlbaraProveidor albara) {
         if (albara.getLots() == null) {
             return;
@@ -428,6 +565,11 @@ public class AlbaraProveidorService {
         }
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariLoguejat`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Usuari obtenirUsuariLoguejat() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -440,6 +582,12 @@ public class AlbaraProveidorService {
         return null;
     }
 
+    /**
+     * Executa l'operació `generarCifTemporal`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String generarCifTemporal(String nom) {
         String base = valorOTextPerDefecte(nom, "PROVEIDOR")
                 .toUpperCase()
@@ -462,23 +610,54 @@ public class AlbaraProveidorService {
         return candidat;
     }
 
+    /**
+     * Executa l'operació `valorOTextPerDefecte`.
+     *
+     * @param valor paràmetre necessari per a l'operació.
+     * @param defecte paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String valorOTextPerDefecte(String valor, String defecte) {
         return valor == null || valor.isBlank() ? defecte : valor.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzar`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzar(String text) {
         return text == null ? null : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarNullable`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarNullable(String text) {
         String normalitzat = normalitzar(text);
         return normalitzat == null || normalitzat.isBlank() ? null : normalitzat;
     }
 
+    /**
+     * Executa l'operació `normalitzarTextCerca`.
+     *
+     * @param text paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarTextCerca(String text) {
         return text == null ? "" : text.trim();
     }
 
+    /**
+     * Executa l'operació `normalitzarDocument`.
+     *
+     * @param document paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private String normalitzarDocument(String document) {
         return document == null ? null : document.trim().toUpperCase().replace(" ", "");
     }

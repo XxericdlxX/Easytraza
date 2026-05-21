@@ -49,11 +49,15 @@
 
                         <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
 
+                        <div th:if="${perfilDadesBloquejades}" class="success-message" th:text="#{perfil.dades.superadmin.bloquejades}">
+                            Les dades principals del superadmin estan protegides. Només pots canviar la foto de perfil i la contrasenya.
+                        </div>
+
                         <div class="form-group">
                             <label for="nom">
                                 <span th:text="#{perfil.nom}">Nom</span> <span class="required">*</span>
                             </label>
-                            <input type="text" id="nom" th:field="*{nom}">
+                            <input type="text" id="nom" th:field="*{nom}" th:readonly="${perfilDadesBloquejades}">
                             <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
                         </div>
 
@@ -61,7 +65,7 @@
                             <label for="cognoms">
                                 <span th:text="#{perfil.cognoms}">Cognoms</span> <span class="required">*</span>
                             </label>
-                            <input type="text" id="cognoms" th:field="*{cognoms}">
+                            <input type="text" id="cognoms" th:field="*{cognoms}" th:readonly="${perfilDadesBloquejades}">
                             <div class="field-error" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
                         </div>
 
@@ -70,7 +74,7 @@
                             <label for="nif">
                                 <span th:text="#{perfil.nif}">DNI/NIF/NIE</span> <span class="required">*</span>
                             </label>
-                            <input type="text" id="nif" th:field="*{nif}">
+                            <input type="text" id="nif" th:field="*{nif}" th:readonly="${perfilDadesBloquejades}">
                             <div class="field-error" th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></div>
                         </div>
 

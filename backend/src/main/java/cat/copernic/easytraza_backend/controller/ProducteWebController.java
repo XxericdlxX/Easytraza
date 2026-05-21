@@ -16,6 +16,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `ProducteWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/productes")
 public class ProducteWebController {
@@ -29,6 +32,14 @@ public class ProducteWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `llistarProductes`.
+     *
+     * @param nom paràmetre necessari per a l'operació.
+     * @param descripcio paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String llistarProductes(@RequestParam(required = false) String nom,
             @RequestParam(required = false) String descripcio,
@@ -42,6 +53,14 @@ public class ProducteWebController {
         return "productes/llistar-productes";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariCrearProducte`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String mostrarFormulariCrearProducte(Model model,
             RedirectAttributes redirectAttributes,
@@ -59,6 +78,16 @@ public class ProducteWebController {
         return "productes/crear-productes";
     }
 
+    /**
+     * Executa l'operació `guardarProducte`.
+     *
+     * @param producteDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardarProducte(@Valid @ModelAttribute("producte") ProducteDto producteDto,
             BindingResult result,
@@ -95,6 +124,15 @@ public class ProducteWebController {
         return "redirect:/web/productes";
     }
 
+    /**
+     * Executa l'operació `mostrarFormulariEditarProducte`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{id}")
     public String mostrarFormulariEditarProducte(@PathVariable Long id,
             Model model,
@@ -115,6 +153,17 @@ public class ProducteWebController {
         }
     }
 
+    /**
+     * Executa l'operació `actualitzarProducte`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param producteDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{id}")
     public String actualitzarProducte(@PathVariable Long id,
             @Valid @ModelAttribute("producte") ProducteDto producteDto,
@@ -144,6 +193,14 @@ public class ProducteWebController {
         return "redirect:/web/productes";
     }
 
+    /**
+     * Executa l'operació `eliminarProducte`.
+     *
+     * @param id paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminarProducte(@PathVariable Long id,
             RedirectAttributes redirectAttributes,

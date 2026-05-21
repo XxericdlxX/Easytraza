@@ -39,6 +39,13 @@ import coil3.compose.AsyncImage
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.network.dto.MobileUsuariDto
 
+/**
+ * Executa l'operació `UserSelectionScreen`.
+ * @param users paràmetre necessari per a l'operació.
+ * @param loading paràmetre necessari per a l'operació.
+ * @param status paràmetre necessari per a l'operació.
+ * @param onRefreshUsers paràmetre necessari per a l'operació.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UserSelectionScreen(
@@ -212,6 +219,10 @@ fun UserSelectionScreen(
 }
 
 
+/**
+ * Executa l'operació `AvatarUsuari`.
+ * @param user paràmetre necessari per a l'operació.
+ */
 @Composable
 private fun AvatarUsuari(user: MobileUsuariDto) {
     val fotoUrl = user.fotoPerfilUrl?.trim().orEmpty()
@@ -263,6 +274,11 @@ private fun AvatarUsuari(user: MobileUsuariDto) {
     }
 }
 
+/**
+ * Executa l'operació `obtenirRolVisible`.
+ * @param user paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 @Composable
 private fun obtenirRolVisible(user: MobileUsuariDto): String {
     return when (user.rol?.uppercase()) {
@@ -272,10 +288,20 @@ private fun obtenirRolVisible(user: MobileUsuariDto): String {
     }
 }
 
+/**
+ * Executa l'operació `obtenirNomVisible`.
+ * @param user paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 private fun obtenirNomVisible(user: MobileUsuariDto): String {
     return "${user.nom.orEmpty().trim()} ${user.cognoms.orEmpty().trim()}".trim()
 }
 
+/**
+ * Executa l'operació `obtenirInicials`.
+ * @param user paràmetre necessari per a l'operació.
+ * @return resultat obtingut després d'executar l'operació.
+ */
 private fun obtenirInicials(user: MobileUsuariDto): String {
     val nomVisible = obtenirNomVisible(user)
 

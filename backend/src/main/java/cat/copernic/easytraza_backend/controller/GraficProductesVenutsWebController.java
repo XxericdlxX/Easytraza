@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Controlador `GraficProductesVenutsWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/grafic-productes-venuts")
 public class GraficProductesVenutsWebController {
@@ -22,6 +25,15 @@ public class GraficProductesVenutsWebController {
     @Autowired
     private ProducteService producteService;
 
+    /**
+     * Executa l'operació `veureGraficProductesVenuts`.
+     *
+     * @param mes paràmetre necessari per a l'operació.
+     * @param producteId paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String veureGraficProductesVenuts(
             @RequestParam(required = false) String mes,

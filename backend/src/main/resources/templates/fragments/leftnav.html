@@ -10,7 +10,7 @@
             </div>
 
             <div class="leftnav-menu">
-                <div class="leftnav-section-title" th:text="#{nav.section.administracio}">
+                <div class="leftnav-section-title" th:if="${navUserAdmin}" th:text="#{nav.section.administracio}">
                     ADMINISTRACIÓN
                 </div>
 

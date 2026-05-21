@@ -1,10 +1,12 @@
 package cat.copernic.easytraza_mobile.network.dto
 
+/**
+ * Component de xarxa `MobileUsuariDto` de l'aplicació mobile d'EasyTraza.
+ */
 data class MobileUsuariDto(
     val id: Long,
     val nom: String? = null,
     val cognoms: String? = null,
-    val email: String? = null,
     val rol: String? = null,
 
     val fotoPerfilUrl: String? = null

@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
                                 currentUserName = currentUserName,
                                 currentUserRole = currentUserRole,
                                 currentUserInitials = currentUserInitials,
+                                currentUserPhotoUrl = currentUser.value?.fotoPerfilUrl,
                                 onBackToUsers = {
                                     currentUser.value = null
                                     userSelectionViewModel.carregarUsuaris()
@@ -170,7 +171,7 @@ private fun construirNomVisible(user: MobileUsuariDto?): String {
     }
 
     val complet = "${user.nom.orEmpty().trim()} ${user.cognoms.orEmpty().trim()}".trim()
-    return complet.ifBlank { user.email.orEmpty() }
+    return complet.ifBlank { user.id.toString() }
 }
 
 @androidx.compose.runtime.Composable

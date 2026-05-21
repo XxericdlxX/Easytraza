@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador `PerfilWebController` del projecte EasyTraza.
+ */
 @Controller
 @RequestMapping("/web/perfil")
 public class PerfilWebController {
@@ -38,6 +41,14 @@ public class PerfilWebController {
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * Executa l'operació `mostrarPerfil`.
+     *
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping
     public String mostrarPerfil(Model model,
             RedirectAttributes redirectAttributes,
@@ -53,12 +64,25 @@ public class PerfilWebController {
         }
 
         Usuari usuari = usuariAutenticat.get();
+        boolean perfilProtegit = usuariService.isProtectedUser(usuari);
         model.addAttribute("perfil", usuariService.convertirEntityAPerfilDto(usuari));
-        model.addAttribute("perfilEmailBloquejat", usuariService.isProtectedUser(usuari));
+        model.addAttribute("perfilEmailBloquejat", perfilProtegit);
+        model.addAttribute("perfilDadesBloquejades", perfilProtegit);
         model.addAttribute("currentPath", "/web/perfil");
         return "perfil/editar-perfil";
     }
 
+    /**
+     * Executa l'operació `actualitzarPerfil`.
+     *
+     * @param perfilUsuariDto paràmetre necessari per a l'operació.
+     * @param result paràmetre necessari per a l'operació.
+     * @param fotoPerfil paràmetre necessari per a l'operació.
+     * @param model paràmetre necessari per a l'operació.
+     * @param redirectAttributes paràmetre necessari per a l'operació.
+     * @param locale paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar")
     public String actualitzarPerfil(@Valid @ModelAttribute("perfil") PerfilUsuariDto perfilUsuariDto,
             BindingResult result,
@@ -77,7 +101,9 @@ public class PerfilWebController {
         }
 
         Usuari usuariActual = usuariAutenticat.get();
-        model.addAttribute("perfilEmailBloquejat", usuariService.isProtectedUser(usuariActual));
+        boolean perfilProtegit = usuariService.isProtectedUser(usuariActual);
+        model.addAttribute("perfilEmailBloquejat", perfilProtegit);
+        model.addAttribute("perfilDadesBloquejades", perfilProtegit);
         model.addAttribute("currentPath", "/web/perfil");
 
         if (result.hasErrors()) {
@@ -127,6 +153,12 @@ public class PerfilWebController {
         return "redirect:/web/perfil";
     }
 
+    /**
+     * Executa l'operació `mostrarFotoPerfil`.
+     *
+     * @param nomFitxer paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/foto/{nomFitxer}")
     public ResponseEntity<Resource> mostrarFotoPerfil(@PathVariable String nomFitxer) {
         Optional<Resource> foto = usuariService.carregarFotoPerfil(nomFitxer);
@@ -149,6 +181,11 @@ public class PerfilWebController {
                 .body(foto.get());
     }
 
+    /**
+     * Executa l'operació `obtenirUsuariAutenticat`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     private Optional<Usuari> obtenirUsuariAutenticat() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -163,6 +200,12 @@ public class PerfilWebController {
         return usuariService.findByEmailIgnoreCase(email);
     }
 
+    /**
+     * Executa l'operació `actualitzarPrincipalSiCanviaEmail`.
+     *
+     * @param emailAnterior paràmetre necessari per a l'operació.
+     * @param emailNou paràmetre necessari per a l'operació.
+     */
     private void actualitzarPrincipalSiCanviaEmail(String emailAnterior, String emailNou) {
         if (emailAnterior == null || emailNou == null || emailAnterior.equalsIgnoreCase(emailNou)) {
             return;

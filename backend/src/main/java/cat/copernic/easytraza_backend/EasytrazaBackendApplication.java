@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Component principal `EasytrazaBackendApplication` del projecte EasyTraza.
+ */
 @SpringBootApplication
 public class EasytrazaBackendApplication {
 
@@ -24,10 +27,23 @@ public class EasytrazaBackendApplication {
     private static final String SUPERADMIN_DNI_VALID = "00000000T";
     private static final String SUPERADMIN_FOTO = "superadmin-logo-easytraza.png";
 
+    /**
+     * Executa l'operació `main`.
+     *
+     * @param args paràmetre necessari per a l'operació.
+     */
     public static void main(String[] args) {
         SpringApplication.run(EasytrazaBackendApplication.class, args);
     }
 
+    /**
+     * Executa l'operació `crearSuperAdminInicial`.
+     *
+     * @param usuariRepository paràmetre necessari per a l'operació.
+     * @param passwordEncoder paràmetre necessari per a l'operació.
+     * @param perfilFotosPath paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Bean
     CommandLineRunner crearSuperAdminInicial(
             UsuariRepository usuariRepository,
@@ -68,6 +84,11 @@ public class EasytrazaBackendApplication {
         };
     }
 
+    /**
+     * Executa l'operació `prepararLogoSuperAdmin`.
+     *
+     * @param perfilFotosPath paràmetre necessari per a l'operació.
+     */
     private void prepararLogoSuperAdmin(String perfilFotosPath) {
         try {
             Path directori = Paths.get(perfilFotosPath).toAbsolutePath().normalize();

@@ -5,11 +5,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * Component de xarxa `RetrofitClient` de l'aplicació mobile d'EasyTraza.
+ */
 object RetrofitClient {
 
     private const val DEFAULT_SCHEME = "http"
     private const val DEFAULT_PORT = 8080
 
+    /**
+     * Executa l'operació `buildBaseUrl`.
+     * @param serverHost paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     fun buildBaseUrl(serverHost: String): String {
         val cleanHost = serverHost
             .trim()
@@ -23,6 +31,11 @@ object RetrofitClient {
         return "$DEFAULT_SCHEME://$cleanHost:$DEFAULT_PORT/"
     }
 
+    /**
+     * Executa l'operació `create`.
+     * @param baseUrl paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     fun create(baseUrl: String): BackendApiService {
         val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)

@@ -147,4 +147,24 @@
 
     <string name="lots_mobile_filter_code_all">Todos los códigos de lote</string>
     <string name="lots_mobile_filter_material_all">Todas las materias primas</string>
+
+    <string name="profile_photo_label">Foto de perfil</string>
+
+    <string name="lots_mobile_empty_filtered">No hay lotes que coincidan con los filtros seleccionados.</string>
+    <string name="lots_mobile_filters_summary">Filtros y ordenación combinados.</string>
+    <string name="lots_mobile_filters_show">Mostrar filtros</string>
+    <string name="lots_mobile_filters_hide">Ocultar filtros</string>
+    <string name="lots_mobile_sort_title">Ordenación</string>
+    <string name="lots_mobile_sort_field">Ordenar por</string>
+    <string name="lots_mobile_sort_direction">Dirección</string>
+    <string name="lots_mobile_sort_code">Código de lote</string>
+    <string name="lots_mobile_sort_material">Materia prima</string>
+    <string name="lots_mobile_sort_supplier">Proveedor</string>
+    <string name="lots_mobile_sort_quantity">Cantidad</string>
+    <string name="lots_mobile_sort_reception_date">Fecha de recepción</string>
+    <string name="lots_mobile_sort_open_date">Fecha de apertura</string>
+    <string name="lots_mobile_sort_finish_date">Fecha de finalización</string>
+    <string name="lots_mobile_sort_status">Estado</string>
+    <string name="lots_mobile_sort_asc">Ascendente</string>
+    <string name="lots_mobile_sort_desc">Descendente</string>
 </resources>
