@@ -5,19 +5,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.easytraza_mobile.R
 import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
-import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
 import cat.copernic.easytraza_mobile.domain.usecase.config.GetServerIpUseCase
 import cat.copernic.easytraza_mobile.domain.usecase.lot.FinalitzarLotUseCase
 import cat.copernic.easytraza_mobile.domain.usecase.lot.GetLotsUseCase
 import cat.copernic.easytraza_mobile.domain.usecase.lot.IniciarLotUseCase
 import cat.copernic.easytraza_mobile.network.dto.MobileLotDto
-import retrofit2.Response
+import cat.copernic.easytraza_mobile.network.NetworkErrorMapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.Response
+import java.util.Locale
 
 /**
- * Pantalla o component d’interfície `GestioLotsViewModel` de l'aplicació mobile d'EasyTraza.
+ * ViewModel de la pantalla de gestió de lots del client mobile.
  */
 class GestioLotsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -50,6 +51,12 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     private val _filtreEstat = MutableStateFlow("")
     val filtreEstat: StateFlow<String> = _filtreEstat
 
+    private val _ordreCamp = MutableStateFlow(ORDRE_DATA_RECEPCIO)
+    val ordreCamp: StateFlow<String> = _ordreCamp
+
+    private val _ordreDireccio = MutableStateFlow(ORDRE_DESC)
+    val ordreDireccio: StateFlow<String> = _ordreDireccio
+
     private val _status = MutableStateFlow("")
     val status: StateFlow<String> = _status
 
@@ -57,7 +64,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     val loading: StateFlow<Boolean> = _loading
 
     /**
-     * Executa l'operació `carregarLots`.
+     * Recupera els lots del backend i reaplica els filtres i l'ordenació actuals.
      */
     fun carregarLots() {
         viewModelScope.launch {
@@ -74,7 +81,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
 
                 _lotsComplets.value = getLotsUseCase(savedIp)
                 actualitzarOpcionsFiltres()
-                aplicarFiltres()
+                aplicarFiltresIOrdenacio()
 
                 if (_lotsComplets.value.isEmpty()) {
                     _status.value = getApplication<Application>().getString(R.string.lots_mobile_empty)
@@ -92,54 +99,66 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * Executa l'operació `actualitzarFiltreCodi`.
-     * @param valor paràmetre necessari per a l'operació.
+     * Actualitza el filtre de codi de lot.
      */
     fun actualitzarFiltreCodi(valor: String) {
         _filtreCodi.value = valor
-        aplicarFiltres()
+        aplicarFiltresIOrdenacio()
     }
 
     /**
-     * Executa l'operació `actualitzarFiltreMateria`.
-     * @param valor paràmetre necessari per a l'operació.
+     * Actualitza el filtre de matèria primera.
      */
     fun actualitzarFiltreMateria(valor: String) {
         _filtreMateria.value = valor
-        aplicarFiltres()
+        aplicarFiltresIOrdenacio()
     }
 
     /**
-     * Executa l'operació `actualitzarFiltreDataRecepcio`.
-     * @param valor paràmetre necessari per a l'operació.
+     * Actualitza el filtre de data de recepció.
      */
     fun actualitzarFiltreDataRecepcio(valor: String) {
         _filtreDataRecepcio.value = valor
-        aplicarFiltres()
+        aplicarFiltresIOrdenacio()
     }
 
     /**
-     * Executa l'operació `actualitzarFiltreEstat`.
-     * @param valor paràmetre necessari per a l'operació.
+     * Actualitza el filtre d'estat del lot.
      */
     fun actualitzarFiltreEstat(valor: String) {
         _filtreEstat.value = valor
-        aplicarFiltres()
+        aplicarFiltresIOrdenacio()
     }
 
     /**
-     * Executa l'operació `netejarFiltres`.
+     * Actualitza el camp utilitzat per ordenar la llista filtrada.
+     */
+    fun actualitzarOrdreCamp(valor: String) {
+        _ordreCamp.value = valor
+        aplicarFiltresIOrdenacio()
+    }
+
+    /**
+     * Actualitza la direcció de l'ordenació.
+     */
+    fun actualitzarOrdreDireccio(valor: String) {
+        _ordreDireccio.value = valor
+        aplicarFiltresIOrdenacio()
+    }
+
+    /**
+     * Neteja els filtres sense canviar l'ordenació seleccionada.
      */
     fun netejarFiltres() {
         _filtreCodi.value = ""
         _filtreMateria.value = ""
         _filtreDataRecepcio.value = ""
         _filtreEstat.value = ""
-        aplicarFiltres()
+        aplicarFiltresIOrdenacio()
     }
 
     /**
-     * Executa l'operació `actualitzarOpcionsFiltres`.
+     * Actualitza els valors disponibles als desplegables de filtre.
      */
     private fun actualitzarOpcionsFiltres() {
         _codisLotDisponibles.value = _lotsComplets.value
@@ -154,15 +173,15 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * Executa l'operació `aplicarFiltres`.
+     * Aplica els filtres combinats i després ordena el resultat obtingut.
      */
-    private fun aplicarFiltres() {
+    private fun aplicarFiltresIOrdenacio() {
         val codi = _filtreCodi.value.trim()
         val materia = _filtreMateria.value.trim()
         val dataRecepcio = _filtreDataRecepcio.value.trim()
         val estat = _filtreEstat.value.trim()
 
-        _lots.value = _lotsComplets.value.filter { lot ->
+        val filtrats = _lotsComplets.value.filter { lot ->
             val coincideixCodi = codi.isBlank() || lot.codiLot.orEmpty().equals(codi, ignoreCase = true)
             val coincideixMateria = materia.isBlank() || lot.materiaPrimaNom.orEmpty().equals(materia, ignoreCase = true)
             val coincideixData = dataRecepcio.isBlank() || lot.dataRecepcio.orEmpty().equals(dataRecepcio, ignoreCase = true)
@@ -170,11 +189,36 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
 
             coincideixCodi && coincideixMateria && coincideixData && coincideixEstat
         }
+
+        _lots.value = ordenarLots(filtrats)
     }
 
     /**
-     * Executa l'operació `iniciarLot`.
-     * @param id paràmetre necessari per a l'operació.
+     * Ordena els lots segons el camp i la direcció seleccionats per l'usuari.
+     */
+    private fun ordenarLots(lots: List<MobileLotDto>): List<MobileLotDto> {
+        val comparator = when (_ordreCamp.value) {
+            ORDRE_CODI_LOT -> compareBy { lot: MobileLotDto -> normalitzarText(lot.codiLot) }
+            ORDRE_MATERIA -> compareBy { lot: MobileLotDto -> normalitzarText(lot.materiaPrimaNom) }
+            ORDRE_PROVEIDOR -> compareBy { lot: MobileLotDto -> normalitzarText(lot.proveidorNom) }
+            ORDRE_QUANTITAT -> compareBy { lot: MobileLotDto -> lot.quantitat ?: 0.0 }
+            ORDRE_ESTAT -> compareBy { lot: MobileLotDto -> normalitzarText(lot.estat) }
+            else -> compareBy { lot: MobileLotDto -> lot.dataRecepcio.orEmpty() }
+        }
+
+        val ordenats = lots.sortedWith(comparator.thenBy { it.id })
+        return if (_ordreDireccio.value == ORDRE_DESC) ordenats.asReversed() else ordenats
+    }
+
+    /**
+     * Normalitza un text per fer ordenacions alfabètiques estables.
+     */
+    private fun normalitzarText(valor: String?): String {
+        return valor.orEmpty().lowercase(Locale.ROOT)
+    }
+
+    /**
+     * Inicia el lot indicat.
      */
     fun iniciarLot(id: Long) {
         executarAccioLot(
@@ -185,8 +229,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * Executa l'operació `finalitzarLot`.
-     * @param id paràmetre necessari per a l'operació.
+     * Finalitza el lot indicat.
      */
     fun finalitzarLot(id: Long) {
         executarAccioLot(
@@ -197,10 +240,7 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * Executa l'operació `executarAccioLot`.
-     * @param id paràmetre necessari per a l'operació.
-     * @param missatgeExit paràmetre necessari per a l'operació.
-     * @param accio paràmetre necessari per a l'operació.
+     * Executa una acció sobre un lot i recarrega la llista si el backend confirma l'operació.
      */
     private fun executarAccioLot(
         id: Long,
@@ -237,5 +277,16 @@ class GestioLotsViewModel(application: Application) : AndroidViewModel(applicati
                 _loading.value = false
             }
         }
+    }
+
+    companion object {
+        const val ORDRE_CODI_LOT = "codiLot"
+        const val ORDRE_MATERIA = "materiaPrima"
+        const val ORDRE_PROVEIDOR = "proveidor"
+        const val ORDRE_QUANTITAT = "quantitat"
+        const val ORDRE_DATA_RECEPCIO = "dataRecepcio"
+        const val ORDRE_ESTAT = "estat"
+        const val ORDRE_ASC = "ASC"
+        const val ORDRE_DESC = "DESC"
     }
 }
