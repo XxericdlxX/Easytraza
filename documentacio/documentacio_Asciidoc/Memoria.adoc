@@ -898,3 +898,78 @@ image::Sprint4/BoardFinal/BoardFinalSprint4.5.png[Board final 5]
 
 | Accions concretes per al següent sprint | De cara al següent sprint, vull dedicar més temps a provar les funcionalitats en diferents resolucions i contextos abans de donar-les per acabades. També intentaré separar millor les tasques de desenvolupament i les de correcció per controlar més el temps invertit en cada part. A més, continuaré revisant la coherència visual, les traduccions i els fluxos d’usuari per deixar l’aplicació més estable i preparada per a l’entrega final.
 |===
+
+=== Sprint 5
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+
+image::Sprint5/BoardInicial/BoardInicialSprint5.1.png[Board inicial 1]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 15/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig acabar d’avançar en les correccions i ajustos finals del Sprint 4, especialment en la part web i mobile. Vaig treballar en la millora del login i la recuperació de contrasenya, en la visualització de diferents pantalles, en el selector d’idioma i en l’OCR mobile per detectar millor alguns albarans. | Avui començaré el Sprint 5, organitzaré els bugfixs pendents del Sprint 4 i prepararé les noves tasques i issues que caldrà desenvolupar durant aquest sprint. | - | 6h
+|===
+
+===== DIA 2 Dilluns - 18/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Divendres vaig organitzar l’inici del Sprint 5, vaig revisar els bugfixs pendents del Sprint 4 i vaig estructurar les correccions que calia deixar tancades abans de continuar amb noves funcionalitats. | Avui corregiré els últims punts detectats del Sprint 4, especialment els relacionats amb la visualització web, el menú lateral, les taules, el comportament de l’OCR mobile i alguns ajustos del llistat de lots. Un cop revisat, començaré a avançar amb el codi previst per al Sprint 5. | - | 6h
+|===
+
+===== DIA 3 Dimarts - 19/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig continuar corregint els bugfixs pendents del Sprint 4. Vaig treballar en la millora de l’OCR mobile, especialment en la detecció d’un proveïdor concret, vaig ajustar la visualització del menú lateral i de les taules web, i vaig revisar la gestió de lots per fer-la més clara i compacta. També vaig deixar preparades les bases per continuar amb el desenvolupament del Sprint 5. | - | - | 0h
+|===
+
+===== DIA 4 Dimecres - 20/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - | Avui continuaré corregint els bugfixs relacionats amb l’OCR d’albarans de proveïdor, revisant l’extracció de codis de matèria, lots i línies detectades. També ajustaré algunes taules web que encara retallen informació o no es visualitzen correctament. | - | 3h + 7'30h
+|===
+
+===== DIA 5 Dijous - 21/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig continuar treballant en les correccions dels bugfixs relacionats amb l’OCR dels albarans de proveïdor. Vaig revisar l’extracció dels codis de matèria primera, els lots i les línies detectades, i també vaig començar a ajustar algunes taules de la part web perquè la informació es mostrés millor i no quedés retallada. | Avui acabaré de revisar els últims canvis del sprint, comprovaré que les correccions funcionin correctament tant a la part web com a la part mòbil i prepararé el tancament del Sprint 5. També revisaré el board final, la documentació i els canvis pendents abans de deixar-ho preparat per al merge request. | Alguns ajustos de l’OCR encara necessiten revisió perquè en mòbil la detecció no és tan precisa com en PC. També he hagut d’adaptar algunes pantalles perquè les taules siguin més compactes i es visualitzin correctament. | 4h
+|===
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+
+image::Sprint5/BoardFinal/BoardFinalSprint5.1.png[Board final 1]
+image::Sprint5/BoardFinal/BoardFinalSprint5.2.png[Board final 2]
+image::Sprint5/BoardFinal/BoardFinalSprint5.3.png[Board final 3]
+image::Sprint5/BoardFinal/BoardFinalSprint5.4.png[Board final 4]
+image::Sprint5/BoardFinal/BoardFinalSprint5.5.png[Board final 5]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+
+| Aspectes positius | Durant aquest sprint he avançat en la correcció dels bugfixs relacionats amb l’OCR dels albarans de proveïdor, sobretot en l’extracció de codis de matèria primera, lots i línies detectades. També he millorat algunes pantalles web, com el llistat de lots i les taules que no mostraven bé tota la informació.
+
+| Aspectes a millorar | He dedicat més temps del previst a ajustar l’OCR, especialment perquè en mòbil no detectava els albarans tan bé com en PC. També m’ha costat deixar les taules web més compactes sense que es retallés la informació. A més, hauria d’haver anat actualitzant abans la documentació del sprint i no deixar tanta part per al final.
+
+| Accions concretes per al següent sprint | De cara al següent sprint, intentaré revisar abans les parts més conflictives, especialment l’OCR i les pantalles amb taules grans. També faré proves més constants en web i en mòbil per detectar els errors abans, i aniré actualitzant la documentació a mesura que avanci el treball per no acumular-la al final.
+|===
