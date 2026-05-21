@@ -149,4 +149,22 @@
     <string name="lots_mobile_filter_material_all">Totes les matèries primeres</string>
 
     <string name="profile_photo_label">Foto de perfil</string>
+
+    <string name="lots_mobile_empty_filtered">No hi ha lots que coincideixin amb els filtres seleccionats.</string>
+    <string name="lots_mobile_filters_summary">Filtres i ordenació combinats.</string>
+    <string name="lots_mobile_filters_show">Mostrar filtres</string>
+    <string name="lots_mobile_filters_hide">Ocultar filtres</string>
+    <string name="lots_mobile_sort_title">Ordenació</string>
+    <string name="lots_mobile_sort_field">Ordenar per</string>
+    <string name="lots_mobile_sort_direction">Direcció</string>
+    <string name="lots_mobile_sort_code">Codi de lot</string>
+    <string name="lots_mobile_sort_material">Matèria primera</string>
+    <string name="lots_mobile_sort_supplier">Proveïdor</string>
+    <string name="lots_mobile_sort_quantity">Quantitat</string>
+    <string name="lots_mobile_sort_reception_date">Data de recepció</string>
+    <string name="lots_mobile_sort_open_date">Data d\'obertura</string>
+    <string name="lots_mobile_sort_finish_date">Data de finalització</string>
+    <string name="lots_mobile_sort_status">Estat</string>
+    <string name="lots_mobile_sort_asc">Ascendent</string>
+    <string name="lots_mobile_sort_desc">Descendent</string>
 </resources>
