@@ -45,7 +45,7 @@ image::Sprint5/BoardInicial/BoardInicialSprint5.1.png[Board inicial 1]
 [cols="1,2,2,2,1", options="header"]
 |===
 | Membre | Què va fer ahir | Què farà avui | Problemes | Hores
-| Eric Delgado López |  |  |  | 
+| Eric Delgado López | Ahir vaig continuar treballant en les correccions dels bugfixs relacionats amb l’OCR dels albarans de proveïdor. Vaig revisar l’extracció dels codis de matèria primera, els lots i les línies detectades, i també vaig començar a ajustar algunes taules de la part web perquè la informació es mostrés millor i no quedés retallada. | Avui acabaré de revisar els últims canvis del sprint, comprovaré que les correccions funcionin correctament tant a la part web com a la part mòbil i prepararé el tancament del Sprint 5. També revisaré el board final, la documentació i els canvis pendents abans de deixar-ho preparat per al merge request. | Alguns ajustos de l’OCR encara necessiten revisió perquè en mòbil la detecció no és tan precisa com en PC. També he hagut d’adaptar algunes pantalles perquè les taules siguin més compactes i es visualitzin correctament. | 4h
 |===
 
 == 3. Planificació Final
