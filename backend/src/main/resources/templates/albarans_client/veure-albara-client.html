@@ -93,58 +93,56 @@
                     </p>
                 </div>
 
-                <div class="table-wrapper" th:if="${albaraDetall.linies != null && !#lists.isEmpty(albaraDetall.linies)}">
-                    <table class="albara-client-detail-table">
-                        <thead>
-                            <tr>
-                                <th th:text="#{albara.client.linia.lot.intern}">Lote interno</th>
-                                <th th:text="#{albara.client.linia.producte}">Producto</th>
-                                <th th:text="#{albara.client.linia.quantitat}">Cantidad</th>
-                                <th th:text="#{albara.client.linia.operari}">Operario</th>
-                                <th th:text="#{albara.client.linia.estat}">Estado</th>
-                                <th th:text="#{albara.client.linia.lots.associats}">Lotes asociados</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="linia : ${albaraDetall.linies}">
-                                <td>
-                                    <span th:text="#{albara.client.lot.prefix} + ${#numbers.formatInteger(linia.numeroLotIntern, 2)}">
-                                        Lot-01
+                <div class="responsive-card-list"
+                     th:if="${albaraDetall.linies != null && !#lists.isEmpty(albaraDetall.linies)}">
+                    <details class="data-card albara-line-card" th:each="linia : ${albaraDetall.linies}">
+                        <summary class="data-card-summary">
+                            <span class="data-card-main">
+                                <strong th:if="${linia.producte != null}" th:text="${linia.producte.nom}">Producto</strong>
+                                <strong th:if="${linia.producte == null}">-</strong>
+                                <span>
+                                    <span th:text="#{albara.client.linia.quantitat}">Cantidad</span>:
+                                    <span th:text="${linia.quantitat}">10</span>
+                                </span>
+                            </span>
+
+                            <span class="data-card-meta">
+                                <span th:text="#{albara.client.lot.prefix} + ${#numbers.formatInteger(linia.numeroLotIntern, 2)}">Lote-01</span>
+                                <span class="status-pill" th:text="#{${'albara.client.linia.estat.' + linia.estat}}">Estado</span>
+                            </span>
+                        </summary>
+
+                        <div class="data-card-body">
+                            <div class="data-card-grid">
+                                <div class="data-card-field">
+                                    <span th:text="#{albara.client.linia.operari}">Operario</span>
+                                    <strong th:text="${linia.operari != null ? linia.operari.nom + ' ' + linia.operari.cognoms : '-'}">Operario</strong>
+                                </div>
+
+                                <div class="data-card-field">
+                                    <span th:text="#{albara.client.linia.lot.intern}">Lote interno</span>
+                                    <strong th:text="#{albara.client.lot.prefix} + ${#numbers.formatInteger(linia.numeroLotIntern, 2)}">Lote-01</strong>
+                                </div>
+
+                                <div class="data-card-field">
+                                    <span th:text="#{albara.client.linia.estat}">Estado</span>
+                                    <strong th:text="#{${'albara.client.linia.estat.' + linia.estat}}">Estado</strong>
+                                </div>
+                            </div>
+
+                            <div class="data-card-section-title" th:text="#{albara.client.linia.lots.associats}">Lotes asociados</div>
+                            <div th:if="${linia.lotsAssociats != null && !#sets.isEmpty(linia.lotsAssociats)}"
+                                 class="lot-badges-list card-lot-badges">
+                                <span th:each="lot : ${linia.lotsAssociats}" class="lot-badge">
+                                    <strong th:text="${lot.codiLot}">LOT-PROV-01</strong>
+                                    <span th:if="${lot.materiaPrima != null}">
+                                        · <span th:text="${lot.materiaPrima.nom}">Farina</span>
                                     </span>
-                                </td>
-
-                                <td th:text="${linia.producte != null ? linia.producte.nom : '-'}">
-                                    Producto
-                                </td>
-
-                                <td th:text="${linia.quantitat}">
-                                    10
-                                </td>
-
-                                <td th:text="${linia.operari != null ? linia.operari.nom + ' ' + linia.operari.cognoms : '-'}">
-                                    Operario
-                                </td>
-
-                                <td th:text="#{${'albara.client.linia.estat.' + linia.estat}}">
-                                    Estado
-                                </td>
-
-                                <td>
-                                    <span th:if="${linia.lotsAssociats == null || #sets.isEmpty(linia.lotsAssociats)}">-</span>
-
-                                    <div th:if="${linia.lotsAssociats != null && !#sets.isEmpty(linia.lotsAssociats)}"
-                                         class="lot-badges-list">
-                                        <span th:each="lot : ${linia.lotsAssociats}" class="lot-badge">
-                                            <strong th:text="${lot.codiLot}">LOT-PROV-01</strong>
-                                            <span th:if="${lot.materiaPrima != null}">
-                                                · <span th:text="${lot.materiaPrima.nom}">Farina</span>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </span>
+                            </div>
+                            <span th:if="${linia.lotsAssociats == null || #sets.isEmpty(linia.lotsAssociats)}">-</span>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="empty-message"
@@ -181,6 +179,9 @@
                     });
                 });
             });
+        </script>
+
+        <script>
         </script>
 
     </body>
