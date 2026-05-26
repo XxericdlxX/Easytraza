@@ -14,18 +14,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import cat.copernic.easytraza_mobile.data.IpPreferencesRepository
-import cat.copernic.easytraza_mobile.network.dto.MobileUsuariDto
-import cat.copernic.easytraza_mobile.ui.screen.ConfigScreen
-import cat.copernic.easytraza_mobile.ui.screen.DashboardScreen
-import cat.copernic.easytraza_mobile.ui.screen.GestioLotsScreen
-import cat.copernic.easytraza_mobile.ui.screen.RecepcioAlbaraScreen
-import cat.copernic.easytraza_mobile.ui.screen.UserSelectionScreen
-import cat.copernic.easytraza_mobile.ui.theme.Projecte4_EasyTraza_EricTheme
-import cat.copernic.easytraza_mobile.ui.viewmodel.ConfigIpViewModel
-import cat.copernic.easytraza_mobile.ui.viewmodel.GestioLotsViewModel
-import cat.copernic.easytraza_mobile.ui.viewmodel.RecepcioAlbaraViewModel
-import cat.copernic.easytraza_mobile.ui.viewmodel.UserSelectionViewModel
+import cat.copernic.easytraza_mobile.rf15_configuracio_ip.data.IpPreferencesRepository
+import cat.copernic.easytraza_mobile.rf25_rf28_rf29_auth.network.dto.MobileUsuariDto
+import cat.copernic.easytraza_mobile.rf15_configuracio_ip.ui.ConfigScreen
+import cat.copernic.easytraza_mobile.comu.ui.DashboardScreen
+import cat.copernic.easytraza_mobile.rf10_rf11_rf21_rf22_lots.ui.GestioLotsScreen
+import cat.copernic.easytraza_mobile.rf07_albarans_ocr.ui.RecepcioAlbaraScreen
+import cat.copernic.easytraza_mobile.rf25_rf28_rf29_auth.ui.UserSelectionScreen
+import cat.copernic.easytraza_mobile.comu.ui.theme.Projecte4_EasyTraza_EricTheme
+import cat.copernic.easytraza_mobile.rf15_configuracio_ip.viewmodel.ConfigIpViewModel
+import cat.copernic.easytraza_mobile.rf10_rf11_rf21_rf22_lots.viewmodel.GestioLotsViewModel
+import cat.copernic.easytraza_mobile.rf07_albarans_ocr.viewmodel.RecepcioAlbaraViewModel
+import cat.copernic.easytraza_mobile.rf25_rf28_rf29_auth.viewmodel.UserSelectionViewModel
 
 class MainActivity : ComponentActivity() {
 
