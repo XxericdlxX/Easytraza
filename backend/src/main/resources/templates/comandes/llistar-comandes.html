@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{comandes.llistat}">Listado de comandas</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <main class="main-with-leftnav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{comandes.llistat}">Listado de comandas</h1>
+                            <p th:text="#{comandes.gestio}">Gestión de comandas del sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <a th:href="@{/web/comandes/crear}" class="btn btn-primary" th:text="#{comandes.afegir}">
+                            Añadir comanda
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <form th:action="@{/web/comandes}" method="get" class="filters-card">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label for="clientNif" th:text="#{comandes.client}">Cliente</label>
+                            <input id="clientNif" name="clientNif" type="text"
+                                   th:value="${clientNif}"
+                                   th:placeholder="#{comandes.cerca.client}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dataComanda" th:text="#{comandes.data}">Fecha solicitada</label>
+                            <input id="dataComanda" name="dataComanda" type="date" th:value="${dataComanda}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estat" th:text="#{comandes.estat}">Estado</label>
+                            <select id="estat" name="estat">
+                                <option value="" th:text="#{comandes.cerca.estat.tots}">Todos los estados</option>
+                                <option th:each="estatComanda : ${estatsComanda}"
+                                        th:value="${estatComanda}"
+                                        th:selected="${estat == estatComanda}"
+                                        th:text="#{${'comandes.estat.' + estatComanda}}">
+                                    Estado
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="producteId" th:text="#{comandes.producte}">Producto</label>
+                            <select id="producteId" name="producteId">
+                                <option value="" th:text="#{comandes.cerca.producte.tots}">Todos los productos</option>
+                                <option th:each="producte : ${productes}"
+                                        th:value="${producte.id}"
+                                        th:selected="${producteId == producte.id}"
+                                        th:text="${producte.nom}">
+                                    Producto
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{comandes.cerca.boto}">Buscar</button>
+                        <a th:href="@{/web/comandes}" class="btn btn-secondary" th:text="#{comandes.netejar}">Limpiar</a>
+                    </div>
+                </form>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(comandes)}" th:text="#{comandes.buit}">
+                    No hay comandas registradas.
+                </div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(comandes)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{comandes.id}">ID</th>
+                                <th th:text="#{comandes.data}">Fecha solicitada</th>
+                                <th th:text="#{comandes.client}">Cliente</th>
+                                <th th:text="#{comandes.estat}">Estado</th>
+                                <th th:text="#{comandes.albara.associat}">Albarán asociado</th>
+                                <th th:text="#{comandes.accions}">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="comanda : ${comandes}">
+                                <td th:text="${comanda.id}">1</td>
+                                <td th:text="${comanda.dataComanda}">2026-05-26</td>
+                                <td th:text="${comanda.client != null ? comanda.client.nom + ' (' + comanda.client.nif + ')' : '-'}">Cliente</td>
+                                <td>
+                                    <span class="status-pill" th:text="#{${'comandes.estat.' + comanda.estat}}">Estado</span>
+                                </td>
+                                <td>
+                                    <a th:if="${comanda.albaraClient != null}"
+                                       th:href="@{/web/albarans-client/veure/{id}(id=${comanda.albaraClient.id})}"
+                                       th:text="#{comandes.veure.albara}">
+                                        Ver albarán
+                                    </a>
+                                    <span th:if="${comanda.albaraClient == null}" th:text="#{comandes.sense.albara}">Sin albarán</span>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <a th:href="@{/web/comandes/veure/{id}(id=${comanda.id})}" class="btn btn-secondary" th:text="#{comandes.veure}">Ver</a>
+
+                                        <a th:if="${comanda.albaraClient == null}"
+                                           th:href="@{/web/comandes/editar/{id}(id=${comanda.id})}"
+                                           class="btn btn-primary"
+                                           th:text="#{comandes.editar}">
+                                            Editar
+                                        </a>
+
+                                        <form th:if="${comanda.albaraClient == null && comanda.estat.name() != 'CANCELADA'}"
+                                              th:action="@{/web/comandes/generar-albara/{id}(id=${comanda.id})}"
+                                              method="post"
+                                              class="inline-form js-confirm-form"
+                                              th:attr="data-confirm-message=#{comandes.confirmar.generar.albara}">
+                                            <button type="submit" class="btn btn-accent" th:text="#{comandes.generar.albara}">
+                                                Generar albarán
+                                            </button>
+                                        </form>
+
+                                        <a th:if="${comanda.albaraClient == null}"
+                                           th:href="@{/web/comandes/eliminar/{id}(id=${comanda.id})}"
+                                           class="btn btn-danger js-confirm-delete"
+                                           th:attr="data-confirm-message=#{comandes.confirmar.eliminar}"
+                                           th:text="#{comandes.eliminar}">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <script th:replace="~{comandes/fragments-comanda :: confirm-script}"></script>
+    </body>
+</html>

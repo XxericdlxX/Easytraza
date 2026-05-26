@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <script th:fragment="linies-script">
+            document.addEventListener('DOMContentLoaded', function () {
+                const liniesContainer = document.getElementById('linies-container');
+                const template = document.getElementById('linia-template');
+
+                if (!liniesContainer || !template) {
+                    return;
+                }
+
+                function updateIndexes() {
+                    const cards = liniesContainer.querySelectorAll('.linia-card');
+
+                    cards.forEach((card, index) => {
+                        const title = card.querySelector('.linia-title');
+                        const idInput = card.querySelector('.linia-id-field');
+                        const producteSelect = card.querySelector('.linia-producte-field');
+                        const quantitatInput = card.querySelector('.linia-quantitat-field');
+                        const observacionsInput = card.querySelector('.linia-observacions-field');
+
+                        if (title) {
+                            title.textContent = title.textContent.replace(/\d+$/, '').trim() + ' ' + (index + 1);
+                        }
+
+                        if (idInput) {
+                            idInput.name = `linies[${index}].id`;
+                        }
+
+                        if (producteSelect) {
+                            producteSelect.name = `linies[${index}].producteId`;
+                        }
+
+                        if (quantitatInput) {
+                            quantitatInput.name = `linies[${index}].quantitat`;
+                        }
+
+                        if (observacionsInput) {
+                            observacionsInput.name = `linies[${index}].observacions`;
+                        }
+                    });
+
+                    refreshButtons();
+                }
+
+                function refreshButtons() {
+                    const cards = liniesContainer.querySelectorAll('.linia-card');
+
+                    cards.forEach((card, index) => {
+                        const addBtn = card.querySelector('.add-linia-inline-btn');
+                        const removeBtn = card.querySelector('.remove-linia-btn');
+
+                        if (addBtn) {
+                            addBtn.style.display = index === cards.length - 1 ? 'inline-block' : 'none';
+                        }
+
+                        if (removeBtn) {
+                            removeBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+                        }
+                    });
+                }
+
+                function addLine() {
+                    const clone = template.content.cloneNode(true);
+                    liniesContainer.appendChild(clone);
+                    updateIndexes();
+                }
+
+                liniesContainer.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('add-linia-inline-btn')) {
+                        addLine();
+                    }
+
+                    if (event.target.classList.contains('remove-linia-btn')) {
+                        const cards = liniesContainer.querySelectorAll('.linia-card');
+
+                        if (cards.length > 1) {
+                            event.target.closest('.linia-card').remove();
+                            updateIndexes();
+                        }
+                    }
+                });
+
+                updateIndexes();
+            });
+        </script>
+
+        <script th:fragment="lang-script">
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('lang', link.getAttribute('data-lang'));
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+        <script th:fragment="confirm-script">
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-confirm-form').forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        const message = form.getAttribute('data-confirm-message') || '¿Confirmas la operación?';
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.js-confirm-delete').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        const message = link.getAttribute('data-confirm-message') || '¿Seguro que quieres eliminar?';
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

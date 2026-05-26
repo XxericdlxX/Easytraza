@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{comandes.veure.titol}">Ver comanda</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+
+    <body>
+        <div class="page-standalone">
+            <div class="container">
+
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}"
+                             alt="Logo EasyTraza"
+                             class="list-page-logo">
+
+                        <div>
+                            <h1 th:text="#{comandes.veure.titol}">Ver comanda</h1>
+                            <p th:text="#{comandes.gestio}">Gestión de comandas del sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary"
+                               th:href="@{/web/comandes/veure/{id}(id=${comandaDetall.id}, lang='es')}"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+
+                            <a class="btn btn-secondary"
+                               th:href="@{/web/comandes/veure/{id}(id=${comandaDetall.id}, lang='ca')}"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+
+                        <a th:href="@{/web/comandes}"
+                           class="btn btn-secondary"
+                           th:text="#{comandes.tornar}">
+                            Volver
+                        </a>
+
+                        <a th:if="${comandaDetall.albaraClient == null}"
+                           th:href="@{/web/comandes/editar/{id}(id=${comandaDetall.id})}"
+                           class="btn btn-primary"
+                           th:text="#{comandes.editar}">
+                            Editar comanda
+                        </a>
+
+                        <form th:if="${comandaDetall.albaraClient == null and comandaDetall.estat != null and comandaDetall.estat.name() != 'CANCELADA'}"
+                              th:action="@{/web/comandes/generar-albara/{id}(id=${comandaDetall.id})}"
+                              method="post"
+                              class="inline-form js-confirm-form"
+                              th:attr="data-confirm-message=#{comandes.confirmar.generar.albara}">
+                            <button type="submit"
+                                    class="btn btn-accent"
+                                    th:text="#{comandes.generar.albara}">
+                                Generar albarán
+                            </button>
+                        </form>
+
+                        <a th:if="${comandaDetall.albaraClient != null}"
+                           th:href="@{/web/albarans-client/veure/{id}(id=${comandaDetall.albaraClient.id})}"
+                           class="btn btn-accent btn-inline-small"
+                           th:text="#{comandes.veure.albara}">
+                            Ver albarán
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <p>
+                        <strong th:text="#{comandes.id}">ID</strong>:
+                        <span th:text="${comandaDetall.id}">1</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{comandes.data}">Fecha solicitada</strong>:
+                        <span th:text="${comandaDetall.dataComanda}">2026-05-26</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{comandes.client}">Cliente</strong>:
+                        <span th:if="${comandaDetall.client != null}"
+                              th:text="${comandaDetall.client.nom + ' (' + comandaDetall.client.nif + ')'}">
+                            Cliente
+                        </span>
+                        <span th:if="${comandaDetall.client == null}">-</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{comandes.usuari}">Usuario creador</strong>:
+                        <span th:if="${comandaDetall.usuariCreador != null}"
+                              th:text="${comandaDetall.usuariCreador.nom + ' ' + comandaDetall.usuariCreador.cognoms}">
+                            Usuario
+                        </span>
+                        <span th:if="${comandaDetall.usuariCreador == null}">-</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{comandes.estat}">Estado</strong>:
+                        <span th:if="${comandaDetall.estat != null}" th:switch="${comandaDetall.estat.name()}">
+                            <span th:case="'PENDENT'" th:text="#{comandes.estat.PENDENT}">Pendiente</span>
+                            <span th:case="'PREPARADA'" th:text="#{comandes.estat.PREPARADA}">Preparada</span>
+                            <span th:case="'ALBARA_GENERAT'" th:text="#{comandes.estat.ALBARA_GENERAT}">Albarán generado</span>
+                            <span th:case="'CANCELADA'" th:text="#{comandes.estat.CANCELADA}">Cancelada</span>
+                            <span th:case="*" th:text="${comandaDetall.estat}">Estado</span>
+                        </span>
+                        <span th:if="${comandaDetall.estat == null}">-</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{comandes.albara.associat}">Albarán asociado</strong>:
+                        <a th:if="${comandaDetall.albaraClient != null}"
+                           th:href="@{/web/albarans-client/veure/{id}(id=${comandaDetall.albaraClient.id})}"
+                           class="btn btn-accent"
+                           th:text="#{comandes.veure.albara}">
+                            Ver albarán
+                        </a>
+                        <span th:if="${comandaDetall.albaraClient == null}"
+                              th:text="#{comandes.sense.albara}">
+                            Sin albarán
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{comandes.observacions}">Observaciones</strong>:
+                        <span th:if="${comandaDetall.observacions != null and !#strings.isEmpty(comandaDetall.observacions)}"
+                              th:text="${comandaDetall.observacions}">
+                            Observaciones
+                        </span>
+                        <span th:if="${comandaDetall.observacions == null or #strings.isEmpty(comandaDetall.observacions)}">-</span>
+                    </p>
+                </div>
+
+                <h2 th:text="#{comandes.linies}">Líneas</h2>
+
+                <div class="table-wrapper"
+                     th:if="${comandaDetall.linies != null and !#lists.isEmpty(comandaDetall.linies)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{comandes.producte}">Producto</th>
+                                <th th:text="#{comandes.linia.quantitat}">Cantidad</th>
+                                <th th:text="#{comandes.linia.observacions}">Observaciones de la línea</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="linia : ${comandaDetall.linies}">
+                                <td>
+                                    <span th:if="${linia.producte != null}"
+                                          th:text="${linia.producte.nom}">
+                                        Producto
+                                    </span>
+                                    <span th:if="${linia.producte == null}">-</span>
+                                </td>
+
+                                <td th:text="${linia.quantitat}">10</td>
+
+                                <td>
+                                    <span th:if="${linia.observacions != null and !#strings.isEmpty(linia.observacions)}"
+                                          th:text="${linia.observacions}">
+                                        Observaciones
+                                    </span>
+                                    <span th:if="${linia.observacions == null or #strings.isEmpty(linia.observacions)}">-</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:if="${comandaDetall.linies == null or #lists.isEmpty(comandaDetall.linies)}"
+                     class="empty-message"
+                     th:text="#{comandes.linies.obligatories}">
+                    La comanda debe tener como mínimo una línea válida.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".js-confirm-form").forEach(function (form) {
+                    form.addEventListener("submit", function (event) {
+                        const message = form.getAttribute("data-confirm-message");
+                        if (message && !confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
