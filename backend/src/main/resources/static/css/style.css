@@ -2612,3 +2612,188 @@ body.camera-open {
         table-layout: auto;
     }
 }
+
+/* ===============================
+   Sprint 5 - Targetes responsive per evitar scroll horitzontal
+   =============================== */
+.responsive-card-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    align-items: start;
+    gap: 14px;
+    margin: 18px 0 24px;
+}
+
+.data-card {
+    border: 1px solid #E1D2C1;
+    border-radius: 16px;
+    background: #FFFFFF;
+    box-shadow: 0 8px 18px rgba(74, 46, 31, 0.08);
+    align-self: start;
+    height: auto;
+    overflow: hidden;
+}
+
+.data-card-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.data-card-summary::-webkit-details-marker {
+    display: none;
+}
+
+.data-card-summary::after {
+    content: "⌄";
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #F3E6D6;
+    color: #6B4228;
+    font-weight: 900;
+    transition: transform 0.2s ease;
+}
+
+.data-card[open] .data-card-summary::after {
+    transform: rotate(180deg);
+}
+
+.data-card-main,
+.data-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.data-card-main strong,
+.data-card-meta span {
+    overflow-wrap: anywhere;
+}
+
+.data-card-main strong {
+    color: #4A2E1F;
+    font-size: 1rem;
+}
+
+.data-card-main span,
+.data-card-meta {
+    color: #5E4535;
+    font-size: 0.9rem;
+}
+
+.data-card-meta {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.data-card-body {
+    border-top: 1px solid #E9DCCB;
+    padding: 16px 18px 18px;
+    background: #FFFDF9;
+}
+
+.data-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.data-card-field {
+    padding: 12px;
+    border-radius: 12px;
+    background: #F7EFE6;
+    border: 1px solid #E8D8C5;
+}
+
+.data-card-field span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #7B563D;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.data-card-field strong {
+    display: block;
+    color: #2F211A;
+    overflow-wrap: anywhere;
+}
+
+.data-card-section-title {
+    margin: 16px 0 8px;
+    color: #6B4228;
+    font-weight: 900;
+}
+
+.data-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.status-pill,
+.muted-inline {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: #EAF3E2;
+    color: #315D27;
+    font-weight: 800;
+    font-size: 0.82rem;
+}
+
+.muted-inline {
+    background: #EFE7DE;
+    color: #6B4228;
+}
+
+.card-lot-badges {
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+.card-lot-badges .lot-badge {
+    white-space: normal !important;
+    max-width: 100%;
+}
+
+@media (max-width: 700px) {
+    .responsive-card-list {
+        grid-template-columns: 1fr;
+    }
+
+    .data-card-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .data-card-meta {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .data-card-summary::after {
+        position: absolute;
+        right: 18px;
+    }
+
+    .data-card {
+        position: relative;
+    }
+}
