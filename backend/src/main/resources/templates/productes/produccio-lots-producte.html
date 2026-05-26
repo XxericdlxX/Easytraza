@@ -90,104 +90,69 @@
                     </form>
                 </div>
 
-                <div class="table-wrapper"
+                <div class="responsive-card-list"
                      th:if="${liniesProduccio != null && !#lists.isEmpty(liniesProduccio)}">
-                    <table class="produccio-lots-table">
-                        <thead>
-                            <tr>
-                                <th th:text="#{productes.produccio.quantitat}">
-                                    Cantidad fabricada
-                                </th>
+                    <details class="data-card production-data-card" th:each="linia : ${liniesProduccio}">
+                        <summary class="data-card-summary">
+                            <span class="data-card-main">
+                                <strong th:if="${linia.producte != null}" th:text="${linia.producte.nom}">Producto</strong>
+                                <strong th:if="${linia.producte == null}">-</strong>
+                                <span>
+                                    <span th:text="#{productes.produccio.quantitat}">Cantidad fabricada</span>:
+                                    <span th:text="${linia.quantitat}">10</span>
+                                </span>
+                            </span>
 
-                                <th th:text="#{productes.produccio.producte}">
-                                    Producto
-                                </th>
+                            <span class="data-card-meta">
+                                <span th:if="${linia.albaraClient != null && linia.albaraClient.client != null}"
+                                      th:text="${linia.albaraClient.client.nom}">Cliente</span>
+                                <span th:if="${linia.albaraClient == null || linia.albaraClient.client == null}">-</span>
+                                <span th:if="${linia.albaraClient != null}" th:text="${linia.albaraClient.dataProduccio}">2026-05-07</span>
+                            </span>
+                        </summary>
 
-                                <th th:text="#{productes.produccio.client}">
-                                    Cliente
-                                </th>
+                        <div class="data-card-body">
+                            <div class="data-card-grid">
+                                <div class="data-card-field">
+                                    <span th:text="#{productes.produccio.client}">Cliente</span>
+                                    <strong th:if="${linia.albaraClient != null && linia.albaraClient.client != null}"
+                                            th:text="${linia.albaraClient.client.nom + ' (' + linia.albaraClient.client.nif + ')'}">Cliente</strong>
+                                    <strong th:if="${linia.albaraClient == null || linia.albaraClient.client == null}">-</strong>
+                                </div>
 
-                                <th th:text="#{productes.produccio.albara.client}">
-                                    Albarán cliente
-                                </th>
+                                <div class="data-card-field">
+                                    <span th:text="#{productes.produccio.albara.client}">Albarán cliente</span>
+                                    <strong th:if="${linia.albaraClient != null}" th:text="${linia.albaraClient.id}">1</strong>
+                                    <strong th:if="${linia.albaraClient == null}">-</strong>
+                                </div>
 
-                                <th th:text="#{productes.produccio.data}">
-                                    Fecha de producción
-                                </th>
+                                <div class="data-card-field">
+                                    <span th:text="#{productes.produccio.data}">Fecha de producción</span>
+                                    <strong th:if="${linia.albaraClient != null}" th:text="${linia.albaraClient.dataProduccio}">2026-05-07</strong>
+                                    <strong th:if="${linia.albaraClient == null}">-</strong>
+                                </div>
+                            </div>
 
-                                <th th:text="#{productes.produccio.lots.associats}">
-                                    Lotes abiertos asociados
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr th:each="linia : ${liniesProduccio}">
-                                <td th:text="${linia.quantitat}">
-                                    10
-                                </td>
-
-                                <td>
-                                    <span th:if="${linia.producte != null}"
-                                          th:text="${linia.producte.nom}">
-                                        Producto
+                            <div class="data-card-section-title" th:text="#{productes.produccio.lots.associats}">Lotes abiertos asociados</div>
+                            <div th:if="${linia.lotsAssociats != null && !#lists.isEmpty(linia.lotsAssociats)}"
+                                 class="lot-badges-list card-lot-badges">
+                                <span th:each="lot : ${linia.lotsAssociats}" class="lot-badge">
+                                    <strong th:text="${lot.codiLot}">LOT-001</strong>
+                                    <span th:if="${lot.materiaPrima != null}">
+                                        · <span th:text="${lot.materiaPrima.nom}">Materia</span>
                                     </span>
-                                    <span th:if="${linia.producte == null}">-</span>
-                                </td>
+                                </span>
+                            </div>
+                            <span th:if="${linia.lotsAssociats == null || #lists.isEmpty(linia.lotsAssociats)}">-</span>
 
-                                <td>
-                                    <span th:if="${linia.albaraClient != null && linia.albaraClient.client != null}"
-                                          th:text="${linia.albaraClient.client.nom + ' (' + linia.albaraClient.client.nif + ')'}">
-                                        Cliente
-                                    </span>
-
-                                    <span th:if="${linia.albaraClient == null || linia.albaraClient.client == null}">
-                                        -
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <a th:if="${linia.albaraClient != null}"
-                                       th:href="@{/web/albarans-client/veure/{id}(id=${linia.albaraClient.id})}"
-                                       class="btn btn-accent"
-                                       th:text="${linia.albaraClient.id}">
-                                        1
-                                    </a>
-
-                                    <span th:if="${linia.albaraClient == null}">
-                                        -
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <span th:if="${linia.albaraClient != null}"
-                                          th:text="${linia.albaraClient.dataProduccio}">
-                                        2026-05-07
-                                    </span>
-
-                                    <span th:if="${linia.albaraClient == null}">
-                                        -
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <div th:if="${linia.lotsAssociats != null && !#lists.isEmpty(linia.lotsAssociats)}"
-                                         class="lot-badges-list">
-                                        <span th:each="lot : ${linia.lotsAssociats}" class="lot-badge">
-                                            <strong th:text="${lot.codiLot}">LOT-001</strong>
-                                            <span th:if="${lot.materiaPrima != null}">
-                                                · <span th:text="${lot.materiaPrima.nom}">Materia</span>
-                                            </span>
-                                        </span>
-                                    </div>
-
-                                    <span th:if="${linia.lotsAssociats == null || #lists.isEmpty(linia.lotsAssociats)}">
-                                        -
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <div class="data-card-actions">
+                                <a th:if="${linia.albaraClient != null}"
+                                   th:href="@{/web/albarans-client/veure/{id}(id=${linia.albaraClient.id})}"
+                                   class="btn btn-accent"
+                                   th:text="#{productes.produccio.albara.client}">Albarán cliente</a>
+                            </div>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="empty-message"
