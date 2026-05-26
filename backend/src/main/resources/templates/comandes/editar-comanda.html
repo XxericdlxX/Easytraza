@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{comandes.editar}">Editar comanda</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="page-standalone">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{comandes.editar}">Editar comanda</h1>
+                            <p th:text="#{comandes.gestio}">Gestión de comandas del sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link" href="#" data-lang="es" th:text="#{lang.es}">ES</a>
+                            <a class="btn btn-secondary js-page-lang-link" href="#" data-lang="ca" th:text="#{lang.ca}">CA</a>
+                        </div>
+                        <a th:href="@{/web/comandes}" class="btn btn-secondary" th:text="#{comandes.tornar}">Volver</a>
+                    </div>
+                </div>
+
+                <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                <div class="form-card">
+                    <form th:action="@{/web/comandes/actualitzar/{id}(id=${comanda.id})}" th:object="${comanda}" method="post" novalidate>
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="form-group">
+                            <label for="dataComanda">
+                                <span th:text="#{comandes.data}">Fecha solicitada</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="date" id="dataComanda" th:field="*{dataComanda}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="clientNif">
+                                <span th:text="#{comandes.client}">Cliente</span>
+                                <span class="required">*</span>
+                            </label>
+                            <select id="clientNif" th:field="*{clientNif}">
+                                <option value="" th:text="#{comandes.selecciona.client}">Selecciona un cliente</option>
+                                <option th:each="client : ${clients}"
+                                        th:value="${client.nif}"
+                                        th:text="${client.nom + ' (' + client.nif + ')'}">
+                                    Cliente
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estat" th:text="#{comandes.estat}">Estado</label>
+                            <select id="estat" th:field="*{estat}">
+                                <option th:each="estatComanda : ${estatsComanda}"
+                                        th:value="${estatComanda}"
+                                        th:text="#{${'comandes.estat.' + estatComanda}}">
+                                    Estado
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observacions" th:text="#{comandes.observacions}">Observaciones</label>
+                            <textarea id="observacions" th:field="*{observacions}" rows="3"></textarea>
+                        </div>
+
+                        <h2 th:text="#{comandes.linies}">Líneas</h2>
+
+                        <div id="linies-container">
+                            <div class="form-card linia-card"
+                                 style="margin-bottom: 18px;"
+                                 th:each="linia, iterStat : *{linies}">
+                                <h3 class="linia-title"
+                                    th:text="#{comandes.linia.titol} + ' ' + ${iterStat.index + 1}">
+                                    Línea 1
+                                </h3>
+
+                                <input type="hidden" class="linia-id-field" th:field="*{linies[__${iterStat.index}__].id}">
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{comandes.linia.producte}">Producto</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="linia-producte-field" th:field="*{linies[__${iterStat.index}__].producteId}">
+                                        <option value="" th:text="#{comandes.linia.selecciona.producte}">Selecciona un producto</option>
+                                        <option th:each="producte : ${productes}"
+                                                th:value="${producte.id}"
+                                                th:text="${producte.nom}">
+                                            Producto
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{comandes.linia.quantitat}">Cantidad</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="number"
+                                           min="1"
+                                           class="linia-quantitat-field"
+                                           th:field="*{linies[__${iterStat.index}__].quantitat}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label th:text="#{comandes.linia.observacions}">Observaciones</label>
+                                    <input type="text"
+                                           class="linia-observacions-field"
+                                           th:field="*{linies[__${iterStat.index}__].observacions}">
+                                </div>
+
+                                <div class="actions">
+                                    <button type="button" class="btn btn-secondary add-linia-inline-btn" th:text="#{comandes.linia.afegir}">
+                                        Añadir línea
+                                    </button>
+                                    <button type="button" class="btn btn-danger remove-linia-btn" th:text="#{comandes.linia.eliminar}">
+                                        Eliminar línea
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template id="linia-template">
+                            <div class="form-card linia-card" style="margin-bottom: 18px;">
+                                <h3 class="linia-title" th:text="#{comandes.linia.titol}">Línea</h3>
+                                <input type="hidden" class="linia-id-field">
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{comandes.linia.producte}">Producto</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="linia-producte-field">
+                                        <option value="" th:text="#{comandes.linia.selecciona.producte}">Selecciona un producto</option>
+                                        <option th:each="producte : ${productes}"
+                                                th:value="${producte.id}"
+                                                th:text="${producte.nom}">
+                                            Producto
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{comandes.linia.quantitat}">Cantidad</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="number" min="1" class="linia-quantitat-field">
+                                </div>
+
+                                <div class="form-group">
+                                    <label th:text="#{comandes.linia.observacions}">Observaciones</label>
+                                    <input type="text" class="linia-observacions-field">
+                                </div>
+
+                                <div class="actions">
+                                    <button type="button" class="btn btn-secondary add-linia-inline-btn" th:text="#{comandes.linia.afegir}">
+                                        Añadir línea
+                                    </button>
+                                    <button type="button" class="btn btn-danger remove-linia-btn" th:text="#{comandes.linia.eliminar}">
+                                        Eliminar línea
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div class="actions" style="margin-top: 24px;">
+                            <button type="submit" class="btn btn-primary" th:text="#{comandes.guardar}">Guardar</button>
+                            <a th:href="@{/web/comandes}" class="btn btn-secondary" th:text="#{comandes.tornar}">Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script th:replace="~{comandes/fragments-comanda :: linies-script}"></script>
+        <script th:replace="~{comandes/fragments-comanda :: lang-script}"></script>
+    </body>
+</html>
