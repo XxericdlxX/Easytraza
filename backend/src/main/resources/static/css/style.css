@@ -2177,255 +2177,6 @@ body.camera-open {
 
 
 /* ===============================
-   Sprint 5 - Ajust final de taules
-   Evita que els estils genèrics trepitgin les taules especials.
-   =============================== */
-
-.table-wrapper {
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-/* Taules normals: ocupen l'ample disponible i poden partir text llarg. */
-.table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) {
-    width: 100%;
-    min-width: 0;
-    table-layout: fixed;
-}
-
-.table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) th,
-.table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) td {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    text-overflow: clip;
-    line-height: 1.25;
-}
-
-/* Última columna de les taules normals: accions compactes sense tallar botons. */
-.table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) th:last-child,
-.table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) td:last-child {
-    width: 1%;
-    white-space: nowrap;
-}
-
-.table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) td:last-child .actions-table {
-    justify-content: flex-start;
-    gap: 6px;
-    flex-wrap: nowrap;
-}
-
-.table-wrapper .actions-table .btn,
-.table-wrapper td .btn {
-    min-height: 32px;
-    padding: 7px 10px;
-    font-size: 12px;
-    border-radius: 9px;
-}
-
-/* Classes opcionals per forçar text llarg quan una cel·la ho necessiti. */
-.table-wrapper td[data-label],
-.table-wrapper td.long-text,
-.table-wrapper td.notes-cell {
-    white-space: normal;
-    overflow-wrap: anywhere;
-}
-
-.page-with-nav .container {
-    overflow: visible;
-}
-
-.list-header {
-    align-items: flex-start;
-}
-
-.list-header > .btn,
-.list-header > form,
-.list-header .header-actions {
-    flex-shrink: 0;
-}
-
-.form-card .filter-actions,
-.form-card .lots-filter-grid {
-    width: 100%;
-}
-
-.filter-field input,
-.filter-field select,
-.lots-filter-grid input,
-.lots-filter-grid select {
-    min-width: 0;
-}
-
-.leftnav {
-    scrollbar-width: thin;
-}
-
-.leftnav-user-email {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-.leftnav-menu a span:last-child {
-    overflow-wrap: anywhere;
-}
-
-.home-toolbar {
-    gap: 8px;
-}
-
-.home-language {
-    gap: 6px;
-}
-
-.home-toolbar .btn {
-    min-height: 36px;
-    padding: 8px 12px;
-}
-
-.home-logout-btn {
-    min-width: 0;
-}
-
-@media (min-width: 1100px) and (max-height: 820px) {
-    .home-body {
-        padding-top: 10px;
-        padding-bottom: 14px;
-    }
-
-    .home-hero {
-        margin-bottom: 10px;
-        padding-bottom: 6px;
-    }
-
-    .home-logo {
-        width: 220px;
-        margin-bottom: 4px;
-    }
-
-    .home-hero p {
-        font-size: 15px;
-    }
-
-    .home-section {
-        margin-bottom: 12px;
-    }
-
-    .home-modules {
-        gap: 12px;
-    }
-
-    .home-card {
-        min-height: 112px;
-        padding: 14px 16px;
-    }
-
-    .home-card-image {
-        top: 14px;
-        left: 16px;
-        font-size: 38px;
-    }
-
-    .home-card-title {
-        font-size: 18px;
-    }
-
-    .leftnav {
-        width: 210px;
-        padding: 8px 10px;
-        gap: 6px;
-    }
-
-    .page-with-nav {
-        padding-left: 224px;
-    }
-
-    .leftnav-menu a {
-        padding: 6px 8px;
-        font-size: 12.5px;
-        line-height: 1.08;
-    }
-
-    .leftnav-user-avatar {
-        width: 32px;
-        height: 32px;
-    }
-
-    .leftnav-user {
-        padding: 6px;
-    }
-
-    .leftnav-user-name {
-        font-size: 11.5px;
-    }
-
-    .leftnav-user-role,
-    .leftnav-user-email {
-        font-size: 10px;
-    }
-}
-
-@media (min-width: 1100px) and (max-width: 1500px) {
-    .table-wrapper th,
-    .table-wrapper td,
-    .lots-table th,
-    .lots-table td {
-        padding: 7px 8px;
-        font-size: 0.78rem;
-    }
-
-    .lots-table .btn,
-    .table-wrapper .btn {
-        padding: 6px 8px;
-        font-size: 11px;
-    }
-
-    .lots-filter-grid {
-        grid-template-columns: repeat(4, minmax(150px, 1fr));
-    }
-
-    .lots-filter-button {
-        grid-column: 1 / -1;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 900px) {
-    .table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) {
-        min-width: 760px;
-        table-layout: auto;
-    }
-
-    .lots-table {
-        min-width: 1100px;
-        table-layout: auto !important;
-    }
-
-    .albara-proveidor-detail-table {
-        min-width: 980px !important;
-        table-layout: auto !important;
-    }
-
-    .proveidors-table {
-        min-width: 860px;
-        table-layout: auto;
-    }
-
-    .table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) th,
-    .table-wrapper table:not(.lots-table):not(.albara-proveidor-detail-table):not(.proveidors-table) td {
-        white-space: normal;
-    }
-
-    .home-toolbar {
-        position: static;
-        justify-content: center;
-        margin-bottom: 8px;
-    }
-}
-
-
-/* ===============================
    Sprint 5 - Correcció final de taules
    Manté les taules compactes i evita que les regles genèriques
    deformin files o amaguin columnes d'accions.
@@ -2796,4 +2547,66 @@ body.camera-open {
     .data-card {
         position: relative;
     }
+}
+
+/* ===============================
+   RF30 - Comandes
+   Estils finals de botons i accions
+   =============================== */
+
+.inline-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.btn-comanda-generar,
+.btn-comanda-veure-albara {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    background-color: #8FAF7A;
+    color: #2F3D22 !important;
+    font-weight: 700;
+    text-decoration: none !important;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.2s ease;
+}
+
+.btn-comanda-generar:hover,
+.btn-comanda-veure-albara:hover,
+.btn-comanda-veure-albara:visited,
+.btn-comanda-veure-albara:active {
+    background-color: #7F9C63;
+    color: #243018 !important;
+    text-decoration: none !important;
+}
+
+.btn-inline-small {
+    min-height: 30px;
+    padding: 6px 12px;
+    border-radius: 9px;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.link-comanda-albara,
+.link-action {
+    color: #4A6B2F !important;
+    font-weight: 700;
+    text-decoration: none !important;
+}
+
+.link-comanda-albara:hover,
+.link-action:hover {
+    color: #3F5D25 !important;
+    text-decoration: underline !important;
+}
+
+.form-card .btn-inline-small {
+    margin-left: 6px;
 }
