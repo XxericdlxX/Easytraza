@@ -149,4 +149,16 @@ PENDENT
 
 | Centre
 | Institut Nicolau Copernic
+
+| GitHub
+| https://github.com/XxericdlxX/XxericdlxX
+|===
+| Curs
+| 2DAM
+
+| Any acadèmic
+| 2025-2026
+
+| Centre
+| Institut Nicolau Copernic
 |===
