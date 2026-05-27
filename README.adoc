@@ -119,15 +119,13 @@ Aquesta documentació inclou:
 * les planificacions inicials i finals de cada sprint;
 * les retrospectives personals;
 * captures del board de GitLab i altres recursos visuals.
+* el portafoli personal
 
 == Vídeo del projecte
 
-L’enllaç al vídeo de demostració del projecte s’afegirà quan estigui disponible.
+El vídeo de demostració del projecte es troba disponible a la carpeta següent:
 
-[source]
-----
-PENDENT
-----
+https://drive.google.com/drive/folders/1eGIqHTzie56mSDsBf0zltAEYAmXySKRk?usp=sharing
 
 == Autor
 
