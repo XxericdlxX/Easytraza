@@ -1,0 +1,84 @@
+= Eric Delgado López
+:toc:
+:toc-title: Índex
+:toclevels: 3
+:sectnums:
+:icons: font
+:lang: ca
+
+image::https://capsule-render.vercel.app/api?type=waving&color=0:141E30,100:243B55&height=220&section=header&text=Eric%20Delgado%20López&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Desarrollo%20de%20Aplicaciones%20Multiplataforma%20·%20Backend%20·%20Aprendizaje%20continuo&descAlignY=60&descSize=16[Eric Delgado López, align="center"]
+
+== Sobre mí
+
+🎓 Actualmente soy estudiante de Desarrollo de Aplicaciones Multiplataforma (DAM) en el Institut Nicolau Copèrnic de Terrassa.
+
+Me encuentro en constante formación, ampliando mis conocimientos en programación, desarrollo backend y aplicaciones multiplataforma a través de proyectos y aprendizaje continuo.
+
+Me interesa desarrollar software funcional, bien estructurado y orientado a resolver problemas reales, mientras sigo creciendo tanto a nivel técnico como profesional.
+
+== Lenguajes de Programación
+
+image::https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white[Java]
+image::https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black[JavaScript]
+image::https://img.shields.io/badge/C%23-68217A?style=for-the-badge&logo=csharp&logoColor=white[C#]
+image::https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white[Python]
+image::https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white[Kotlin]
+
+== Lenguajes de Marcas y Estilos
+
+image::https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white[HTML5]
+image::https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white[CSS3]
+
+== Sistemas Operativos
+
+image::https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black[Linux]
+image::https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows11&logoColor=white[Windows]
+
+== Entornos de Desarrollo
+
+image::https://img.shields.io/badge/Android%20Studio-3DDC84?style=for-the-badge&logo=androidstudio&logoColor=black[Android Studio]
+image::https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white[IntelliJ IDEA]
+image::https://img.shields.io/badge/NetBeans-1B6AC6?style=for-the-badge&logo=apachenetbeanside&logoColor=white[NetBeans]
+image::https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white[VS Code]
+image::https://img.shields.io/badge/Unity-000000?style=for-the-badge&logo=unity&logoColor=white[Unity]
+
+== Tecnologías
+
+image::https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white[Spring Boot]
+image::https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white[Spring Security]
+image::https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white[Thymeleaf]
+image::https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white[Jetpack Compose]
+image::https://img.shields.io/badge/Retrofit-2C2C2C?style=for-the-badge&logoColor=white[Retrofit]
+image::https://img.shields.io/badge/Navigation%20Compose-1E88E5?style=for-the-badge&logoColor=white[Navigation Compose]
+image::https://img.shields.io/badge/JUnit%205-25A162?style=for-the-badge&logo=junit5&logoColor=white[JUnit 5]
+image::https://img.shields.io/badge/REST%20API-FF6B35?style=for-the-badge&logoColor=white[REST API]
+
+== Herramientas
+
+image::https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white[Git]
+image::https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white[GitHub]
+image::https://img.shields.io/badge/GitLab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white[GitLab]
+image::https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white[Gradle]
+image::https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white[Jira]
+image::https://img.shields.io/badge/Google%20Drive-34A853?style=for-the-badge&logo=googledrive&logoColor=white[Google Drive]
+image::https://img.shields.io/badge/Google%20Workspace-4285F4?style=for-the-badge&logo=googleworkspace&logoColor=white[Google Workspace]
+image::https://img.shields.io/badge/VirtualBox-183A61?style=for-the-badge&logo=virtualbox&logoColor=white[VirtualBox]
+
+== Bases de Datos
+
+image::https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white[MongoDB]
+image::https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white[MariaDB]
+image::https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white[MySQL]
+image::https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white[PostgreSQL]
+
+== Diseño
+
+image::https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white[Figma]
+
+== Contacto
+
+image::https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white[Gmail, link="mailto:ericdelgadolope08@gmail.com"]
+
+image::https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white[LinkedIn, link="https://www.linkedin.com/in/eric-delgado-lópez"]
+
+image::https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white[Discord, link="https://discord.com/users/xxericdlxx"]
