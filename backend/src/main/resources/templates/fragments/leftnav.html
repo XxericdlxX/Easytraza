@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <nav class="leftnav" th:fragment="leftnav">
+            <div class="leftnav-top">
+                <a th:href="@{/}" class="leftnav-brand">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="EasyTraza">
+                    <span>EasyTraza</span>
+                </a>
+            </div>
+
+            <div class="leftnav-menu">
+                <div class="leftnav-section-title" th:if="${navUserAdmin}" th:text="#{nav.section.administracio}">
+                    ADMINISTRACIÓN
+                </div>
+
+                <a th:if="${navUserAdmin}" th:href="@{/web/productes}">
+                    <span class="leftnav-icon">🥖</span>
+                    <span th:text="#{nav.productes}">Productos</span>
+                </a>
+
+                <a th:if="${navUserAdmin}" th:href="@{/web/usuaris}">
+                    <span class="leftnav-icon">👤</span>
+                    <span th:text="#{nav.usuaris}">Usuarios</span>
+                </a>
+
+                <a th:if="${navUserAdmin}" th:href="@{/web/proveidors}">
+                    <span class="leftnav-icon">🚚</span>
+                    <span th:text="#{nav.proveidors}">Proveedores</span>
+                </a>
+
+                <a th:if="${navUserAdmin}" th:href="@{/web/materies-primeres}">
+                    <span class="leftnav-icon">🌾</span>
+                    <span th:text="#{nav.materies}">Materias primas</span>
+                </a>
+
+                <a th:if="${navUserAdmin}" th:href="@{/web/clients}">
+                    <span class="leftnav-icon">🤝</span>
+                    <span th:text="#{nav.clients}">Clientes</span>
+                </a>
+
+                <div class="leftnav-section-title" th:text="#{nav.section.operacions}">
+                    OPERACIONES
+                </div>
+
+                <a th:href="@{/web/albarans-proveidor}">
+                    <span class="leftnav-icon">📄</span>
+                    <span th:text="#{nav.albarans.proveidor}">Albaranes proveedor</span>
+                </a>
+
+                <a th:href="@{/web/albarans-client}">
+                    <span class="leftnav-icon">🤝📄</span>
+                    <span th:text="#{nav.albarans.client}">Albaranes cliente</span>
+                </a>
+
+                <a th:href="@{/web/comandes}">
+                    <span class="leftnav-icon">📝</span>
+                    <span th:text="#{nav.comandes}">Comandas</span>
+                </a>
+
+                <a th:href="@{/web/produccio-lots}">
+                    <span class="leftnav-icon">📊</span>
+                    <span th:text="#{nav.produccio.lots}">Producción y lotes</span>
+                </a>
+
+                <a th:href="@{/web/grafic-productes-venuts}">
+                    <span class="leftnav-icon">📈</span>
+                    <span th:text="#{nav.grafic.productes}">Gráfico mensual de productos</span>
+                </a>
+
+                <a th:href="@{/web/lots}">
+                    <span class="leftnav-icon">🏷️</span>
+                    <span th:text="#{nav.lots}">Gestión de lotes</span>
+                </a>
+            </div>
+
+            <div class="leftnav-bottom">
+                <div class="leftnav-lang">
+                    <a class="btn btn-secondary js-lang-link"
+                       href="#"
+                       data-lang="es">ES</a>
+
+                    <a class="btn btn-secondary js-lang-link"
+                       href="#"
+                       data-lang="ca">CA</a>
+                </div>
+
+                <div class="leftnav-user-panel" th:if="${navUserAuthenticated}">
+                    <div class="leftnav-user">
+                        <div class="leftnav-user-avatar"
+                             th:classappend="${navUserPhoto == 'superadmin-logo-easytraza.png'} ? ' leftnav-user-avatar-logo' : ''">
+                            <img th:if="${navUserPhoto != null and !#strings.isEmpty(navUserPhoto)}"
+                                 th:src="@{/web/perfil/foto/{foto}(foto=${navUserPhoto})}"
+                                 alt="Foto de perfil">
+                            <span th:if="${navUserPhoto == null or #strings.isEmpty(navUserPhoto)}"
+                                  th:text="${navUserInitials}">ET</span>
+                        </div>
+                        <div class="leftnav-user-copy">
+                            <div class="leftnav-user-name" th:text="${navUserName}">Eric Delgado</div>
+                            <div class="leftnav-user-role" th:text="#{${'rol.' + navUserRole}}">Administrador</div>
+                            <div class="leftnav-user-email" th:text="${navUserEmail}">usuari@easytraza.local</div>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/perfil}" class="btn btn-secondary leftnav-profile-btn" th:text="#{perfil.enllac}">
+                        Editar perfil
+                    </a>
+
+                    <form th:action="@{/logout}" method="post" class="leftnav-logout-form">
+                        <button type="submit" class="btn btn-danger leftnav-logout-btn" th:text="#{auth.logout.boto}">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.js-lang-link').forEach(function (link) {
+                        link.addEventListener('click', function (event) {
+                            event.preventDefault();
+
+                            const lang = link.getAttribute('data-lang');
+                            const url = new URL(window.location.href);
+
+                            url.searchParams.set('lang', lang);
+                            window.location.assign(url.toString());
+                        });
+                    });
+                });
+            </script>
+        </nav>
+    </body>
+</html>

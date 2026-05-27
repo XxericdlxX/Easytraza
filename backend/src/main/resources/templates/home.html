@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{app.title}">EasyTraza</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body class="home-body">
+        <div class="home-toolbar">
+            <div class="home-language">
+                <a th:href="@{/(lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">
+                    ES
+                </a>
+                <a th:href="@{/(lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">
+                    CA
+                </a>
+            </div>
+
+            <form th:action="@{/logout}" method="post" class="home-logout-form">
+                <button type="submit" class="btn btn-danger home-logout-btn" th:text="#{auth.logout.boto}">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+
+        <section class="home-hero">
+            <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="home-logo">
+            <p th:text="#{home.subtitle}">Gestión y trazabilidad del sistema</p>
+        </section>
+
+        <main class="home-content">
+            <section class="home-section" th:if="${navUserAdmin}">
+                <h2 class="home-section-title" th:text="#{nav.section.administracio}">
+                    ADMINISTRACIÓN
+                </h2>
+
+                <div class="home-modules home-modules-admin">
+                    <a th:if="${navUserAdmin}" th:href="@{/web/productes}" class="home-card products-card">
+                        <div class="home-card-image">🥖</div>
+                        <div class="home-card-title" th:text="#{nav.productes}">Productos</div>
+                    </a>
+
+                    <a th:if="${navUserAdmin}" th:href="@{/web/usuaris}" class="home-card users-card">
+                        <div class="home-card-image">👤</div>
+                        <div class="home-card-title" th:text="#{nav.usuaris}">Usuarios</div>
+                    </a>
+
+                    <a th:if="${navUserAdmin}" th:href="@{/web/proveidors}" class="home-card providers-card">
+                        <div class="home-card-image">🚚</div>
+                        <div class="home-card-title" th:text="#{nav.proveidors}">Proveedores</div>
+                    </a>
+
+                    <a th:if="${navUserAdmin}" th:href="@{/web/materies-primeres}" class="home-card materials-card">
+                        <div class="home-card-image">🌾</div>
+                        <div class="home-card-title" th:text="#{nav.materies}">Materias primas</div>
+                    </a>
+
+                    <a th:if="${navUserAdmin}" th:href="@{/web/clients}" class="home-card clients-card">
+                        <div class="home-card-image">🤝</div>
+                        <div class="home-card-title" th:text="#{nav.clients}">Clientes</div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="home-section">
+                <h2 class="home-section-title" th:text="#{nav.section.operacions}">
+                    OPERACIONES
+                </h2>
+
+                <div class="home-modules home-modules-operations">
+                    <a th:href="@{/web/albarans-proveidor}" class="home-card delivery-notes-card">
+                        <div class="home-card-image">📄</div>
+                        <div class="home-card-title" th:text="#{nav.albarans.proveidor}">
+                            Albaranes proveedor
+                        </div>
+                    </a>
+
+                    <a th:href="@{/web/albarans-client}" class="home-card client-delivery-notes-card">
+                        <div class="home-card-image">🧾</div>
+                        <div class="home-card-title" th:text="#{nav.albarans.client}">
+                            Albaranes cliente
+                        </div>
+                    </a>
+
+                    <a th:href="@{/web/comandes}" class="home-card client-orders-card">
+                        <div class="home-card-image">📝</div>
+                        <div class="home-card-title" th:text="#{nav.comandes}">
+                            Comandas
+                        </div>
+                    </a>
+
+                    <a th:href="@{/web/produccio-lots}" class="home-card production-lots-card">
+                        <div class="home-card-image">📊</div>
+                        <div class="home-card-title" th:text="#{nav.produccio.lots}">
+                            Producción y lotes
+                        </div>
+                    </a>
+
+                    <a th:href="@{/web/grafic-productes-venuts}" class="home-card sales-chart-card">
+                        <div class="home-card-image">📈</div>
+                        <div class="home-card-title" th:text="#{nav.grafic.productes}">
+                            Gráfico mensual de productos
+                        </div>
+                    </a>
+
+                    <a th:href="@{/web/lots}" class="home-card lots-card">
+                        <div class="home-card-image">🏷️</div>
+                        <div class="home-card-title" th:text="#{nav.lots}">
+                            Gestión de lotes
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

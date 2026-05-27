@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{usuaris.llistat}">Listado de usuarios</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{usuaris.llistat}">Listado de usuarios</h1>
+                            <p th:text="#{usuaris.gestio}">Gestión de los usuarios del sistema</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/usuaris/crear}" class="btn btn-primary" th:text="#{usuaris.afegir}">
+                        Añadir usuario
+                    </a>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/usuaris}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 170px; margin-bottom: 0;">
+                            <label for="nom" th:text="#{usuaris.nom}">Nombre</label>
+                            <input type="text"
+                                   id="nom"
+                                   name="nom"
+                                   th:value="${nom}"
+                                   th:placeholder="#{usuaris.cerca.nom.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1; min-width: 170px; margin-bottom: 0;">
+                            <label for="cognoms" th:text="#{usuaris.cognoms}">Apellidos</label>
+                            <input type="text"
+                                   id="cognoms"
+                                   name="cognoms"
+                                   th:value="${cognoms}"
+                                   th:placeholder="#{usuaris.cerca.cognoms.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1.2; min-width: 220px; margin-bottom: 0;">
+                            <label for="email" th:text="#{usuaris.email}">Correo electrónico</label>
+                            <input type="text"
+                                   id="email"
+                                   name="email"
+                                   th:value="${email}"
+                                   th:placeholder="#{usuaris.cerca.email.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1; min-width: 170px; margin-bottom: 0;">
+                            <label for="rol" th:text="#{usuaris.rol}">Rol</label>
+                            <select id="rol" name="rol">
+                                <option value="" th:text="#{usuaris.cerca.rol.tots}">Todos los roles</option>
+                                <option th:each="rolOpcio : ${rols}"
+                                        th:value="${rolOpcio}"
+                                        th:selected="${rolOpcio == rol}"
+                                        th:text="#{${'rol.' + rolOpcio}}">
+                                    Rol
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit" class="btn btn-secondary" th:text="#{usuaris.cerca.boto}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(usuaris)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{usuaris.id}">ID</th>
+                                <th th:text="#{usuaris.nom}">Nombre</th>
+                                <th th:text="#{usuaris.cognoms}">Apellidos</th>
+                                <th th:text="#{usuaris.rol}">Rol</th>
+                                <th th:text="#{usuaris.nif}">DNI/NIF/NIE</th>
+                                <th th:text="#{usuaris.email}">Correo electrónico</th>
+                                <th th:text="#{usuaris.accions}">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="usuari : ${usuaris}">
+                                <td th:text="${usuari.id}">1</td>
+                                <td th:text="${usuari.nom}">Nombre</td>
+                                <td th:text="${usuari.cognoms}">Apellidos</td>
+                                <td>
+                                    <span class="badge" th:text="#{${'rol.' + usuari.rol}}">Rol</span>
+                                </td>
+                                <td th:text="${usuari.nif}">DNI/NIF/NIE</td>
+                                <td th:text="${usuari.email}">email</td>
+                                <td>
+                                    <div class="actions">
+                                        <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{usuaris.editar}">
+                                            Editar
+                                        </a>
+
+                                        <a th:if="${!@usuariService.isProtectedUser(usuari)}"
+                                           th:href="@{/web/usuaris/eliminar/{id}(id=${usuari.id})}"
+                                           class="btn btn-danger"
+                                           th:attr="onclick=|return confirm('${#messages.msg('usuaris.confirmar.eliminar')}');|"
+                                           th:text="#{usuaris.eliminar}">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message" th:if="${#lists.isEmpty(usuaris)}" th:text="#{usuaris.buit}">
+                    No hay usuarios registrados.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

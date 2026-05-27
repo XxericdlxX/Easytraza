@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{productes.llistat}">Listado de productos</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+
+                        <div>
+                            <h1 th:text="#{productes.llistat}">Listado de productos</h1>
+                            <p th:text="#{productes.gestio}">Gestión de los productos del sistema</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/productes/crear}"
+                       class="btn btn-primary"
+                       th:text="#{productes.afegir}">
+                        Añadir producto
+                    </a>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/productes}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+                            <label for="nomCerca" th:text="#{productes.nom}">
+                                Nombre
+                            </label>
+
+                            <input type="text"
+                                   id="nomCerca"
+                                   name="nom"
+                                   th:value="${nom}"
+                                   th:placeholder="#{productes.cerca.nom.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1; min-width: 260px; margin-bottom: 0;">
+                            <label for="descripcioCerca" th:text="#{productes.descripcio}">
+                                Notas/observaciones
+                            </label>
+
+                            <input type="text"
+                                   id="descripcioCerca"
+                                   name="descripcio"
+                                   th:value="${descripcio}"
+                                   th:placeholder="#{productes.cerca.descripcio.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit"
+                                    class="btn btn-secondary"
+                                    th:text="#{productes.cerca.boto}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(productes)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{productes.id}">ID</th>
+                                <th th:text="#{productes.nom}">Nombre</th>
+                                <th th:text="#{productes.descripcio}">Notas/observaciones</th>
+                                <th th:text="#{productes.accions}">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="producte : ${productes}">
+                                <td th:text="${producte.id}">1</td>
+
+                                <td th:text="${producte.nom}">
+                                    Producto
+                                </td>
+
+                                <td th:text="${producte.descripcio}">
+                                    Descripción
+                                </td>
+
+                                <td>
+                                    <div class="actions-table">
+                                        <a th:href="@{/web/productes/editar/{id}(id=${producte.id})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{productes.editar}">
+                                            Editar
+                                        </a>
+
+                                        <a th:href="@{/web/productes/eliminar/{id}(id=${producte.id})}"
+                                           class="btn btn-danger js-confirm-delete"
+                                           th:attr="data-confirm-message=#{productes.confirmar.eliminar}"
+                                           th:text="#{productes.eliminar}">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message"
+                     th:if="${#lists.isEmpty(productes)}"
+                     th:text="#{productes.buit}">
+                    No hay productos registrados.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-confirm-delete').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        const message = link.getAttribute('data-confirm-message') || '¿Seguro que quieres eliminar este producto?';
+
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.client.llistat}">Listado de albaranes de cliente</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{albara.client.llistat}">Listado de albaranes de cliente</h1>
+                            <p th:text="#{albara.client.gestio}">Gestión de los albaranes de cliente del sistema</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/albarans-client/crear}" class="btn btn-primary" th:text="#{albara.client.afegir}">
+                        Añadir albarán de cliente
+                    </a>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/albarans-client}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+                            <label for="clientNif" th:text="#{albara.client.client}">Cliente</label>
+                            <input type="text"
+                                   id="clientNif"
+                                   name="clientNif"
+                                   th:value="${clientNif}"
+                                   th:placeholder="#{albara.client.cerca.client}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+                            <label for="dataProduccio" th:text="#{albara.client.data}">Fecha</label>
+                            <input type="date"
+                                   id="dataProduccio"
+                                   name="dataProduccio"
+                                   th:value="${dataProduccio}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+                            <label for="estat" th:text="#{albara.client.estat}">Estado</label>
+                            <select id="estat" name="estat">
+                                <option value="" th:text="#{albara.client.cerca.estat.tots}">Todos</option>
+                                <option th:each="estatAlbara : ${estatsAlbaraClient}"
+                                        th:value="${estatAlbara}"
+                                        th:selected="${estatAlbara == estat}"
+                                        th:text="#{${'albara.client.estat.' + estatAlbara}}">
+                                    Estado
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit" class="btn btn-secondary" th:text="#{albara.client.cerca.boto}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(albarans)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{albara.client.id}">ID</th>
+                                <th th:text="#{albara.client.data}">Fecha</th>
+                                <th th:text="#{albara.client.client}">Cliente</th>
+                                <th th:text="#{albara.client.usuari}">Usuario creador</th>
+                                <th th:text="#{albara.client.estat}">Estado</th>
+                                <th th:text="#{albara.client.linies}">Líneas</th>
+                                <th th:text="#{albara.client.accions}">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="albara : ${albarans}">
+                                <td th:text="${albara.id}">1</td>
+                                <td th:text="${albara.dataProduccio}">2026-04-27</td>
+                                <td th:text="${albara.client != null ? albara.client.nom + ' (' + albara.client.nif + ')' : '-'}">Cliente</td>
+                                <td th:text="${albara.usuariCreador != null ? albara.usuariCreador.nom + ' ' + albara.usuariCreador.cognoms : '-'}">Usuario</td>
+                                <td th:text="#{${'albara.client.estat.' + albara.estat}}">Estado</td>
+                                <td th:text="${#lists.size(albara.linies)}">0</td>
+                                <td>
+                                    <div class="actions">
+                                        <a th:href="@{/web/albarans-client/veure/{id}(id=${albara.id})}"
+                                           class="btn btn-accent"
+                                           th:text="#{albara.client.veure.linies}">
+                                            Ver líneas
+                                        </a>
+
+                                        <a th:if="${albara.estat.name() == 'PENDENT_LLIURAR'}"
+                                           th:href="@{/web/albarans-client/editar/{id}(id=${albara.id})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{albara.client.editar}">
+                                            Editar
+                                        </a>
+
+                                        <a th:if="${albara.estat.name() == 'PENDENT_LLIURAR'}"
+                                           th:href="@{/web/albarans-client/eliminar/{id}(id=${albara.id})}"
+                                           class="btn btn-danger js-confirm-delete"
+                                           th:text="#{albara.client.eliminar}"
+                                           th:attr="data-confirm-message=#{albara.client.confirmar.eliminar}">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message" th:if="${#lists.isEmpty(albarans)}" th:text="#{albara.client.buit}">
+                    No hay albaranes de cliente registrados.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-confirm-delete').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        const message = link.getAttribute('data-confirm-message') || '¿Seguro que quieres eliminar este albarán?';
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

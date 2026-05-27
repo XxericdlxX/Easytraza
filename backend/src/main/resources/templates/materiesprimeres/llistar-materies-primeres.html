@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{materies.llistat}">Listado de materias primas</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div th:replace="~{fragments/leftnav :: leftnav}"></div>
+
+        <div class="page-with-nav">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{materies.llistat}">Listado de materias primas</h1>
+                            <p th:text="#{materies.gestio}">Gestión de las materias primas del sistema</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/web/materies-primeres/crear}" class="btn btn-primary" th:text="#{materies.afegir}">
+                        Añadir materia prima
+                    </a>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/materies-primeres}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+                            <label for="nom" th:text="#{materies.nom}">Nombre</label>
+                            <input type="text"
+                                   id="nom"
+                                   name="nom"
+                                   th:value="${nom}"
+                                   th:placeholder="#{materies.cerca.nom.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="flex: 1.5; min-width: 260px; margin-bottom: 0;">
+                            <label for="descripcio" th:text="#{materies.descripcio}">Descripción</label>
+                            <input type="text"
+                                   id="descripcio"
+                                   name="descripcio"
+                                   th:value="${descripcio}"
+                                   th:placeholder="#{materies.cerca.descripcio.placeholder}">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit" class="btn btn-secondary" th:text="#{materies.cerca.boto}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-wrapper" th:if="${!#lists.isEmpty(materiesPrimeres)}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:text="#{materies.id}">ID</th>
+                                <th th:text="#{materies.nom}">Nombre</th>
+                                <th th:text="#{materies.descripcio}">Descripción</th>
+                                <th th:text="#{materies.accions}">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="materiaPrima : ${materiesPrimeres}">
+                                <td th:text="${materiaPrima.id}">1</td>
+                                <td th:text="${materiaPrima.nom}">Materia</td>
+                                <td th:text="${materiaPrima.descripcio}">Descripción</td>
+                                <td>
+                                    <div class="actions">
+                                        <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id})}"
+                                           class="btn btn-secondary"
+                                           th:text="#{materies.editar}">
+                                            Editar
+                                        </a>
+                                        <a th:href="@{/web/materies-primeres/eliminar/{id}(id=${materiaPrima.id})}"
+                                           class="btn btn-danger"
+                                           th:attr="onclick=|return confirm('${#messages.msg('materies.confirmar.eliminar')}');|"
+                                           th:text="#{materies.eliminar}">
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message" th:if="${#lists.isEmpty(materiesPrimeres)}" th:text="#{materies.buit}">
+                    No hay materias primas registradas.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

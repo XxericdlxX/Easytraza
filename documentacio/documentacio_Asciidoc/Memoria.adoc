@@ -1,0 +1,975 @@
+= Memòria
+Eric Delgado López
+:doctype: article
+:toc: macro
+:toclevels: 4
+:toc-title: Índex
+:sectnums:
+:icons: font
+:lang: ca
+
+[.text-center]
+Projecte 4 - EasyTraza +
+2 DAM Matí 2025-2026
+
+[.text-center]
+Eduard Santamaria Barnadas +
+Esther Sanchez Batlló +
+Manel Orós Cuenca +
+Nicolau Copernic
+
+:imagesdir: ../images/Memoria
+
+image::01_portada/portada_logo_easytraza.png[Logo EasyTraza, align="center", width=300]
+
+toc::[]
+
+== Recollida de requisits i disseny d'EasyTraza
+
+Aquest apartat recull la contextualització del projecte, l'acta de reunió amb el client, l'anàlisi de requisits i la fase de disseny inicial de l'aplicació EasyTraza.
+
+=== Introducció
+
+==== Contextualització
+
+EasyTraza és una proposta d'aplicació multiplataforma pensada per digitalitzar la traçabilitat d'un obrador artesà. L'objectiu és substituir el control manual en paper de lots, albarans i ús d'ingredients per un sistema més ràpid, consultable i preparat per respondre davant inspeccions o incidències alimentàries.
+
+==== Problemàtica actual
+
+* El registre de lots es fa manualment, amb un cost diari elevat de temps i amb risc d'errors humans.
+* Quan un proveïdor comunica una incidència, la recerca del lot afectat i dels clients impactats és lenta.
+* Els albarans arriben en formats molt diferents i sovint només existeixen en paper o via WhatsApp.
+* Hi ha matèries primeres amb caducitats curtes que requereixen seguiment i avisos.
+* El client vol una eina usable a l'obrador, des de mòbil, tauleta i ordinador, sense costos de llicència elevats.
+
+==== Objectius del projecte
+
+* Registrar digitalment l'entrada de matèries primeres i els seus lots.
+* Relacionar cada lot amb els productes finals elaborats i amb els clients servits.
+* Accelerar la localització d'incidències i la retirada preventiva de producte.
+* Facilitar la consulta històrica per lots, proveïdors, clients i períodes.
+* Millorar l'operativa diària amb una interfície simple i preparada per a un entorn d'obrador.
+
+==== Abast
+
+* Inclou recepció de lots, consulta de traçabilitat, registre d'elaboracions, alertes i informes.
+* No inclou, en aquesta fase, una botiga en línia ni un portal web per a clients finals.
+* L'OCR s'utilitzarà per accelerar la captura de dades, però sempre amb revisió manual.
+* Les fórmules internes de producció només es registraran al nivell estrictament necessari per relacionar ingredients i productes, evitant exposar informació sensible.
+
+=== Acta de reunió amb el client
+
+[cols="1,3", options="header"]
+|===
+| Camp | Contingut
+| Projecte | EasyTraza - Recollida de requisits
+| Data | 16/03/2026
+| Hora | 11.40 h - 13.20 h
+| Lloc | Institut Nicolau Copernic
+| Modalitat | Presencial
+| Client | Rafa Morante
+| Responsable | Responsable de producció
+| Redactor | Eric Delgado López
+|===
+
+==== Assistents
+
+* Rafa Morante, responsable de producció i representant del client.
+* Professorat de DAM2 Matí.
+* Alumnat de DAM2 Matí.
+* Eric Delgado López, alumne redactor de l'acta.
+
+==== Desenvolupament de la reunió
+
+La reunió es va iniciar amb la presentació del context del projecte. El client va explicar que la necessitat principal és disposar d'un sistema digital que permeti fer la traçabilitat de les matèries primeres i relacionar cada lot rebut amb els productes finals elaborats i amb els clients als quals s'han subministrat.
+
+En primer lloc, es va descriure el problema actual de treballar el control de lots de manera manual. Actualment s'han d'anotar dades com la data de recepció, el proveïdor, el número de lot i la documentació associada. Aquesta informació s'ha de conservar per poder respondre a inspeccions sanitàries i per actuar ràpidament en cas d'incidència amb un producte.
+
+A continuació, el client va remarcar que una de les funcionalitats més importants és poder buscar un lot concret i veure en quins productes s'ha utilitzat, quantes vegades s'ha fet servir i a quins clients s'ha venut. D'aquesta manera, si un proveïdor comunica que un lot està en mal estat, es podrà identificar immediatament quins clients poden estar afectats i contactar-hi.
+
+També es va comentar la necessitat de digitalitzar els albarans i les entrades de producte. El client va plantejar que l'aplicació pugui fer una fotografia del document o de l'etiqueta i extreure automàticament dades com el producte, el lot o altres camps rellevants. Tot i això, es va indicar que caldrà permetre revisar i corregir manualment la informació perquè cada proveïdor pot fer servir formats diferents.
+
+Pel que fa al funcionament del procés productiu, es va explicar que un lot pot intervenir en diversos productes, però que cada producte final s'associa a un únic lot dins del procés. També es va esmentar que l'aplicació hauria de permetre recepcionar lots, iniciar-los i tancar-los, detectant quan un lot anterior ja s'ha esgotat per tal de continuar amb un altre.
+
+Durant la conversa es va parlar igualment dels usuaris del sistema. Qualsevol dependent podria utilitzar l'aplicació, però és important saber qui ha fet cada acció i qui ha recepcionat o manipulat cada lot. Per això, es va considerar necessari disposar d'identificació d'usuaris i d'un registre d'accions dins del sistema.
+
+En relació amb els avisos, el client va indicar que l'aplicació hauria d'alertar quan hi hagi lots o productes amb una caducitat propera, especialment en casos com mantega, llet, formatge o ou líquid. A més, també es va proposar que el sistema recordi setmanalment el control manual del PH de l'aigua i permeti marcar que aquesta comprovació ja s'ha realitzat.
+
+Finalment, es van comentar altres necessitats complementàries: disposar de cerca per lots, clients i proveïdors; filtrar la informació per dia, setmana o mes; generar documents en PDF o imprimir-los; consultar a final de mes quantes unitats s'han elaborat, quants lots s'han utilitzat i quina despesa s'ha generat; i oferir una solució usable tant des de PC com des de dispositius mòbils.
+
+==== Necessitats i requisits identificats
+
+* Registrar lots amb data, proveïdor, número de lot i documentació associada.
+* Consultar la traçabilitat completa d'un lot: ús, productes relacionats i clients afectats.
+* Digitalitzar albarans i etiquetes mitjançant fotografies, amb possibilitat de correcció manual.
+* Permetre la gestió del cicle del lot: recepció, inici, finalització i canvi automàtic al lot següent.
+* Identificar l'usuari que fa cada acció dins del sistema.
+* Generar alertes de caducitat i avisos de control setmanal del PH de l'aigua.
+* Fer cerques i filtres per lots, proveïdors, clients i períodes de temps.
+* Generar informes i sortides en PDF o en format imprimible.
+* Disposar d'una interfície adaptable a PC i mòbil.
+
+==== Conclusions de la reunió
+
+* La reunió va permetre delimitar amb claredat el problema principal del client: la necessitat de millorar la traçabilitat dels lots i reduir el treball manual actual.
+* Es va confirmar que el projecte s'ha d'orientar a una aplicació capaç de relacionar lots, productes i clients, amb especial atenció a la seguretat alimentària i a la rapidesa d'actuació davant incidències.
+* No es van tancar decisions tècniques definitives, però sí que es van recollir els requisits inicials necessaris per continuar amb la fase d'anàlisi i disseny del projecte.
+
+=== Fase d'anàlisi de requisits
+
+==== Requisits no funcionals
+
+[cols="1,5", options="header"]
+|===
+| ID | Requisit
+| RNF-01 | L'aplicació ha de ser multiusuari i permetre l'ús per diversos treballadors del negoci.
+| RNF-02 | La solució ha de seguir una arquitectura client-servidor amb separació clara entre client i backend.
+| RNF-03 | La comunicació entre el client i el backend ha d'estar basada en una API REST desacoblada.
+| RNF-04 | El sistema ha de ser accessible des de dispositius mòbils i des de PC, amb possibilitat d'adaptació a tauleta si és necessari.
+| RNF-05 | L'arquitectura ha de permetre escalar el sistema a un segon obrador en el futur.
+| RNF-06 | El backend s'ha d'implementar amb Spring Boot i estructura Maven, organitzat en capes com a mínim en API REST, lògica de negoci i persistència.
+| RNF-07 | El backend ha de ser portable i executable en entorns Linux i Windows.
+| RNF-08 | El client mòbil s'ha de desenvolupar com una aplicació Android nativa amb Kotlin i Jetpack Compose.
+| RNF-09 | L'app mòbil ha de seguir una arquitectura basada en Feature Layer i Clean Architecture, amb patró MVVM i gestió d'estat amb MutableStateFlow o equivalent.
+| RNF-10 | L'aplicació mòbil ha de poder executar-se en dispositius Android i en emuladors de desenvolupament.
+| RNF-11 | La interfície ha de ser clara, simple, intuïtiva i ràpida d'utilitzar en el context habitual de treball.
+| RNF-12 | El registre de lots i la revisió de dades han de requerir el mínim nombre de passos possible i el sistema ha de respondre amb fluïdesa, informant l'usuari quan hi hagi operacions llargues.
+| RNF-13 | La interfície ha de mantenir coherència visual en colors, tipografies, icones, distribució i reutilització de components.
+| RNF-14 | L'aplicació ha de contemplar criteris bàsics d'accessibilitat i etiquetes comprensibles per a l'usuari.
+| RNF-15 | Les cerques per lot, proveïdor, producte o client han de ser àgils.
+| RNF-16 | El sistema ha de poder funcionar amb connectivitat limitada i sincronitzar la informació posteriorment quan es recuperi la connexió, evitant la pèrdua d'informació ja registrada.
+| RNF-17 | Les dades i fotografies associades als lots han d'emmagatzemar-se de forma segura, amb còpies de seguretat o mecanismes equivalents de recuperació.
+| RNF-18 | Les dades principals confirmades no s'han de poder modificar fàcilment sense deixar rastre, i el sistema ha de mantenir un registre consultable de les accions realitzades pels usuaris.
+| RNF-19 | La informació sensible del negoci, especialment fórmules o dades internes no necessàries, no s'ha d'exposar innecessàriament.
+| RNF-20 | Les entrades de l'usuari han d'estar correctament validades i les excepcions s'han de gestionar informant l'usuari de manera comprensible.
+| RNF-21 | El backend ha de disposar d'un sistema de logs per registrar errors, excepcions i avisos.
+| RNF-22 | El codi ha de ser eficient, sense redundàncies, ben estructurat i documentat en els elements rellevants amb JavaDoc al backend i KDoc al client mòbil.
+| RNF-23 | Les lògiques principals del sistema han d'estar cobertes amb proves unitàries.
+| RNF-24 | La solució OCR utilitzada ha de ser gratuïta o de cost zero recurrent per al client, capaç de treballar amb albarans de proveïdors amb formats diversos i integrable amb l'arquitectura Android del projecte.
+| RNF-25 | L'idioma inicial del sistema ha de ser el castellà, amb possibilitat d'oferir també català.
+| RNF-26 | El sistema ha de conservar l'històric operatiu necessari per al control habitual del negoci i la consulta recent, prenent com a referència aproximada cinc mesos.
+| RNF-27 | El sistema ha de permetre imprimir o exportar la informació mensual sense maquetació complexa addicional.
+| RNF-28 | El projecte ha d'utilitzar Git/GitLab per al control de versions i el seguiment del desenvolupament, amb ús d'issues, issue board, sprints i Merge Requests.
+| RNF-29 | El repositori ha d'estar estructurat com a mínim amb les carpetes backend, mobile i documentació, i incloure un README amb una breu descripció del projecte.
+| RNF-30 | Cada requeriment funcional implementat ha de poder relacionar-se amb la seva planificació i seguiment dins del repositori i del sistema de gestió del projecte.
+|===
+
+==== Requisits funcionals
+
+[cols="1,5,2", options="header"]
+|===
+| ID | Descripció | Plataforma
+| RF-01 | Registrar l'entrada d'un lot a partir d'un albarà mitjançant fotografia o entrada manual. | Mòbil / PC
+| RF-02 | Associar a cada lot les dades bàsiques de recepció: proveïdor, producte o ingredient, número de lot, quantitat, data de recepció i data de caducitat o consum preferent. | Mòbil / PC
+| RF-03 | Desar la fotografia original de l'albarà com a evidència associada al lot. | Mòbil / PC
+| RF-04 | Permetre completar o corregir manualment les dades del lot abans de confirmar-ne el registre. | Mòbil / PC
+| RF-05 | Permetre afegir observacions o incidències durant la recepció del lot. | Mòbil / PC
+| RF-06 | Permetre bloquejar o marcar com a incidència un lot rebut en mal estat. | Mòbil / PC
+| RF-07 | Extreure automàticament per OCR les dades clau de l'albarà: proveïdor, producte o ingredient, número de lot, quantitat, data i caducitat o consum preferent. | Automàtica
+| RF-08 | Mostrar a l'usuari les dades detectades per OCR abans de confirmar el registre. | Mòbil / PC
+| RF-09 | Permetre gestionar l'entrada d'informació procedent d'albarans en paper, fotografies o imatges rebudes per missatgeria. | Mòbil / PC
+| RF-10 | Permetre registrar manualment un lot quan l'OCR no sigui suficient o no pugui identificar correctament les dades. | Mòbil / PC
+| RF-11 | Permetre registrar un lot encara que encara no s'estigui consumint en producció. | Mòbil / PC
+| RF-12 | Permetre activar manualment un lot quan comenci el seu consum real. | Mòbil / PC
+| RF-13 | Permetre finalitzar un lot i marcar-lo com a esgotat, substituït, bloquejat o amb incidència. | Mòbil / PC
+| RF-14 | Gestionar el canvi entre lots del mateix ingredient, deixant constància de quin lot era actiu en cada moment. | Automàtica / Mòbil / PC
+| RF-15 | Consultar l'estat actual i l'historial de cada lot. | Mòbil / PC
+| RF-16 | Registrar les elaboracions o produccions realitzades i associar-les amb els lots utilitzats. | Mòbil / PC
+| RF-17 | Permetre indicar el producte elaborat, la quantitat produïda i la data de producció. | Mòbil / PC
+| RF-18 | Relacionar un mateix lot amb diferents elaboracions o productes finals al llarg del temps. | Automàtica / PC
+| RF-19 | Permetre consultar quins lots s'han utilitzat en una elaboració o en un període determinat. | Mòbil / PC
+| RF-20 | Consultar la traçabilitat inversa d'un lot, mostrant en quins productes s'ha utilitzat i a quins clients s'ha subministrat. | Mòbil / PC
+| RF-21 | Consultar la traçabilitat directa d'un producte elaborat, mostrant els lots i ingredients associats. | Mòbil / PC
+| RF-22 | Detectar i preparar la llista de clients afectats quan es detecti una incidència amb un lot o producte. | Automàtica / PC
+| RF-23 | Permetre consultar ràpidament la documentació necessària d'un lot per respondre a inspeccions o incidències. | Mòbil / PC
+| RF-24 | Registrar els clients del negoci i mantenir les seves dades bàsiques. | PC
+| RF-25 | Registrar els productes subministrats a cada client i la quantitat corresponent. | PC
+| RF-26 | Permetre introduir subministraments o comandes rebudes manualment, per telèfon o per missatgeria. | PC
+| RF-27 | Consultar l'historial de productes subministrats a cada client. | Mòbil / PC
+| RF-28 | Permetre identificar l'usuari que està utilitzant l'aplicació mitjançant nom o selecció d'usuari. | Mòbil / PC
+| RF-29 | Registrar automàticament quin usuari ha realitzat cada acció i en quin moment. | Automàtica
+| RF-30 | Permetre consultar l'historial d'accions associat a lots, elaboracions i registres del sistema. | PC
+| RF-31 | Permetre gestionar la llista d'usuaris del sistema. | PC
+| RF-32 | Permetre afegir, editar o desactivar productes, ingredients i proveïdors. | PC
+| RF-33 | Permetre afegir, editar o desactivar clients i altres dades mestres del sistema. | PC
+| RF-34 | Permetre reutilitzar dades ja existents per agilitzar futurs registres. | Automàtica / PC
+| RF-35 | Permetre la cerca ràpida per número de lot, proveïdor, client, producte o ingredient. | Mòbil / PC
+| RF-36 | Permetre filtrar la informació per dia, setmana, mes, estat del lot, proveïdor o client. | Mòbil / PC
+| RF-37 | Permetre consultar l'històric recent de lots, moviments i elaboracions. | Mòbil / PC
+| RF-38 | Detectar i mostrar alertes de caducitat pròxima per a matèries primeres sensibles. | Automàtica / Mòbil / PC
+| RF-39 | Recordar periòdicament el control manual del pH de l'aigua i permetre registrar-ne la comprovació. | Automàtica / Mòbil / PC
+| RF-40 | Permetre consultar l'històric de controls periòdics registrats al sistema. | Mòbil / PC
+| RF-41 | Generar informes en PDF o en format imprimible sobre lots, elaboracions, traçabilitat i activitat mensual. | PC
+| RF-42 | Permetre imprimir o exportar la documentació necessària per a revisions, control intern o inspeccions. | PC
+| RF-43 | Permetre consultar resums mensuals d'activitat, producció i moviments de lots. | PC
+| RF-44 | Permetre utilitzar les funcionalitats principals del sistema tant des de mòbil com des de PC segons el context de treball. | Mòbil / PC
+| RF-45 | Permetre realitzar consultes de lots, traçabilitat i historial també des del client mòbil. | Mòbil
+| RF-46 | Permetre continuar operant amb connectivitat limitada i sincronitzar la informació posteriorment si cal. | Automàtica / Mòbil / PC
+|===
+
+==== Definicions i nomenclatura
+
+[cols="2,5", options="header"]
+|===
+| Entitat | Atributs principals
+| Lot | Número de lot, proveïdor, ingredient, data de recepció, data de caducitat, quantitat, estat, foto, data d'activació
+| Ingredient / matèria primera | Nom, categoria, proveïdor habitual, unitat, sensible a caducitat, observacions
+| Albarà / document | Tipus d'origen, imatge, text OCR, data, camps extrets, validació
+| Producte final | Nom comercial, categoria, actiu/inactiu, observacions
+| Elaboració | Data, producte final, quantitat produïda, usuari responsable, lots utilitzats
+| Client | Nom, tipus de client, contacte, telèfon, correu, observacions
+| Subministrament | Client, producte final, data, quantitat, observacions
+| Usuari | Nom visible, rol, identificador intern, actiu
+| Control d'aigua | Data, valor de pH, usuari, observacions
+| Alerta | Tipus, element afectat, nivell, data de generació, estat
+|===
+
+==== Especificacions de negoci
+
+===== Flux 1. Recepció d'un lot
+
+* L'usuari fa una foto de l'albarà o introdueix les dades manualment.
+* El sistema aplica OCR i intenta extreure automàticament els camps principals del document.
+* L'usuari revisa la informació detectada i la pot corregir si cal.
+* El sistema desa el lot amb les dades bàsiques: proveïdor, producte o ingredient, número de lot, quantitat, data de recepció i caducitat o consum preferent.
+* La fotografia de l'albarà queda guardada com a evidència associada al lot.
+* El lot queda registrat, però no necessàriament actiu per al consum.
+
+===== Flux 2. Activació del consum d'un lot
+
+* Quan es comença a utilitzar un ingredient, l'usuari marca el lot corresponent com a actiu.
+* Si hi havia un altre lot actiu del mateix ingredient, el sistema en registra el canvi.
+* El lot anterior queda tancat, esgotat o substituït segons correspongui.
+* Aquesta activació és la que determina quin lot queda vinculat a les elaboracions posteriors.
+
+===== Flux 3. Registre d'elaboració
+
+* L'usuari selecciona el producte final elaborat.
+* L'usuari indica la data i la quantitat elaborada.
+* El sistema associa l'elaboració amb els lots actius dels ingredients utilitzats.
+* Si cal, l'usuari pot revisar o confirmar els lots relacionats.
+* L'elaboració queda guardada amb usuari, data i lots associats.
+
+===== Flux 4. Traçabilitat i incidències
+
+* Si un proveïdor comunica una incidència o un lot defectuós, l'usuari cerca el número de lot.
+* El sistema mostra en quines elaboracions s'ha utilitzat aquell lot.
+* El sistema mostra quins productes finals han quedat afectats.
+* El sistema mostra a quins clients s'ha subministrat.
+* Es genera un llistat d'afectats i es pot exportar o imprimir per actuar ràpidament.
+
+===== Flux 5. Alertes operatives
+
+* L'usuari selecciona un producte elaborat.
+* El sistema mostra els lots i ingredients que s'han utilitzat en la seva elaboració.
+* L'usuari pot consultar aquesta informació per data, client o període de temps.
+* Aquesta funcionalitat permet reconstruir la traçabilitat directa del producte.
+
+===== Flux 6. Cerca i consulta d'informació
+
+* L'usuari pot cercar per número de lot, proveïdor, producte, ingredient o client.
+* El sistema permet filtrar la informació per dia, setmana, mes o estat del lot.
+* L'usuari pot consultar l'històric recent de lots, elaboracions i moviments.
+* Les consultes s'han de poder fer tant des de PC com des de dispositius mòbils.
+
+===== Flux 7. Alertes de caducitat
+
+* El sistema revisa les dates de caducitat o consum preferent dels lots registrats.
+* Si detecta un lot proper a caducar, mostra una alerta a l'usuari.
+* L'usuari pot consultar quin lot està afectat i revisar-ne la informació.
+* L'alerta pot quedar registrada com a revisada o resolta.
+
+===== Flux 8. Control periòdic del pH
+
+* El sistema recorda periòdicament que s'ha de fer el control manual del pH de l'aigua.
+* L'usuari introdueix el valor mesurat o marca el control com a realitzat.
+* El sistema guarda la data del control, el valor registrat i l'usuari que l'ha fet.
+* L'històric de controls de pH es pot consultar posteriorment.
+
+===== Flux 9. Registre d'usuaris i traçabilitat interna
+
+* Cada usuari s'identifica abans de fer operacions al sistema.
+* El sistema registra automàticament qui ha realitzat cada acció i en quin moment.
+* Això permet saber qui ha registrat, activat, modificat o tancat un lot.
+* L'historial intern es pot consultar en cas d'error, incidència o revisió.
+
+===== Flux 10. Informes i documentació
+
+* L'usuari pot generar informes de lots, traçabilitat, moviments i activitat mensual.
+* El sistema permet exportar aquesta informació en PDF o en format imprimible.
+* Els informes poden utilitzar-se per a control intern o per a inspeccions sanitàries.
+* La documentació d'un lot ha d'estar disponible de forma ràpida quan sigui necessària.
+
+==== Guions per actors
+
+[cols="2,5", options="header"]
+|===
+| Actor | RF principals que pot executar
+| Operari / dependent | RF-01, RF-02, RF-03, RF-04, RF-05, RF-06, RF-08, RF-09, RF-10, RF-11, RF-12, RF-13, RF-15, RF-16, RF-17, RF-19, RF-23, RF-27, RF-28, RF-35, RF-36, RF-37, RF-38, RF-39, RF-40, RF-44, RF-45, RF-46
+| Responsable de producció | Tots els anteriors + RF-20, RF-21, RF-22, RF-24, RF-25, RF-26, RF-30, RF-41, RF-42, RF-43
+| Administrador | Tots els anteriors + RF-31, RF-32, RF-33, RF-34
+| Sistema automàtic | RF-07, RF-14, RF-18, RF-22, RF-29, RF-34, RF-38, RF-39, RF-46
+|===
+
+=== Fase de disseny
+
+==== Diagrama de casos d'ús
+
+link:https://drive.google.com/file/d/1dzIOJxaTcLXFce-qh0BHYnnAOQcnHphc/view?usp=sharing[Enllaç al diagrama de casos d’ús]
+
+image::02_diagrames/diagrama_casos_us.png[Diagrama de casos d'ús, align="center", width=700]
+
+==== Diagrama E-R
+
+link:https://drive.google.com/file/d/1XurzMzwH24HNiD8VHvs0rrjTCiawT2jJ/view?usp=sharing[Enllaç al diagrama E-R]
+
+image::02_diagrames/diagrama_er.png[Diagrama E-R, align="center", width=700]
+
+===== Taula 1. Taules i camps principals
+
+[cols="2,5", options="header"]
+|===
+| Taula | Camps principals
+| usuaris | id, nom_visible, rol, identificador_intern, actiu, creat_a
+| proveidors | id, nom, contacte, telefon, correu, observacions
+| ingredients | id, nom, categoria, unitat, critic_caducitat, proveidor_habitual_id, observacions, actiu
+| lots | id, ingredient_id, proveidor_id, numero_lot, data_recepcio, data_caducitat, quantitat, estat, foto_path, activat_a, tancat_a, observacions, creat_per_usuari_id, creat_a
+| documents_ocr | id, lot_id, origen, imatge_path, text_detectat, camps_extrets, validat, validat_per, validat_a, creat_a
+| productes_finals | id, nom, categoria, actiu, observacions
+| elaboracions | id, producte_final_id, usuari_id, data_elaboracio, quantitat, observacions, creat_a
+| elaboracio_lot | id, elaboracio_id, lot_id, ingredient_id, quantitat_utilitzada
+| clients | id, nom, tipus, contacte, telefon, correu, observacions, actiu
+| subministraments | id, client_id, producte_final_id, elaboracio_id, data_subministrament, quantitat, observacions
+| controls_ph | id, data_control, valor_ph, usuari_id, observacions, creat_a
+| alertes | id, tipus, referencia_id, estat, descripcio, creat_a, resolta_a, revisada_per
+| historial_accions | id, usuari_id, entitat, entitat_id, accio, detall, data_accio
+|===
+
+===== Taula 2. Relacions principals entre taules
+
+[cols="2,2,2,1,4", options="header"]
+|===
+| Taula origen | Camp FK | Taula destí | Tipus relació | Explicació
+| ingredients | proveidor_habitual_id | proveidors | N:1 | Un ingredient pot tenir un proveïdor habitual.
+| lots | ingredient_id | ingredients | N:1 | Cada lot pertany a un únic ingredient.
+| lots | proveidor_id | proveidors | N:1 | Cada lot prové d'un únic proveïdor.
+| lots | creat_per_usuari_id | usuaris | N:1 | Cada lot queda registrat per un usuari.
+| documents_ocr | lot_id | lots | N:1 | Un document OCR està associat a un lot.
+| documents_ocr | validat_per | usuaris | N:1 | Un document OCR pot ser validat per un usuari.
+| elaboracions | producte_final_id | productes_finals | N:1 | Cada elaboració genera un producte final.
+| elaboracions | usuari_id | usuaris | N:1 | Cada elaboració queda registrada per un usuari.
+| elaboracio_lot | lot_id | lots | N:1 | Una fila d'aquesta taula referencia un lot utilitzat.
+| elaboracio_lot | ingredient_id | ingredients | N:1 | Permet indicar quin ingredient correspon a aquell lot dins de l'elaboració.
+| subministraments | client_id | clients | N:1 | Cada subministrament s'associa a un client.
+| subministraments | elaboracio_id | elaboracions | N:1 | Un subministrament pot estar vinculat a una elaboració concreta.
+| controls_ph | usuari_id | usuaris | N:1 | Cada control de pH queda registrat per un usuari.
+| alertes | revisada_per | usuaris | N:1 | Una alerta pot ser revisada o resolta per un usuari.
+| historial_accions | usuari_id | usuaris | N:1 | Cada acció registrada al sistema pot estar associada a un usuari.
+|===
+
+===== Taula 3. Relacions conceptuals del negoci
+
+[cols="2,5", options="header"]
+|===
+| Relació conceptual | Descripció
+| Un proveïdor subministra molts lots | Un mateix proveïdor pot enviar diversos lots al llarg del temps.
+| Un ingredient pot tenir molts lots | Per exemple, una mateixa farina pot arribar en diferents lots.
+| Una elaboració utilitza un o més lots | Cada producció es relaciona amb els lots dels ingredients utilitzats.
+| Un lot pot aparèixer en diverses elaboracions | Si no s'esgota el mateix dia, pot usar-se en diferents produccions.
+| Una elaboració genera un producte final | Cada registre d'elaboració correspon a un producte concret.
+| Un producte final pot subministrar-se a diversos clients | Mitjançant els registres de subministrament.
+| Un usuari crea, valida o modifica registres | Per garantir traçabilitat interna i saber qui ha fet cada acció.
+| Les alertes poden estar associades a lots o controls operatius | Per exemple, alertes de caducitat o recordatoris de pH.
+|===
+
+===== Justificació del model
+
+Aquest model de dades s'ha definit a partir de les entitats identificades en la fase d'anàlisi i dels fluxos principals del negoci: recepció de lots, activació del consum, elaboració de productes, traçabilitat, subministrament a clients i control operatiu. L'objectiu és garantir que el sistema pugui relacionar correctament lots, ingredients, elaboracions i clients servits, mantenint també evidències documentals, historial d'accions i alertes del sistema.
+
+==== Disseny d'interfícies d'usuari i navegació
+
+link:https://drive.google.com/file/d/1ciciAbDtamH1tAUg5lB81adW78WY6yYZ/view?usp=drive_link[Enllaç al disseny d’interfícies i navegació]
+
+image::02_diagrames/diagrama_arquitectura_interficies.png[Disseny d'interfícies d'usuari i navegació, align="center", width=700]
+
+==== Disseny de Vistes
+
+link:https://www.figma.com/design/QZnTvMj1KdUqyUbIq0B7DM/EasyTraza?node-id=0-1&t=yXFzMwYwWP9plCPG-1[Enllaç a les vistes de Figma]
+
+link:https://www.figma.com/design/JKs7kffc8tXGSDMRhGMP4I/EasyTraza--Copia-?node-id=0-1&t=yXFzMwYwWP9plCPG-1[Enllaç a les direccions de Figma]
+
+===== PC
+
+.Pantalla principal PC
+image::03_vistes_pc/pc_pantalla_principal.png[Pantalla principal PC, align="center", width=650]
+
+.Resum
+image::03_vistes_pc/pc_resum.png[Resum PC, align="center", width=650]
+
+.Gestió de lots
+image::03_vistes_pc/pc_gestio_lots.png[Gestió de lots PC, align="center", width=650]
+
+.Visió lot bloquejat
+image::03_vistes_pc/pc_visio_lot_bloquejat.png[Visió lot bloquejat PC, align="center", width=650]
+
+.Editar lot
+image::03_vistes_pc/pc_editar_lot.png[Editar lot PC, align="center", width=650]
+
+.Crear lot amb foto
+image::03_vistes_pc/pc_crear_lot_amb_foto.png[Crear lot amb foto PC, align="center", width=650]
+
+.Elaboracions
+image::03_vistes_pc/pc_elaboracions.png[Elaboracions PC, align="center", width=650]
+
+.Visió elaboració
+image::03_vistes_pc/pc_visio_elaboracio.png[Visió elaboració PC, align="center", width=650]
+
+.Crear elaboració
+image::03_vistes_pc/pc_crear_elaboracio.png[Crear elaboració PC, align="center", width=650]
+
+.Consultes per lot
+image::03_vistes_pc/pc_consultes_lot.png[Consultes per lot PC, align="center", width=650]
+
+.Alertes
+image::03_vistes_pc/pc_alertes.png[Alertes PC, align="center", width=650]
+
+.Alertes buides
+image::03_vistes_pc/pc_alertes_buides.png[Alertes buides PC, align="center", width=650]
+
+.Control de pH
+image::03_vistes_pc/pc_control_ph.png[Control de pH PC, align="center", width=650]
+
+.Clients
+image::03_vistes_pc/pc_clients.png[Clients PC, align="center", width=650]
+
+.Visió client i subministraments
+image::03_vistes_pc/pc_visio_client_subministraments.png[Visió client i subministraments PC, align="center", width=650]
+
+.Informes
+image::03_vistes_pc/pc_informes.png[Informes PC, align="center", width=650]
+
+.Catàlegs i proveïdors
+image::03_vistes_pc/pc_catalegs_proveidors.png[Catàlegs i proveïdors PC, align="center", width=650]
+
+.Usuaris
+image::03_vistes_pc/pc_usuaris.png[Usuaris PC, align="center", width=650]
+
+.Editar perfil
+image::03_vistes_pc/pc_editar_perfil_modal.png[Editar perfil PC, align="center", width=650]
+
+.Crear usuari
+image::03_vistes_pc/pc_crear_usuari.png[Crear usuari PC, align="center", width=650]
+
+.Editar usuari
+image::03_vistes_pc/pc_editar_usuari.png[Editar usuari PC, align="center", width=650]
+
+.Historial d'accions
+image::03_vistes_pc/pc_historial_accions.png[Historial d'accions PC, align="center", width=650]
+
+===== Mòbil
+
+.Pantalla principal mòbil
+image::04_vistes_mobil/mobil_pantalla_principal.png[Pantalla principal mòbil, align="center", width=320]
+
+.Lots mòbil: llistat, detall i edició
+image::04_vistes_mobil/mobil_lots_detall_editar.png[Lots mòbil, align="center", width=650]
+
+.Recepció de lot
+image::04_vistes_mobil/mobil_recepcio_lot.png[Recepció de lot mòbil, align="center", width=320]
+
+.Elaboració mòbil
+image::04_vistes_mobil/mobil_elaborar.png[Elaboració mòbil, align="center", width=500]
+
+.Control de pH mòbil
+image::04_vistes_mobil/mobil_control_ph.png[Control de pH mòbil, align="center", width=320]
+
+.Consulta de lot mòbil
+image::04_vistes_mobil/mobil_consulta_lot.png[Consulta de lot mòbil, align="center", width=320]
+
+.Altres pantalles mòbil 1
+image::04_vistes_mobil/mobil_altres_1.png[Altres pantalles mòbil 1, align="center", width=320]
+
+.Altres pantalles mòbil 2
+image::04_vistes_mobil/mobil_altres_2.png[Altres pantalles mòbil 2, align="center", width=320]
+
+==== Fotos que el client ha enviat del negoci
+
+.Foto del negoci pàgina 37
+image::05_fotos_negoci/foto_negoci_p37_1.png[Foto del negoci pàgina 37, align="center", width=650]
+
+.Foto del negoci pàgina 38
+image::05_fotos_negoci/foto_negoci_p38_1.png[Foto del negoci pàgina 38, align="center", width=650]
+
+.Foto del negoci pàgina 39
+image::05_fotos_negoci/foto_negoci_p39_1.png[Foto del negoci pàgina 39, align="center", width=650]
+
+.Foto del negoci pàgina 40
+image::05_fotos_negoci/foto_negoci_p40_1.png[Foto del negoci pàgina 40, align="center", width=650]
+
+.Foto del negoci pàgina 41
+image::05_fotos_negoci/foto_negoci_p41_1.png[Foto del negoci pàgina 41, align="center", width=650]
+
+.Foto del negoci pàgina 42
+image::05_fotos_negoci/foto_negoci_p42_1.png[Foto del negoci pàgina 42, align="center", width=650]
+
+.Foto del negoci pàgina 43
+image::05_fotos_negoci/foto_negoci_p43_1.png[Foto del negoci pàgina 43, align="center", width=650]
+
+.Foto del negoci pàgina 44
+image::05_fotos_negoci/foto_negoci_p44_1.png[Foto del negoci pàgina 44, align="center", width=650]
+
+.Foto del negoci pàgina 45
+image::05_fotos_negoci/foto_negoci_p45_1.png[Foto del negoci pàgina 45, align="center", width=650]
+
+.Foto del negoci pàgina 46
+image::05_fotos_negoci/foto_negoci_p46_1.png[Foto del negoci pàgina 46, align="center", width=650]
+
+.Foto del negoci pàgina 47
+image::05_fotos_negoci/foto_negoci_p47_1.png[Foto del negoci pàgina 47, align="center", width=650]
+
+.Foto del negoci pàgina 48
+image::05_fotos_negoci/foto_negoci_p48_1.png[Foto del negoci pàgina 48, align="center", width=650]
+
+.Foto del negoci pàgina 49
+image::05_fotos_negoci/foto_negoci_p49_1.png[Foto del negoci pàgina 49, align="center", width=650]
+
+.Foto del negoci pàgina 50
+image::05_fotos_negoci/foto_negoci_p50_1.png[Foto del negoci pàgina 50, align="center", width=650]
+
+.Foto del negoci pàgina 51
+image::05_fotos_negoci/foto_negoci_p51_1.png[Foto del negoci pàgina 51, align="center", width=650]
+
+.Foto del negoci pàgina 52
+image::05_fotos_negoci/foto_negoci_p52_1.png[Foto del negoci pàgina 52, align="center", width=650]
+
+.Foto del negoci pàgina 53
+image::05_fotos_negoci/foto_negoci_p53_1.png[Foto del negoci pàgina 53, align="center", width=650]
+
+.Foto del negoci pàgina 54
+image::05_fotos_negoci/foto_negoci_p54_1.png[Foto del negoci pàgina 54, align="center", width=650]
+
+.Foto del negoci pàgina 55
+image::05_fotos_negoci/foto_negoci_p55_1.png[Foto del negoci pàgina 55, align="center", width=650]
+
+.Foto del negoci pàgina 56
+image::05_fotos_negoci/foto_negoci_p56_1.png[Foto del negoci pàgina 56, align="center", width=650]
+
+.Foto del negoci pàgina 57
+image::05_fotos_negoci/foto_negoci_p57_1.png[Foto del negoci pàgina 57, align="center", width=650]
+
+.Foto del negoci pàgina 58 - 1
+image::05_fotos_negoci/foto_negoci_p58_1.png[Foto del negoci pàgina 58 - 1, align="center", width=650]
+
+.Foto del negoci pàgina 58 - 2
+image::05_fotos_negoci/foto_negoci_p58_2.png[Foto del negoci pàgina 58 - 2, align="center", width=650]
+
+== Daily standups i documentació de cada sprint
+
+Aquest apartat agrupa la documentació de seguiment dels sprints del projecte. Inclou la planificació inicial, els daily standups, les revisions finals i les retrospectives personals de cada sprint.
+
+:imagesdir: ../images
+
+=== Sprint 1
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+image::Sprint1/BoardInicial/BoardInicialSprint1.1.png[Board inicial 1]
+image::Sprint1/BoardInicial/BoardInicialSprint1.2.png[Board inicial 2]
+image::Sprint1/BoardInicial/BoardInicialSprint1.3.png[Board inicial 3]
+image::Sprint1/BoardInicial/BoardInicialSprint1.4.png[Board inicial 4]
+image::Sprint1/BoardInicial/BoardInicialSprint1.5.png[Board inicial 5]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 10/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - | Corregir el projecte 2 | Em trobava malament | 2h
+|===
+
+===== DIA 2 Dilluns - 13/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig corregir el projecte 2 |Organitzaré l'sprint1 per començar i també faré els labels, issues i tasks per poder començar a fer codi i fer el push inicial al gitlab i també començar el CRUD d'Usuaris | -  | 6h + 2h
+|===
+
+===== DIA 3 Dimarts - 14/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig organitzar l'sprint1 per començar i també vaig fer els labels, issues i tasks per poder començar a fer codi i vaig fer el push inicial al gitlab i vaig començar el CRUD d'Usuaris  | Organitzar el backend amb els packages i fer el controller web per les  vistes del Crud d'Usuaris, començar les vistes i revisar que tot funcioni  | - | 4h 
+|===
+
+===== DIA 4 Dimecres - 15/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |Vaig organitzar el backend amb els packages i vaig fer el controller web per les  vistes del Crud d'Usuaris, vaig començar les vistes i vaig revisar que tot funcioni i vaig fer el merge Request a develop | començar a fer els CRUD's de matèries primeres i proveïdors | el temps que queda | 3h + 5h
+|===
+
+===== DIA 5 Dijous - 16/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig acabar tots els RF que demanen per aquest sprint1 a part vaig fer un topnav i un home, vaig fer els merge Request al develop  i vaig començar la documentació de l'sprint 1| Acabaré la documentació de l'sprint 1  | - | 2'30h
+|===
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+image::Sprint1/BoardFinal/BoardFinalSprint1.1.png[Board final 1]
+image::Sprint1/BoardFinal/BoardFinalSprint1.2.png[Board final 2]
+image::Sprint1/BoardFinal/BoardFinalSprint1.3.png[Board final 3]
+image::Sprint1/BoardFinal/BoardFinalSprint1.4.png[Board final 4]
+image::Sprint1/BoardFinal/BoardFinalSprint1.5.png[Board final 5]
+image::Sprint1/BoardFinal/BoardFinalSprint1.6.png[Board final 6]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius | Com que és un projecte individual, em vaig poder organitzar millor i treballar al meu propi ritme. No vaig haver d’estar pendent de si altres companys havien acabat la seva part, i això em va permetre avançar de manera més constant.
+| Aspectes a millorar | Hauria pogut anar més ràpid a l’hora de fer les tasques i gestionar millor el temps, ja que vaig haver de dedicar bastantes hores a casa per completar el treball.
+| Accions concretes per al següent sprint | Vaig veure que, per al següent sprint, hauria de planificar millor les tasques des del principi, establir un horari de treball més organitzat i dividir la feina en parts més petites per avançar de manera més eficient. També vaig considerar que havia d’aprofitar millor el temps de classe per reduir la quantitat de feina feta a casa.
+|===
+
+=== Sprint 2
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+Aquests issues estan en Teacher Review perquè no el vaig poder corregir però estava fet
+
+image::Sprint2/BoardInicial/BoardInicialSprint2.1.png[Board inicial 1]
+
+image::Sprint2/BoardInicial/BoardInicialSprint2.2.png[Board inicial 2]
+image::Sprint2/BoardInicial/BoardInicialSprint2.3.png[Board inicial 3]
+image::Sprint2/BoardInicial/BoardInicialSprint2.4.png[Board inicial 4]
+image::Sprint2/BoardInicial/BoardInicialSprint2.5.png[Board inicial 5]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 17/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |Vaig acabar la documentació de l’sprint 1 i afegir https al mobile i a la web  | Corregiré l'sprint 1 i organitzaré el sprint i començaré a fer codi per l'Sprint2 | - | 6h
+|===
+
+===== DIA 2 Dilluns - 20/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |Vaig corregir dos CRUD's materies primeres i usuaris |Acabaré de corregir errors visuals i el CRUD de proveïdors i començaré els arxius de l'Sprint2 | - | 6h 
+|===
+
+===== DIA 3 Dimarts - 21/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |Vaig fer el CRUD de Productes i també vaig corregir errors visuals i el CRUD de proveïdors i vaig començar el RF07 - CRUD d’albarans de proveïdor
+ | Continuaré el RF07 - CRUD d’albarans de proveïdor | els canvis del enunciat que han descuadrat coses | 5h 
+|===
+
+===== DIA 4 Dimecres - 22/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López |Vaig acabar el RF07 - CRUD d’albarans de proveïdor per part web sin OCR | Faré la part mobile del RF07 - CRUD d’albarans de proveïdor i intentar afegir ocr a web i a mobile  | els canvis del enunciat que han descuadrat coses | 3h + 3h
+|===
+
+===== DIA 5 Dijous - 23/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig acabar la part manual per web per RF07 - CRUD d’albarans de proveïdor, vaig afegir usuaris demo i un home en mobile i vaig començar a afegir el ocr |Acabaré el RF07 - CRUD d’albarans de proveïdor + ocr en mobile i en web  | problemes amb el OCR | 4h + 5h
+|===
+
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+image::Sprint2/BoardFinal/BoardFinalSprint2.1.png[Board final 1]
+image::Sprint2/BoardFinal/BoardFinalSprint2.2.png[Board final 2]
+image::Sprint2/BoardFinal/BoardFinalSprint2.3.png[Board final 3]
+image::Sprint2/BoardFinal/BoardFinalSprint2.4.png[Board final 4]
+image::Sprint2/BoardFinal/BoardFinalSprint2.5.png[Board final 5]
+image::Sprint2/BoardFinal/BoardFinalSprint2.6.png[Board final 5]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius | En aquest segon sprint, vaig notar una millora en la manera d’organitzar-me i de seguir les tasques previstes. Gràcies a l’experiència del sprint anterior, vaig poder treballar amb més seguretat i tenir una visió més clara del que havia de fer en cada moment. Això em va ajudar a avançar de manera més ordenada i constant.
+
+| Aspectes a millorar | Tot i la millora en l’organització, encara podria optimitzar millor el temps dedicat a algunes tasques, ja que en alguns moments vaig invertir més hores de les necessàries per acabar determinades parts del treball. També hauria estat convenient revisar més sovint l’estat general del sprint per detectar abans possibles retards.
+
+| Accions concretes per al següent sprint | Per al següent sprint, em proposo continuar planificant les tasques des de l’inici, però d’una manera encara més detallada, establint prioritats clares i marcant objectius més concrets per a cada sessió de treball. A més, intentaré fer un seguiment més constant del progrés i aprofitar millor el temps disponible per mantenir un ritme de treball més eficient.
+|===
+
+=== Sprint 3
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+
+image::Sprint3/BoardInicial/BoardInicialSprint3.1.png[Board inicial 1]
+image::Sprint3/BoardInicial/BoardInicialSprint3.2.png[Board inicial 2]
+image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 24/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig entregar el Sprint 2 | Corregiré l'Sprint 2, organitzaré el Sprint 3 i començaré a fer el RF02 - CRUD de clients | - | 6h
+|===
+
+===== DIA 2 Dilluns - 27/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig organitzar el Sprint3, vaig acabar el RF02 - CRUD de clients i vaig començar el RF10-RF11-gestio-lots, iniciar i finalitzar lots |Corregiré el Sprint2 i acabaré el RF10-RF11-gestio-lots, iniciar i finalitzar lots i començaré el RF05 - CRUD d’albarans de client | Problemes amb el OCR que no agafa bé tot | 6h
+|===
+
+===== DIA 3 Dimarts - 28/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig Corregir el Sprint2 i vaig acabar el RF10-RF11-gestio-lots, iniciar i finalitzar lots i vaig començar el RF05 - CRUD d’albarans de client | Començaré a corregir els errors que em van sortir al Sprint2 sobretot de negoci i començaré a corregir el OCR amb el albarans reals de rafa |Problemes amb el OCR que no agafa bé tot   | 0h + 4h
+|===
+
+===== DIA 4 Dimecres - 29/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig començar a fer filtres del Sprint 1 i 2 i vaig començar a millorar el OCR   | Continuaré millorant el OCR i començaré a fer els canvis de l'enunciat | Problemes amb el OCR | 3h
+|===
+
+===== DIA 5 Dijous - 30/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig seguir millorant el ocr  | - | - | 0h
+|===
+
+===== DIA 6 Divendres - 01/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - | - | - | 0h
+|===
+
+===== DIA 7 Dilluns - 04/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - |Continuaré milorant el ocr y arreglar alguns errores del sprint 2  | Problemes amb el OCR  | 3h
+|===
+
+===== DIA 8 Dimarts - 05/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig a continuar milorant el ocr y vaig afegir filtres als CRUDS del sprint 1 i 2 |Acabaré de millorar el ocr per poder agafar els albarans del Rafa | problemes amb el ocr (es dificil fer que agafi tot) | 0h + 4'30h
+|===
+
+===== DIA 9 Dimecres - 06/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig acabar de millorar el ocr i vaig crear la següent task per afegir els filtres de Cruds restants | Començaré a fer els filtres dels Cruds que quedan i també seguiré corregint  | - | 0h + 4h
+|===
+
+===== DIA 10 Dijous - 07/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. | Avui faré el filtre de productes i faré el daily Stand up per acabar el projecte del sprint3 | - | 4h 
+|===
+
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+image::Sprint3/BoardFinal/BoardFinalSprint3.1.png[Board final 1]
+image::Sprint3/BoardFinal/BoardFinalSprint3.2.png[Board final 2]
+image::Sprint3/BoardFinal/BoardFinalSprint3.3.png[Board final 3]
+image::Sprint3/BoardFinal/BoardFinalSprint3.4.png[Board final 4]
+image::Sprint3/BoardFinal/BoardFinalSprint3.5.png[Board final 5]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+
+| Aspectes positius | Durant aquest tercer sprint m’he organitzat millor des del principi. Tenia més clar quines tasques havia de fer i això m’ha permès avançar amb més ordre. També he pogut adelantar força feina del projecte i afegir algunes millores que no estaven previstes inicialment al sprint, però que ajudaven a deixar l’aplicació més completa.
+
+| Aspectes a millorar | Tot i que l’organització ha estat millor, hi ha hagut un parell de dies en què no he avançat gaire en el projecte. Això ha fet que després hagués de recuperar part de la feina en altres moments. De cara als següents sprints, hauria d’intentar mantenir un ritme més constant durant tots els dies i no deixar que algunes tasques s’acumulin.
+
+| Accions concretes per al següent sprint | Per al següent sprint vull continuar treballant amb una planificació clara des de l’inici, però controlant millor el temps que dedico a cada tasca. També intentaré deixar més marge per revisar errors, fer proves i acabar de polir les funcionalitats abans de l’entrega. D’aquesta manera podré arribar al final del sprint amb el projecte més estable i millor preparat.
+|===
+
+=== Sprint 4
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+
+image::Sprint4/BoardInicial/BoardInicialSprint4.1.png[Board inicial 1]
+image::Sprint4/BoardInicial/BoardInicialSprint4.2.png[Board inicial 2]
+image::Sprint4/BoardInicial/BoardInicialSprint4.3.png[Board inicial 3]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 08/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig fer el filtre de productes, vaig avançar en el daily stand-up del Sprint 3, vaig actualitzar la icona de l’app mobile i vaig acabar d’organitzar la documentació en AsciiDoc. | Avui començaré el Sprint 4, revisaré l'Sprint 3 amb el professor i començaré a organitzar la millora perquè els fitxers OCR es guardin en crear l’albarà. | - | 6h
+|===
+
+===== DIA 2 Dilluns - 11/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Divendres vaig començar a organitzar el Sprint 4, vaig revisar les correccions pendents del Sprint 3 i vaig preparar les issues relacionades amb les noves tasques i bugfixs. També vaig començar a treballar en la correcció perquè els fitxers OCR quedin guardats en crear l’albarà. | Avui continuaré amb els bugfixs del Sprint 3, especialment el guardat dels fitxers OCR, i començaré a aplicar les correccions indicades pel professor. | - | 6h
+|===
+
+===== DIA 3 Dimarts - 12/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig avançar en els bugfixs del Sprint 3: vaig treballar en el guardat dels fitxers OCR, en la validació de DNI, NIE i CIF, en el control de l’eliminació de clients amb albarans associats i en l’opció “Altres” del tipus de client. | - | - | 0h
+|===
+
+===== DIA 4 Dimecres - 13/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig avançar en els bugfixs del Sprint 3: vaig treballar en el guardat dels fitxers OCR, en la validació de DNI, NIE i CIF, en el control de l’eliminació de clients amb albarans associats i en l’opció “Altres” del tipus de client. | Avui organitzaré una mica més el projecte, revisaré l’estat de les issues i dedicaré part del temps a estudiar per als tests de recuperació. | He de compaginar l’avanç del projecte amb la preparació dels tests de recuperació. | 3h
+|===
+
+===== DIA 5 Dijous - 14/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig organitzar una mica més el projecte, vaig revisar les tasques pendents del Sprint 4 i vaig dedicar temps a estudiar per als tests de recuperació. | Avui reprendré el treball tècnic del projecte i continuaré amb les correccions pendents del Sprint 3, especialment les relacionades amb el mobile i la gestió dels lots. | Poc temps per acabar l'Sprint 4. | 4h + 7h
+|===
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+
+image::Sprint4/BoardFinal/BoardFinalSprint4.1.png[Board final 1]
+image::Sprint4/BoardFinal/BoardFinalSprint4.2.png[Board final 2]
+image::Sprint4/BoardFinal/BoardFinalSprint4.3.png[Board final 3]
+image::Sprint4/BoardFinal/BoardFinalSprint4.4.png[Board final 4]
+image::Sprint4/BoardFinal/BoardFinalSprint4.5.png[Board final 5]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+| Aspectes positius | Durant aquest quart sprint he pogut avançar en millores importants del projecte i acabar de polir funcionalitats que ja estaven iniciades. He treballat especialment en la part mòbil, en la correcció de problemes relacionats amb l’OCR i en alguns ajustos d’idioma i d’interfície. També he mantingut una organització més clara de les tasques i he pogut reaccionar millor quan han aparegut errors visuals o de comportament.
+
+| Aspectes a millorar | Tot i l’avanç aconseguit, algunes correccions han requerit més temps del previst, sobretot les relacionades amb l’OCR i amb l’adaptació visual de certes pantalles. En alguns moments he hagut de revisar diverses vegades el mateix punt fins a trobar una solució correcta, fet que ha reduït el temps disponible per avançar en altres apartats del sprint.
+
+| Accions concretes per al següent sprint | De cara al següent sprint, vull dedicar més temps a provar les funcionalitats en diferents resolucions i contextos abans de donar-les per acabades. També intentaré separar millor les tasques de desenvolupament i les de correcció per controlar més el temps invertit en cada part. A més, continuaré revisant la coherència visual, les traduccions i els fluxos d’usuari per deixar l’aplicació més estable i preparada per a l’entrega final.
+|===
+
+=== Sprint 5
+
+==== 1. Planificació Inicial
+
+===== 1.1. Planificació (Inicial)
+====== Board inicial — Eric Delgado López
+
+image::Sprint5/BoardInicial/BoardInicialSprint5.1.png[Board inicial 1]
+
+==== 2. Daily Stand Ups
+
+===== DIA 1 Divendres - 15/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig acabar d’avançar en les correccions i ajustos finals del Sprint 4, especialment en la part web i mobile. Vaig treballar en la millora del login i la recuperació de contrasenya, en la visualització de diferents pantalles, en el selector d’idioma i en l’OCR mobile per detectar millor alguns albarans. | Avui començaré el Sprint 5, organitzaré els bugfixs pendents del Sprint 4 i prepararé les noves tasques i issues que caldrà desenvolupar durant aquest sprint. | - | 6h
+|===
+
+===== DIA 2 Dilluns - 18/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Divendres vaig organitzar l’inici del Sprint 5, vaig revisar els bugfixs pendents del Sprint 4 i vaig estructurar les correccions que calia deixar tancades abans de continuar amb noves funcionalitats. | Avui corregiré els últims punts detectats del Sprint 4, especialment els relacionats amb la visualització web, el menú lateral, les taules, el comportament de l’OCR mobile i alguns ajustos del llistat de lots. Un cop revisat, començaré a avançar amb el codi previst per al Sprint 5. | - | 6h
+|===
+
+===== DIA 3 Dimarts - 19/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig continuar corregint els bugfixs pendents del Sprint 4. Vaig treballar en la millora de l’OCR mobile, especialment en la detecció d’un proveïdor concret, vaig ajustar la visualització del menú lateral i de les taules web, i vaig revisar la gestió de lots per fer-la més clara i compacta. També vaig deixar preparades les bases per continuar amb el desenvolupament del Sprint 5. | - | - | 0h
+|===
+
+===== DIA 4 Dimecres - 20/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - | Avui continuaré corregint els bugfixs relacionats amb l’OCR d’albarans de proveïdor, revisant l’extracció de codis de matèria, lots i línies detectades. També ajustaré algunes taules web que encara retallen informació o no es visualitzen correctament. | - | 3h + 7'30h
+|===
+
+===== DIA 5 Dijous - 21/05/2026
+
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Ahir vaig continuar treballant en les correccions dels bugfixs relacionats amb l’OCR dels albarans de proveïdor. Vaig revisar l’extracció dels codis de matèria primera, els lots i les línies detectades, i també vaig començar a ajustar algunes taules de la part web perquè la informació es mostrés millor i no quedés retallada. | Avui acabaré de revisar els últims canvis del sprint, comprovaré que les correccions funcionin correctament tant a la part web com a la part mòbil i prepararé el tancament del Sprint 5. També revisaré el board final, la documentació i els canvis pendents abans de deixar-ho preparat per al merge request. | Alguns ajustos de l’OCR encara necessiten revisió perquè en mòbil la detecció no és tan precisa com en PC. També he hagut d’adaptar algunes pantalles perquè les taules siguin més compactes i es visualitzin correctament. | 4h
+|===
+
+==== 3. Planificació Final
+
+===== 3.1. Planificació (Final de Sprint)
+====== Board final — Eric Delgado López
+
+image::Sprint5/BoardFinal/BoardFinalSprint5.1.png[Board final 1]
+image::Sprint5/BoardFinal/BoardFinalSprint5.2.png[Board final 2]
+image::Sprint5/BoardFinal/BoardFinalSprint5.3.png[Board final 3]
+image::Sprint5/BoardFinal/BoardFinalSprint5.4.png[Board final 4]
+image::Sprint5/BoardFinal/BoardFinalSprint5.5.png[Board final 5]
+
+==== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+
+| Aspectes positius | Durant aquest sprint he avançat en la correcció dels bugfixs relacionats amb l’OCR dels albarans de proveïdor, sobretot en l’extracció de codis de matèria primera, lots i línies detectades. També he millorat algunes pantalles web, com el llistat de lots i les taules que no mostraven bé tota la informació.
+
+| Aspectes a millorar | He dedicat més temps del previst a ajustar l’OCR, especialment perquè en mòbil no detectava els albarans tan bé com en PC. També m’ha costat deixar les taules web més compactes sense que es retallés la informació. A més, hauria d’haver anat actualitzant abans la documentació del sprint i no deixar tanta part per al final.
+
+| Accions concretes per al següent sprint | De cara al següent sprint, intentaré revisar abans les parts més conflictives, especialment l’OCR i les pantalles amb taules grans. També faré proves més constants en web i en mòbil per detectar els errors abans, i aniré actualitzant la documentació a mesura que avanci el treball per no acumular-la al final.
+|===

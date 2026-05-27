@@ -1,0 +1,170 @@
+<resources>
+    <string name="app_name">EasyTraza</string>
+
+    <string name="config_ip_label">IP del servidor</string>
+    <string name="config_ip_placeholder">Exemple: 10.0.2.2</string>
+    <string name="config_ip_save_button">Desar IP</string>
+    <string name="config_ip_test_button">Provar connexió</string>
+    <string name="config_ip_status_label">Estat: %1$s</string>
+
+    <string name="connection_status_not_tested">Connexió encara no provada</string>
+    <string name="connection_status_ip_saved">IP desada correctament</string>
+    <string name="connection_success_default">Connexió correcta amb el servidor</string>
+
+    <string name="connection_error_invalid_ip">Introdueix una IP vàlida abans de continuar.</string>
+    <string name="connection_error_backend_response">El servidor ha respost amb error (%1$d).</string>
+    <string name="connection_error_host">No s’ha trobat el servidor indicat. Revisa la IP configurada.</string>
+    <string name="connection_error_connect">No s’ha pogut connectar amb el servidor. Comprova que el backend estigui en marxa i accessible.</string>
+    <string name="connection_error_timeout">El servidor ha trigat massa a respondre. Torna-ho a provar.</string>
+    <string name="connection_error_generic">No s’ha pogut completar la connexió. Revisa la configuració i torna-ho a provar.</string>
+
+    <string name="user_selector_emoji">👥</string>
+    <string name="user_selector_title">Selecciona un usuari</string>
+    <string name="user_selector_subtitle">Selecciona un usuari real registrat a EasyTraza per identificar-te al mòdul mòbil.</string>    <string name="user_selector_section_title">Usuaris disponibles</string>
+    <string name="user_selector_open_profile">Entrar</string>
+    <string name="user_selector_config_button">Configuració de connexió</string>
+
+    <string name="dashboard_welcome_label">Hola 👋</string>
+    <string name="dashboard_config_short_button">IP</string>
+    <string name="dashboard_change_user_button">Canviar usuari</string>
+    <string name="dashboard_actions_section_title">Acció principal</string>
+    <string name="dashboard_action_open">Obrir</string>
+
+    <string name="dashboard_action_receive_title">Recepcionar albarà</string>
+    <string name="dashboard_action_receive_subtitle">Crea l’albarà des del mòbil manualment o mitjançant OCR usant càmera, imatge o PDF.</string>
+
+    <string name="dashboard_action_lots_emoji">🔁</string>
+    <string name="dashboard_action_lots_title">Gestionar lots</string>
+    <string name="dashboard_action_lots_subtitle">Consulta els lots registrats i inicia o finalitza el lot actiu des del mòbil.</string>
+
+    <string name="dashboard_config_section_title">Configuració de connexió</string>
+    <string name="dashboard_config_section_subtitle">Mantén accessible la IP del backend des d’aquesta pantalla independent.</string>
+
+    <string name="config_back_button">Tornar</string>
+
+    <string name="recepcio_screen_title">Recepcionar albarà</string>
+    <string name="recepcio_screen_subtitle">Usuari actiu: %1$s</string>
+    <string name="recepcio_mode_manual">Manual</string>
+    <string name="recepcio_mode_ocr">OCR</string>
+
+    <string name="recepcio_ocr_block_title">Entrada assistida per OCR</string>
+    <string name="recepcio_ocr_block_subtitle">Selecciona una imatge, fes una foto o escull un PDF de l’albarà i revisa les dades detectades abans de desar.</string>
+    <string name="recepcio_ocr_camera_button">Càmera</string>
+    <string name="recepcio_ocr_image_button">Imatge / foto</string>
+    <string name="recepcio_ocr_pdf_button">PDF</string>
+    <string name="recepcio_ocr_text_label">Text OCR detectat</string>
+
+    <string name="recepcio_form_title">Dades de l’albarà</string>
+    <string name="recepcio_field_date">Data de recepció</string>
+    <string name="recepcio_field_supplier_cif">CIF/NIF/NIE del proveïdor</string>
+    <string name="recepcio_field_supplier_name">Nom del proveïdor</string>
+    <string name="recepcio_field_lot">Codi de lot</string>
+    <string name="recepcio_field_quantity">Quantitat</string>
+    <string name="recepcio_field_material">Matèria primera</string>
+    <string name="recepcio_save_button">Desar albarà</string>
+    <string name="recepcio_save_success_toast">Albarà desat correctament</string>
+
+    <string name="recepcio_create_supplier_option">Crear proveïdor si no existeix</string>
+    <string name="recepcio_create_material_option">Crear matèria primera si no existeix</string>
+    <string name="recepcio_lots_title">Lots de l’albarà</string>
+    <string name="recepcio_lot_title">Lot %1$d</string>
+    <string name="recepcio_add_lot_button">Afegir lot</string>
+    <string name="recepcio_delete_lot_button">Eliminar</string>
+
+    <string name="recepcio_create_supplier_checkbox">Crear proveïdor automàticament si no existeix</string>
+    <string name="recepcio_create_material_checkbox">Crear matèria primera automàticament si no existeix</string>
+    <string name="recepcio_create_supplier_help">Marca aquesta opció si el proveïdor detectat per OCR encara no existeix al sistema.</string>
+    <string name="recepcio_create_material_help">Marca aquesta opció si la matèria primera detectada per OCR encara no existeix al sistema.</string>
+
+    <string name="network_error_no_ip">Primer has de desar una IP vàlida del backend.</string>
+    <string name="network_error_invalid_ip">La IP configurada no és vàlida. Revisa la configuració de connexió.</string>
+    <string name="network_error_no_connection">No s’ha pogut connectar amb el servidor. Revisa la IP i que el backend estigui iniciat.</string>
+    <string name="network_error_timeout">La connexió ha trigat massa. Comprova la xarxa i torna-ho a intentar.</string>
+    <string name="network_error_unknown_host">No s’ha trobat el servidor indicat. Revisa la IP configurada.</string>
+    <string name="network_error_server">El servidor ha retornat un error. Torna-ho a intentar més tard.</string>
+    <string name="network_error_generic">No s’ha pogut completar l’operació. Revisa la connexió i torna-ho a intentar.</string>
+
+    <string name="ocr_error_no_ip">Primer has de desar una IP vàlida del backend.</string>
+    <string name="ocr_error_backend">No s’ha pogut processar l’OCR. El servidor ha retornat un error.</string>
+    <string name="ocr_error_file">No s’ha pogut preparar el fitxer per a l’OCR. Revisa el format del document.</string>
+    <string name="ocr_error_connection">No s’ha pogut connectar amb el servidor per processar l’OCR. Revisa la IP i que el backend estigui iniciat.</string>
+    <string name="ocr_error_timeout">L’OCR ha trigat massa a respondre. Prova amb una altra imatge o torna-ho a intentar.</string>
+    <string name="ocr_success">OCR completat correctament.</string>
+    <string name="ocr_saving">Desant albarà…</string>
+    <string name="ocr_saved">Albarà desat correctament.</string>
+    <string name="ocr_save_error">No s’ha pogut desar l’albarà. Revisa les dades i torna-ho a intentar.</string>
+    <string name="ocr_processing_document">Analitzant document…</string>
+    <string name="ocr_processing_photo">Analitzant fotografia…</string>
+    <string name="ocr_processing_error">No s’ha pogut analitzar el document. Revisa la imatge o prova amb una altra foto.</string>
+
+    <string name="lots_mobile_title">Gestionar lots</string>
+    <string name="lots_mobile_subtitle">Consulta els lots registrats i inicia o finalitza el lot actiu des del mòbil.</string>
+    <string name="lots_mobile_refresh">Actualitzar</string>
+    <string name="lots_mobile_loading">Carregant lots…</string>
+    <string name="lots_mobile_empty">No hi ha lots registrats.</string>
+    <string name="lots_mobile_supplier">Proveïdor: %1$s</string>
+    <string name="lots_mobile_material">Matèria primera: %1$s</string>
+    <string name="lots_mobile_quantity">Quantitat: %1$s</string>
+    <string name="lots_mobile_reception_date">Data de recepció: %1$s</string>
+    <string name="lots_mobile_reception_date_value">%1$s</string>
+    <string name="lots_mobile_start_button">Iniciar lot</string>
+    <string name="lots_mobile_finish_button">Finalitzar lot</string>
+    <string name="lots_mobile_no_actions">Sense accions disponibles</string>
+    <string name="lots_mobile_start_confirm_title">Iniciar lot</string>
+    <string name="lots_mobile_start_confirm_text">Segur que vols iniciar aquest lot?</string>
+    <string name="lots_mobile_finish_confirm_title">Finalitzar lot</string>
+    <string name="lots_mobile_finish_confirm_text">Segur que vols finalitzar aquest lot?</string>
+    <string name="lots_mobile_confirm">Confirmar</string>
+    <string name="lots_mobile_cancel">Cancel·lar</string>
+    <string name="lots_mobile_status_stock">En estoc</string>
+    <string name="lots_mobile_status_open">Obert</string>
+    <string name="lots_mobile_status_finished">Acabat</string>
+    <string name="lots_mobile_status_unknown">Estat desconegut</string>
+    <string name="lots_mobile_start_success">Lot iniciat correctament.</string>
+    <string name="lots_mobile_finish_success">Lot finalitzat correctament.</string>
+    <string name="lots_mobile_error_loading">No s’han pogut carregar els lots.</string>
+    <string name="lots_mobile_error_start">No s’ha pogut iniciar el lot.</string>
+    <string name="lots_mobile_error_finish">No s’ha pogut finalitzar el lot.</string>
+
+    <string name="lots_mobile_started">Lot iniciat correctament.</string>
+    <string name="lots_mobile_finished">Lot finalitzat correctament.</string>
+    <string name="lots_mobile_filters_title">Filtrar lots</string>
+    <string name="lots_mobile_filter_code">Codi de lot</string>
+    <string name="lots_mobile_filter_material">Matèria primera</string>
+    <string name="lots_mobile_filter_date">Data de recepció</string>
+    <string name="lots_mobile_filter_date_help">Fes servir el format AAAA-MM-DD.</string>
+    <string name="lots_mobile_filter_status">Estat</string>
+    <string name="lots_mobile_filter_all">Tots</string>
+    <string name="lots_mobile_filter_clear">Netejar filtres</string>
+    <string name="lots_mobile_action_error">No s’ha pogut completar l’operació sobre el lot.</string>
+
+    <string name="mobile_user_loading">Carregant usuaris…</string>
+    <string name="mobile_user_empty">No hi ha usuaris disponibles.</string>
+    <string name="mobile_user_error_no_ip">Primer has de desar una IP vàlida del backend.</string>
+    <string name="mobile_user_refresh_button">Actualitzar usuaris</string>
+    <string name="mobile_user_role_admin">Administrador</string>
+    <string name="mobile_user_role_operari">Operari</string>
+
+    <string name="lots_mobile_filter_code_all">Tots els codis de lot</string>
+    <string name="lots_mobile_filter_material_all">Totes les matèries primeres</string>
+
+    <string name="profile_photo_label">Foto de perfil</string>
+
+    <string name="lots_mobile_empty_filtered">No hi ha lots que coincideixin amb els filtres seleccionats.</string>
+    <string name="lots_mobile_filters_summary">Filtres i ordenació combinats.</string>
+    <string name="lots_mobile_filters_show">Mostrar filtres</string>
+    <string name="lots_mobile_filters_hide">Ocultar filtres</string>
+    <string name="lots_mobile_sort_title">Ordenació</string>
+    <string name="lots_mobile_sort_field">Ordenar per</string>
+    <string name="lots_mobile_sort_direction">Direcció</string>
+    <string name="lots_mobile_sort_code">Codi de lot</string>
+    <string name="lots_mobile_sort_material">Matèria primera</string>
+    <string name="lots_mobile_sort_supplier">Proveïdor</string>
+    <string name="lots_mobile_sort_quantity">Quantitat</string>
+    <string name="lots_mobile_sort_reception_date">Data de recepció</string>
+    <string name="lots_mobile_sort_open_date">Data d\'obertura</string>
+    <string name="lots_mobile_sort_finish_date">Data de finalització</string>
+    <string name="lots_mobile_sort_status">Estat</string>
+    <string name="lots_mobile_sort_asc">Ascendent</string>
+    <string name="lots_mobile_sort_desc">Descendent</string>
+</resources>

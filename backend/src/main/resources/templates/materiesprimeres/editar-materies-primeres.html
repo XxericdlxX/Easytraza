@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{materies.editar}">Editar materia prima</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{materies.editar}">Editar materia prima</h1>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id},lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/materies-primeres/editar/{id}(id=${materiaPrima.id},lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <form th:action="@{/web/materies-primeres/actualitzar/{id}(id=${materiaPrima.id})}" th:object="${materiaPrima}" method="post" novalidate>
+
+                    <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                    <div class="form-group">
+                        <label for="nom"><span th:text="#{materies.nom}">Nombre</span> <span class="required">*</span></label>
+                        <input type="text" id="nom" th:field="*{nom}">
+                        <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcio"><span th:text="#{materies.descripcio}">Descripción</span> <span class="required">*</span></label>
+                        <input type="text" id="descripcio" th:field="*{descripcio}">
+                        <div class="field-error" th:if="${#fields.hasErrors('descripcio')}" th:errors="*{descripcio}"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{materies.guardar.canvis}">Guardar cambios</button>
+                        <a th:href="@{/web/materies-primeres}" class="btn btn-secondary" th:text="#{materies.tornar}">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

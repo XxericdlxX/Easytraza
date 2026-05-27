@@ -1,0 +1,51 @@
+# ===============================
+# GENERAL
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# IDEs
+# ===============================
+.idea/
+.vscode/
+*.iml
+
+# ===============================
+# NETBEANS
+# ===============================
+**/nbactions.xml
+**/nb-configuration.xml
+
+# ===============================
+# JAVA / MAVEN / SPRING BOOT
+# ===============================
+**/target/
+**/build/
+*.class
+*.log
+
+# ===============================
+# ANDROID / GRADLE
+# ===============================
+**/.gradle/
+**/local.properties
+**/captures/
+**/cxx/
+**/.externalNativeBuild/
+
+# APK / AAB
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# ===============================
+# OS / TEMP
+# ===============================
+*.tmp
+*.swp
+*~
+# Fitxers pujats per l'aplicació
+uploads/
+backend/uploads/

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{perfil.titol}">Editar perfil</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="page-standalone profile-page">
+            <div class="container">
+                <div class="header-actions">
+                    <div class="logo-title">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                        <div>
+                            <h1 th:text="#{perfil.titol}">Editar perfil</h1>
+                            <p class="page-subtitle" th:text="#{perfil.subtitol}">
+                                Actualiza las dades visibles del teu usuari.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card profile-form-card">
+                    <form th:action="@{/web/perfil/actualitzar}" th:object="${perfil}" method="post" enctype="multipart/form-data" novalidate>
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{fotoPerfilNom}">
+
+                        <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                        <div th:if="${perfilDadesBloquejades}" class="success-message" th:text="#{perfil.dades.superadmin.bloquejades}">
+                            Les dades principals del superadmin estan protegides. Només pots canviar la foto de perfil i la contrasenya.
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nom">
+                                <span th:text="#{perfil.nom}">Nom</span> <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nom" th:field="*{nom}" th:readonly="${perfilDadesBloquejades}">
+                            <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cognoms">
+                                <span th:text="#{perfil.cognoms}">Cognoms</span> <span class="required">*</span>
+                            </label>
+                            <input type="text" id="cognoms" th:field="*{cognoms}" th:readonly="${perfilDadesBloquejades}">
+                            <div class="field-error" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="nif">
+                                <span th:text="#{perfil.nif}">DNI/NIF/NIE</span> <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nif" th:field="*{nif}" th:readonly="${perfilDadesBloquejades}">
+                            <div class="field-error" th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></div>
+                        </div>
+
+                        <div class="form-group profile-photo-group">
+                            <label for="fotoPerfil" th:text="#{perfil.foto}">Foto de perfil</label>
+                            <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/png,image/jpeg,image/webp">
+                            <p class="form-help" th:text="#{perfil.foto.ajuda}">Puja una imatge JPG, PNG o WEBP.</p>
+                            <div class="profile-photo-preview" th:if="${perfil.fotoPerfilNom != null and !#strings.isEmpty(perfil.fotoPerfilNom)}">
+                                <img th:src="@{/web/perfil/foto/{foto}(foto=${perfil.fotoPerfilNom})}" alt="Foto de perfil actual">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">
+                                <span th:text="#{perfil.email}">Correu electrònic</span> <span class="required">*</span>
+                            </label>
+                            <input type="email" id="email" th:field="*{email}" th:readonly="${perfilEmailBloquejat}">
+                            <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            <p class="form-help"
+                               th:if="${!perfilEmailBloquejat}"
+                               th:text="#{perfil.email.ajuda}">
+                                Si canvies el correu, continuaràs identificat amb la nova adreça.
+                            </p>
+                            <p class="form-help"
+                               th:if="${perfilEmailBloquejat}"
+                               th:text="#{perfil.email.superadmin.bloquejat}">
+                                El correu del superadmin està protegit.
+                            </p>
+                        </div>
+
+                        <div class="profile-password-panel">
+                            <h2 th:text="#{perfil.contrasenya.titol}">Canviar contrasenya</h2>
+                            <p class="form-help" th:text="#{perfil.contrasenya.ajuda}">
+                                Omple aquests camps només si vols actualitzar la contrasenya.
+                            </p>
+
+                            <div class="form-group">
+                                <label for="contrasenyaActual" th:text="#{perfil.contrasenya.actual}">Contrasenya actual</label>
+                                <input type="password" id="contrasenyaActual" th:field="*{contrasenyaActual}" autocomplete="current-password">
+                                <div class="field-error" th:if="${#fields.hasErrors('contrasenyaActual')}" th:errors="*{contrasenyaActual}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="novaContrasenya" th:text="#{perfil.contrasenya.nova}">Nova contrasenya</label>
+                                <input type="password" id="novaContrasenya" th:field="*{novaContrasenya}" autocomplete="new-password">
+                                <div class="field-error" th:if="${#fields.hasErrors('novaContrasenya')}" th:errors="*{novaContrasenya}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmarContrasenya" th:text="#{perfil.contrasenya.confirmar}">Confirmar contrasenya</label>
+                                <input type="password" id="confirmarContrasenya" th:field="*{confirmarContrasenya}" autocomplete="new-password">
+                                <div class="field-error" th:if="${#fields.hasErrors('confirmarContrasenya')}" th:errors="*{confirmarContrasenya}"></div>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit" class="btn btn-primary" th:text="#{perfil.guardar}">Guardar canvis</button>
+                            <a th:href="@{/}" class="btn btn-secondary" th:text="#{accio.tornar}">Tornar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

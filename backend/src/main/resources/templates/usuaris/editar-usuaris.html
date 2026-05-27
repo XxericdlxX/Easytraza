@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{usuaris.editar}">Editar usuario</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-actions">
+                <div class="logo-title">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza">
+                    <h1 th:text="#{usuaris.editar}">Editar usuario</h1>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id},lang='es')}" class="btn btn-secondary" th:text="#{lang.es}">ES</a>
+                    <a th:href="@{/web/usuaris/editar/{id}(id=${usuari.id},lang='ca')}" class="btn btn-secondary" th:text="#{lang.ca}">CA</a>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <form th:action="@{/web/usuaris/actualitzar/{id}(id=${usuari.id})}" th:object="${usuari}" method="post" novalidate>
+
+                    <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                    <div class="form-group">
+                        <label for="nom">
+                            <span th:text="#{usuaris.nom}">Nombre</span> <span class="required">*</span>
+                        </label>
+                        <input type="text" id="nom" th:field="*{nom}" th:readonly="${superadminProtegit}">
+                        <div class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cognoms">
+                            <span th:text="#{usuaris.cognoms}">Apellidos</span> <span class="required">*</span>
+                        </label>
+                        <input type="text" id="cognoms" th:field="*{cognoms}" th:readonly="${superadminProtegit}">
+                        <div class="field-error" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="nif">
+                            <span th:text="#{usuaris.nif}">DNI/NIF/NIE</span> <span class="required">*</span>
+                        </label>
+                        <input type="text" id="nif" th:field="*{nif}" th:readonly="${superadminProtegit}">
+                        <div class="field-error" th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></div>
+                        <p class="form-help"
+                           th:if="${superadminProtegit}"
+                           th:text="#{usuaris.superadmin.dades.bloquejades}">
+                            Les dades del superadmin estan protegides.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rol">
+                            <span th:text="#{usuaris.rol}">Rol</span> <span class="required">*</span>
+                        </label>
+
+                        <div th:if="${!superadminProtegit}">
+                            <select id="rol" th:field="*{rol}">
+                                <option value="" th:text="#{usuaris.selecciona.rol}">Selecciona un rol</option>
+                                <option value="OPERARI" th:text="#{rol.OPERARI}">Operario</option>
+                                <option value="ADMIN" th:text="#{rol.ADMIN}">Administrador</option>
+                            </select>
+                        </div>
+
+                        <div th:if="${superadminProtegit}">
+                            <input type="hidden" th:field="*{rol}">
+                            <input type="text" th:value="#{|rol.${usuari.rol}|}" readonly>
+                        </div>
+
+                        <div class="field-error" th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            <span th:text="#{usuaris.email}">Correo electrónico</span> <span class="required">*</span>
+                        </label>
+                        <input type="email" id="email" th:field="*{email}" readonly>
+                        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasenya" th:text="#{usuaris.contrasenya}">Contraseña</label>
+                        <input type="password"
+                               id="contrasenya"
+                               th:field="*{contrasenya}"
+                               autocomplete="new-password"
+                               th:placeholder="#{usuaris.contrasenya.buida.mantinguda}">
+                        <div class="field-error" th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn btn-primary" th:text="#{usuaris.guardar.canvis}">Guardar cambios</button>
+                        <a th:href="@{/web/usuaris}" class="btn btn-secondary" th:text="#{usuaris.tornar}">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

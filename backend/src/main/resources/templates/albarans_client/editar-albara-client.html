@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.client.editar}">Editar albarán de cliente</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body>
+        <div class="page-standalone">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+                        <div>
+                            <h1 th:text="#{albara.client.editar}">Editar albarán de cliente</h1>
+                            <p th:text="#{albara.client.gestio}">Gestión de los albaranes de cliente del sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+
+                        <a th:href="@{/web/albarans-client}" class="btn btn-secondary" th:text="#{albara.client.tornar}">
+                            Volver
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${errorNegoci}" class="error-message" th:text="${errorNegoci}"></div>
+
+                <div class="form-card">
+                    <form th:action="@{/web/albarans-client/actualitzar/{id}(id=${albara.id})}" th:object="${albara}" method="post" novalidate>
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="form-group">
+                            <label for="dataProduccio">
+                                <span th:text="#{albara.client.data}">Fecha</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="date" id="dataProduccio" th:field="*{dataProduccio}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="clientNif">
+                                <span th:text="#{albara.client.client}">Cliente</span>
+                                <span class="required">*</span>
+                            </label>
+                            <select id="clientNif" th:field="*{clientNif}">
+                                <option value="" th:text="#{albara.client.selecciona.client}">Selecciona un cliente</option>
+                                <option th:each="client : ${clients}"
+                                        th:value="${client.nif}"
+                                        th:text="${client.nom + ' (' + client.nif + ')'}">
+                                    Cliente
+                                </option>
+                            </select>
+                        </div>
+
+                        <h2 th:text="#{albara.client.linies}">Líneas</h2>
+
+                        <div id="linies-container">
+                            <div class="form-card linia-card"
+                                 style="margin-bottom: 18px;"
+                                 th:each="linia, iterStat : *{linies}">
+                                <h3 class="linia-title"
+                                    th:text="#{albara.client.linia.titol} + ' ' + ${iterStat.index + 1}">
+                                    Línea 1
+                                </h3>
+
+                                <input type="hidden" class="linia-id-field" th:field="*{linies[__${iterStat.index}__].id}">
+                                <input type="hidden" class="linia-numero-field" th:field="*{linies[__${iterStat.index}__].numeroLotIntern}">
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{albara.client.linia.producte}">Producto</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="linia-producte-field" th:field="*{linies[__${iterStat.index}__].producteId}">
+                                        <option value="" th:text="#{albara.client.linia.selecciona.producte}">
+                                            Selecciona un producto
+                                        </option>
+                                        <option th:each="producte : ${productes}"
+                                                th:value="${producte.id}"
+                                                th:text="${producte.nom}">
+                                            Producto
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{albara.client.linia.quantitat}">Cantidad</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="number"
+                                           min="1"
+                                           class="linia-quantitat-field"
+                                           th:field="*{linies[__${iterStat.index}__].quantitat}">
+                                </div>
+
+                                <div class="actions">
+                                    <button type="button" class="btn btn-secondary add-linia-inline-btn" th:text="#{albara.client.linia.afegir}">
+                                        Añadir línea
+                                    </button>
+                                    <button type="button" class="btn btn-danger remove-linia-btn" th:text="#{albara.client.linia.eliminar}">
+                                        Eliminar línea
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template id="linia-template">
+                            <div class="form-card linia-card" style="margin-bottom: 18px;">
+                                <h3 class="linia-title">Línea</h3>
+
+                                <input type="hidden" class="linia-id-field">
+                                <input type="hidden" class="linia-numero-field">
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{albara.client.linia.producte}">Producto</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="linia-producte-field">
+                                        <option value="" th:text="#{albara.client.linia.selecciona.producte}">
+                                            Selecciona un producto
+                                        </option>
+                                        <option th:each="producte : ${productes}"
+                                                th:value="${producte.id}"
+                                                th:text="${producte.nom}">
+                                            Producto
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <span th:text="#{albara.client.linia.quantitat}">Cantidad</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="number" min="1" class="linia-quantitat-field">
+                                </div>
+
+                                <div class="actions">
+                                    <button type="button" class="btn btn-secondary add-linia-inline-btn" th:text="#{albara.client.linia.afegir}">
+                                        Añadir línea
+                                    </button>
+                                    <button type="button" class="btn btn-danger remove-linia-btn" th:text="#{albara.client.linia.eliminar}">
+                                        Eliminar línea
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div class="actions" style="margin-top: 24px;">
+                            <button type="submit" class="btn btn-primary" th:text="#{albara.client.guardar.canvis}">
+                                Guardar cambios
+                            </button>
+                            <a th:href="@{/web/albarans-client}" class="btn btn-secondary" th:text="#{albara.client.tornar}">
+                                Volver
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            const liniesContainer = document.getElementById('linies-container');
+            const liniaTemplate = document.getElementById('linia-template');
+            const textLinia = /*[[#{albara.client.linia.titol}]]*/ 'Línea';
+            const missatgeEliminar = /*[[#{albara.client.linia.confirmar.eliminar}]]*/ '¿Seguro que quieres eliminar esta línea?';
+
+            function refreshLiniaIndexes() {
+                const cards = liniesContainer.querySelectorAll('.linia-card');
+
+                cards.forEach((card, index) => {
+                    const title = card.querySelector('.linia-title');
+                    if (title) {
+                        title.textContent = `${textLinia} ${index + 1}`;
+                    }
+
+                    const idInput = card.querySelector('.linia-id-field');
+                    const numeroInput = card.querySelector('.linia-numero-field');
+                    const producteSelect = card.querySelector('.linia-producte-field');
+                    const quantitatInput = card.querySelector('.linia-quantitat-field');
+
+                    if (idInput) {
+                        idInput.name = `linies[${index}].id`;
+                    }
+
+                    if (numeroInput) {
+                        numeroInput.name = `linies[${index}].numeroLotIntern`;
+                    }
+
+                    if (producteSelect) {
+                        producteSelect.name = `linies[${index}].producteId`;
+                    }
+
+                    if (quantitatInput) {
+                        quantitatInput.name = `linies[${index}].quantitat`;
+                    }
+                });
+
+                refreshButtons();
+            }
+
+            function refreshButtons() {
+                const cards = liniesContainer.querySelectorAll('.linia-card');
+
+                cards.forEach((card, index) => {
+                    const addBtn = card.querySelector('.add-linia-inline-btn');
+                    const removeBtn = card.querySelector('.remove-linia-btn');
+
+                    if (addBtn) {
+                        addBtn.style.display = index === cards.length - 1 ? 'inline-block' : 'none';
+                    }
+
+                    if (removeBtn) {
+                        removeBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+                    }
+                });
+            }
+
+            function addLinia() {
+                const clone = liniaTemplate.content.cloneNode(true);
+                liniesContainer.appendChild(clone);
+                bindButtons();
+                refreshLiniaIndexes();
+            }
+
+            function bindButtons() {
+                liniesContainer.querySelectorAll('.add-linia-inline-btn').forEach(btn => {
+                    btn.onclick = function () {
+                        addLinia();
+                    };
+                });
+
+                liniesContainer.querySelectorAll('.remove-linia-btn').forEach(btn => {
+                    btn.onclick = function () {
+                        const card = btn.closest('.linia-card');
+                        const cards = liniesContainer.querySelectorAll('.linia-card');
+
+                        if (cards.length <= 1) {
+                            return;
+                        }
+
+                        if (!confirm(missatgeEliminar)) {
+                            return;
+                        }
+
+                        card.remove();
+                        refreshLiniaIndexes();
+                    };
+                });
+            }
+
+            bindButtons();
+            refreshLiniaIndexes();
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

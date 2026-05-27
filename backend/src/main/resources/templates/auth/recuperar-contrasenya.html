@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{recuperacio.titol}">Recuperar contraseña</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+    <body class="login-body">
+        <div class="login-locale-switch" aria-label="Selector de idioma">
+            <a class="locale-pill" th:href="@{/recuperar-contrasenya(lang='es')}" th:text="#{lang.es}">ES</a>
+            <a class="locale-pill" th:href="@{/recuperar-contrasenya(lang='ca')}" th:text="#{lang.ca}">CA</a>
+        </div>
+
+        <main class="login-page">
+            <section class="login-card recovery-card">
+                <div class="login-brand">
+                    <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="login-logo">
+                    <div>
+                        <h1 th:text="#{recuperacio.titol}">Recuperar contraseña</h1>
+                        <p th:text="#{recuperacio.subtitol}">Solicita un enlace temporal para restablecer la contraseña.</p>
+                    </div>
+                </div>
+
+                <div class="success-message" th:if="${recuperacioSollicitada}" th:text="#{recuperacio.flash.sollicitada}">
+                    Si el correo existe, recibirás un enlace de recuperación.
+                </div>
+
+                <form th:action="@{/recuperar-contrasenya}" th:object="${recuperacioContrasenyaDto}" method="post" class="login-form">
+                    <div class="form-group">
+                        <label for="email" th:text="#{recuperacio.email}">Correo electrónico</label>
+                        <input type="email"
+                               id="email"
+                               th:field="*{email}"
+                               autocomplete="email"
+                               th:placeholder="#{recuperacio.email.placeholder}"
+                               required>
+                        <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary login-submit" th:text="#{recuperacio.boto}">
+                        Enviar enlace de recuperación
+                    </button>
+                </form>
+
+                <div class="login-recovery-link">
+                    <a th:href="@{/login}" th:text="#{recuperacio.tornar.login}">Volver al login</a>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

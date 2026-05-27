@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{albara.proveidor.veure}">Ver albarán de proveedor</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+
+    <body>
+        <div class="page-standalone">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+
+                        <div>
+                            <h1 th:text="#{albara.proveidor.veure}">
+                                Ver albarán de proveedor
+                            </h1>
+
+                            <p th:text="#{albara.proveidor.gestio}">
+                                Gestión de los albaranes de proveedor del sistema
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+                        <a th:if="${param.origen != null && param.origen[0] == 'lots'}"
+                           th:href="@{/web/lots}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+
+                        <a th:if="${param.origen == null || param.origen[0] != 'lots'}"
+                           th:href="@{/web/albarans-proveidor}"
+                           class="btn btn-secondary"
+                           th:text="#{albara.proveidor.tornar}">
+                            Volver
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${missatgeExit}" class="success-message" th:text="${missatgeExit}"></div>
+                <div th:if="${missatgeError}" class="error-message" th:text="${missatgeError}"></div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <p>
+                        <strong th:text="#{albara.proveidor.id}">ID</strong>:
+                        <span th:text="${albara != null ? albara.id : '-'}">1</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.proveidor.data}">Fecha</strong>:
+                        <span th:text="${albara != null && albara.dataRecepcio != null ? albara.dataRecepcio : '-'}">
+                            2026-04-24
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.proveidor.proveidor}">Proveedor</strong>:
+                        <span th:if="${albara != null && albara.proveidor != null}"
+                              th:text="${albara.proveidor.nom + ' (' + albara.proveidor.cif + ')'}">
+                            Proveedor
+                        </span>
+
+                        <span th:if="${albara == null || albara.proveidor == null}">-</span>
+                    </p>
+
+                    <p>
+                        <strong th:text="#{albara.proveidor.usuari}">Usuario receptor</strong>:
+                        <span th:if="${albara != null && albara.usuariReceptor != null}"
+                              th:text="${albara.usuariReceptor.nom + ' ' + albara.usuariReceptor.cognoms}">
+                            Usuario
+                        </span>
+
+                        <span th:if="${albara == null || albara.usuariReceptor == null}">-</span>
+                    </p>
+                </div>
+
+                <div class="lots-table-wrapper"
+                     th:if="${albara != null && albara.lots != null && !#lists.isEmpty(albara.lots)}">
+                    <table class="lots-table albara-proveidor-detail-table">
+                        <thead>
+                            <tr>
+                                <th class="lot-col-codi" th:text="#{lot.proveidor.codi}">
+                                    Código/identificador de lote
+                                </th>
+
+                                <th class="lot-col-codi-materia-ocr" th:text="#{lot.proveidor.codi.materia.ocr}">
+                                    Código de materia prima
+                                </th>
+
+                                <th class="lot-col-quantitat" th:text="#{lot.proveidor.quantitat}">
+                                    Cantidad
+                                </th>
+
+                                <th class="lot-col-materia" th:text="#{lot.proveidor.materia}">
+                                    Materia prima
+                                </th>
+
+                                <th class="lot-col-estat" th:text="#{lot.proveidor.estat}">
+                                    Estado
+                                </th>
+
+                                <th class="lot-col-data" th:text="#{lots.data.obertura}">
+                                    Fecha apertura
+                                </th>
+
+                                <th class="lot-col-data" th:text="#{lots.data.acabament}">
+                                    Fecha finalización
+                                </th>
+
+                                <th class="lot-col-accions" th:text="#{lots.accions}">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="lot : ${albara.lots}">
+                                <td class="lot-col-codi" th:text="${lot.codiLot}">
+                                    LOT-001
+                                </td>
+
+                                <td class="lot-col-codi-materia-ocr"
+                                    th:text="${lot.codiMateriaPrimaOcr != null && !#strings.isEmpty(lot.codiMateriaPrimaOcr) ? lot.codiMateriaPrimaOcr : '-'}">
+                                    ART-001
+                                </td>
+
+                                <td class="lot-col-quantitat" th:text="${lot.quantitat != null ? lot.quantitat : '-'}">
+                                    10
+                                </td>
+
+                                <td class="lot-col-materia">
+                                    <span th:if="${lot.materiaPrima != null}"
+                                          th:text="${lot.materiaPrima.nom}">
+                                        Farina
+                                    </span>
+
+                                    <span th:if="${lot.materiaPrima == null}">-</span>
+                                </td>
+
+                                <td class="lot-col-estat">
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'EN_ESTOC'}"
+                                          th:text="#{estat.lot.EN_ESTOC}">
+                                        En stock
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'OBERT'}"
+                                          th:text="#{estat.lot.OBERT}">
+                                        Abierto
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'ACABAT'}"
+                                          th:text="#{estat.lot.ACABAT}">
+                                        Acabado
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'INICIAT'}"
+                                          th:text="#{estat.lot.INICIAT}">
+                                        Iniciado
+                                    </span>
+
+                                    <span th:if="${lot.estat != null && lot.estat.name() == 'TANCAT'}"
+                                          th:text="#{estat.lot.TANCAT}">
+                                        Cerrado
+                                    </span>
+
+                                    <span th:if="${lot.estat == null}">-</span>
+                                </td>
+
+                                <td class="lot-col-data" th:text="${lot.dataObertura != null ? lot.dataObertura : '-'}">
+                                    -
+                                </td>
+
+                                <td class="lot-col-data" th:text="${lot.dataAcabament != null ? lot.dataAcabament : '-'}">
+                                    -
+                                </td>
+
+                                <td class="lot-col-accions">
+                                    <div class="actions-table">
+                                        <form th:if="${lot.estat != null && lot.estat.name() == 'EN_ESTOC'}"
+                                              th:action="@{/web/lots/{id}/iniciar(id=${lot.id}, origen='albara', albaraId=${albara.id})}"
+                                              method="post"
+                                              class="inline-form js-confirm-form"
+                                              th:attr="data-confirm-message=#{lots.confirmar.iniciar}">
+                                            <button type="submit"
+                                                    class="btn btn-primary"
+                                                    th:text="#{lots.iniciar}">
+                                                Iniciar
+                                            </button>
+                                        </form>
+
+                                        <form th:if="${lot.estat != null && lot.estat.name() == 'OBERT'}"
+                                              th:action="@{/web/lots/{id}/finalitzar(id=${lot.id}, origen='albara', albaraId=${albara.id})}"
+                                              method="post"
+                                              class="inline-form js-confirm-form"
+                                              th:attr="data-confirm-message=#{lots.confirmar.finalitzar}">
+                                            <button type="submit"
+                                                    class="btn btn-danger"
+                                                    th:text="#{lots.finalitzar}">
+                                                Finalizar
+                                            </button>
+                                        </form>
+
+                                        <span th:if="${lot.estat == null || (lot.estat.name() != 'EN_ESTOC' && lot.estat.name() != 'OBERT')}"
+                                              th:text="#{lots.sense.accions}">
+                                            Sin acciones
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message"
+                     th:if="${albara == null || albara.lots == null || #lists.isEmpty(albara.lots)}"
+                     th:text="#{albara.proveidor.lots.buit}">
+                    Este albarán no tiene lotes.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-confirm-form').forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        const message = form.getAttribute('data-confirm-message') || '¿Confirmas la operación?';
+
+                        if (!confirm(message)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

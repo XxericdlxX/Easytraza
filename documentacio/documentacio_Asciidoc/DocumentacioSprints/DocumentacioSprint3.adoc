@@ -1,0 +1,109 @@
+= SPRINT - 3
+:toc:
+:toc-title: Índex de continguts
+:imagesdir: ../../images
+
+== 1. Planificació Inicial
+
+=== 1.1. Planificació (Inicial)
+==== Board inicial — Eric Delgado López
+
+image::Sprint3/BoardInicial/BoardInicialSprint3.1.png[Board inicial 1]
+image::Sprint3/BoardInicial/BoardInicialSprint3.2.png[Board inicial 2]
+image::Sprint3/BoardInicial/BoardInicialSprint3.3.png[Board inicial 3]
+
+== 2. Daily Stand Ups
+
+=== DIA 1 Divendres - 24/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig entregar el Sprint 2 | Corregiré l'Sprint 2, organitzaré el Sprint 3 i començaré a fer el RF02 - CRUD de clients | - | 6h
+|===
+
+=== DIA 2 Dilluns - 27/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig organitzar el Sprint3, vaig acabar el RF02 - CRUD de clients i vaig començar el RF10-RF11-gestio-lots, iniciar i finalitzar lots |Corregiré el Sprint2 i acabaré el RF10-RF11-gestio-lots, iniciar i finalitzar lots i començaré el RF05 - CRUD d’albarans de client | Problemes amb el OCR que no agafa bé tot | 6h
+|===
+
+=== DIA 3 Dimarts - 28/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig Corregir el Sprint2 i vaig acabar el RF10-RF11-gestio-lots, iniciar i finalitzar lots i vaig començar el RF05 - CRUD d’albarans de client | Començaré a corregir els errors que em van sortir al Sprint2 sobretot de negoci i començaré a corregir el OCR amb el albarans reals de rafa |Problemes amb el OCR que no agafa bé tot   | 0h + 4h
+|===
+
+=== DIA 4 Dimecres - 29/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig començar a fer filtres del Sprint 1 i 2 i vaig començar a millorar el OCR   | Continuaré millorant el OCR i començaré a fer els canvis de l'enunciat | Problemes amb el OCR | 3h
+|===
+
+=== DIA 5 Dijous - 30/04/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig seguir millorant el ocr  | - | - | 0h
+|===
+
+=== DIA 6 Divendres - 01/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - | - | - | 0h
+|===
+
+=== DIA 7 Dilluns - 04/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | - |Continuaré milorant el ocr y arreglar alguns errores del sprint 2  | Problemes amb el OCR  | 3h
+|===
+
+=== DIA 8 Dimarts - 05/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig a continuar milorant el ocr y vaig afegir filtres als CRUDS del sprint 1 i 2 |Acabaré de millorar el ocr per poder agafar els albarans del Rafa | problemes amb el ocr (es dificil fer que agafi tot) | 0h + 4'30h
+|===
+
+=== DIA 9 Dimecres - 06/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig acabar de millorar el ocr i vaig crear la següent task per afegir els filtres de Cruds restants | Començaré a fer els filtres dels Cruds que quedan i també seguiré corregint  | - | 0h + 4h
+|===
+
+=== DIA 10 Dijous - 07/05/2026
+[cols="1,2,2,2,1", options="header"]
+|===
+| Membre | Què va fer ahir | Què farà avui | Problemes | Hores
+| Eric Delgado López | Vaig continuar amb les correccions del Sprint 2 a la part mobile: vaig ajustar el Dashboard, vaig afegir les opcions per crear automàticament proveïdor i matèria primera des del flux d’OCR, i vaig personalitzar els errors de connexió perquè es mostrin missatges clars i traduïts. També vaig afegir filtres de cerca als llistats de clients i proveïdors. | Avui faré el filtre de productes i faré el daily Stand up per acabar el projecte del sprint3 | - | 4h 
+|===
+
+
+== 3. Planificació Final
+
+=== 3.1. Planificació (Final de Sprint)
+==== Board final — Eric Delgado López
+image::Sprint3/BoardFinal/BoardFinalSprint3.1.png[Board final 1]
+image::Sprint3/BoardFinal/BoardFinalSprint3.2.png[Board final 2]
+image::Sprint3/BoardFinal/BoardFinalSprint3.3.png[Board final 3]
+image::Sprint3/BoardFinal/BoardFinalSprint3.4.png[Board final 4]
+image::Sprint3/BoardFinal/BoardFinalSprint3.5.png[Board final 5]
+
+== 4. Personal Retrospective
+
+[cols="1,4", options="header"]
+|===
+| Apartat | Contingut
+
+| Aspectes positius | Durant aquest tercer sprint m’he organitzat millor des del principi. Tenia més clar quines tasques havia de fer i això m’ha permès avançar amb més ordre. També he pogut adelantar força feina del projecte i afegir algunes millores que no estaven previstes inicialment al sprint, però que ajudaven a deixar l’aplicació més completa.
+
+| Aspectes a millorar | Tot i que l’organització ha estat millor, hi ha hagut un parell de dies en què no he avançat gaire en el projecte. Això ha fet que després hagués de recuperar part de la feina en altres moments. De cara als següents sprints, hauria d’intentar mantenir un ritme més constant durant tots els dies i no deixar que algunes tasques s’acumulin.
+
+| Accions concretes per al següent sprint | Per al següent sprint vull continuar treballant amb una planificació clara des de l’inici, però controlant millor el temps que dedico a cada tasca. També intentaré deixar més marge per revisar errors, fer proves i acabar de polir les funcionalitats abans de l’entrega. D’aquesta manera podré arribar al final del sprint amb el projecte més estable i millor preparat.
+|===

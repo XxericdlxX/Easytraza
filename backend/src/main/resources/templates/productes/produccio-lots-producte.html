@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{productes.produccio.lots.titol}">Producción y lotes del producto</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="icon" type="image/png" th:href="@{/img/logo-easytraza.png}">
+    </head>
+
+    <body>
+        <div class="page-standalone">
+            <div class="container">
+                <div class="list-header">
+                    <div class="list-title-block">
+                        <img th:src="@{/img/logo-easytraza.png}" alt="Logo EasyTraza" class="list-page-logo">
+
+                        <div>
+                            <h1 th:text="#{productes.produccio.lots.titol}">
+                                Producción y lotes del producto
+                            </h1>
+
+                            <p th:if="${producte != null}">
+                                <span th:text="#{productes.nom}">Producto</span>:
+                                <strong th:text="${producte.nom}">Producto</strong>
+                            </p>
+                            <p th:if="${producte == null}"
+                               th:text="#{productes.produccio.lots.tots}">
+                                Producción registrada de todos los productos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="actions header-top-actions">
+                        <div class="page-language-switch">
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="es"
+                               th:text="#{lang.es}">
+                                ES
+                            </a>
+                            <a class="btn btn-secondary js-page-lang-link"
+                               href="#"
+                               data-lang="ca"
+                               th:text="#{lang.ca}">
+                                CA
+                            </a>
+                        </div>
+
+                        <a th:href="@{/}"
+                           class="btn btn-secondary"
+                           th:text="#{accio.tornar}">
+                            Volver
+                        </a>
+                    </div>
+                </div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <p th:text="#{productes.produccio.lots.ajuda}">
+                        Se muestran las líneas de albaranes de cliente donde aparece este producto y los lotes abiertos asociados al día de producción.
+                    </p>
+                </div>
+
+                <div class="form-card" style="margin-bottom: 24px;">
+                    <form th:action="@{/web/produccio-lots}" method="get" class="actions" style="align-items: end;">
+                        <div class="form-group" style="flex: 1; min-width: 260px; margin-bottom: 0;">
+                            <label for="producteId" th:text="#{productes.produccio.filtre.producte}">
+                                Filtrar por producto
+                            </label>
+                            <select id="producteId" name="producteId">
+                                <option value="" th:text="#{productes.produccio.filtre.tots}">
+                                    Todos los productos
+                                </option>
+                                <option th:each="prod : ${productes}"
+                                        th:value="${prod.id}"
+                                        th:selected="${producteId != null and prod.id == producteId}"
+                                        th:text="${prod.nom}">
+                                    Producto
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit"
+                                    class="btn btn-secondary"
+                                    th:text="#{accio.buscar}">
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="responsive-card-list"
+                     th:if="${liniesProduccio != null && !#lists.isEmpty(liniesProduccio)}">
+                    <details class="data-card production-data-card" th:each="linia : ${liniesProduccio}">
+                        <summary class="data-card-summary">
+                            <span class="data-card-main">
+                                <strong th:if="${linia.producte != null}" th:text="${linia.producte.nom}">Producto</strong>
+                                <strong th:if="${linia.producte == null}">-</strong>
+                                <span>
+                                    <span th:text="#{productes.produccio.quantitat}">Cantidad fabricada</span>:
+                                    <span th:text="${linia.quantitat}">10</span>
+                                </span>
+                            </span>
+
+                            <span class="data-card-meta">
+                                <span th:if="${linia.albaraClient != null && linia.albaraClient.client != null}"
+                                      th:text="${linia.albaraClient.client.nom}">Cliente</span>
+                                <span th:if="${linia.albaraClient == null || linia.albaraClient.client == null}">-</span>
+                                <span th:if="${linia.albaraClient != null}" th:text="${linia.albaraClient.dataProduccio}">2026-05-07</span>
+                            </span>
+                        </summary>
+
+                        <div class="data-card-body">
+                            <div class="data-card-grid">
+                                <div class="data-card-field">
+                                    <span th:text="#{productes.produccio.client}">Cliente</span>
+                                    <strong th:if="${linia.albaraClient != null && linia.albaraClient.client != null}"
+                                            th:text="${linia.albaraClient.client.nom + ' (' + linia.albaraClient.client.nif + ')'}">Cliente</strong>
+                                    <strong th:if="${linia.albaraClient == null || linia.albaraClient.client == null}">-</strong>
+                                </div>
+
+                                <div class="data-card-field">
+                                    <span th:text="#{productes.produccio.albara.client}">Albarán cliente</span>
+                                    <strong th:if="${linia.albaraClient != null}" th:text="${linia.albaraClient.id}">1</strong>
+                                    <strong th:if="${linia.albaraClient == null}">-</strong>
+                                </div>
+
+                                <div class="data-card-field">
+                                    <span th:text="#{productes.produccio.data}">Fecha de producción</span>
+                                    <strong th:if="${linia.albaraClient != null}" th:text="${linia.albaraClient.dataProduccio}">2026-05-07</strong>
+                                    <strong th:if="${linia.albaraClient == null}">-</strong>
+                                </div>
+                            </div>
+
+                            <div class="data-card-section-title" th:text="#{productes.produccio.lots.associats}">Lotes abiertos asociados</div>
+                            <div th:if="${linia.lotsAssociats != null && !#lists.isEmpty(linia.lotsAssociats)}"
+                                 class="lot-badges-list card-lot-badges">
+                                <span th:each="lot : ${linia.lotsAssociats}" class="lot-badge">
+                                    <strong th:text="${lot.codiLot}">LOT-001</strong>
+                                    <span th:if="${lot.materiaPrima != null}">
+                                        · <span th:text="${lot.materiaPrima.nom}">Materia</span>
+                                    </span>
+                                </span>
+                            </div>
+                            <span th:if="${linia.lotsAssociats == null || #lists.isEmpty(linia.lotsAssociats)}">-</span>
+
+                            <div class="data-card-actions">
+                                <a th:if="${linia.albaraClient != null}"
+                                   th:href="@{/web/albarans-client/veure/{id}(id=${linia.albaraClient.id})}"
+                                   class="btn btn-accent"
+                                   th:text="#{productes.produccio.albara.client}">Albarán cliente</a>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="empty-message"
+                     th:if="${liniesProduccio == null || #lists.isEmpty(liniesProduccio)}"
+                     th:text="#{productes.produccio.lots.buit}">
+                    No hay producción registrada para este producto.
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.js-page-lang-link').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const lang = link.getAttribute('data-lang');
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set('lang', lang);
+                        window.location.assign(url.toString());
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>
