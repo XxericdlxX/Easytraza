@@ -15,6 +15,26 @@ import org.springframework.data.repository.query.Param;
  */
 public interface ComandaRepository extends JpaRepository<Comanda, Long> {
 
+    /**
+     * Executa la consulta o cerca definida per `buscar`.
+     *
+     * @param clientNif paràmetre necessari per executar l'operació.
+     * @param dataComanda paràmetre necessari per executar l'operació.
+     * @param estat paràmetre necessari per executar l'operació.
+     * @param producteId paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
+    /**
+     * Executa la consulta o cerca definida per `findById`.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
+    /**
+     * Executa la consulta o cerca definida per `findAll`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Override
     @EntityGraph(attributePaths = {"client", "usuariCreador", "albaraClient", "linies", "linies.producte"})
     List<Comanda> findAll();

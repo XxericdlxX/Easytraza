@@ -64,6 +64,15 @@ public class ComandaWebController {
         return "comandes/llistar-comandes";
     }
 
+    /**
+     * Mostra el detall de l'element indicat.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     * @param model paràmetre necessari per executar l'operació.
+     * @param redirectAttributes paràmetre necessari per executar l'operació.
+     * @param locale paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/veure/{id}")
     public String veure(@PathVariable Long id,
             Model model,
@@ -86,6 +95,12 @@ public class ComandaWebController {
         return "comandes/veure-comanda";
     }
 
+    /**
+     * Mostra o prepara la pantalla de creació corresponent.
+     *
+     * @param model paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/crear")
     public String crear(Model model) {
         ComandaDto dto = new ComandaDto();
@@ -100,6 +115,15 @@ public class ComandaWebController {
         return "comandes/crear-comanda";
     }
 
+    /**
+     * Guarda la informació indicada al sistema.
+     *
+     * @param dto paràmetre necessari per executar l'operació.
+     * @param model paràmetre necessari per executar l'operació.
+     * @param redirectAttributes paràmetre necessari per executar l'operació.
+     * @param locale paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute("comanda") ComandaDto dto,
             Model model,
@@ -128,6 +152,15 @@ public class ComandaWebController {
         return "redirect:/web/comandes";
     }
 
+    /**
+     * Mostra o processa la pantalla d'edició corresponent.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     * @param model paràmetre necessari per executar l'operació.
+     * @param redirectAttributes paràmetre necessari per executar l'operació.
+     * @param locale paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id,
             Model model,
@@ -159,6 +192,16 @@ public class ComandaWebController {
         return "comandes/editar-comanda";
     }
 
+    /**
+     * Actualitza la informació indicada al sistema.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     * @param dto paràmetre necessari per executar l'operació.
+     * @param model paràmetre necessari per executar l'operació.
+     * @param redirectAttributes paràmetre necessari per executar l'operació.
+     * @param locale paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/actualitzar/{id}")
     public String actualitzar(@PathVariable Long id,
             @ModelAttribute("comanda") ComandaDto dto,
@@ -196,6 +239,14 @@ public class ComandaWebController {
         return "redirect:/web/comandes";
     }
 
+    /**
+     * Executa l'operació `generarAlbara`.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     * @param redirectAttributes paràmetre necessari per executar l'operació.
+     * @param locale paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @PostMapping("/generar-albara/{id}")
     public String generarAlbara(@PathVariable Long id,
             RedirectAttributes redirectAttributes,
@@ -224,6 +275,14 @@ public class ComandaWebController {
         }
     }
 
+    /**
+     * Elimina o dona de baixa la informació indicada.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     * @param redirectAttributes paràmetre necessari per executar l'operació.
+     * @param locale paràmetre necessari per executar l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id,
             RedirectAttributes redirectAttributes,

@@ -62,62 +62,137 @@ public class Comanda {
         return id;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param id paràmetre necessari per executar l'operació.
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public LocalDate getDataComanda() {
         return dataComanda;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param dataComanda paràmetre necessari per executar l'operació.
+     */
     public void setDataComanda(LocalDate dataComanda) {
         this.dataComanda = dataComanda;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public EstatComanda getEstat() {
         return estat;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param estat paràmetre necessari per executar l'operació.
+     */
     public void setEstat(EstatComanda estat) {
         this.estat = estat;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public String getObservacions() {
         return observacions;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param observacions paràmetre necessari per executar l'operació.
+     */
     public void setObservacions(String observacions) {
         this.observacions = observacions;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Client getClient() {
         return client;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param client paràmetre necessari per executar l'operació.
+     */
     public void setClient(Client client) {
         this.client = client;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public Usuari getUsuariCreador() {
         return usuariCreador;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param usuariCreador paràmetre necessari per executar l'operació.
+     */
     public void setUsuariCreador(Usuari usuariCreador) {
         this.usuariCreador = usuariCreador;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public AlbaraClient getAlbaraClient() {
         return albaraClient;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param albaraClient paràmetre necessari per executar l'operació.
+     */
     public void setAlbaraClient(AlbaraClient albaraClient) {
         this.albaraClient = albaraClient;
     }
 
+    /**
+     * Retorna el valor associat a aquesta propietat.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     public List<LiniaComanda> getLinies() {
         return linies;
     }
 
+    /**
+     * Assigna el valor indicat a aquesta propietat.
+     *
+     * @param linies paràmetre necessari per executar l'operació.
+     */
     public void setLinies(List<LiniaComanda> linies) {
         this.linies = linies;
     }

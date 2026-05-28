@@ -34,17 +34,14 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @Override
-    @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari", "linies.lotsAssociats"})
-    Optional<AlbaraClient> findById(Long id);
-
     /**
      * Executa l'operació `findByClient_NifContainingIgnoreCase`.
      *
      * @param nif paràmetre necessari per a l'operació.
      * @return resultat obtingut després d'executar l'operació.
      */
-    @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
-    List<AlbaraClient> findByClient_NifContainingIgnoreCase(String nif);
+    @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari", "linies.lotsAssociats"})
+    Optional<AlbaraClient> findById(Long id);
 
     /**
      * Executa l'operació `findByDataProduccio`.
@@ -53,7 +50,7 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
-    List<AlbaraClient> findByDataProduccio(LocalDate dataProduccio);
+    List<AlbaraClient> findByClient_NifContainingIgnoreCase(String nif);
 
     /**
      * Executa l'operació `findByEstat`.
@@ -62,7 +59,7 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
-    List<AlbaraClient> findByEstat(EstatAlbaraClient estat);
+    List<AlbaraClient> findByDataProduccio(LocalDate dataProduccio);
 
     /**
      * Executa l'operació
@@ -73,7 +70,7 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
-    List<AlbaraClient> findByClient_NifContainingIgnoreCaseAndDataProduccio(String nif, LocalDate dataProduccio);
+    List<AlbaraClient> findByEstat(EstatAlbaraClient estat);
 
     /**
      * Executa l'operació `findByClient_NifContainingIgnoreCaseAndEstat`.
@@ -83,7 +80,7 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
-    List<AlbaraClient> findByClient_NifContainingIgnoreCaseAndEstat(String nif, EstatAlbaraClient estat);
+    List<AlbaraClient> findByClient_NifContainingIgnoreCaseAndDataProduccio(String nif, LocalDate dataProduccio);
 
     /**
      * Executa l'operació `findByDataProduccioAndEstat`.
@@ -93,7 +90,7 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
-    List<AlbaraClient> findByDataProduccioAndEstat(LocalDate dataProduccio, EstatAlbaraClient estat);
+    List<AlbaraClient> findByClient_NifContainingIgnoreCaseAndEstat(String nif, EstatAlbaraClient estat);
 
     /**
      * Executa l'operació
@@ -105,12 +102,21 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @return resultat obtingut després d'executar l'operació.
      */
     @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
+    List<AlbaraClient> findByDataProduccioAndEstat(LocalDate dataProduccio, EstatAlbaraClient estat);
+
+    @EntityGraph(attributePaths = {"client", "usuariCreador", "linies", "linies.producte", "linies.operari"})
     List<AlbaraClient> findByClient_NifContainingIgnoreCaseAndDataProduccioAndEstat(
             String nif,
             LocalDate dataProduccio,
             EstatAlbaraClient estat
     );
 
+    /**
+     * Executa l'operació `findLiniesProduccioByProducteId`.
+     *
+     * @param producteId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Query("""
            SELECT DISTINCT linia
            FROM LiniaClient linia
@@ -122,14 +128,13 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
            WHERE producte.id = :producteId
            ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
            """)
-    /**
-     * Executa l'operació `findLiniesProduccioByProducteId`.
-     *
-     * @param producteId paràmetre necessari per a l'operació.
-     * @return resultat obtingut després d'executar l'operació.
-     */
     List<LiniaClient> findLiniesProduccioByProducteId(@Param("producteId") Long producteId);
 
+    /**
+     * Executa l'operació `findTotesLiniesProduccioAmbLots`.
+     *
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Query("""
            SELECT DISTINCT linia
            FROM LiniaClient linia
@@ -140,13 +145,14 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
            LEFT JOIN FETCH linia.lotsAssociats lots
            ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
            """)
-    /**
-     * Executa l'operació `findTotesLiniesProduccioAmbLots`.
-     *
-     * @return resultat obtingut després d'executar l'operació.
-     */
     List<LiniaClient> findTotesLiniesProduccioAmbLots();
 
+    /**
+     * Executa l'operació `findLiniesProduccioByLotId`.
+     *
+     * @param lotId paràmetre necessari per a l'operació.
+     * @return resultat obtingut després d'executar l'operació.
+     */
     @Query("""
            SELECT DISTINCT linia
            FROM LiniaClient linia
@@ -158,39 +164,8 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
            WHERE lotAssociat.id = :lotId
            ORDER BY albara.dataProduccio DESC, albara.id DESC, linia.id DESC
            """)
-    /**
-     * Executa l'operació `findLiniesProduccioByLotId`.
-     *
-     * @param lotId paràmetre necessari per a l'operació.
-     * @return resultat obtingut després d'executar l'operació.
-     */
     List<LiniaClient> findLiniesProduccioByLotId(@Param("lotId") Long lotId);
 
-    @Query("""
-           SELECT FUNCTION('DAY', albara.dataProduccio), COALESCE(SUM(linia.quantitat), 0)
-           FROM LiniaClient linia
-           JOIN linia.albaraClient albara
-           WHERE albara.estat = :estat
-             AND albara.dataProduccio >= :dataInici
-             AND albara.dataProduccio <= :dataFi
-             /**
-              * Executa l'operació `AND`.
-              * @param producteId paràmetre necessari per a l'operació.
-              */
-             AND (:producteId IS NULL OR linia.producte.id = :producteId)
-           /**
-            * Executa l'operació `FUNCTION`.
-            * @param producteId paràmetre necessari per a l'operació.
-            * @return resultat obtingut després d'executar l'operació.
-            */
-           GROUP BY FUNCTION('DAY', albara.dataProduccio)
-           /**
-            * Executa l'operació `FUNCTION`.
-            * @param producteId paràmetre necessari per a l'operació.
-            * @return resultat obtingut després d'executar l'operació.
-            */
-           ORDER BY FUNCTION('DAY', albara.dataProduccio)
-           """)
     /**
      * Executa l'operació `findQuantitatsVenudesAgrupadesPerDia`.
      *
@@ -200,6 +175,17 @@ public interface AlbaraClientRepository extends JpaRepository<AlbaraClient, Long
      * @param producteId paràmetre necessari per a l'operació.
      * @return resultat obtingut després d'executar l'operació.
      */
+    @Query("""
+           SELECT FUNCTION('DAY', albara.dataProduccio), COALESCE(SUM(linia.quantitat), 0)
+           FROM LiniaClient linia
+           JOIN linia.albaraClient albara
+           WHERE albara.estat = :estat
+             AND albara.dataProduccio >= :dataInici
+             AND albara.dataProduccio <= :dataFi
+             AND (:producteId IS NULL OR linia.producte.id = :producteId)
+           GROUP BY FUNCTION('DAY', albara.dataProduccio)
+           ORDER BY FUNCTION('DAY', albara.dataProduccio)
+           """)
     List<Object[]> findQuantitatsVenudesAgrupadesPerDia(
             @Param("estat") EstatAlbaraClient estat,
             @Param("dataInici") LocalDate dataInici,
