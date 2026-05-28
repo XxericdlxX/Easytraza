@@ -1500,11 +1500,6 @@ public class OcrAlbaraService {
         }
 
         String neta = materia;
-
-        // Correcció dirigida a una lectura OCR observada en el producte
-        // "ENSAIMADA 409 SIN CARGO III". Per la revisió d'albarans només es conserva
-        // el nom de matèria útil i s'elimina la cua "SIN CARGO III" o les seves variants OCR.
-        // No altera la resta de línies ni el parser general del proveïdor.
         neta = neta.replaceAll(
                 "(?i)\\bENSAIMADA\\s+409\\s+SIN\\s+CARGO\\s+(?:III|II(?:[\\]\\}\\|!]+)?)(?=\\s|$)",
                 "ENSAIMADA 409"
